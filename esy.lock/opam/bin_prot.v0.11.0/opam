@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/bin_prot"
+bug-reports: "https://github.com/janestreet/bin_prot/issues"
+dev-repo: "git+https://github.com/janestreet/bin_prot.git"
+license: "Apache-2.0"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+conflicts: [ "jbuilder" { = "1.0+beta19" } ]
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "base" {>= "v0.11" & < "v0.12"}
+  "ppx_compare" {>= "v0.11" & < "v0.12"}
+  "ppx_custom_printf" {>= "v0.11" & < "v0.12"}
+  "ppx_fields_conv" {>= "v0.11" & < "v0.12"}
+  "ppx_sexp_conv" {>= "v0.11" & < "v0.12"}
+  "ppx_variants_conv" {>= "v0.11" & < "v0.12"}
+  "jbuilder" {build & >= "1.0+beta18.1"}
+  "ocaml-migrate-parsetree" {>= "1.0"}
+]
+depopts: [
+  "mirage-xen-ocaml"
+]
+synopsis: "A binary protocol generator"
+description: """
+Part of Jane Street's Core library
+The Core suite of libraries is an industrial strength alternative to
+OCaml's standard library that was developed by Jane Street, the
+largest industrial user of OCaml."""
+url {
+  src:
+    "https://ocaml.janestreet.com/ocaml-core/v0.11/files/bin_prot-v0.11.0.tar.gz"
+  checksum: "md5=64495e0e88fe7cccba6e66b0deaef283"
+}

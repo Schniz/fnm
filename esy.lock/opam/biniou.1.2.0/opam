@@ -1,0 +1,25 @@
+opam-version: "2.0"
+maintainer: "martin@mjambon.com"
+authors: ["Martin Jambon"]
+
+homepage: "https://github.com/mjambon/biniou"
+bug-reports: "https://github.com/mjambon/biniou/issues"
+dev-repo: "git+https://github.com/mjambon/biniou.git"
+license: "BSD-3-Clause"
+
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "conf-which" {build}
+  "jbuilder" {build & >= "1.0+beta7"}
+  "easy-format"
+]
+synopsis:
+  "Binary data format designed for speed, safety, ease of use and backward compatibility as protocols evolve"
+url {
+  src: "https://github.com/mjambon/biniou/archive/v1.2.0.tar.gz"
+  checksum: "md5=f3e92358e832ed94eaf23ce622ccc2f9"
+}

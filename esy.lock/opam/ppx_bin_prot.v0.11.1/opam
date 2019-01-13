@@ -1,0 +1,26 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/ppx_bin_prot"
+bug-reports: "https://github.com/janestreet/ppx_bin_prot/issues"
+dev-repo: "git+https://github.com/janestreet/ppx_bin_prot.git"
+license: "Apache-2.0"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+conflicts: [ "jbuilder" { = "1.0+beta19" } ]
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "base" {>= "v0.11" & < "v0.12"}
+  "bin_prot" {>= "v0.11" & < "v0.12"}
+  "ppx_here" {>= "v0.11" & < "v0.12"}
+  "jbuilder" {build & >= "1.0+beta18.1"}
+  "ocaml-migrate-parsetree" {>= "1.0"}
+  "ppxlib" {>= "0.3.0"}
+]
+synopsis: "Generation of bin_prot readers and writers from types"
+description: "Part of the Jane Street's PPX rewriters collection."
+url {
+  src: "https://github.com/janestreet/ppx_bin_prot/archive/v0.11.1.tar.gz"
+  checksum: "md5=fae0a476df94eb1dc7fccb293adffe1f"
+}

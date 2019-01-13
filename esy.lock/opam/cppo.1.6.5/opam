@@ -1,0 +1,23 @@
+opam-version: "2.0"
+maintainer: "martin@mjambon.com"
+authors: ["Martin Jambon"]
+homepage: "https://github.com/mjambon/cppo"
+dev-repo: "git+https://github.com/mjambon/cppo.git"
+bug-reports: "https://github.com/mjambon/cppo/issues"
+license: "BSD-3-Clause"
+
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
+depends: [
+  "ocaml"
+  "jbuilder" {build & >= "1.0+beta17"}
+  "base-unix"
+]
+synopsis: "Equivalent of the C preprocessor for OCaml programs"
+url {
+  src: "https://github.com/mjambon/cppo/archive/v1.6.5.tar.gz"
+  checksum: "md5=1cd25741d31417995b0973fe0b6f6c82"
+}

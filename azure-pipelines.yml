@@ -1,0 +1,67 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+name: $(Build.SourceVersion)
+jobs:
+- job: Linux
+  timeoutInMinutes: 0
+  pool:
+    vmImage: 'Ubuntu 16.04'
+
+  variables:
+    ESY__CACHE_INSTALL_PATH: /home/vsts/.esy/3_____________________________________________________________________/i/
+    ESY__CACHE_SOURCE_TARBALL_PATH: /home/vsts/.esy/source/i
+
+  steps:
+  # TODO: Uncomment both this and 'publish-build-cache' below to enable build caching for Linux.
+  # - template: .ci/restore-build-cache.yml
+  - template: .ci/esy-build-steps.yml
+  # - template: .ci/publish-build-cache.yml
+
+- job: MacOS
+  timeoutInMinutes: 0
+  pool:
+    vmImage: 'macOS 10.13'
+
+  variables:
+    ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3____________________________________________________________________/i/
+    ESY__CACHE_SOURCE_TARBALL_PATH: /Users/vsts/.esy/source/i
+
+  steps:
+  # TODO: Uncomment both this and 'publish-build-cache' below to enable build caching for Mac.
+  # - template: .ci/restore-build-cache.yml
+  - template: .ci/esy-build-steps.yml
+  # - template: .ci/publish-build-cache.yml
+
+- job: Windows
+  timeoutInMinutes: 0
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  variables:
+    ESY__CACHE_INSTALL_PATH: C:\Users\VssAdministrator\.esy\3_\i
+    ESY__CACHE_SOURCE_TARBALL_PATH: C:\Users\VssAdministrator\.esy\source\i
+
+  steps:
+  - template: .ci/restore-build-cache.yml
+  - template: .ci/esy-build-steps.yml
+  - template: .ci/publish-build-cache.yml
+
+- job: Release
+  timeoutInMinutes: 0
+  displayName: Release
+  dependsOn:
+      - Linux
+      - MacOS
+      - Windows
+  condition: succeeded()
+  pool:
+     vmImage: ubuntu-16.04
+  steps:
+    - task: PublishBuildArtifacts@1
+      displayName: 'Release Package'
+      inputs:
+          PathtoPublish: '.'
+          ArtifactName: npm-package

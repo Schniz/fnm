@@ -1,0 +1,17 @@
+{
+  "build": [
+    [
+      "bash",
+      "-c",
+      "#{os == 'windows' ? 'patch -p1 < base-v0.11.1.patch' : 'true'}"
+    ],
+    [
+      "jbuilder",
+      "build",
+      "-p",
+      "base",
+      "-j",
+      "4"
+    ]
+  ]
+}

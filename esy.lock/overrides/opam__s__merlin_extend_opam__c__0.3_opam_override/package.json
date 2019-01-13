@@ -1,0 +1,12 @@
+{
+  "build": [
+    [
+      "bash",
+      "-c",
+      "#{os == 'windows' ? 'patch -p1 < merlin-extend-winfix.patch' : 'true'}"
+    ],
+    [
+      "make"
+    ]
+  ]
+}

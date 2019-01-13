@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/ppx_jane"
+bug-reports: "https://github.com/janestreet/ppx_jane/issues"
+dev-repo: "git+https://github.com/janestreet/ppx_jane.git"
+license: "Apache-2.0"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+conflicts: [ "jbuilder" { = "1.0+beta19" } ]
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "ppx_assert" {>= "v0.11" & < "v0.12"}
+  "ppx_base" {>= "v0.11" & < "v0.12"}
+  "ppx_bench" {>= "v0.11" & < "v0.12"}
+  "ppx_bin_prot" {>= "v0.11" & < "v0.12"}
+  "ppx_custom_printf" {>= "v0.11" & < "v0.12"}
+  "ppx_expect" {>= "v0.11" & < "v0.12"}
+  "ppx_fail" {>= "v0.11" & < "v0.12"}
+  "ppx_fields_conv" {>= "v0.11" & < "v0.12"}
+  "ppx_here" {>= "v0.11" & < "v0.12"}
+  "ppx_inline_test" {>= "v0.11" & < "v0.12"}
+  "ppx_let" {>= "v0.11" & < "v0.12"}
+  "ppx_optcomp" {>= "v0.11" & < "v0.12"}
+  "ppx_optional" {>= "v0.11" & < "v0.12"}
+  "ppx_pipebang" {>= "v0.11" & < "v0.12"}
+  "ppx_sexp_message" {>= "v0.11" & < "v0.12"}
+  "ppx_sexp_value" {>= "v0.11" & < "v0.12"}
+  "ppx_typerep_conv" {>= "v0.11" & < "v0.12"}
+  "ppx_variants_conv" {>= "v0.11" & < "v0.12"}
+  "jbuilder" {build & >= "1.0+beta18.1"}
+  "ocaml-migrate-parsetree" {>= "1.0"}
+  "ppxlib" {>= "0.1.0"}
+]
+synopsis: "Standard Jane Street ppx rewriters"
+description: """
+This package installs a ppx-jane executable, which is a ppx driver
+including all standard Jane Street ppx rewriters."""
+url {
+  src:
+    "https://ocaml.janestreet.com/ocaml-core/v0.11/files/ppx_jane-v0.11.0.tar.gz"
+  checksum: "md5=11da0871ae3841fb6710ec6471ce6b92"
+}

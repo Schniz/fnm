@@ -1,0 +1,11 @@
+npm-debug.log
+.merlin
+yarn-error.log
+node_modules
+node_modules/
+_build
+_release
+_esy/
+nsw.install
+.DS_Store
+*.install

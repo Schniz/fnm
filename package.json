@@ -1,0 +1,50 @@
+{
+  "name": "nsw",
+  "version": "0.0.0",
+  "description": "My Project",
+  "esy": {
+    "build": "pesy",
+    "release": {
+      "releasedBinaries": [
+        "NswApp.exe"
+      ]
+    }
+  },
+  "buildDirs": {
+    "test": {
+      "require": ["nsw.lib"],
+      "main": "TestNsw",
+      "name": "TestNsw.exe"
+    },
+    "library": {
+      "name": "nsw.lib",
+      "namespace": "Nsw"
+    },
+    "executable": {
+      "preprocess": ["pps", "lwt_ppx", "ppx_let"],
+      "require": ["core", "lwt", "lwt.unix", "console.lib", "pastel.lib", "nsw.lib"],
+      "main": "NswApp",
+      "name": "NswApp.exe"
+    }
+  },
+  "scripts": {
+    "pesy": "bash -c 'env PESY_MODE=update pesy'",
+    "test": "esy x TestNsw.exe"
+  },
+  "dependencies": {
+    "@opam/dune": "*",
+    "@opam/core": "*",
+    "@opam/lwt": "*",
+    "@opam/lwt_ppx": "*",
+    "@opam/ppx_let": "*",
+    "@reason-native/console": "*",
+    "@reason-native/pastel": "*",
+    "@esy-ocaml/reason": "*",
+    "refmterr": "*",
+    "ocaml": "~4.6.0",
+    "pesy": "*"
+  },
+  "devDependencies": {
+    "@opam/merlin": "*"
+  }
+}

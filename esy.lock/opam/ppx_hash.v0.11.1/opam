@@ -1,0 +1,27 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/ppx_hash"
+bug-reports: "https://github.com/janestreet/ppx_hash/issues"
+dev-repo: "git+https://github.com/janestreet/ppx_hash.git"
+license: "Apache-2.0"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+conflicts: [ "jbuilder" { = "1.0+beta19" } ]
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "base" {>= "v0.11" & < "v0.12"}
+  "ppx_compare" {>= "v0.11" & < "v0.12"}
+  "ppx_sexp_conv" {>= "v0.11" & < "v0.12"}
+  "jbuilder" {build & >= "1.0+beta18.1"}
+  "ocaml-migrate-parsetree" {>= "1.0"}
+  "ppxlib" {>= "0.3.0"}
+]
+synopsis:
+  "A ppx rewriter that generates hash functions from type expressions and definitions"
+description: "Part of the Jane Street's PPX rewriters collection."
+url {
+  src: "https://github.com/janestreet/ppx_hash/archive/v0.11.1.tar.gz"
+  checksum: "md5=48dfe890e195808ccdae0a7261bbb17d"
+}

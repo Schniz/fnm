@@ -1,0 +1,21 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/jane-street-headers"
+bug-reports: "https://github.com/janestreet/jane-street-headers/issues"
+dev-repo: "git+https://github.com/janestreet/jane-street-headers.git"
+license: "Apache-2.0"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "jbuilder" {build & >= "1.0+beta18.1"}
+]
+synopsis: "Jane Street C header files"
+description: "C header files shared between the various Jane Street packages"
+url {
+  src:
+    "https://ocaml.janestreet.com/ocaml-core/v0.11/files/jane-street-headers-v0.11.0.tar.gz"
+  checksum: "md5=13299bfe41f66f6a3f42cfaa015f4869"
+}

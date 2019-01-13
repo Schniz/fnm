@@ -1,0 +1,30 @@
+opam-version: "2.0"
+version: "1.2.1"
+maintainer: [
+  "Anton Bachin <antonbachin@yahoo.com>"
+]
+authors: [
+  "Gabriel Radanne"
+]
+homepage: "https://github.com/ocsigen/lwt"
+doc: "https://ocsigen.org/lwt/api/Ppx_lwt"
+dev-repo: "git+https://github.com/ocsigen/lwt.git"
+bug-reports: "https://github.com/ocsigen/lwt/issues"
+license: "LGPL with OpenSSL linking exception"
+
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "jbuilder" {build & >= "1.0+beta14"}
+  "lwt"
+  "ocaml-migrate-parsetree"
+  "ppx_tools_versioned" {>= "5.0.1"}
+]
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+synopsis:
+  "PPX syntax for Lwt, providing something similar to async/await from JavaScript"
+url {
+  src: "https://github.com/ocsigen/lwt/archive/4.1.0.tar.gz"
+  checksum: "md5=e919bee206f18b3d49250ecf9584fde7"
+}

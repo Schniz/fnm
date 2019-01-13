@@ -1,0 +1,20 @@
+opam-version: "2.0"
+maintainer: "martin@mjambon.com"
+authors: ["Martin Jambon"]
+homepage: "http://mjambon.com/easy-format.html"
+bug-reports: "https://github.com/mjambon/easy-format/issues"
+dev-repo: "git+https://github.com/mjambon/easy-format.git"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build}
+]
+synopsis:
+  "High-level and functional interface to the Format module of the OCaml standard library"
+url {
+  src: "https://github.com/mjambon/easy-format/archive/v1.3.1.tar.gz"
+  checksum: "md5=4e163700fb88fdcd6b8976c3a216c8ea"
+}

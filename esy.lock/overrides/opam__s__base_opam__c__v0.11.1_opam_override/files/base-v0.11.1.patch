@@ -1,0 +1,56 @@
+--- ./src/exn_stubs.c
++++ ./src/exn_stubs.c
+@@ -1,8 +1,13 @@
+ #include <caml/mlvalues.h>
+ 
+ extern int caml_backtrace_pos;
++#ifndef _MSC_VER
++#define UNUSED __attribute__((unused))
++#else
++#define UNUSED
++#endif
+ 
+-CAMLprim value Base_clear_caml_backtrace_pos (value __attribute__((unused)) unit) {
++CAMLprim value Base_clear_caml_backtrace_pos (value UNUSED unit) {
+   caml_backtrace_pos = 0;
+   return Val_unit;
+ }
+--- ./src/int_math_stubs.c
++++ ./src/int_math_stubs.c
+@@ -5,6 +5,25 @@
+ #include <caml/mlvalues.h>
+ #include <caml/memory.h>
+ 
++#if defined(_MSC_VER)
++#include <intrin.h>
++#ifdef ARCH_SIXTYFOUR
++#define __builtin_popcountll(x) __popcnt64((uint64_t)(x))
++static __inline uint32_t __builtin_clzll(uint64_t value) {
++  uint32_t leading_zero = 0;
++  _BitScanReverse64(&leading_zero, value);
++  return (63 - leading_zero);
++}
++#else
++#define __builtin_popcount(x) __popcnt((unsigned int)(x))
++static __inline uint32_t __builtin_clz(uint32_t value) {
++  uint32_t leading_zero = 0;
++  _BitScanReverse(&leading_zero, value);
++  return (31 - leading_zero);
++}
++#endif /* ARCH_SIXTYFOUR */
++#endif /* defined(_MSC_VER) */
++
+ static int64_t int_pow(int64_t base, int64_t exponent) {
+   int64_t ret = 1;
+   int64_t mul[4];
+--- ./src/jbuild
++++ ./src/jbuild
+@@ -65,7 +65,7 @@
+     (progn
+      (with-stdout-to popcnt_test.c
+       (echo "int main(int argc, char ** argv) { return __builtin_popcount(argc); }"))
+-     (system "${CC} -mpopcnt -c popcnt_test.c 2> ${null} && \
++     (bash "${CC} -mpopcnt -c popcnt_test.c 2> ${null} && \
+ echo '(-mpopcnt)' > ${@} || echo '()' > ${@}"))))))
+ 
+ (ocamllex (hex_lexer))

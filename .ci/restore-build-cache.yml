@@ -1,0 +1,23 @@
+# Steps for restoring project cache
+
+steps:
+  - task: DownloadBuildArtifacts@0
+    condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+    displayName: 'Cache: Restore install'
+    inputs:
+        buildType: 'specific'
+        project: '$(System.TeamProject)'
+        pipeline: '$(Build.DefinitionName)'
+        branchName: 'refs/heads/master'
+        buildVersionToDownload: 'latestFromBranch'
+        downloadType: 'single'
+        artifactName: 'cache-$(Agent.OS)-install'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    continueOnError: true
+
+  - task: CopyFiles@2
+    condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+    inputs:
+        sourceFolder: '$(System.ArtifactsDirectory)\cache-$(Agent.OS)-install'
+        targetFolder: '$(ESY__CACHE_INSTALL_PATH)'
+    continueOnError: true

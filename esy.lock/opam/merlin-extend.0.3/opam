@@ -1,0 +1,24 @@
+opam-version: "2.0"
+maintainer: "Frederic Bour <frederic.bour@lakaban.net>"
+authors: "Frederic Bour <frederic.bour@lakaban.net>"
+homepage: "https://github.com/let-def/merlin-extend"
+bug-reports: "https://github.com/let-def/merlin-extend"
+license: "MIT"
+dev-repo: "git+https://github.com/let-def/merlin-extend.git"
+build: [make]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "merlin_extend"]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "ocamlfind" {build}
+  "cppo" {build}
+]
+synopsis: "A protocol to provide custom frontend to Merlin"
+description: """
+This protocol allows to replace the OCaml frontend of Merlin.
+It extends what used to be done with the `-pp' flag to handle a few more cases."""
+flags: light-uninstall
+url {
+  src: "https://github.com/let-def/merlin-extend/archive/v0.3.tar.gz"
+  checksum: "md5=9c6dfd4f53328f02f12fcc265f4e2dda"
+}

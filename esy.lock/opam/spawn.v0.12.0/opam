@@ -1,0 +1,38 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/spawn"
+bug-reports: "https://github.com/janestreet/spawn/issues"
+dev-repo: "git+https://github.com/janestreet/spawn.git"
+doc: "https://janestreet.github.io/spawn/"
+license: "Apache-2.0"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build & >= "1.0+beta18.1"}
+]
+synopsis: "Spawning sub-processes"
+description: """
+Spawn is a small library exposing only one functionality: spawning sub-process.
+
+It has three main goals:
+
+1. provide missing features of Unix.create_process such as providing a
+working directory
+
+2. provide better errors when a system call fails in the
+sub-process. For instance if a command is not found, you get a proper
+[Unix.Unix_error] exception
+
+3. improve performances by using vfork when available. It is often
+claimed that nowadays fork is as fast as vfork, however in practice
+fork takes time proportional to the process memory while vfork is
+constant time. In application using a lot of memory, vfork can be
+thousands of times faster than fork."""
+url {
+  src:
+    "https://github.com/janestreet/spawn/releases/download/v0.12.0/spawn-v0.12.0.tbz"
+  checksum: "md5=f9c770cbe3856e6ed5b92ba3ce7c691c"
+}

@@ -1,0 +1,47 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/core_kernel"
+bug-reports: "https://github.com/janestreet/core_kernel/issues"
+dev-repo: "git+https://github.com/janestreet/core_kernel.git"
+license: "Apache-2.0"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+conflicts: [ "jbuilder" { = "1.0+beta19" } ]
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "base" {>= "v0.11" & < "v0.12"}
+  "bin_prot" {>= "v0.11" & < "v0.12"}
+  "configurator" {>= "v0.11" & < "v0.12"}
+  "fieldslib" {>= "v0.11" & < "v0.12"}
+  "jane-street-headers" {>= "v0.11" & < "v0.12"}
+  "ppx_assert" {>= "v0.11" & < "v0.12"}
+  "ppx_base" {>= "v0.11" & < "v0.12"}
+  "ppx_hash" {>= "v0.11" & < "v0.12"}
+  "ppx_inline_test" {>= "v0.11" & < "v0.12"}
+  "ppx_jane" {>= "v0.11" & < "v0.12"}
+  "ppx_sexp_conv" {>= "v0.11" & < "v0.12"}
+  "ppx_sexp_message" {>= "v0.11" & < "v0.12"}
+  "sexplib" {>= "v0.11" & < "v0.12"}
+  "splittable_random" {>= "v0.11" & < "v0.12"}
+  "stdio" {>= "v0.11" & < "v0.12"}
+  "typerep" {>= "v0.11" & < "v0.12"}
+  "variantslib" {>= "v0.11" & < "v0.12"}
+  "jbuilder" {build & >= "1.0+beta18.1"}
+  "ocaml-migrate-parsetree" {>= "1.0"}
+]
+depopts: [
+  "base-native-int63"
+]
+synopsis: "Industrial strength alternative to OCaml's standard library"
+description: """
+The Core suite of libraries is an industrial strength alternative to
+OCaml's standard library that was developed by Jane Street, the
+largest industrial user of OCaml.
+
+Core_kernel is the system-independent part of Core."""
+url {
+  src: "https://github.com/janestreet/core_kernel/archive/v0.11.1.tar.gz"
+  checksum: "md5=2946775ce7660e026996d55da9c10b83"
+}

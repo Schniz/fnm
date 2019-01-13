@@ -1,0 +1,60 @@
+opam-version: "2.0"
+version: "4.1.0"
+maintainer: [
+  "Anton Bachin <antonbachin@yahoo.com>"
+  "Mauricio Fernandez <mfp@acm.org>"
+  "Simon Cruanes <simon.cruanes.2007@m4x.org>"
+]
+authors: [
+  "Jérôme Vouillon"
+  "Jérémie Dimino"
+]
+homepage: "https://github.com/ocsigen/lwt"
+doc: "https://ocsigen.org/lwt/manual/"
+bug-reports: "https://github.com/ocsigen/lwt/issues"
+license: "LGPL with OpenSSL linking exception"
+dev-repo: "git+https://github.com/ocsigen/lwt.git"
+build: [
+  [ "ocaml" "src/util/configure.ml" "-use-libev" "%{conf-libev:installed}%" ]
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
+]
+
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "cppo" {build & >= "1.1.0"}
+  "jbuilder" {build & >= "1.0+beta14"}
+  "ocamlfind" {build & >= "1.7.3-1"}
+  "result"
+]
+depopts: [
+  "base-threads"
+  "base-unix"
+  "conf-libev"
+]
+# In practice, Lwt requires OCaml >= 4.02.3, as that is a constraint of the
+# dependency jbuilder.
+messages: [
+  "For the PPX, please install package lwt_ppx"
+    {!lwt_ppx:installed}
+  "For the Camlp4 syntax, please install package lwt_camlp4"
+    {camlp4:installed & !lwt_camlp4:installed}
+  "For Lwt_log and Lwt_daemon, please install package lwt_log"
+    {!lwt_log:installed}
+]
+synopsis: "Promises, concurrency, and parallelized I/O"
+description: """
+A promise is a value that may become determined in the future.
+
+Lwt provides typed, composable promises. Promises that are resolved by I/O are
+resolved by Lwt in parallel.
+
+Meanwhile, OCaml code, including code creating and waiting on promises, runs in
+a single thread by default. This reduces the need for locks or other
+synchronization primitives. Code can be run in parallel on an opt-in basis."""
+conflicts: [
+  "ocaml-variants" {= "4.02.1+BER"}
+]
+url {
+  src: "https://github.com/ocsigen/lwt/archive/4.1.0.tar.gz"
+  checksum: "md5=e919bee206f18b3d49250ecf9584fde7"
+}

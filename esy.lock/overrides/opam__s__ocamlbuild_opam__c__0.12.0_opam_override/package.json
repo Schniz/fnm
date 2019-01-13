@@ -1,0 +1,27 @@
+{
+  "build": [
+    [
+      "bash",
+      "-c",
+      "#{os == 'windows' ? 'patch -p1 < ocamlbuild-0.12.0.patch' : 'true'}"
+    ],
+    [
+      "make",
+      "-f",
+      "configure.make",
+      "all",
+      "OCAMLBUILD_PREFIX=#{self.install}",
+      "OCAMLBUILD_BINDIR=#{self.bin}",
+      "OCAMLBUILD_LIBDIR=#{self.lib}",
+      "OCAMLBUILD_MANDIR=#{self.man}",
+      "OCAMLBUILD_NATIVE=true",
+      "OCAMLBUILD_NATIVE_TOOLS=true"
+    ],
+    [
+      "make",
+      "check-if-preinstalled",
+      "all",
+      "#{os == 'windows' ? 'install' : 'opam-install'}"
+    ]
+  ]
+}

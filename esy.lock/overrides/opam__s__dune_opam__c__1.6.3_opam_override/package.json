@@ -1,0 +1,14 @@
+{
+  "build": [
+    [
+      "ocaml",
+      "bootstrap.ml"
+    ],
+    [
+      "./boot.exe",
+      "--release",
+      "-j",
+      "4"
+    ]
+  ]
+}

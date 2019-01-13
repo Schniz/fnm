@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/ppx_base"
+bug-reports: "https://github.com/janestreet/ppx_base/issues"
+dev-repo: "git+https://github.com/janestreet/ppx_base.git"
+license: "Apache-2.0"
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+conflicts: [ "jbuilder" { = "1.0+beta19" } ]
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "ppx_compare" {>= "v0.11" & < "v0.12"}
+  "ppx_enumerate" {>= "v0.11" & < "v0.12"}
+  "ppx_hash" {>= "v0.11" & < "v0.12"}
+  "ppx_js_style" {>= "v0.11" & < "v0.12"}
+  "ppx_sexp_conv" {>= "v0.11" & < "v0.12"}
+  "jbuilder" {build & >= "1.0+beta18.1"}
+  "ocaml-migrate-parsetree" {>= "1.0"}
+  "ppxlib" {>= "0.1.0"}
+]
+synopsis: "Base set of ppx rewriters"
+description: """
+ppx_base is the set of ppx rewriters used for Base.
+
+Note that Base doesn't need ppx to build, it is only used as a
+verification tool."""
+url {
+  src:
+    "https://ocaml.janestreet.com/ocaml-core/v0.11/files/ppx_base-v0.11.0.tar.gz"
+  checksum: "md5=a0020fbf308592aa71932bea8135fac5"
+}
