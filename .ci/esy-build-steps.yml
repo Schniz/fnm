@@ -4,8 +4,8 @@ steps:
   - task: NodeTool@0
     inputs:
       versionSpec: '8.9'
-  - script: npm install -g esy@0.4.3
-    displayName: 'npm install -g esy@0.4.3'
+  - script: npm install -g esy@latest
+    displayName: 'npm install -g esy@latest'
   - script: esy install
     displayName: 'esy install'
   - script: esy pesy
@@ -14,7 +14,7 @@ steps:
     displayName: 'esy build'
   - script: esy test
     displayName: 'esy test'
-  - script: esy x NswApp.exe
+  - script: esy x nsw.exe
     displayName: 'Run the main binary'
   - script: esy ls-libs
     continueOnError: true

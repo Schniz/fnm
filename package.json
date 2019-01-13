@@ -4,42 +4,51 @@
   "description": "My Project",
   "esy": {
     "build": "pesy",
+    "buildsInSource": "_build",
     "release": {
       "releasedBinaries": [
-        "NswApp.exe"
+        "nsw.exe"
       ]
     }
   },
   "buildDirs": {
     "test": {
-      "require": ["nsw.lib"],
+      "require": ["nsw.lib", "rely.lib"],
       "main": "TestNsw",
-      "name": "TestNsw.exe"
+      "name": "TestNsw.exe",
+      "ocamloptFlags": ["-linkall", "-g"]
     },
     "library": {
+      "preprocess": ["pps", "lwt_ppx", "ppx_let"],
+      "require": ["str", "core", "lwt", "lwt.unix", "lambdasoup", "semver"],
       "name": "nsw.lib",
       "namespace": "Nsw"
     },
     "executable": {
       "preprocess": ["pps", "lwt_ppx", "ppx_let"],
-      "require": ["core", "lwt", "lwt.unix", "console.lib", "pastel.lib", "nsw.lib"],
+      "require": ["core", "cmdliner", "lwt", "lwt.unix", "lambdasoup", "console.lib", "pastel.lib", "nsw.lib"],
       "main": "NswApp",
-      "name": "NswApp.exe"
+      "name": "nsw.exe"
     }
   },
   "scripts": {
     "pesy": "bash -c 'env PESY_MODE=update pesy'",
-    "test": "esy x TestNsw.exe"
+    "test": "esy x TestNsw.exe",
+    "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'"
   },
   "dependencies": {
     "@opam/dune": "*",
+    "@opam/semver": "*",
     "@opam/core": "*",
+    "@opam/cmdliner": "*",
     "@opam/lwt": "*",
     "@opam/lwt_ppx": "*",
     "@opam/ppx_let": "*",
     "@reason-native/console": "*",
     "@reason-native/pastel": "*",
+    "@reason-native/rely": "*",
     "@esy-ocaml/reason": "*",
+    "@opam/lambdasoup": "*",
     "refmterr": "*",
     "ocaml": "~4.6.0",
     "pesy": "*"

@@ -7,5 +7,6 @@
    (name TestNsw)  ;  From package.json main field
    ; The name of the executable (runnable via esy x TestNsw.exe) 
    (public_name TestNsw.exe)  ;  From package.json name field
-   (libraries  nsw.lib ) ;  From package.json require field (array of strings)
+   (libraries  nsw.lib rely.lib ) ;  From package.json require field (array of strings)
+   (ocamlopt_flags ( -linkall -g ))  ; From package.json ocamloptFlags field
 )

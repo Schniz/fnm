@@ -1,0 +1,3 @@
+Smoke test › env
+export PATH=<sfwRoot>/current/bin:$PATH
+

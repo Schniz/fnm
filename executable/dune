@@ -5,8 +5,8 @@
 (executable
    ; The entrypoint module
    (name NswApp)  ;  From package.json main field
-   ; The name of the executable (runnable via esy x NswApp.exe) 
-   (public_name NswApp.exe)  ;  From package.json name field
-   (libraries  core lwt lwt.unix console.lib pastel.lib nsw.lib ) ;  From package.json require field (array of strings)
+   ; The name of the executable (runnable via esy x nsw.exe) 
+   (public_name nsw.exe)  ;  From package.json name field
+   (libraries  core cmdliner lwt lwt.unix lambdasoup console.lib pastel.lib nsw.lib ) ;  From package.json require field (array of strings)
    (preprocess ( pps lwt_ppx ppx_let ))  ; From package.json preprocess field
 )

@@ -1,0 +1,35 @@
+opam-version: "2.0"
+maintainer: "rudi.grinberg@gmail.com"
+authors: [
+  "Tikhon Jelvis"
+  "Rudi Grinberg"
+]
+homepage: "https://github.com/rgrinberg/ocaml-semver"
+bug-reports: "https://github.com/rgrinberg/ocaml-semver/issues"
+license: "BSD3"
+dev-repo: "git+https://github.com/rgrinberg/ocaml-semver.git"
+build: [
+  ["ocaml" "setup.ml" "-configure"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"] {with-test}
+  ["ocaml" "setup.ml" "-build"] {with-test}
+  ["ocaml" "setup.ml" "-test"] {with-test}
+  ["ocaml" "setup.ml" "-doc"] {with-doc}
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: ["ocamlfind" "remove" "semver"]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "ounit" {with-test}
+  "ocamlbuild" {build}
+]
+synopsis: "Semantic versioning module"
+description: """
+Provides a single module `Semver` that can parse, compare, and manipulate
+software versions of the form x.x.x. See http://semver.org/"""
+flags: light-uninstall
+url {
+  src: "https://github.com/rgrinberg/ocaml-semver/archive/v0.1.0.tar.gz"
+  checksum: "md5=ce6614ba2f91754028b29a12989f9da6"
+}
