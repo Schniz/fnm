@@ -2,11 +2,11 @@
   Node Switcher (<code>nsw</code>) <a href="https://dev.azure.com/galstar0385/nsw/_build/latest?definitionId=1?branchName=master"><img alt="Build Status" src="https://dev.azure.com/galstar0385/nsw/_apis/build/status/Schniz.nsw?branchName=master" /></a>
 </h1>
 
-> A simple and fast `nvm` replacement, built in native ReasonML.
+> A blazing fast and simple `nvm` replacement, built in native ReasonML. :rocket:
 
-:rocket: Single executable :rocket: Blazing fast :rocket:
-
-![Blazing fast](./docs/nvm_comparison.png)
+<div align="center">
+  <img src="./docs/nsw.gif" alt="Blazing fast!">
+</div>
 
 ## Features
 - Single file, easy installation :sparkles:
