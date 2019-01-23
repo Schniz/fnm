@@ -12,12 +12,22 @@ open Cmdliner;
 
 let help_secs = [
   `S(Manpage.s_common_options),
+  `S(Manpage.s_environment),
   `P("These options are common to all commands."),
   `S("MORE HELP"),
   `P("Use `$(mname) $(i,COMMAND) --help' for help on a single command."),
   `Noblank,
   `S(Manpage.s_bugs),
   `P("File bug reports at https://github.com/Schniz/fnm"),
+];
+
+let envs = [
+  Term.env_info(
+    ~doc=
+      "The root directory of fnm installations. Defaults to: "
+      ++ Fnm.Directories.sfwRoot,
+    "FNM_DIR",
+  ),
 ];
 
 let install = {
@@ -90,7 +100,15 @@ let defaultCmd = {
   let man = help_secs;
   (
     Term.(ret(const(_ => `Help((`Pager, None))) $ const())),
-    Term.info("fnm", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
+    Term.info(
+      "fnm",
+      ~envs,
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
   );
 };
 
