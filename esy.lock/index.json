@@ -1,6 +1,6 @@
 {
   "checksum": "bc7707f147bdaf3b3f87430bb4b3f0cd",
-  "root": "nsw@link:./package.json",
+  "root": "fnm@link:./package.json",
   "node": {
     "refmterr@3.1.10@d41d8cd9": {
       "id": "refmterr@3.1.10@d41d8cd9",
@@ -47,9 +47,9 @@
       "dependencies": [],
       "devDependencies": []
     },
-    "nsw@link:./package.json": {
-      "id": "nsw@link:./package.json",
-      "name": "nsw",
+    "fnm@link:./package.json": {
+      "id": "fnm@link:./package.json",
+      "name": "fnm",
       "version": "link:./package.json",
       "source": { "type": "link", "path": ".", "manifest": "package.json" },
       "overrides": [],
