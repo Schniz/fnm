@@ -33,7 +33,7 @@
   },
   "scripts": {
     "pesy": "bash -c 'env PESY_MODE=update pesy'",
-    "test": "esy x FnmApp.exe",
+    "test": "esy x TestFnm.exe",
     "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'"
   },
   "dependencies": {
