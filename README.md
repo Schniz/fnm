@@ -2,17 +2,18 @@
   Fast Node Manager (<code>fnm</code>) <a href="https://dev.azure.com/galstar0385/fnm/_build/latest?definitionId=1?branchName=master"><img alt="Build Status" src="https://dev.azure.com/galstar0385/fnm/_apis/build/status/Schniz.nsw?branchName=master" /></a>
 </h1>
 
-> A blazing fast and simple `nvm` replacement, built in native ReasonML. :rocket:
+> :rocket: Fast Node.js version manager, built in ReasonML 
 
 <div align="center">
   <img src="./docs/fnm.svg" alt="Blazing fast!">
 </div>
 
 ## Features
-- Single file, easy installation :sparkles:
-- Fast fast fast fast :rocket:
-- Install multiple node versions without a hassle! :clap:
-- [Project-specific `.nvmrc` file support](./features_tests/nvmrc)
+:sparkles: Single file, easy installation
+
+:rocket: Built with speed in mind
+
+:thinking: Works with `.nvmrc` files
 
 ## Installation
 
@@ -24,7 +25,8 @@
   eval `fnm env`
   ```
 
-## TODO
+## Future Plans
+- [ ] Add a simpler way of installing it (`curl | bash`?)
 - [ ] Feature: make versions complete the latest: `10` would infer the latest minor and patch versions of node 10. `10.1` would infer the latest patch version of node 10.1
 - [ ] Feature: `fnm use --install`, `fnm use --quiet`
 - [ ] Feature: `fnm install lts`?
@@ -35,7 +37,11 @@
 - [ ] Linux: Replace `curl` usage with `cohttp`/`ocurl` or something else which is statically-linkable
 - [ ] Linux: Replace `tar` with a statically linked library too (for ungzip + untar)
 
-## Developing:
+## Contributing
+
+PRs welcome :tada:
+
+### Developing:
 
 ```
 npm install -g esy
@@ -44,7 +50,7 @@ esy install
 esy build
 ```
 
-## Running Binary:
+### Running Binary:
 
 After building the project, you can run the main binary that is produced.
 
@@ -52,7 +58,7 @@ After building the project, you can run the main binary that is produced.
 esy x fnm.exe
 ```
 
-## Running Tests:
+### Running Tests:
 
 ```
 # Runs some smoke-unity test
