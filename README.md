@@ -1,5 +1,5 @@
 <h1 align="center">
-  Fast Node Manager (<code>fnm</code>) <a href="https://dev.azure.com/galstar0385/fnm/_build/latest?definitionId=1?branchName=master"><img alt="Build Status" src="https://dev.azure.com/galstar0385/fnm/_apis/build/status/Schniz.nsw?branchName=master" /></a>
+  Fast Node Manager (<code>fnm</code>) <a href="https://dev.azure.com/galstar0385/fnm/_build/latest?definitionId=1?branchName=master"><img alt="Build Status" src="https://dev.azure.com/galstar0385/fnm/_apis/build/status/Schniz.fnm?branchName=master" /></a>
 </h1>
 
 > :rocket: Fast and simple Node.js version manager, built in ReasonML 
