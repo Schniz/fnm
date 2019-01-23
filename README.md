@@ -1,5 +1,5 @@
 <h1 align="center">
-  Fast Node Manager (<code>fnm</code>) <a href="https://dev.azure.com/galstar0385/nsw/_build/latest?definitionId=1?branchName=master"><img alt="Build Status" src="https://dev.azure.com/galstar0385/nsw/_apis/build/status/Schniz.nsw?branchName=master" /></a>
+  Fast Node Manager (<code>fnm</code>) <a href="https://dev.azure.com/galstar0385/fnm/_build/latest?definitionId=1?branchName=master"><img alt="Build Status" src="https://dev.azure.com/galstar0385/fnm/_apis/build/status/Schniz.nsw?branchName=master" /></a>
 </h1>
 
 > A blazing fast and simple `nvm` replacement, built in native ReasonML. :rocket:
