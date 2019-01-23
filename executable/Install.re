@@ -1,4 +1,4 @@
-open Nsw;
+open Fnm;
 
 let mkDownloadsDir = () => {
   let exists = Lwt_unix.file_exists(Directories.downloads);

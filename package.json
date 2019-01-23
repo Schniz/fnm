@@ -1,5 +1,5 @@
 {
-  "name": "nsw",
+  "name": "fnm",
   "version": "0.0.0",
   "description": "My Project",
   "esy": {
@@ -7,33 +7,33 @@
     "buildsInSource": "_build",
     "release": {
       "releasedBinaries": [
-        "nsw.exe"
+        "fnm.exe"
       ]
     }
   },
   "buildDirs": {
     "test": {
-      "require": ["nsw.lib", "rely.lib"],
-      "main": "TestNsw",
-      "name": "TestNsw.exe",
+      "require": ["fnm.lib", "rely.lib"],
+      "main": "TestFnm",
+      "name": "TestFnm.exe",
       "ocamloptFlags": ["-linkall", "-g"]
     },
     "library": {
       "preprocess": ["pps", "lwt_ppx", "ppx_let"],
       "require": ["str", "core", "lwt", "lwt.unix", "lambdasoup", "semver"],
-      "name": "nsw.lib",
-      "namespace": "Nsw"
+      "name": "fnm.lib",
+      "namespace": "Fnm"
     },
     "executable": {
       "preprocess": ["pps", "lwt_ppx", "ppx_let"],
-      "require": ["core", "cmdliner", "lwt", "lwt.unix", "lambdasoup", "console.lib", "pastel.lib", "nsw.lib"],
-      "main": "NswApp",
-      "name": "nsw.exe"
+      "require": ["core", "cmdliner", "lwt", "lwt.unix", "lambdasoup", "console.lib", "pastel.lib", "fnm.lib"],
+      "main": "FnmApp",
+      "name": "fnm.exe"
     }
   },
   "scripts": {
     "pesy": "bash -c 'env PESY_MODE=update pesy'",
-    "test": "esy x TestNsw.exe",
+    "test": "esy x FnmApp.exe",
     "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'"
   },
   "dependencies": {

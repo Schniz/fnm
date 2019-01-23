@@ -1,4 +1,4 @@
-open Nsw;
+open Fnm;
 
 let colorizeVersions = (~current, ~versions) => {
   let strings =

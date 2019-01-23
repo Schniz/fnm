@@ -1,4 +1,4 @@
-open Nsw;
+open Fnm;
 
 let run = () => {
   Console.log("Looking for some node versions upstream...");

@@ -17,7 +17,7 @@ let help_secs = [
   `P("Use `$(mname) $(i,COMMAND) --help' for help on a single command."),
   `Noblank,
   `S(Manpage.s_bugs),
-  `P("File bug reports at https://github.com/Schniz/nsw"),
+  `P("File bug reports at https://github.com/Schniz/fnm"),
 ];
 
 let install = {
@@ -90,7 +90,7 @@ let defaultCmd = {
   let man = help_secs;
   (
     Term.(ret(const(_ => `Help((`Pager, None))) $ const())),
-    Term.info("nsw", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
+    Term.info("fnm", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
   );
 };
 

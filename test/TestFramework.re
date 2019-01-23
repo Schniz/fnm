@@ -1,5 +1,5 @@
 let projectDir = Sys.getcwd();
-let tmpDir = Filename.concat(projectDir, ".nswTmp");
+let tmpDir = Filename.concat(projectDir, ".fnmTmp");
 
 include Rely.Make({
   let config =
@@ -15,8 +15,8 @@ include Rely.Make({
 
 let run = args => {
   let arguments =
-    args |> Array.append([|"./_build/default/executable/NswApp.exe"|]);
-  let env = Unix.environment() |> Array.append([|"NSW_DIR=" ++ tmpDir|]);
+    args |> Array.append([|"./_build/default/executable/FnmApp.exe"|]);
+  let env = Unix.environment() |> Array.append([|"FNM_DIR=" ++ tmpDir|]);
   let result =
     Lwt_process.pread_chars(~env, ("", arguments)) |> Lwt_stream.to_string;
   Lwt_main.run(result);
