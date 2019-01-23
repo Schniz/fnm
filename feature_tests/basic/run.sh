@@ -1,6 +1,8 @@
-eval $(nsw env)
-nsw install v8.11.3
-nsw use v8.11.3
+#!/bin/bash
+
+eval $(fnm env)
+fnm install v8.11.3
+fnm use v8.11.3
 
 if [ "$(node --version)" != "v8.11.3" ]; then
   echo "Node version is not v8.11.3!"
