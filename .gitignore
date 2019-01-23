@@ -10,3 +10,4 @@ fnm.install
 .DS_Store
 *.install
 .tmp
+docs/screen_recording

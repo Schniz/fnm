@@ -5,7 +5,7 @@
 > A blazing fast and simple `nvm` replacement, built in native ReasonML. :rocket:
 
 <div align="center">
-  <img src="./docs/fnm.gif" alt="Blazing fast!">
+  <img src="./docs/fnm.svg" alt="Blazing fast!">
 </div>
 
 ## Features
