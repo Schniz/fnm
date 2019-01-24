@@ -24,6 +24,12 @@
   ```bash
   eval `fnm env`
   ```
+  
+  If you are using [fish shell](https://fishshell.com/), add this line to your `config.fish` file:
+  
+  ```fish
+  set PATH $HOME/.fnm/current/bin $PATH
+  ```
 
 ## Future Plans
 - [ ] Add a simpler way of installing it (`curl | bash`?)
