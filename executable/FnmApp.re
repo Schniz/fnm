@@ -5,7 +5,7 @@ module Commands = {
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
-  let env = () => Lwt_main.run(Env.run());
+  let env = isFishShell => Lwt_main.run(Env.run(isFishShell));
 };
 
 open Cmdliner;
@@ -88,8 +88,16 @@ let env = {
   let doc = "Show env configurations";
   let sdocs = Manpage.s_common_options;
   let man = help_secs;
+
+  let isFishShell = {
+    let doc = "Output an env configuration for fish shell.";
+    Arg.(
+      value & flag & info(["fish"], ~doc)
+    );
+  };
+
   (
-    Term.(const(Commands.env) $ const()),
+    Term.(const(Commands.env) $ isFishShell),
     Term.info("env", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
   );
 };
