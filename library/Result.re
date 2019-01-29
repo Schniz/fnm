@@ -41,3 +41,9 @@ let toLwt = res =>
   | Error(x) => Lwt.fail_with(x)
   | Ok(x) => Lwt.return(x)
   };
+
+let toLwtErr = res =>
+  switch (res) {
+  | Error(x) => Lwt.fail(x)
+  | Ok(x) => Lwt.return(x)
+  };
