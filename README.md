@@ -31,6 +31,18 @@
   eval (fnm env --fish)
   ```
 
+### install reference
+
+```bash
+cd ~
+wget https://github.com/Schniz/fnm/releases/download/v1.1.0/fnm-linux.zip
+unzip fnm-linux.zip
+chmod +x ~/fnm-linux/fnm-linux
+ln ~/fnm-linux/fnm-linux /usr/local/bin/fnm
+echo "eval `fnm env`" >> ~/.bashrc && source ~/.bashrc
+enjoy it :)
+```
+
 ## Usage
 
 You can always use `fnm --help` to read the docs:
