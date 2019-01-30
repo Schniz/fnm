@@ -33,6 +33,8 @@
   },
   "scripts": {
     "pesy": "bash -c 'env PESY_MODE=update pesy'",
+    "update-fnm-package": "node ./.ci/prepare-fnm-package.js",
+    "verify-fnm-package": "node ./.ci/prepare-fnm-package.js --fail-on-difference",
     "test": "esy x TestFnm.exe",
     "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'"
   },
@@ -54,6 +56,8 @@
     "pesy": "*"
   },
   "devDependencies": {
-    "@opam/merlin": "*"
+    "@opam/merlin": "*",
+    "prettier": "*",
+    "jest-diff": "24.0.0"
   }
 }

@@ -8,6 +8,8 @@ steps:
     displayName: 'npm install -g esy@latest'
   - script: esy install
     displayName: 'esy install'
+  - script: esy verify-fnm-package
+    displayName: 'Verify Fnm__Package.re file'
   - script: esy pesy
     displayName: 'esy pesy'
   - script: esy build

@@ -1,4 +1,4 @@
-let version = "1.0.0";
+let version = Fnm.Fnm__Package.version;
 
 module Commands = {
   let use = version => Lwt_main.run(Use.run(version));
