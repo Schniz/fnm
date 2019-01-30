@@ -91,9 +91,7 @@ let env = {
 
   let isFishShell = {
     let doc = "Output an env configuration for fish shell.";
-    Arg.(
-      value & flag & info(["fish"], ~doc)
-    );
+    Arg.(value & flag & info(["fish"], ~doc));
   };
 
   (

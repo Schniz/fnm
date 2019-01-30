@@ -9,7 +9,7 @@ let run = isFishShell => {
     Console.log(
       Printf.sprintf("export PATH=%s/bin:$PATH", Directories.currentVersion),
     );
-  }
+  };
 
   Lwt.return();
 };
