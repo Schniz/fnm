@@ -1,7 +1,21 @@
 {
-  "checksum": "bc7707f147bdaf3b3f87430bb4b3f0cd",
+  "checksum": "6af635d6f5efe2f01ba9a6fba48c2952",
   "root": "fnm@link:./package.json",
   "node": {
+    "supports-color@5.5.0@d41d8cd9": {
+      "id": "supports-color@5.5.0@d41d8cd9",
+      "name": "supports-color",
+      "version": "5.5.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz#sha1:e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [ "has-flag@3.0.0@d41d8cd9" ],
+      "devDependencies": []
+    },
     "refmterr@3.1.10@d41d8cd9": {
       "id": "refmterr@3.1.10@d41d8cd9",
       "name": "refmterr",
@@ -17,6 +31,36 @@
         "ocaml@4.6.9@d41d8cd9", "@opam/re@opam:1.7.3@83095efd",
         "@opam/dune@opam:1.6.3@a7d7baed", "@esy-ocaml/reason@3.4.0@d41d8cd9"
       ],
+      "devDependencies": []
+    },
+    "pretty-format@24.0.0@d41d8cd9": {
+      "id": "pretty-format@24.0.0@d41d8cd9",
+      "name": "pretty-format",
+      "version": "24.0.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/pretty-format/-/pretty-format-24.0.0.tgz#sha1:cb6599fd73ac088e37ed682f61291e4678f48591"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [
+        "ansi-styles@3.2.1@d41d8cd9", "ansi-regex@4.0.0@d41d8cd9"
+      ],
+      "devDependencies": []
+    },
+    "prettier@1.16.2@d41d8cd9": {
+      "id": "prettier@1.16.2@d41d8cd9",
+      "name": "prettier",
+      "version": "1.16.2",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/prettier/-/prettier-1.16.2.tgz#sha1:f60bc5929a7f9a05260cc88d5430391100092414"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
       "devDependencies": []
     },
     "pesy@0.4.1@d41d8cd9": {
@@ -47,6 +91,51 @@
       "dependencies": [],
       "devDependencies": []
     },
+    "jest-get-type@24.0.0@d41d8cd9": {
+      "id": "jest-get-type@24.0.0@d41d8cd9",
+      "name": "jest-get-type",
+      "version": "24.0.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/jest-get-type/-/jest-get-type-24.0.0.tgz#sha1:36e72930b78e33da59a4f63d44d332188278940b"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
+      "devDependencies": []
+    },
+    "jest-diff@24.0.0@d41d8cd9": {
+      "id": "jest-diff@24.0.0@d41d8cd9",
+      "name": "jest-diff",
+      "version": "24.0.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/jest-diff/-/jest-diff-24.0.0.tgz#sha1:a3e5f573dbac482f7d9513ac9cfa21644d3d6b34"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [
+        "pretty-format@24.0.0@d41d8cd9", "jest-get-type@24.0.0@d41d8cd9",
+        "diff-sequences@24.0.0@d41d8cd9", "chalk@2.4.2@d41d8cd9"
+      ],
+      "devDependencies": []
+    },
+    "has-flag@3.0.0@d41d8cd9": {
+      "id": "has-flag@3.0.0@d41d8cd9",
+      "name": "has-flag",
+      "version": "3.0.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/has-flag/-/has-flag-3.0.0.tgz#sha1:b5d454dc2199ae225699f3467e5a07f3b955bafd"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
+      "devDependencies": []
+    },
     "fnm@link:./package.json": {
       "id": "fnm@link:./package.json",
       "name": "fnm",
@@ -55,9 +144,9 @@
       "overrides": [],
       "dependencies": [
         "refmterr@3.1.10@d41d8cd9", "pesy@0.4.1@d41d8cd9",
-        "ocaml@4.6.9@d41d8cd9", "@reason-native/rely@1.0.1@d41d8cd9",
-        "@reason-native/pastel@0.0.1@d41d8cd9",
-        "@reason-native/console@0.0.2@d41d8cd9",
+        "ocaml@4.6.9@d41d8cd9", "@reason-native/rely@1.1.0@d41d8cd9",
+        "@reason-native/pastel@0.1.0@d41d8cd9",
+        "@reason-native/console@0.0.3@d41d8cd9",
         "@opam/semver@opam:0.1.0@595ed2e0",
         "@opam/ppx_let@opam:v0.11.0@15f51b1c",
         "@opam/lwt_ppx@opam:1.2.1@db1172a7", "@opam/lwt@opam:4.1.0@111fc2bf",
@@ -66,35 +155,139 @@
         "@opam/cmdliner@opam:1.0.3@96d31520",
         "@esy-ocaml/reason@3.4.0@d41d8cd9"
       ],
-      "devDependencies": [ "@opam/merlin@opam:3.2.2@829ee6dd" ]
+      "devDependencies": [
+        "prettier@1.16.2@d41d8cd9", "jest-diff@24.0.0@d41d8cd9",
+        "@opam/merlin@opam:3.2.2@829ee6dd"
+      ]
     },
-    "@reason-native/rely@1.0.1@d41d8cd9": {
-      "id": "@reason-native/rely@1.0.1@d41d8cd9",
-      "name": "@reason-native/rely",
-      "version": "1.0.1",
+    "escape-string-regexp@1.0.5@d41d8cd9": {
+      "id": "escape-string-regexp@1.0.5@d41d8cd9",
+      "name": "escape-string-regexp",
+      "version": "1.0.5",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://registry.npmjs.org/@reason-native/rely/-/rely-1.0.1.tgz#sha1:14afdbf5bada7739dd9a68d4817c53e7d5ddd50c"
+          "archive:https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#sha1:1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
+      "devDependencies": []
+    },
+    "diff-sequences@24.0.0@d41d8cd9": {
+      "id": "diff-sequences@24.0.0@d41d8cd9",
+      "name": "diff-sequences",
+      "version": "24.0.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/diff-sequences/-/diff-sequences-24.0.0.tgz#sha1:cdf8e27ed20d8b8d3caccb4e0c0d8fe31a173013"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
+      "devDependencies": []
+    },
+    "color-name@1.1.3@d41d8cd9": {
+      "id": "color-name@1.1.3@d41d8cd9",
+      "name": "color-name",
+      "version": "1.1.3",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz#sha1:a7d0558bd89c42f795dd42328f740831ca53bc25"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
+      "devDependencies": []
+    },
+    "color-convert@1.9.3@d41d8cd9": {
+      "id": "color-convert@1.9.3@d41d8cd9",
+      "name": "color-convert",
+      "version": "1.9.3",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz#sha1:bb71850690e1f136567de629d2d5471deda4c1e8"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [ "color-name@1.1.3@d41d8cd9" ],
+      "devDependencies": []
+    },
+    "chalk@2.4.2@d41d8cd9": {
+      "id": "chalk@2.4.2@d41d8cd9",
+      "name": "chalk",
+      "version": "2.4.2",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/chalk/-/chalk-2.4.2.tgz#sha1:cd42541677a54333cf541a49108c1432b44c9424"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [
+        "supports-color@5.5.0@d41d8cd9",
+        "escape-string-regexp@1.0.5@d41d8cd9", "ansi-styles@3.2.1@d41d8cd9"
+      ],
+      "devDependencies": []
+    },
+    "ansi-styles@3.2.1@d41d8cd9": {
+      "id": "ansi-styles@3.2.1@d41d8cd9",
+      "name": "ansi-styles",
+      "version": "3.2.1",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/ansi-styles/-/ansi-styles-3.2.1.tgz#sha1:41fbb20243e50b12be0f04b8dedbf07520ce841d"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [ "color-convert@1.9.3@d41d8cd9" ],
+      "devDependencies": []
+    },
+    "ansi-regex@4.0.0@d41d8cd9": {
+      "id": "ansi-regex@4.0.0@d41d8cd9",
+      "name": "ansi-regex",
+      "version": "4.0.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/ansi-regex/-/ansi-regex-4.0.0.tgz#sha1:70de791edf021404c3fd615aa89118ae0432e5a9"
+        ]
+      },
+      "overrides": [],
+      "dependencies": [],
+      "devDependencies": []
+    },
+    "@reason-native/rely@1.1.0@d41d8cd9": {
+      "id": "@reason-native/rely@1.1.0@d41d8cd9",
+      "name": "@reason-native/rely",
+      "version": "1.1.0",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://registry.npmjs.org/@reason-native/rely/-/rely-1.1.0.tgz#sha1:f60e228c997d7c24b660624db647a1ffac9a113a"
         ]
       },
       "overrides": [],
       "dependencies": [
         "refmterr@3.1.10@d41d8cd9", "ocaml@4.6.9@d41d8cd9",
-        "@reason-native/pastel@0.0.1@d41d8cd9",
+        "@reason-native/pastel@0.1.0@d41d8cd9",
         "@reason-native/file-context-printer@0.0.2@d41d8cd9",
         "@opam/dune@opam:1.6.3@a7d7baed", "@esy-ocaml/reason@3.4.0@d41d8cd9"
       ],
       "devDependencies": []
     },
-    "@reason-native/pastel@0.0.1@d41d8cd9": {
-      "id": "@reason-native/pastel@0.0.1@d41d8cd9",
+    "@reason-native/pastel@0.1.0@d41d8cd9": {
+      "id": "@reason-native/pastel@0.1.0@d41d8cd9",
       "name": "@reason-native/pastel",
-      "version": "0.0.1",
+      "version": "0.1.0",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://registry.npmjs.org/@reason-native/pastel/-/pastel-0.0.1.tgz#sha1:ff305233ffd915d317cdcebee534d16c0aada198"
+          "archive:https://registry.npmjs.org/@reason-native/pastel/-/pastel-0.1.0.tgz#sha1:2b262a654b8d807215df74768e628e9b05b3f5e3"
         ]
       },
       "overrides": [],
@@ -116,20 +309,20 @@
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.6.9@d41d8cd9", "@reason-native/pastel@0.0.1@d41d8cd9",
+        "ocaml@4.6.9@d41d8cd9", "@reason-native/pastel@0.1.0@d41d8cd9",
         "@opam/re@opam:1.7.3@83095efd", "@opam/dune@opam:1.6.3@a7d7baed",
         "@esy-ocaml/reason@3.4.0@d41d8cd9"
       ],
       "devDependencies": []
     },
-    "@reason-native/console@0.0.2@d41d8cd9": {
-      "id": "@reason-native/console@0.0.2@d41d8cd9",
+    "@reason-native/console@0.0.3@d41d8cd9": {
+      "id": "@reason-native/console@0.0.3@d41d8cd9",
       "name": "@reason-native/console",
-      "version": "0.0.2",
+      "version": "0.0.3",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://registry.npmjs.org/@reason-native/console/-/console-0.0.2.tgz#sha1:25bd391653579a56d53ddf7cc502a237b784163b"
+          "archive:https://registry.npmjs.org/@reason-native/console/-/console-0.0.3.tgz#sha1:b9b6bdf800e13361cfb4daccb540316c3a11ce38"
         ]
       },
       "overrides": [],
