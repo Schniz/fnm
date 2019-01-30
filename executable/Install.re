@@ -44,7 +44,10 @@ let main = (~version as versionName) => {
   let%lwt filepath =
     Versions.getFileToDownload(~version=versionName, ~os, ~arch);
   let tarDestination =
-    Filename.concat(Directories.downloads, versionName ++ ".tar.gz");
+    Filename.concat(
+      Directories.downloads,
+      versionName ++ Versions.Remote.downloadFileSuffix,
+    );
 
   Console.log(
     <Pastel>
