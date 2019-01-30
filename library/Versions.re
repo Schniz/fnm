@@ -43,7 +43,7 @@ module Remote = {
     |> List.map(Soup.attribute("href"))
     |> Core.List.filter_map(~f=x => x);
 
-  let downloadFileSuffix = ".tar.gz";
+  let downloadFileSuffix = ".tar.xz";
 
   let getVersionFromFilename = filename => {
     let strings = filename |> String.split_on_char('-');
