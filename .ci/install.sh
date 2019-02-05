@@ -47,10 +47,10 @@ setup_shell() {
   elif [ "$CURRENT_SHELL" == "fish" ]; then
     echo "Installing for Fish. Appending the following to $HOME/.config/fish/config.fish:"
     echo 'set PATH $HOME/.fnm $PATH'
-    echo 'eval (fnm env)'
+    echo 'eval (fnm env --fish)'
 
     echo 'set PATH $HOME/.fnm $PATH' >> $HOME/.config/fish/config.fish
-    echo 'eval (fnm env)' >> $HOME/.config/fish/config.fish
+    echo 'eval (fnm env --fish)' >> $HOME/.config/fish/config.fish
 
   elif [ "$CURRENT_SHELL" == "bash" ]; then
     echo "Installing for Bash. Appending the following to $HOME/.bashrc:"
