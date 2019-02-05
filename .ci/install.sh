@@ -38,11 +38,20 @@ setup_shell() {
 
   if [ "$CURRENT_SHELL" == "zsh" ]; then
     echo "Installing for Zsh. Appending the following to $HOME/.zshrc:"
+    echo 'export PATH=$HOME/.fnm:$PATH'
+    echo 'eval `fnm env`'
+
     echo 'export PATH=$HOME/.fnm:$PATH' >> $HOME/.zshrc
     echo 'eval `fnm env`' >> $HOME/.zshrc
+
   elif [ "$CURRENT_SHELL" == "fish" ]; then
-    echo 'Installation for Fish is WIP'
-    exit 1
+    echo "Installing for Fish. Appending the following to $HOME/.config/fish/config.fish:"
+    echo 'set PATH $HOME/.fnm $PATH'
+    echo 'eval (fnm env)'
+
+    echo 'set PATH $HOME/.fnm $PATH' >> $HOME/.config/fish/config.fish
+    echo 'eval (fnm env)' >> $HOME/.config/fish/config.fish
+
   elif [ "$CURRENT_SHELL" == "bash" ]; then
     echo "Installing for Bash. Appending the following to $HOME/.bashrc:"
     echo 'export PATH=$HOME/.fnm:$PATH'
@@ -50,6 +59,7 @@ setup_shell() {
 
     echo 'export PATH=$HOME/.fnm:$PATH' >> $HOME/.bashrc
     echo 'eval `fnm env`' >> $HOME/.bashrc
+
   else
     echo "Could not infer shell type. Please set up manually."
     exit 1
