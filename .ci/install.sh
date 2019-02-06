@@ -22,7 +22,7 @@ get_latest_release() {
 download_fnm() {
   LATEST_RELEASE=$(get_latest_release Schniz/fnm)
   URL=https://github.com/Schniz/fnm/releases/download/$LATEST_RELEASE/$FILENAME.zip
-  DOWNLOAD_DIR=$(mktemp -d -t fnm)
+  DOWNLOAD_DIR=$(mktemp -d)
 
   echo "Downloading $URL..."
 
@@ -31,6 +31,30 @@ download_fnm() {
   unzip -q $DOWNLOAD_DIR/$FILENAME.zip -d $DOWNLOAD_DIR
   mv $DOWNLOAD_DIR/$FILENAME/fnm $HOME/.fnm/fnm
   chmod u+x $HOME/.fnm/fnm
+}
+
+check_dependencies() {
+  echo "Checking dependencies for the installation script..."
+
+  echo -n "Checking availablity of curl... "
+  if hash curl 2>/dev/null; then
+    echo "OK!"
+  else
+    echo "Missing!"
+    SHOULD_EXIT="true"
+  fi
+
+  echo -n "Checking availablity of unzip... "
+  if hash unzip 2>/dev/null; then
+    echo "OK!"
+  else
+    echo "Missing!"
+    SHOULD_EXIT="true"
+  fi
+
+  if [ "$SHOULD_EXIT" = "true" ]; then
+    exit 1
+  fi
 }
 
 setup_shell() {
@@ -86,5 +110,6 @@ setup_shell() {
   echo "  source $CONF_FILE"
 }
 
+check_dependencies
 download_fnm
 setup_shell
