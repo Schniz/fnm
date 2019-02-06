@@ -19,6 +19,16 @@
 
 ## Installation
 
+### Using a script
+
+For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
+
+```bash
+curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash
+```
+
+### Manually
+
 * Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
 * Make it available globally on `$PATH`
 * Add the following line to your `.bashrc`/`.zshrc` file:
