@@ -19,6 +19,16 @@
 
 ## Installation
 
+### Using a script
+
+For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
+
+```bash
+curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash
+```
+
+### Manually
+
 * Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
 * Make it available globally on `$PATH`
 * Add the following line to your `.bashrc`/`.zshrc` file:
@@ -58,7 +68,6 @@ Lists the Node versions available to download remotely.
 Prints the required shell commands in order to configure your shell, Bash compliant by default. Provide `--fish` to output the Fish-compliant version.
 
 ## Future Plans
-- [ ] Add a simpler way of installing it (`curl | bash`?)
 - [ ] Feature: make versions complete the latest: `10` would infer the latest minor and patch versions of node 10. `10.1` would infer the latest patch version of node 10.1
 - [ ] Feature: `fnm use --install`, `fnm use --quiet`
 - [ ] Feature: `fnm install lts`?
