@@ -19,14 +19,14 @@ jobs:
   # - template: .ci/restore-build-cache.yml
   - script: sudo apt-get install -y fish
   - script: .ci/create-static-binary.sh
-  - script: ./feature_tests/run.sh $(pwd)/fnm-linux
+  - script: ./feature_tests/run.sh $(pwd)/fnm
   # - script: bash .ci/prepare-static-build.sh
   # - template: .ci/esy-build-steps.yml
   # - template: .ci/publish-build-cache.yml
   - task: PublishBuildArtifacts@1
     displayName: 'Save artifact'
     inputs:
-        PathtoPublish: 'fnm-linux'
+        PathtoPublish: fnm
         ArtifactName: fnm-linux
 
 - job: MacOS
