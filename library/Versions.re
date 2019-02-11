@@ -58,7 +58,8 @@ let format = version => {
     | exception _ => version
     };
 
-  version;
+  let ansiCharRegex = Str.regexp({|\\027\[[0-9]+m|});
+  Str.global_replace(ansiCharRegex, "", String.escaped(version));
 };
 
 let endsWith = (~suffix, str) => {
