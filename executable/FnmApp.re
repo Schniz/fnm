@@ -1,12 +1,18 @@
 let version = Fnm.Fnm__Package.version;
 
 module Commands = {
-  let use = version => Lwt_main.run(Use.run(version));
+  let use = version => Lwt_main.run(Use.run(~version));
+  let alias = (name, version) => Lwt_main.run(Alias.run(~name, ~version));
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
-  let env = isFishShell =>
-    Lwt_main.run(Env.run(Fnm.System.Shell.(isFishShell ? Fish : Bash)));
+  let env = (isFishShell, isMultishell) =>
+    Lwt_main.run(
+      Env.run(
+        ~shell=Fnm.System.Shell.(isFishShell ? Fish : Bash),
+        ~multishell=isMultishell,
+      ),
+    );
 };
 
 open Cmdliner;
@@ -85,6 +91,40 @@ let use = {
   );
 };
 
+let alias = {
+  let doc = "Alias a version";
+  let sdocs = Manpage.s_common_options;
+  let man = help_secs;
+
+  let selectedVersion = {
+    let doc = "The version to be aliased";
+    Arg.(
+      required
+      & pos(0, some(string), None)
+      & info([], ~docv="VERSION", ~doc)
+    );
+  };
+
+  let aliasName = {
+    let doc = "The alias name";
+    Arg.(
+      required & pos(1, some(string), None) & info([], ~docv="NAME", ~doc)
+    );
+  };
+
+  (
+    Term.(const(Commands.alias) $ selectedVersion $ aliasName),
+    Term.info(
+      "alias",
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
+  );
+};
+
 let env = {
   let doc = "Show env configurations";
   let sdocs = Manpage.s_common_options;
@@ -95,8 +135,13 @@ let env = {
     Arg.(value & flag & info(["fish"], ~doc));
   };
 
+  let isMultishell = {
+    let doc = "Use different fnm versions for each shell";
+    Arg.(value & flag & info(["multi"], ~doc));
+  };
+
   (
-    Term.(const(Commands.env) $ isFishShell),
+    Term.(const(Commands.env) $ isFishShell $ isMultishell),
     Term.info("env", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
   );
 };
@@ -120,5 +165,8 @@ let defaultCmd = {
 };
 
 let _ =
-  Term.eval_choice(defaultCmd, [install, use, listLocal, listRemote, env])
+  Term.eval_choice(
+    defaultCmd,
+    [install, use, alias, listLocal, listRemote, env],
+  )
   |> Term.exit;

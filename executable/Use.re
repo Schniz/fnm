@@ -43,7 +43,7 @@ let main = (~version as providedVersion) => {
   switchVersion(Versions.format(version));
 };
 
-let run = version =>
+let run = (~version) =>
   try%lwt (main(~version)) {
   | Version_Not_Installed(version) =>
     Console.log(
