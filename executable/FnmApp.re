@@ -2,7 +2,7 @@ let version = Fnm.Fnm__Package.version;
 
 module Commands = {
   let use = version => Lwt_main.run(Use.run(~version));
-  let alias = (name, version) => Lwt_main.run(Alias.run(~name, ~version));
+  let alias = (version, name) => Lwt_main.run(Alias.run(~name, ~version));
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
