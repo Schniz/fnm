@@ -8,6 +8,7 @@ module Local = {
 };
 
 exception Version_not_found(string);
+exception Already_installed(string);
 
 module Remote = {
   type t = {
@@ -145,4 +146,21 @@ let getRemoteVersions = () => {
        }
      )
   |> Lwt.return;
+};
+
+let isAlreadyInstalled = versionName => {
+  switch(getInstalledVersions()) {
+  | Ok(x) => {
+    Array.to_list(x)
+    |> List.exists(x => {
+      open Local;
+      x.name == versionName;
+    })
+    |> x => switch x {
+    | true => Lwt.fail(Already_installed(versionName));
+    | false => Lwt.return();
+    };
+  };
+  | Error(_) => Lwt.return();
+  };
 };
