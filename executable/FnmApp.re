@@ -5,7 +5,8 @@ module Commands = {
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
-  let env = isFishShell => Lwt_main.run(Env.run(isFishShell));
+  let env = isFishShell =>
+    Lwt_main.run(Env.run(Fnm.System.Shell.(isFishShell ? Fish : Bash)));
 };
 
 open Cmdliner;

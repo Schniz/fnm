@@ -1,15 +1,13 @@
 open Fnm;
 
-let run = isFishShell => {
-  if (isFishShell) {
-    Console.log(
-      Printf.sprintf("set PATH %s/bin $PATH", Directories.currentVersion),
-    );
-  } else {
-    Console.log(
-      Printf.sprintf("export PATH=%s/bin:$PATH", Directories.currentVersion),
-    );
-  };
+let run = shell => {
+  let env =
+    switch (shell) {
+    | System.Shell.Bash =>
+      Printf.sprintf("export PATH=%s/bin:$PATH", Directories.currentVersion)
+    | System.Shell.Fish =>
+      Printf.sprintf("set PATH %s/bin $PATH", Directories.currentVersion)
+    };
 
-  Lwt.return();
+  Console.log(env) |> Lwt.return;
 };
