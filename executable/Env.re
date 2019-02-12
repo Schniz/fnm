@@ -1,5 +1,11 @@
 open Fnm;
 
+let symlinkExists = path => {
+  try%lwt (Lwt_unix.lstat(path) |> Lwt.map(_ => true)) {
+  | _ => Lwt.return(false)
+  };
+};
+
 let rec makeTemporarySymlink = () => {
   let suggestedName =
     Filename.concat(
@@ -8,15 +14,16 @@ let rec makeTemporarySymlink = () => {
       ++ (Random.int32(9999999 |> Int32.of_int) |> Int32.to_string),
     );
 
-  let%lwt exists = Lwt_unix.file_exists(suggestedName);
+  let%lwt exists = symlinkExists(suggestedName);
 
   if (exists) {
-    makeTemporarySymlink();
+    let%lwt suggestedName = makeTemporarySymlink();
+    Lwt.return(suggestedName);
   } else {
     let%lwt _ =
       Lwt_unix.symlink(
-        suggestedName,
         Filename.concat(Directories.defaultVersion, "installation"),
+        suggestedName,
       );
     Lwt.return(suggestedName);
   };
@@ -24,6 +31,8 @@ let rec makeTemporarySymlink = () => {
 
 let run = (~shell, ~multishell) => {
   open Lwt;
+
+  Random.self_init();
 
   let%lwt path =
     multishell
