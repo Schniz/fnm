@@ -93,18 +93,10 @@
   },
   "lint-staged": {
     "*.re": [
-      "esy fmt",
+      "esy refmt --in-place",
       "git add"
     ],
-    "*.js": [
-      "esy prettier --write",
-      "git add"
-    ],
-    "*.md": [
-      "esy prettier --write",
-      "git add"
-    ],
-    "*.json": [
+    "*.{js,md,json}": [
       "esy prettier --write",
       "git add"
     ],
