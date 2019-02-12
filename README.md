@@ -63,9 +63,12 @@ Lists the installed Node versions.
 
 Lists the Node versions available to download remotely.
 
-### `fnm env [--fish]`
+### `fnm env [--multi] [--fish]`
 
-Prints the required shell commands in order to configure your shell, Bash compliant by default. Provide `--fish` to output the Fish-compliant version.
+Prints the required shell commands in order to configure your shell, Bash compliant by default.
+
+* Providing `--multi` will output the multishell support, allowing a different current Node version per shell
+* Providing `--fish` will output the Fish-compliant version.
 
 ## Future Plans
 - [ ] Feature: make versions complete the latest: `10` would infer the latest minor and patch versions of node 10. `10.1` would infer the latest patch version of node 10.1

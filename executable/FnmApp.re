@@ -141,7 +141,7 @@ let env = {
   };
 
   let isMultishell = {
-    let doc = "Use different fnm versions for each shell";
+    let doc = "Allow different Node versions for each shell";
     Arg.(value & flag & info(["multi"], ~doc));
   };
 
