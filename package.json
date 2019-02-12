@@ -13,20 +13,50 @@
   },
   "buildDirs": {
     "test": {
-      "require": ["fnm.lib", "rely.lib"],
+      "require": [
+        "fnm.lib",
+        "rely.lib"
+      ],
       "main": "TestFnm",
       "name": "TestFnm.exe",
-      "ocamloptFlags": ["-linkall", "-g"]
+      "ocamloptFlags": [
+        "-linkall",
+        "-g"
+      ]
     },
     "library": {
-      "preprocess": ["pps", "lwt_ppx", "ppx_let"],
-      "require": ["str", "core", "lwt", "lwt.unix", "lambdasoup", "semver"],
+      "preprocess": [
+        "pps",
+        "lwt_ppx",
+        "ppx_let"
+      ],
+      "require": [
+        "str",
+        "core",
+        "lwt",
+        "lwt.unix",
+        "lambdasoup",
+        "semver"
+      ],
       "name": "fnm.lib",
       "namespace": "Fnm"
     },
     "executable": {
-      "preprocess": ["pps", "lwt_ppx", "ppx_let"],
-      "require": ["core", "cmdliner", "lwt", "lwt.unix", "lambdasoup", "console.lib", "pastel.lib", "fnm.lib"],
+      "preprocess": [
+        "pps",
+        "lwt_ppx",
+        "ppx_let"
+      ],
+      "require": [
+        "core",
+        "cmdliner",
+        "lwt",
+        "lwt.unix",
+        "lambdasoup",
+        "console.lib",
+        "pastel.lib",
+        "fnm.lib"
+      ],
       "main": "FnmApp",
       "name": "fnm.exe"
     }
@@ -58,6 +88,28 @@
   "devDependencies": {
     "@opam/merlin": "*",
     "prettier": "*",
-    "jest-diff": "24.0.0"
+    "jest-diff": "24.0.0",
+    "lint-staged": "*"
+  },
+  "lint-staged": {
+    "*.re": [
+      "esy fmt",
+      "git add"
+    ],
+    "*.js": [
+      "esy prettier --write",
+      "git add"
+    ],
+    "*.md": [
+      "esy prettier --write",
+      "git add"
+    ],
+    "*.json": [
+      "esy prettier --write",
+      "git add"
+    ],
+    "package.json": [
+      "esy verify-fnm-package"
+    ]
   }
 }
