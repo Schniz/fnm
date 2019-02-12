@@ -27,7 +27,7 @@ let main = (~version as versionName) => {
     };
 
   let versionName = Versions.format(versionName);
-  let%lwt _ = Versions.isAlreadyInstalled(versionName);
+  let%lwt _ = Versions.throwIfInstalled(versionName);
 
   Console.log(
     <Pastel>
@@ -99,15 +99,6 @@ let run = (~version) =>
         "Version "
         <Pastel color=Pastel.Cyan> version </Pastel>
         " not found!"
-      </Pastel>,
-    )
-    |> Lwt.return
-  | Versions.Already_installed(version) =>
-    Console.log(
-      <Pastel>
-        "Version "
-        <Pastel color=Pastel.Cyan> version </Pastel>
-        " is already installed"
       </Pastel>,
     )
     |> Lwt.return

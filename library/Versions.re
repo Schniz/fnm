@@ -147,7 +147,7 @@ let getRemoteVersions = () => {
   |> Lwt.return;
 };
 
-let isAlreadyInstalled = versionName => {
+let throwIfInstalled = versionName => {
   switch(getInstalledVersions()) {
   | Ok(x) => {
     Array.to_list(x)
