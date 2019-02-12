@@ -212,7 +212,6 @@ let getRemoteVersions = () => {
 type t =
   | Alias(string)
   | Local(string);
-exception Not_Installed(string);
 
 let parse = version => {
   let formattedVersion = format(version);
@@ -225,6 +224,6 @@ let parse = version => {
   switch (versionExists, aliasExists) {
   | (true, _) => Some(Local(formattedVersion)) |> Lwt.return
   | (_, true) => Some(Alias(version)) |> Lwt.return
-  | (false, false) => Lwt.fail(Not_Installed(version))
+  | (false, false) => Lwt.return_none
   };
 };
