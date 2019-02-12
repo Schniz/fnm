@@ -1,7 +1,5 @@
 open Fnm;
 
-let lwtIgnore = lwt => Lwt.catch(() => lwt, _ => Lwt.return());
-
 let run = (~name, ~version) => {
   let version = Versions.format(version);
   let versionPath = Filename.concat(Directories.nodeVersions, version);
@@ -26,11 +24,7 @@ let run = (~name, ~version) => {
     </Pastel>,
   );
 
-  let aliasPath = Filename.concat(Directories.aliases, name);
-
-  let%lwt _ = System.mkdirp(Directories.aliases);
-  let%lwt _ = Lwt_unix.unlink(aliasPath) |> lwtIgnore;
-  let%lwt _ = Lwt_unix.symlink(versionPath, aliasPath);
+  let%lwt () = Versions.Aliases.set(~alias=name, ~versionPath);
 
   Lwt.return();
 };

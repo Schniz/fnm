@@ -1,7 +1,7 @@
 let version = Fnm.Fnm__Package.version;
 
 module Commands = {
-  let use = version => Lwt_main.run(Use.run(~version));
+  let use = (version, quiet) => Lwt_main.run(Use.run(~version, ~quiet));
   let alias = (version, name) => Lwt_main.run(Alias.run(~name, ~version));
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
@@ -78,6 +78,11 @@ let use = {
   let doc = "Switch to another installed node version";
   let man = [];
 
+  let quiet = {
+    let doc = "Don't print stuff";
+    Arg.(value & flag & info(["quiet"], ~doc));
+  };
+
   let selectedVersion = {
     let doc = "Switch to version $(docv).\nLeave empty to look for value from `.nvmrc`";
     Arg.(
@@ -86,7 +91,7 @@ let use = {
   };
 
   (
-    Term.(const(Commands.use) $ selectedVersion),
+    Term.(const(Commands.use) $ selectedVersion $ quiet),
     Term.info("use", ~version, ~doc, ~exits=Term.default_exits, ~man),
   );
 };

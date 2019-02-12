@@ -14,3 +14,4 @@ let currentVersion =
   Opt.(Sys.getenv_opt("FNM_MULTISHELL_PATH") or globalCurrentVersion);
 let downloads = Filename.concat(sfwRoot, "downloads");
 let aliases = Filename.concat(sfwRoot, "aliases");
+let defaultVersion = Filename.concat(aliases, "default");
