@@ -1,3 +1,4 @@
 Smoke test › env
 export PATH=<sfwRoot>/current/bin:$PATH
+export FNM_MULTISHELL_PATH=<sfwRoot>/current
 
