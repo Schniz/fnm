@@ -38,6 +38,7 @@
     "test": "esy x TestFnm.exe",
     "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'"
   },
+  "license": "BSD-2-Clause",
   "dependencies": {
     "@opam/dune": "*",
     "@opam/semver": "*",
