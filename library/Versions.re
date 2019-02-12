@@ -148,18 +148,11 @@ let getRemoteVersions = () => {
 };
 
 let throwIfInstalled = versionName => {
-  switch(getInstalledVersions()) {
-  | Ok(x) => {
+  switch (getInstalledVersions()) {
+  | Ok(x) =>
     Array.to_list(x)
-    |> List.exists(x => {
-      open Local;
-      x.name == versionName;
-    })
-    |> x => switch x {
-    | true => Lwt.fail(Already_installed(versionName));
-    | false => Lwt.return();
-    };
-  };
-  | Error(_) => Lwt.return();
+    |> List.exists(x => Local.(x.name == versionName))
+    |> (x => x ? Lwt.fail(Already_installed(versionName)) : Lwt.return())
+  | Error(_) => Lwt.return()
   };
 };
