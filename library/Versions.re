@@ -152,8 +152,7 @@ let throwIfInstalled = versionName => {
   |> Result.fold(
        _ => Lwt.return(),
        xs =>
-         Array.to_list(xs)
-         |> List.exists(x => Local.(x.name == versionName))
+         Array.exists(x => Local.(x.name == versionName), xs)
          |> (
            x => x ? Lwt.fail(Already_installed(versionName)) : Lwt.return()
          ),
