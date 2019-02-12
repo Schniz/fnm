@@ -6,8 +6,8 @@ let extractFile = (~into as destination, filepath) => {
       ~args=[|"-xvf", filepath, "--directory", destination|],
       ~stderr=`Dev_null,
     );
-  let%lwt files = Fs.readdir(destination) |> Result.toLwt;
-  let filename = files[0];
+  let%lwt files = Fs.readdir(destination);
+  let filename = List.hd(files);
   Lwt_unix.rename(
     Filename.concat(destination, filename),
     Filename.concat(destination, "installation"),

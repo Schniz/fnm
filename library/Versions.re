@@ -26,7 +26,7 @@ module Aliases = {
   let toDirectory = name => Filename.concat(Directories.aliases, name);
 
   let getAll = () => {
-    let%lwt aliases = System.readdir(Directories.aliases);
+    let%lwt aliases = Fs.readdir(Directories.aliases);
     aliases
     |> List.map(alias => {
          let fullPath = Filename.concat(Directories.aliases, alias);
@@ -88,12 +88,13 @@ module Remote = {
     };
 
   let getInstalledVersionSet = () =>
-    Fs.readdir(Directories.nodeVersions)
-    |> Result.fold(_ => [||], x => x)
-    |> Array.fold_left(
-         (acc, curr) => VersionSet.add(curr, acc),
-         VersionSet.empty,
-       );
+    Lwt.(
+      catch(() => Fs.readdir(Directories.nodeVersions), _ => return([]))
+      >|= List.fold_left(
+            (acc, curr) => VersionSet.add(curr, acc),
+            VersionSet.empty,
+          )
+    );
 
   let getRelativeLinksFromHTML = html =>
     Soup.parse(html)
@@ -172,7 +173,7 @@ let getCurrentVersion = () =>
 let getInstalledVersions = () => {
   open Lwt;
   let%lwt versions =
-    System.readdir(Directories.nodeVersions) >|= List.sort(Remote.compare)
+    Fs.readdir(Directories.nodeVersions) >|= List.sort(Remote.compare)
   and aliases = Aliases.byVersion();
 
   versions
@@ -191,7 +192,7 @@ let getRemoteVersions = () => {
     Http.makeRequest("https://nodejs.org/dist/") |> Lwt.map(Http.body);
 
   let versions = bodyString |> Remote.getRelativeLinksFromHTML;
-  let installedVersions = Remote.getInstalledVersionSet();
+  let%lwt installedVersions = Remote.getInstalledVersionSet();
 
   versions
   |> Core.List.filter(~f=x =>
