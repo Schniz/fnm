@@ -65,6 +65,7 @@
     "pesy": "bash -c 'env PESY_MODE=update pesy'",
     "update-fnm-package": "node ./.ci/prepare-fnm-package.js",
     "verify-fnm-package": "node ./.ci/prepare-fnm-package.js --fail-on-difference",
+    "bootstrap": ".ci/bootstrap",
     "test": "esy x TestFnm.exe",
     "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'"
   },
