@@ -11,6 +11,8 @@
 </div>
 
 ## Features
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSchniz%2Ffnm.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FSchniz%2Ffnm?ref=badge_shield)
+
 :sparkles: Single file, easy installation
 
 :rocket: Built with speed in mind
@@ -108,3 +110,7 @@ esy test
 # Runs the feature tests
 feature_tests/run.sh
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FSchniz%2Ffnm.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FSchniz%2Ffnm?ref=badge_large)
