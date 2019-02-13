@@ -43,9 +43,8 @@ let run = (~shell, ~multishell) => {
     Printf.sprintf("export PATH=%s/bin:$PATH", path) |> Console.log;
     Printf.sprintf("export FNM_MULTISHELL_PATH=%s", path) |> Console.log;
   | System.Shell.Fish =>
-    Printf.sprintf("set -e FNM_MULTISHELL_PATH;") |> Console.log;
-    Printf.sprintf("set -x PATH %s/bin $PATH;", path) |> Console.log;
-    Printf.sprintf("set -x FNM_MULTISHELL_PATH %s;", path) |> Console.log;
+    Printf.sprintf("set PATH %s/bin $PATH;", path) |> Console.log;
+    Printf.sprintf("set FNM_MULTISHELL_PATH %s;", path) |> Console.log;
   };
 
   Lwt.return();
