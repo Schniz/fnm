@@ -8,6 +8,12 @@ let unix_exec =
 let mkdirp = destination =>
   unix_exec("mkdir", ~stderr=`Dev_null, ~args=[|"-p", destination|]);
 
+module Shell = {
+  type t =
+    | Bash
+    | Fish;
+};
+
 module NodeArch = {
   type t =
     | X32

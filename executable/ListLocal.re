@@ -6,22 +6,29 @@ let main = () =>
   Versions.Local.(
     {
       let%lwt versions =
-        Versions.getInstalledVersions()
-        |> Result.mapError(_ => Cant_read_local_versions)
-        |> Result.toLwtErr;
+        try%lwt (Versions.getInstalledVersions()) {
+        | _ => Lwt.fail(Cant_read_local_versions)
+        };
       let currentVersion = Versions.getCurrentVersion();
 
       Console.log("The following versions are installed:");
 
       versions
-      |> Array.iter(version => {
+      |> List.iter(version => {
            let color =
              switch (currentVersion) {
              | None => None
              | Some(x) when x.name == version.name => Some(Pastel.Cyan)
              | Some(_) => None
              };
-           Console.log(<Pastel ?color> "* " {version.name} </Pastel>);
+           let aliases =
+             List.length(version.aliases) === 0
+               ? ""
+               : Printf.sprintf(
+                   " (%s)",
+                   version.aliases |> String.concat(", "),
+                 );
+           Console.log(<Pastel ?color> "* " {version.name} aliases </Pastel>);
          });
 
       Lwt.return();

@@ -28,6 +28,12 @@ let toResult = (error, opt) =>
   | Some(x) => Ok(x)
   };
 
+let toLwt = (error, opt) =>
+  switch (opt) {
+  | Some(x) => Lwt.return(x)
+  | None => Lwt.fail(error)
+  };
+
 let some = x => Some(x);
 
 let (or) = (opt, b) => fold(() => b, x => x, opt);

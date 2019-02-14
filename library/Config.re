@@ -21,12 +21,11 @@ module EnvVar =
   let docInfo = {name, doc, default: unparse(default)};
 };
 
-let ensureTrailingBackslash = str => {
+let ensureTrailingBackslash = str =>
   switch (str.[String.length(str) - 1]) {
   | '/' => str
   | _ => str ++ "/"
   };
-};
 
 module FNM_NODE_DIST_MIRROR =
   EnvVar({
@@ -51,6 +50,16 @@ module FNM_DIR =
         |> Opt.orThrow("There isn't $HOME environment variable set.");
       Filename.concat(home, ".fnm");
     };
+  });
+
+module FNM_MULTISHELL_PATH =
+  EnvVar({
+    type t = string;
+    let parse = x => x;
+    let unparse = x => x;
+    let name = "FNM_MULTISHELL_PATH";
+    let doc = "Where the current node version link is stored";
+    let default = "";
   });
 
 let getDocs = () => [FNM_DIR.docInfo, FNM_NODE_DIST_MIRROR.docInfo];

@@ -13,20 +13,50 @@
   },
   "buildDirs": {
     "test": {
-      "require": ["fnm.lib", "rely.lib"],
+      "require": [
+        "fnm.lib",
+        "rely.lib"
+      ],
       "main": "TestFnm",
       "name": "TestFnm.exe",
-      "ocamloptFlags": ["-linkall", "-g"]
+      "ocamloptFlags": [
+        "-linkall",
+        "-g"
+      ]
     },
     "library": {
-      "preprocess": ["pps", "lwt_ppx", "ppx_let"],
-      "require": ["str", "core", "lwt", "lwt.unix", "lambdasoup", "semver"],
+      "preprocess": [
+        "pps",
+        "lwt_ppx",
+        "ppx_let"
+      ],
+      "require": [
+        "str",
+        "core",
+        "lwt",
+        "lwt.unix",
+        "lambdasoup",
+        "semver"
+      ],
       "name": "fnm.lib",
       "namespace": "Fnm"
     },
     "executable": {
-      "preprocess": ["pps", "lwt_ppx", "ppx_let"],
-      "require": ["core", "cmdliner", "lwt", "lwt.unix", "lambdasoup", "console.lib", "pastel.lib", "fnm.lib"],
+      "preprocess": [
+        "pps",
+        "lwt_ppx",
+        "ppx_let"
+      ],
+      "require": [
+        "core",
+        "cmdliner",
+        "lwt",
+        "lwt.unix",
+        "lambdasoup",
+        "console.lib",
+        "pastel.lib",
+        "fnm.lib"
+      ],
       "main": "FnmApp",
       "name": "fnm.exe"
     }
@@ -35,6 +65,7 @@
     "pesy": "bash -c 'env PESY_MODE=update pesy'",
     "update-fnm-package": "node ./.ci/prepare-fnm-package.js",
     "verify-fnm-package": "node ./.ci/prepare-fnm-package.js --fail-on-difference",
+    "bootstrap": ".ci/bootstrap",
     "test": "esy x TestFnm.exe",
     "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'"
   },
@@ -59,6 +90,20 @@
   "devDependencies": {
     "@opam/merlin": "*",
     "prettier": "*",
-    "jest-diff": "24.0.0"
+    "jest-diff": "24.0.0",
+    "lint-staged": "*"
+  },
+  "lint-staged": {
+    "*.re": [
+      "esy refmt --in-place",
+      "git add"
+    ],
+    "*.{js,md,json}": [
+      "esy prettier --write",
+      "git add"
+    ],
+    "package.json": [
+      "esy verify-fnm-package"
+    ]
   }
 }

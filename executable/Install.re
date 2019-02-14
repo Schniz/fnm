@@ -27,6 +27,7 @@ let main = (~version as versionName) => {
     };
 
   let versionName = Versions.format(versionName);
+  let%lwt _ = Versions.throwIfInstalled(versionName);
 
   Console.log(
     <Pastel>
@@ -89,6 +90,15 @@ let run = (~version) =>
         "\n"
         "  Architecture: "
         <Pastel color=Pastel.Cyan> {System.NodeArch.toString(arch)} </Pastel>
+      </Pastel>,
+    )
+    |> Lwt.return
+  | Versions.Already_installed(version) =>
+    Console.log(
+      <Pastel>
+        "Version "
+        <Pastel color=Pastel.Cyan> version </Pastel>
+        " is already installed."
       </Pastel>,
     )
     |> Lwt.return

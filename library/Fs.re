@@ -1,10 +1,29 @@
 open Core;
 
-let readdir = dir =>
-  switch (Sys.readdir(dir)) {
-  | x => Ok(x)
-  | exception (Sys_error(error)) => Error(error)
+let readdir = dir => {
+  let items = ref([]);
+  let%lwt dir = Lwt_unix.opendir(dir);
+  let iterate = () => {
+    let%lwt _ =
+      while%lwt (true) {
+        let%lwt value = Lwt_unix.readdir(dir);
+        if (value.[0] != '.') {
+          items := [value, ...items^];
+        };
+        Lwt.return();
+      };
+
+    Lwt.return([]);
   };
+
+  let%lwt items =
+    try%lwt (iterate()) {
+    | End_of_file => Lwt.return(items^)
+    };
+
+  let%lwt _ = Lwt_unix.closedir(dir);
+  Lwt.return(items);
+};
 
 let writeFile = (path, contents) => {
   let%lwt x = Lwt_unix.openfile(path, [Unix.O_RDWR, Unix.O_CREAT], 777);

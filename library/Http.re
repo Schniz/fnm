@@ -6,32 +6,29 @@ type response = {
 let body = response => response.body;
 let status = response => response.status;
 
-let rec getBody = listOfStrings => {
+let rec getBody = listOfStrings =>
   switch (listOfStrings) {
   | [] => ""
   | ["", ...rest] => String.concat("\n", rest)
   | [_, ...xs] => getBody(xs)
   };
-};
 
-let rec getStatus = string => {
+let getStatus = string =>
   List.nth(String.split_on_char(' ', string), 1) |> int_of_string;
-};
 
 exception Unknown_status_code(int, response);
 exception Not_found(response);
 exception Internal_server_error(response);
 
-let verifyStatus = response => {
+let verifyStatus = response =>
   switch (response.status) {
   | 200 => Lwt.return(response)
   | x when x / 100 == 4 => Lwt.fail(Not_found(response))
   | x when x / 100 == 5 => Lwt.fail(Internal_server_error(response))
   | x => Lwt.fail(Unknown_status_code(response.status, response))
   };
-};
 
-let rec skipRedirects = (~skipping=false, lines) => {
+let rec skipRedirects = (~skipping=false, lines) =>
   switch (skipping, lines) {
   | (_, []) => failwith("Response is empty")
   | (true, ["", ...xs]) => skipRedirects(~skipping=false, xs)
@@ -43,7 +40,6 @@ let rec skipRedirects = (~skipping=false, lines) => {
     ]
   | (false, xs) => xs
   };
-};
 
 let parseResponse = lines => {
   let linesAfterRedirect = skipRedirects(lines);
