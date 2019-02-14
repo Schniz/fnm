@@ -35,7 +35,7 @@ curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash
 - Add the following line to your `.bashrc`/`.zshrc` file:
 
   ```bash
-  eval `fnm env`
+  eval `fnm env --multi`
   ```
 
   If you are using [fish shell](https://fishshell.com/), add this line to your `config.fish` file:
@@ -64,12 +64,13 @@ Lists the installed Node versions.
 
 Lists the Node versions available to download remotely.
 
-### `fnm env [--multi] [--fish]`
+### `fnm env [--multi] [--fish] [--node-dist-mirror=URI]`
 
 Prints the required shell commands in order to configure your shell, Bash compliant by default.
 
 - Providing `--multi` will output the multishell support, allowing a different current Node version per shell
 - Providing `--fish` will output the Fish-compliant version.
+- Providing `--node-dist-mirror="https://npm.taobao.org/dist"` will use the Chinese mirror of Node.js
 
 ## Future Plans
 
