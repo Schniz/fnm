@@ -93,6 +93,15 @@ let run = (~version) =>
       </Pastel>,
     )
     |> Lwt.return
+  | Versions.Already_installed(version) =>
+    Console.log(
+      <Pastel>
+        "Version "
+        <Pastel color=Pastel.Cyan> version </Pastel>
+        " is already installed."
+      </Pastel>,
+    )
+    |> Lwt.return
   | Versions.Version_not_found(version) =>
     Console.log(
       <Pastel>
