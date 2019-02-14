@@ -15,7 +15,7 @@ let rec getBody = listOfStrings => {
 };
 
 let rec getStatus = string => {
-  List.nth(String.split_on_char(' ', string), 1);
+  List.nth(String.split_on_char(' ', string), 1) |> int_of_string;
 };
 
 exception Unknown_status_code(int, response);
@@ -31,9 +31,24 @@ let verifyStatus = response => {
   };
 };
 
+let rec skipRedirects = (~skipping=false, lines) => {
+  switch (skipping, lines) {
+  | (_, []) => failwith("Response is empty")
+  | (true, ["", ...xs]) => skipRedirects(~skipping=false, xs)
+  | (true, [x, ...xs]) => skipRedirects(~skipping=true, xs)
+  | (false, [x, ...xs])
+      when Str.first_chars(x, 4) == "HTTP" && getStatus(x) / 100 == 3 => [
+      x,
+      ...xs,
+    ]
+  | (false, xs) => xs
+  };
+};
+
 let parseResponse = lines => {
-  let body = getBody(lines);
-  let status = getStatus(lines |> List.hd) |> int_of_string;
+  let linesAfterRedirect = skipRedirects(lines);
+  let body = getBody(linesAfterRedirect);
+  let status = getStatus(linesAfterRedirect |> List.hd);
   {body, status};
 };
 

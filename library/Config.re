@@ -23,10 +23,10 @@ module EnvVar =
 
 let ensureTrailingBackslash = str => {
   switch (str.[String.length(str) - 1]) {
-    | '/' => str
-    | _ => str ++ "/"
-  }
-}
+  | '/' => str
+  | _ => str ++ "/"
+  };
+};
 
 module FNM_NODE_DIST_MIRROR =
   EnvVar({
