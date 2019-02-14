@@ -18,7 +18,7 @@ let rec getStatus = string => {
   List.nth(String.split_on_char(' ', string), 1);
 };
 
-exception Unknown_status_code(response);
+exception Unknown_status_code(int, response);
 exception Not_found(response);
 exception Internal_server_error(response);
 
@@ -27,7 +27,7 @@ let verifyStatus = response => {
   | 200 => Lwt.return(response)
   | x when x / 100 == 4 => Lwt.fail(Not_found(response))
   | x when x / 100 == 5 => Lwt.fail(Internal_server_error(response))
-  | x => Lwt.fail(Unknown_status_code(response))
+  | x => Lwt.fail(Unknown_status_code(response.status, response))
   };
 };
 
