@@ -17,7 +17,10 @@ let run = args => {
   let arguments =
     args |> Array.append([|"./_build/default/executable/FnmApp.exe"|]);
   let env =
-    Unix.environment() |> Array.append([|Fnm.Config.FNM_DIR.name ++ tmpDir|]);
+    Unix.environment()
+    |> Array.append([|
+         Printf.sprintf("%s=%s", Fnm.Config.FNM_DIR.name, tmpDir),
+       |]);
   let result =
     Lwt_process.pread_chars(~env, ("", arguments)) |> Lwt_stream.to_string;
   Lwt_main.run(result);
