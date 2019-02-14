@@ -34,10 +34,8 @@ let rec skipRedirects = (~skipping=false, lines) =>
   | (true, ["", ...xs]) => skipRedirects(~skipping=false, xs)
   | (true, [x, ...xs]) => skipRedirects(~skipping=true, xs)
   | (false, [x, ...xs])
-      when Str.first_chars(x, 4) == "HTTP" && getStatus(x) / 100 == 3 => [
-      x,
-      ...xs,
-    ]
+      when Str.first_chars(x, 4) == "HTTP" && getStatus(x) / 100 == 3 =>
+    skipRedirects(~skipping=true, xs)
   | (false, xs) => xs
   };
 
