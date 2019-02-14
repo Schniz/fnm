@@ -41,7 +41,7 @@ curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash
   If you are using [fish shell](https://fishshell.com/), add this line to your `config.fish` file:
 
   ```fish
-  eval (fnm env --fish)
+  eval (fnm env --multi --fish)
   ```
 
 ## Usage
@@ -75,10 +75,8 @@ Prints the required shell commands in order to configure your shell, Bash compli
 ## Future Plans
 
 - [ ] Feature: make versions complete the latest: `10` would infer the latest minor and patch versions of node 10. `10.1` would infer the latest patch version of node 10.1
-- [ ] Feature: `fnm use --install`, `fnm use --quiet`
+- [ ] Feature: `fnm use --install`
 - [ ] Feature: `fnm install lts`?
-- [ ] Feature: `fnm alias`?
-- [ ] Feature: Consider nvm-like per-shell usage with symlinks on `/tmp` directory
 - [ ] OSX: Add to homebrew?
 - [ ] Windows Support?
 - [ ] Linux: Replace `curl` usage with `cohttp`/`ocurl` or something else which is statically-linkable
