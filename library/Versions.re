@@ -1,14 +1,73 @@
 module VersionSet = Set.Make(String);
 
+let lwtIgnore = lwt => Lwt.catch(() => lwt, _ => Lwt.return());
+
 module Local = {
   type t = {
     name: string,
     fullPath: string,
+    aliases: list(string),
   };
+
+  let toDirectory = name => Filename.concat(Directories.nodeVersions, name);
 };
 
 exception Version_not_found(string);
 exception Already_installed(string);
+
+module Aliases = {
+  module VersionAliasMap = Map.Make(String);
+
+  type t = {
+    name: string,
+    versionName: string,
+    fullPath: string,
+  };
+
+  let toDirectory = name => Filename.concat(Directories.aliases, name);
+
+  let getAll = () => {
+    let%lwt aliases = Fs.readdir(Directories.aliases);
+    aliases
+    |> List.map(alias => {
+         let fullPath = Filename.concat(Directories.aliases, alias);
+         {
+           name: alias,
+           fullPath,
+           versionName:
+             Filename.concat(Directories.aliases, alias)
+             |> Fs.realpath
+             |> Filename.basename,
+         };
+       })
+    |> Lwt.return;
+  };
+
+  let byVersion = () => {
+    let%lwt aliases = getAll();
+    aliases
+    |> List.fold_left(
+         (map, curr) => {
+           let value =
+             switch (VersionAliasMap.find_opt(curr.versionName, map)) {
+             | None => [curr.name]
+             | Some(arr) => [curr.name, ...arr]
+             };
+           VersionAliasMap.add(curr.versionName, value, map);
+         },
+         VersionAliasMap.empty,
+       )
+    |> Lwt.return;
+  };
+
+  let set = (~alias, ~versionPath) => {
+    let aliasPath = alias |> toDirectory;
+    let%lwt _ = System.mkdirp(Directories.aliases);
+    let%lwt _ = Lwt_unix.unlink(aliasPath) |> lwtIgnore;
+    let%lwt _ = Lwt_unix.symlink(versionPath, aliasPath);
+    Lwt.return();
+  };
+};
 
 module Remote = {
   type t = {
@@ -30,12 +89,13 @@ module Remote = {
     };
 
   let getInstalledVersionSet = () =>
-    Fs.readdir(Directories.nodeVersions)
-    |> Result.fold(_ => [||], x => x)
-    |> Array.fold_left(
-         (acc, curr) => VersionSet.add(curr, acc),
-         VersionSet.empty,
-       );
+    Lwt.(
+      catch(() => Fs.readdir(Directories.nodeVersions), _ => return([]))
+      >|= List.fold_left(
+            (acc, curr) => VersionSet.add(curr, acc),
+            VersionSet.empty,
+          )
+    );
 
   let getRelativeLinksFromHTML = html =>
     Soup.parse(html)
@@ -105,31 +165,38 @@ let getCurrentVersion = () =>
   switch (Fs.realpath(Directories.currentVersion)) {
   | installationPath =>
     let fullPath = Filename.dirname(installationPath);
-    Some(Local.{fullPath, name: Core.Filename.basename(fullPath)});
+    Some(
+      Local.{fullPath, name: Core.Filename.basename(fullPath), aliases: []},
+    );
   | exception (Unix.Unix_error(_, _, _)) => None
   };
 
 let getInstalledVersions = () =>
-  Fs.readdir(Directories.nodeVersions)
-  |> Result.map(x => {
-       Array.sort(Remote.compare, x);
-       x;
-     })
-  |> Result.map(
-       Array.map(name =>
-         Local.{
-           name,
-           fullPath: Filename.concat(Directories.nodeVersions, name),
-         }
-       ),
-     );
+  Lwt.(
+    {
+      let%lwt versions =
+        Fs.readdir(Directories.nodeVersions) >|= List.sort(Remote.compare)
+      and aliases = Aliases.byVersion();
+
+      versions
+      |> List.map(name =>
+           Local.{
+             name,
+             fullPath: Filename.concat(Directories.nodeVersions, name),
+             aliases:
+               Opt.(Aliases.VersionAliasMap.find_opt(name, aliases) or []),
+           }
+         )
+      |> Lwt.return;
+    }
+  );
 
 let getRemoteVersions = () => {
   let%lwt bodyString =
     Http.makeRequest("https://nodejs.org/dist/") |> Lwt.map(Http.body);
 
   let versions = bodyString |> Remote.getRelativeLinksFromHTML;
-  let installedVersions = Remote.getInstalledVersionSet();
+  let%lwt installedVersions = Remote.getInstalledVersionSet();
 
   versions
   |> Core.List.filter(~f=x =>
@@ -147,14 +214,35 @@ let getRemoteVersions = () => {
   |> Lwt.return;
 };
 
+type t =
+  | Alias(string)
+  | Local(string);
+
+let parse = version => {
+  let formattedVersion = format(version);
+  let aliasPath = Aliases.toDirectory(version);
+  let versionPath = Local.toDirectory(formattedVersion);
+
+  let%lwt aliasExists = Lwt_unix.file_exists(aliasPath)
+  and versionExists = Lwt_unix.file_exists(versionPath);
+
+  switch (versionExists, aliasExists) {
+  | (true, _) => Some(Local(formattedVersion)) |> Lwt.return
+  | (_, true) => Some(Alias(version)) |> Lwt.return
+  | (false, false) => Lwt.return_none
+  };
+};
+
 let throwIfInstalled = versionName => {
-  getInstalledVersions()
-  |> Result.fold(
-       _ => Lwt.return(),
-       xs =>
-         Array.exists(x => Local.(x.name == versionName), xs)
-         |> (
-           x => x ? Lwt.fail(Already_installed(versionName)) : Lwt.return()
-         ),
-     );
+  let%lwt installedVersions =
+    try%lwt (getInstalledVersions()) {
+    | _ => Lwt.return([])
+    };
+  let isAlreadyInstalled =
+    installedVersions |> List.exists(x => Local.(x.name == versionName));
+  if (isAlreadyInstalled) {
+    Lwt.fail(Already_installed(versionName));
+  } else {
+    Lwt.return();
+  };
 };

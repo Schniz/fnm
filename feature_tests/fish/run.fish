@@ -1,6 +1,7 @@
 #!/usr/bin/env fish
 
 eval (fnm env --fish)
+
 fnm install v8.11.3
 fnm use v8.11.3
 

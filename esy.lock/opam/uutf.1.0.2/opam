@@ -20,8 +20,9 @@ build: [[
   "ocaml" "pkg/pkg.ml" "build"
           "--pinned" "%{pinned}%"
           "--with-cmdliner" "%{cmdliner:installed}%" ]]
-synopsis: "Non-blocking streaming Unicode codec for OCaml"
-description: """
+synopsis: """Non-blocking streaming Unicode codec for OCaml"""
+description: """\
+
 Uutf is a non-blocking streaming codec to decode and encode the UTF-8,
 UTF-16, UTF-16LE and UTF-16BE encoding schemes. It can efficiently
 work character by character without blocking on IO. Decoders perform
@@ -31,8 +32,9 @@ Functions are also provided to fold over the characters of UTF encoded
 OCaml string values and to directly encode characters in OCaml
 Buffer.t values.
 
-Uutf has no dependency and is distributed under the ISC license."""
+Uutf has no dependency and is distributed under the ISC license.
+"""
 url {
-  src: "http://erratique.ch/software/uutf/releases/uutf-1.0.1.tbz"
-  checksum: "md5=b8535f974027357094c5cdb4bf03a21b"
+archive: "http://erratique.ch/software/uutf/releases/uutf-1.0.2.tbz"
+checksum: "a7c542405a39630c689a82bd7ef2292c"
 }
