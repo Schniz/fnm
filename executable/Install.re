@@ -27,6 +27,7 @@ let main = (~version as versionName) => {
     };
 
   let versionName = Versions.format(versionName);
+  let%lwt _ = Versions.throwIfInstalled(versionName);
 
   Console.log(
     <Pastel>

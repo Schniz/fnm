@@ -69,6 +69,7 @@
     "test": "esy x TestFnm.exe",
     "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'"
   },
+  "license": "GPL-3.0",
   "dependencies": {
     "@opam/dune": "*",
     "@opam/semver": "*",

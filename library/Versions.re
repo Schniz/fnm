@@ -13,6 +13,7 @@ module Local = {
 };
 
 exception Version_not_found(string);
+exception Already_installed(string);
 
 module Aliases = {
   module VersionAliasMap = Map.Make(String);
@@ -170,22 +171,25 @@ let getCurrentVersion = () =>
   | exception (Unix.Unix_error(_, _, _)) => None
   };
 
-let getInstalledVersions = () => {
-  open Lwt;
-  let%lwt versions =
-    Fs.readdir(Directories.nodeVersions) >|= List.sort(Remote.compare)
-  and aliases = Aliases.byVersion();
+let getInstalledVersions = () =>
+  Lwt.(
+    {
+      let%lwt versions =
+        Fs.readdir(Directories.nodeVersions) >|= List.sort(Remote.compare)
+      and aliases = Aliases.byVersion();
 
-  versions
-  |> List.map(name =>
-       Local.{
-         name,
-         fullPath: Filename.concat(Directories.nodeVersions, name),
-         aliases: Opt.(Aliases.VersionAliasMap.find_opt(name, aliases) or []),
-       }
-     )
-  |> Lwt.return;
-};
+      versions
+      |> List.map(name =>
+           Local.{
+             name,
+             fullPath: Filename.concat(Directories.nodeVersions, name),
+             aliases:
+               Opt.(Aliases.VersionAliasMap.find_opt(name, aliases) or []),
+           }
+         )
+      |> Lwt.return;
+    }
+  );
 
 let getRemoteVersions = () => {
   let%lwt bodyString =
@@ -226,5 +230,19 @@ let parse = version => {
   | (true, _) => Some(Local(formattedVersion)) |> Lwt.return
   | (_, true) => Some(Alias(version)) |> Lwt.return
   | (false, false) => Lwt.return_none
+  };
+};
+
+let throwIfInstalled = versionName => {
+  let%lwt installedVersions =
+    try%lwt (getInstalledVersions()) {
+    | _ => Lwt.return([])
+    };
+  let isAlreadyInstalled =
+    installedVersions |> List.exists(x => Local.(x.name == versionName));
+  if (isAlreadyInstalled) {
+    Lwt.fail(Already_installed(versionName));
+  } else {
+    Lwt.return();
   };
 };
