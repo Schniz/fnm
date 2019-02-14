@@ -27,7 +27,10 @@ module Aliases = {
   let toDirectory = name => Filename.concat(Directories.aliases, name);
 
   let getAll = () => {
-    let%lwt aliases = Fs.readdir(Directories.aliases);
+    let%lwt aliases =
+      try%lwt (Fs.readdir(Directories.aliases)) {
+      | _ => Lwt.return([])
+      };
     aliases
     |> List.map(alias => {
          let fullPath = Filename.concat(Directories.aliases, alias);
@@ -182,25 +185,22 @@ let getCurrentVersion = () =>
   | exception (Unix.Unix_error(_, _, _)) => None
   };
 
-let getInstalledVersions = () =>
-  Lwt.(
-    {
-      let%lwt versions =
-        Fs.readdir(Directories.nodeVersions) >|= List.sort(Remote.compare)
-      and aliases = Aliases.byVersion();
+let getInstalledVersions = () => {
+  let%lwt versions =
+    Fs.readdir(Directories.nodeVersions)
+    |> Lwt.map(List.sort(Remote.compare))
+  and aliases = Aliases.byVersion();
 
-      versions
-      |> List.map(name =>
-           Local.{
-             name,
-             fullPath: Filename.concat(Directories.nodeVersions, name),
-             aliases:
-               Opt.(Aliases.VersionAliasMap.find_opt(name, aliases) or []),
-           }
-         )
-      |> Lwt.return;
-    }
-  );
+  versions
+  |> List.map(name =>
+       Local.{
+         name,
+         fullPath: Filename.concat(Directories.nodeVersions, name),
+         aliases: Opt.(Aliases.VersionAliasMap.find_opt(name, aliases) or []),
+       }
+     )
+  |> Lwt.return;
+};
 
 let getRemoteVersions = () => {
   let%lwt bodyString =
