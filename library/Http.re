@@ -47,7 +47,7 @@ let download = (url, ~into) => {
   let%lwt response =
     System.unix_exec(
       "curl",
-      ~args=[|url, "-D", "-", "--silent", "-o", into|],
+      ~args=[|url, "-L", "-D", "-", "--silent", "-o", into|],
     );
   response |> parseResponse |> verifyStatus;
 };

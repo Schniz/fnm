@@ -1,14 +1,24 @@
 open Fnm;
 
-let run = isFishShell => {
+let run = (isFishShell, nodeDistMirror) => {
   if (isFishShell) {
-    Console.log(
-      Printf.sprintf("set PATH %s/bin $PATH", Directories.currentVersion),
-    );
+    Printf.sprintf("set PATH %s/bin $PATH", Directories.currentVersion)
+    |> Console.log;
+    Printf.sprintf(
+      "set %s %s",
+      Config.FNM_NODE_DIST_MIRROR.name,
+      nodeDistMirror,
+    )
+    |> Console.log;
   } else {
-    Console.log(
-      Printf.sprintf("export PATH=%s/bin:$PATH", Directories.currentVersion),
-    );
+    Printf.sprintf("export PATH=%s/bin:$PATH", Directories.currentVersion)
+    |> Console.log;
+    Printf.sprintf(
+      "export %s=%s",
+      Config.FNM_NODE_DIST_MIRROR.name,
+      nodeDistMirror,
+    )
+    |> Console.log;
   };
 
   Lwt.return();

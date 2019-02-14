@@ -5,7 +5,8 @@ module Commands = {
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
-  let env = isFishShell => Lwt_main.run(Env.run(isFishShell));
+  let env = (isFishShell, nodeDistMirror) =>
+    Lwt_main.run(Env.run(isFishShell, nodeDistMirror));
 };
 
 open Cmdliner;
@@ -21,14 +22,21 @@ let help_secs = [
   `P("File bug reports at https://github.com/Schniz/fnm"),
 ];
 
-let envs = [
-  Term.env_info(
-    ~doc=
-      "The root directory of fnm installations. Defaults to: "
-      ++ Fnm.Directories.sfwRoot,
-    "FNM_DIR",
-  ),
-];
+let envs =
+  Fnm.Config.getDocs()
+  |> List.map(envVar =>
+       Fnm.Config.(
+         Term.env_info(
+           ~doc=
+             Printf.sprintf(
+               "%s\ndefaults to \"%s\"",
+               envVar.doc,
+               envVar.default,
+             ),
+           envVar.name,
+         )
+       )
+     );
 
 let install = {
   let doc = "Install another node version";
@@ -94,8 +102,17 @@ let env = {
     Arg.(value & flag & info(["fish"], ~doc));
   };
 
+  let nodeDistMirror = {
+    let doc = "https://nodejs.org/dist mirror";
+    Arg.(
+      value
+      & opt(string, "https://nodejs.org/dist")
+      & info(["node-dist-mirror"], ~doc)
+    );
+  };
+
   (
-    Term.(const(Commands.env) $ isFishShell),
+    Term.(const(Commands.env) $ isFishShell $ nodeDistMirror),
     Term.info("env", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
   );
 };
