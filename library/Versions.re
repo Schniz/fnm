@@ -27,7 +27,10 @@ module Aliases = {
   let toDirectory = name => Filename.concat(Directories.aliases, name);
 
   let getAll = () => {
-    let%lwt aliases = Fs.readdir(Directories.aliases);
+    let%lwt aliases =
+      try%lwt (Fs.readdir(Directories.aliases)) {
+      | _ => Lwt.return([])
+      };
     aliases
     |> List.map(alias => {
          let fullPath = Filename.concat(Directories.aliases, alias);
@@ -102,7 +105,15 @@ module Remote = {
     |> Soup.select("pre a")
     |> Soup.to_list
     |> List.map(Soup.attribute("href"))
-    |> Core.List.filter_map(~f=x => x);
+    |> Core.List.filter_map(~f=x => x)
+    |> List.map(x => {
+         let parts = String.split_on_char('/', x) |> List.rev;
+         switch (parts) {
+         | ["", x, ...xs] => x ++ "/"
+         | [x, ...xs] => x
+         | [] => ""
+         };
+       });
 
   let downloadFileSuffix = ".tar.xz";
 
@@ -137,7 +148,10 @@ let getFileToDownload = (~version as versionName, ~os, ~arch) => {
     | _ => "v" ++ versionName
     | exception _ => versionName
     };
-  let url = "https://nodejs.org/dist/" ++ versionName ++ "/";
+
+  let url =
+    Printf.sprintf("%s%s/", Config.FNM_NODE_DIST_MIRROR.get(), versionName);
+
   let%lwt html =
     try%lwt (Http.makeRequest(url) |> Lwt.map(Http.body)) {
     | Http.Not_found(_) => Lwt.fail(Version_not_found(versionName))
@@ -171,29 +185,28 @@ let getCurrentVersion = () =>
   | exception (Unix.Unix_error(_, _, _)) => None
   };
 
-let getInstalledVersions = () =>
-  Lwt.(
-    {
-      let%lwt versions =
-        Fs.readdir(Directories.nodeVersions) >|= List.sort(Remote.compare)
-      and aliases = Aliases.byVersion();
+let getInstalledVersions = () => {
+  let%lwt versions =
+    Fs.readdir(Directories.nodeVersions)
+    |> Lwt.map(List.sort(Remote.compare))
+  and aliases = Aliases.byVersion();
 
-      versions
-      |> List.map(name =>
-           Local.{
-             name,
-             fullPath: Filename.concat(Directories.nodeVersions, name),
-             aliases:
-               Opt.(Aliases.VersionAliasMap.find_opt(name, aliases) or []),
-           }
-         )
-      |> Lwt.return;
-    }
-  );
+  versions
+  |> List.map(name =>
+       Local.{
+         name,
+         fullPath: Filename.concat(Directories.nodeVersions, name),
+         aliases: Opt.(Aliases.VersionAliasMap.find_opt(name, aliases) or []),
+       }
+     )
+  |> Lwt.return;
+};
 
 let getRemoteVersions = () => {
   let%lwt bodyString =
-    Http.makeRequest("https://nodejs.org/dist/") |> Lwt.map(Http.body);
+    Config.FNM_NODE_DIST_MIRROR.get()
+    |> Http.makeRequest
+    |> Lwt.map(Http.body);
 
   let versions = bodyString |> Remote.getRelativeLinksFromHTML;
   let%lwt installedVersions = Remote.getInstalledVersionSet();
@@ -208,7 +221,8 @@ let getRemoteVersions = () => {
        Remote.{
          name,
          installed: VersionSet.find_opt(name, installedVersions) != None,
-         baseURL: "https://nodejs.org/dist/" ++ name ++ "/",
+         baseURL:
+           Printf.sprintf("%s%s/", Config.FNM_NODE_DIST_MIRROR.get(), name),
        }
      )
   |> Lwt.return;

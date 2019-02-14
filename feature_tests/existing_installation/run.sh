@@ -2,7 +2,9 @@
 
 eval `fnm env`
 
+echo "> Installing for the first time..."
 fnm install v8.11.3
+echo "> Installing the second time..."
 fnm install v8.11.3 | grep "already installed"
 
 if [ "$?" != "0" ]; then
