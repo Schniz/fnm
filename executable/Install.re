@@ -23,7 +23,7 @@ let main = (~version as versionName) => {
   and versionName =
     switch (versionName) {
     | Some(versionName) => Lwt.return(versionName)
-    | None => Nvmrc.getVersion()
+    | None => Dotfiles.getVersion()
     };
 
   let versionName = Versions.format(versionName);

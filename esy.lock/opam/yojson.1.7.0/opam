@@ -33,6 +33,6 @@ The program atdgen can be used to derive OCaml-JSON serializers and
 deserializers from type definitions."""
 url {
   src:
-    "https://github.com/ocaml-community/yojson/releases/download/1.6.0/yojson-1.6.0.tbz"
-  checksum: "md5=8ca16557d3068253cc375452af3bde96"
+    "https://github.com/ocaml-community/yojson/releases/download/1.7.0/yojson-1.7.0.tbz"
+  checksum: "md5=b89d39ca3f8c532abe5f547ad3b8f84d"
 }

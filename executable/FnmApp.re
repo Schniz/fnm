@@ -92,7 +92,7 @@ let use = {
   };
 
   let selectedVersion = {
-    let doc = "Switch to version $(docv).\nLeave empty to look for value from `.nvmrc`";
+    let doc = "Switch to version $(docv).\nLeave empty to look for value from a `.nvmrc` or `.node-version` files";
     Arg.(
       value & pos(0, some(string), None) & info([], ~docv="VERSION", ~doc)
     );
