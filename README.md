@@ -16,7 +16,7 @@
 
 :rocket: Built with speed in mind
 
-:thinking: Works with `.nvmrc` files
+:thinking: Works with `.nvmrc` and `.node-version` files
 
 ## Installation
 
@@ -54,7 +54,7 @@ Installs `[VERSION]`. If no version provided, it will install the version specif
 
 ### `fnm use [VERSION]`
 
-Activates `[VERSION]` as the current Node version. If no version provided, it will activate the version specified in the `.nvmrc` file located in the current working directory.
+Activates `[VERSION]` as the current Node version. If no version provided, it will activate the version specified in the `.nvmrc` or `.node-version` file located in the current working directory.
 
 ### `fnm ls`
 

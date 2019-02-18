@@ -55,7 +55,7 @@ let main = (~version as providedVersion, ~quiet) => {
   let%lwt version =
     switch (providedVersion) {
     | Some(version) => Lwt.return(version)
-    | None => Nvmrc.getVersion()
+    | None => Dotfiles.getVersion()
     };
   switchVersion(~version, ~quiet);
 };
@@ -71,11 +71,11 @@ let run = (~version, ~quiet) =>
       </Pastel>,
     )
     |> Lwt.return
-  | Nvmrc.Version_Not_Provided =>
+  | Dotfiles.Version_Not_Provided =>
     log(
       ~quiet,
       <Pastel color=Pastel.Red>
-        "No .nvmrc was found in the current directory. Please provide a version number."
+        "No .nvmrc or .node-version file was found in the current directory. Please provide a version number."
       </Pastel>,
     )
     |> Lwt.return
