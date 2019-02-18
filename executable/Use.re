@@ -69,14 +69,27 @@ let run = (~version, ~quiet) =>
         "The following version is not installed: "
         version
       </Pastel>,
-    )
-    |> Lwt.return
+    );
+    exit(1);
+  | Dotfiles.Conflicting_Dotfiles_Found(v1, v2) =>
+    log(
+      ~quiet,
+      <Pastel color=Pastel.Red>
+        "Can't infer version from dotfiles: .node-version and .nvmrc have differing version strings:\n"
+        "  * "
+        v1
+        "\n"
+        "  * "
+        v2
+      </Pastel>,
+    );
+    exit(1);
   | Dotfiles.Version_Not_Provided =>
     log(
       ~quiet,
       <Pastel color=Pastel.Red>
         "No .nvmrc or .node-version file was found in the current directory. Please provide a version number."
       </Pastel>,
-    )
-    |> Lwt.return
+    );
+    exit(1);
   };
