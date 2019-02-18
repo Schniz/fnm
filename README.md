@@ -91,6 +91,7 @@ PRs welcome :tada:
 ```
 npm install -g esy
 git clone https://github.com/Schniz/fnm.git
+cd fnm/
 esy install
 esy bootstrap
 esy build
