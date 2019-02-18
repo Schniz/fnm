@@ -1,4 +1,5 @@
 exception Version_Not_Provided;
+exception Conflicting_Dotfiles_Found(string, string);
 
 let versionString = fileName => {
   try%lwt (
@@ -20,9 +21,7 @@ let getVersion = () => {
   switch (nodeVersion, nvmrc) {
   | (None, None) => Lwt.fail(Version_Not_Provided)
   | (Some(v1), Some(v2)) when v1 != v2 =>
-    Lwt.fail_with(
-      "You have both .node-version and .nvmrc with differing version strings!",
-    )
+    Lwt.fail(Conflicting_Dotfiles_Found(v1, v2))
   | (Some(version), Some(_))
   | (Some(version), None)
   | (None, Some(version)) => Lwt.return(version)
