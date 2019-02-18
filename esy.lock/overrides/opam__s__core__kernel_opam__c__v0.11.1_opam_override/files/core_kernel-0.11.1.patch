@@ -1,0 +1,201 @@
+--- ./config/detect.sh
++++ ./config/detect.sh
+@@ -4,14 +4,27 @@
+ 
+ set -e
+ 
+-if ld -lm -shared --wrap caml_modify -o /dev/null 2>/dev/null; then
++
++system="$( ocamlfind ocamlc -config | awk '/^system:/ {print $2}')"
++case "$system" in
++    win*)
++        ld_wrap_possible=false
++        posix_timers_possible=false
++        ;;
++    mingw*)
++        ld_wrap_possible=false
++        posix_timers_possible=false
++        ;;
++    *)
++
++        if ld -lm -shared --wrap caml_modify -o /dev/null 2>/dev/null; then
+     ld_wrap_possible=true
+-else
++        else
+     ld_wrap_possible=false
+-fi
++        fi
+ 
+-ptimer=`getconf _POSIX_TIMERS || echo undefined`
+-case $ptimer in
++        ptimer=`getconf _POSIX_TIMERS || echo undefined`
++        case $ptimer in
+     undefined)
+         posix_timers_possible=false
+         ;;
+@@ -22,6 +35,8 @@
+             posix_timers_possible=false
+         fi
+         ;;
++        esac
++        ;;
+ esac
+ 
+ if [ -e setup.data ]; then
+--- ./src/bigstring_marshal_stubs.c
++++ ./src/bigstring_marshal_stubs.c
+@@ -1,5 +1,7 @@
+ #include <string.h>
++#ifndef _MSC_VER
+ #include <unistd.h>
++#endif
+ #include <errno.h>
+ 
+ #include <caml/alloc.h>
+--- ./src/bigstring_stubs.c
++++ ./src/bigstring_stubs.c
+@@ -11,16 +11,37 @@
+ #endif
+ 
+ #include <string.h>
++#ifndef _MSC_VER
+ #include <unistd.h>
++#include <stdint.h>
++#else
++#include <stdlib.h>
++#endif
++
+ #include <errno.h>
+ #include <assert.h>
+-#include <stdint.h>
++
+ 
+ #ifdef __APPLE__
+ #include <libkern/OSByteOrder.h>
+ #define bswap_16 OSSwapInt16
+ #define bswap_32 OSSwapInt32
+ #define bswap_64 OSSwapInt64
++#elif __MINGW32__
++#if defined(__GNUC__) && __GNUC__ > 4
++#define bswap_16 __builtin_bswap16
++#else
++static inline uint16_t bswap_16 (uint16_t x)
++{
++    return (x << 8) | (x >> 8);
++}
++#endif
++#define bswap_32 __builtin_bswap32
++#define bswap_64 __builtin_bswap64
++#elif _MSC_VER
++#define bswap_16 _byteswap_ushort
++#define bswap_32 _byteswap_ulong
++#define bswap_64 _byteswap_uint64
+ #elif __GLIBC__
+ #include <byteswap.h>
+ #include <malloc.h>
+--- ./src/time_ns_stubs.c
++++ ./src/time_ns_stubs.c
+@@ -12,7 +12,9 @@
+ #include <caml/unixsupport.h>
+ 
+ #include <time.h>
++#ifndef _MSC_VER
+ #include <stdint.h>
++#endif
+ 
+ #include "ocaml_utils.h"
+ #include "config.h"
+@@ -22,7 +24,59 @@
+ #define NANOS_PER_SECOND 1000000000
+ 
+ #if defined(JSC_POSIX_TIMERS)
++#ifdef _WIN32
++#include <windows.h>
+ 
++#ifndef CLOCK_REALTIME
++#define CLOCK_REALTIME 1
++#endif
++
++#define POW10_7                 10000000
++#define DELTA_EPOCH_IN_100NS    INT64_C(116444736000000000)
++
++typedef void (WINAPI *GetSystemTimeAsFileTime_t)(LPFILETIME lpSystemTimeAsFileTime);
++static GetSystemTimeAsFileTime_t i_GetSystemTimeAsFileTime = GetSystemTimeAsFileTime;
++static int clock_gettime_init_called = 0;
++
++static void clock_gettime_init(void) {
++  /* Use GetSystemTimePreciseAsFileTime when available */
++  HMODULE h ;
++  clock_gettime_init_called = 1;
++  h = LoadLibrary("kernel32.dll");
++  if (h != NULL) {
++    GetSystemTimeAsFileTime_t proc = (GetSystemTimeAsFileTime_t)GetProcAddress(h, "GetSystemTimePreciseAsFileTime");
++    if (proc != NULL) {
++      i_GetSystemTimeAsFileTime = proc;
++    }
++    else {
++      FreeLibrary(h);
++    }
++  }
++}
++
++#define clock_gettime my_clock_gettime
++static int my_clock_gettime(int clock_id, struct timespec *tp)
++{
++  uint64_t t;
++  FILETIME ft;
++  ULARGE_INTEGER lft;
++  (void) clock_id;
++  if ( clock_gettime_init_called == 0 ){
++    clock_gettime_init();
++  }
++
++  i_GetSystemTimeAsFileTime(&ft);
++
++  lft.LowPart  = ft.dwLowDateTime;
++  lft.HighPart = ft.dwHighDateTime;
++
++  t = lft.QuadPart - DELTA_EPOCH_IN_100NS;
++  tp->tv_sec = t / POW10_7;
++  tp->tv_nsec = ((int) (t % POW10_7)) * 100;
++
++  return 0;
++}
++#endif /* _WIN32 */
+ /* Note: this is imported noalloc if (and only if) ARCH_SIXTYFOUR is defined.
+  * This is OK because caml_alloc_int63 doesn't actually allocate in that case. */
+ CAMLprim value core_kernel_time_ns_gettime_or_zero()
+@@ -38,7 +92,33 @@
+ #else
+ 
+ #include <sys/types.h>
++#ifndef _MSC_VER
+ #include <sys/time.h>
++#endif
++#ifdef _MSC_VER
++#include <time.h>
++
++#define DELTA_EPOCH_IN_MICROSECS  116444736000000000Ui64
++
++static int gettimeofday(struct timeval *tp, void *tz)
++{
++  FILETIME    file_time;
++  SYSTEMTIME  system_time;
++  ULARGE_INTEGER ularge;
++  (void)tz;
++
++  GetSystemTime(&system_time);
++  SystemTimeToFileTime(&system_time, &file_time);
++  ularge.LowPart = file_time.dwLowDateTime;
++  ularge.HighPart = file_time.dwHighDateTime;
++
++  tp->tv_sec = (long) ((ularge.QuadPart - DELTA_EPOCH_IN_MICROSECS) / 10000000L);
++  tp->tv_usec = (long) (system_time.wMilliseconds * 1000);
++
++  return 0;
++}
++
++#endif
+ 
+ CAMLprim value core_kernel_time_ns_gettime_or_zero()
+ {

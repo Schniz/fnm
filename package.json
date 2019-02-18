@@ -67,7 +67,8 @@
     "verify-fnm-package": "node ./.ci/prepare-fnm-package.js --fail-on-difference",
     "bootstrap": ".ci/bootstrap",
     "test": "esy x TestFnm.exe",
-    "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'"
+    "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'",
+    "changelog": "bash -c 'esy lerna-changelog --from=v1.0.0 > CHANGELOG.md'"
   },
   "license": "GPL-3.0",
   "dependencies": {
@@ -91,7 +92,17 @@
     "@opam/merlin": "*",
     "prettier": "*",
     "jest-diff": "24.0.0",
-    "lint-staged": "*"
+    "lint-staged": "*",
+    "lerna-changelog": "*"
+  },
+  "changelog": {
+    "repo": "Schniz/fnm",
+    "labels": {
+      "PR: New Feature": "New Feature 🎉",
+      "PR: Bugfix": "Bugfix 🐛",
+      "PR: Internal": "Internal 🛠",
+      "PR: Documentation": "Documentation 📝"
+    }
   },
   "lint-staged": {
     "*.re": [
