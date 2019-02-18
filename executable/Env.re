@@ -29,7 +29,7 @@ let rec makeTemporarySymlink = () => {
   };
 };
 
-let run = (~shell, ~multishell, ~nodeDistMirror) => {
+let run = (~shell, ~multishell, ~nodeDistMirror, ~baseDir) => {
   open Lwt;
 
   Random.self_init();
@@ -43,6 +43,8 @@ let run = (~shell, ~multishell, ~nodeDistMirror) => {
     Printf.sprintf("export PATH=%s/bin:$PATH", path) |> Console.log;
     Printf.sprintf("export %s=%s", Config.FNM_MULTISHELL_PATH.name, path)
     |> Console.log;
+    Printf.sprintf("export %s=%s", Config.FNM_DIR.name, baseDir)
+    |> Console.log;
     Printf.sprintf(
       "export %s=%s",
       Config.FNM_NODE_DIST_MIRROR.name,
@@ -53,6 +55,7 @@ let run = (~shell, ~multishell, ~nodeDistMirror) => {
     Printf.sprintf("set PATH %s/bin $PATH;", path) |> Console.log;
     Printf.sprintf("set %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
     |> Console.log;
+    Printf.sprintf("set %s %s;", Config.FNM_DIR.name, baseDir) |> Console.log;
     Printf.sprintf(
       "set %s %s",
       Config.FNM_NODE_DIST_MIRROR.name,

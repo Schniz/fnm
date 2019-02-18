@@ -64,13 +64,14 @@ Lists the installed Node versions.
 
 Lists the Node versions available to download remotely.
 
-### `fnm env [--multi] [--fish] [--node-dist-mirror=URI]`
+### `fnm env [--multi] [--fish] [--node-dist-mirror=URI] [--base-dir=DIR]`
 
 Prints the required shell commands in order to configure your shell, Bash compliant by default.
 
 - Providing `--multi` will output the multishell support, allowing a different current Node version per shell
 - Providing `--fish` will output the Fish-compliant version.
 - Providing `--node-dist-mirror="https://npm.taobao.org/dist"` will use the Chinese mirror of Node.js
+- Providing `--base-dir="/tmp/fnm"` will install and use versions in `/tmp/fnm` directory
 
 ## Future Plans
 
