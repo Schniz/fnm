@@ -6,13 +6,13 @@ module Commands = {
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
-  let env = (isFishShell, isMultishell, nodeDistMirror, baseDir) =>
+  let env = (isFishShell, isMultishell, nodeDistMirror, fnmDir) =>
     Lwt_main.run(
       Env.run(
         ~shell=Fnm.System.Shell.(isFishShell ? Fish : Bash),
         ~multishell=isMultishell,
         ~nodeDistMirror,
-        ~baseDir,
+        ~fnmDir,
       ),
     );
 };
@@ -158,12 +158,12 @@ let env = {
     );
   };
 
-  let baseDir = {
+  let fnmDir = {
     let doc = "The directory to store internal fnm data";
     Arg.(
       value
       & opt(string, Fnm.Config.FNM_DIR.get())
-      & info(["base-dir"], ~doc)
+      & info(["fnm-dir"], ~doc)
     );
   };
 
@@ -178,7 +178,7 @@ let env = {
       $ isFishShell
       $ isMultishell
       $ nodeDistMirror
-      $ baseDir
+      $ fnmDir
     ),
     Term.info("env", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
   );
