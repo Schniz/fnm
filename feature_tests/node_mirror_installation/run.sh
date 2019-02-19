@@ -1,6 +1,6 @@
 #!/bin/bash
 
-eval `fnm env --node-dist-mirror="https://npm.taobao.org/dist"`
+eval `fnm env --node-dist-mirror="https://cnpmjs.org/dist"`
 
 fnm install v8.11.3
 fnm use v8.11.3
