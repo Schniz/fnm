@@ -42,8 +42,11 @@ let main = (~version as versionName) => {
     </Pastel>,
   );
 
-  let%lwt filepath =
+  let%lwt (versionName, filepath) =
     Versions.getFileToDownload(~version=versionName, ~os, ~arch);
+
+  let%lwt _ = Versions.throwIfInstalled(versionName);
+
   let tarDestination =
     Filename.concat(
       Directories.downloads,
