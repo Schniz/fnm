@@ -94,8 +94,8 @@ let run = (~version) =>
         "  Architecture: "
         <Pastel color=Pastel.Cyan> {System.NodeArch.toString(arch)} </Pastel>
       </Pastel>,
-    )
-    |> Lwt.return
+    );
+    exit(1);
   | Versions.Already_installed(version) =>
     Console.log(
       <Pastel>
@@ -112,6 +112,6 @@ let run = (~version) =>
         <Pastel color=Pastel.Cyan> version </Pastel>
         " not found!"
       </Pastel>,
-    )
-    |> Lwt.return
+    );
+    exit(1);
   };
