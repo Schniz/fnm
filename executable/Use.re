@@ -21,6 +21,12 @@ let switchVersion = (~version, ~quiet) => {
     | Alias(alias) => Versions.Aliases.toDirectory(alias) |> Lwt.return
     };
 
+  let versionName =
+    switch (parsedVersion) {
+    | Local(v) => v
+    | Alias(v) => v
+    };
+
   let destination = Filename.concat(versionPath, "installation");
   let source = Directories.currentVersion;
 
@@ -45,7 +51,10 @@ let switchVersion = (~version, ~quiet) => {
     };
 
   log(
-    <Pastel> "Using " <Pastel color=Pastel.Cyan> version </Pastel> </Pastel>,
+    <Pastel>
+      "Using "
+      <Pastel color=Pastel.Cyan> versionName </Pastel>
+    </Pastel>,
   );
 
   Lwt.return();
