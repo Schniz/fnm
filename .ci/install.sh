@@ -30,6 +30,10 @@ parse_args() {
 	  SKIP_SHELL="true"
 	  shift # past argument
 	  ;;
+	  *)
+	  echo "Unrecognized argument $key"
+	  exit 1
+	  ;;
   esac
   done
 }
