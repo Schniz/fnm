@@ -80,7 +80,7 @@
     "@opam/lwt_ppx": "*",
     "@opam/ppx_let": "*",
     "@reason-native/console": "*",
-    "@reason-native/pastel": "*",
+    "@reason-native/pastel": "~0.2.0",
     "@reason-native/rely": "*",
     "@esy-ocaml/reason": "*",
     "@opam/lambdasoup": "*",
