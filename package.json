@@ -36,7 +36,10 @@
         "lwt",
         "lwt.unix",
         "lambdasoup",
-        "semver"
+        "semver",
+        "cohttp",
+        "cohttp-lwt",
+        "cohttp-lwt-unix"
       ],
       "name": "fnm.lib",
       "namespace": "Fnm"
@@ -79,6 +82,9 @@
     "@opam/lwt": "*",
     "@opam/lwt_ppx": "*",
     "@opam/ppx_let": "*",
+    "@opam/cohttp": "*",
+    "@opam/cohttp-lwt": "*",
+    "@opam/cohttp-lwt-unix": "*",
     "@reason-native/console": "*",
     "@reason-native/pastel": "*",
     "@reason-native/rely": "*",

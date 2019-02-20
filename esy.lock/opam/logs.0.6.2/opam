@@ -1,0 +1,57 @@
+opam-version: "2.0"
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: ["Daniel Bünzli <daniel.buenzl i@erratique.ch>"]
+homepage: "http://erratique.ch/software/logs"
+doc: "http://erratique.ch/software/logs/doc"
+dev-repo: "git+http://erratique.ch/repos/logs.git"
+bug-reports: "https://github.com/dbuenzli/logs/issues"
+tags: [ "log" "system" "org:erratique" ]
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "result"
+  "mtime" {with-test}
+]
+depopts: [
+  "js_of_ocaml"
+  "fmt"
+  "cmdliner"
+  "lwt" ]
+conflicts: [ "cmdliner" {< "0.9.8"} ]
+build: [[
+  "ocaml" "pkg/pkg.ml" "build"
+          "--pinned" "%{pinned}%"
+          "--with-js_of_ocaml" "%{js_of_ocaml:installed}%"
+          "--with-fmt" "%{fmt:installed}%"
+          "--with-cmdliner" "%{cmdliner:installed}%"
+          "--with-lwt" "%{lwt:installed}%" ]]
+synopsis: "Logging infrastructure for OCaml"
+description: """
+Logs provides a logging infrastructure for OCaml. Logging is performed
+on sources whose reporting level can be set independently. Log message
+report is decoupled from logging and is handled by a reporter.
+
+A few optional log reporters are distributed with the base library and
+the API easily allows to implement your own.
+
+`Logs` depends only on the `result` compatibility package. The
+optional `Logs_fmt` reporter on OCaml formatters depends on [Fmt][fmt].
+The optional `Logs_browser` reporter that reports to the web browser
+console depends on [js_of_ocaml][jsoo]. The optional `Logs_cli` library
+that provides command line support for controlling Logs depends on
+[`Cmdliner`][cmdliner]. The optional `Logs_lwt` library that provides Lwt logging
+functions depends on [`Lwt`][lwt]
+
+Logs and its reporters are distributed under the ISC license.
+
+[fmt]: http://erratique.ch/software/fmt
+[jsoo]: http://ocsigen.org/js_of_ocaml/
+[cmdliner]: http://erratique.ch/software/cmdliner
+[lwt]: http://ocsigen.org/lwt/"""
+url {
+  src: "http://erratique.ch/software/logs/releases/logs-0.6.2.tbz"
+  checksum: "md5=19f824c02c83c6dddc3bfb6459e4743e"
+}

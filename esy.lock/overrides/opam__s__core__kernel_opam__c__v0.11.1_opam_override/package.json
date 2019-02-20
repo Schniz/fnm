@@ -1,5 +1,5 @@
 {
-  "build": [
+  "build": [ 
     [
       "bash",
       "-c",

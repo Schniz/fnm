@@ -7,6 +7,6 @@
    (name Fnm)
    ; Other libraries list this name in their package.json 'require' field to use this library.
    (public_name fnm.lib)
-   (libraries  str core lwt lwt.unix lambdasoup semver )
+   (libraries  str core lwt lwt.unix lambdasoup semver cohttp cohttp-lwt cohttp-lwt-unix )
    (preprocess ( pps lwt_ppx ppx_let ))  ; From package.json preprocess field
 )
