@@ -31,8 +31,8 @@ module FNM_NODE_DIST_MIRROR =
   EnvVar({
     type t = string;
     let name = "FNM_NODE_DIST_MIRROR";
-    let doc = "https://nodejs.org/dist/ mirror";
-    let default = "https://nodejs.org/dist/";
+    let doc = "http://nodejs.org/dist/ mirror";
+    let default = "http://nodejs.org/dist/";
     let parse = ensureTrailingBackslash;
     let unparse = ensureTrailingBackslash;
   });
