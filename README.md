@@ -28,6 +28,21 @@ For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](
 curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash
 ```
 
+#### Parameters
+
+`--install-dir`
+
+Set a custom directory for fnm to be installed. The default is `$HOME/.fnm`.
+
+`--skip-shell`
+
+Skip appending shell specific loader to shell config file, based on the current user shell, defined in `$SHELL`. e.g. for Bash, `$HOME/.bashrc`. `$HOME/.zshrc` for Zsh. For Fish - `$HOME/.config/fish/config.fish`
+
+Example: 
+```bash
+curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash --install-dir "./.fnm" --skip-shell
+```
+
 ### Manually
 
 - Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system

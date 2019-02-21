@@ -12,6 +12,35 @@ else
   exit 1
 fi
 
+INSTALL_DIR="$HOME/.fnm"
+
+# Parse Flags
+parse_args() {
+  while [[ $# -gt 0 ]]
+  do
+  key="$1"
+
+  case $key in
+	  -d|--install-dir)
+	  INSTALL_DIR="$2"
+	  shift # past argument
+	  shift # past value
+	  ;;
+	  -s|--skip-shell)
+	  SKIP_SHELL="true"
+	  shift # past argument
+	  ;;
+	  *)
+	  echo "Unrecognized argument $key"
+	  exit 1
+	  ;;
+  esac
+  done
+}
+
+parse_args "$@"
+
+
 get_latest_release() {
   # Taken from https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c
   curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
@@ -26,11 +55,11 @@ download_fnm() {
 
   echo "Downloading $URL..."
 
-  mkdir -p $HOME/.fnm &> /dev/null
+  mkdir -p $INSTALL_DIR &> /dev/null
   curl --progress-bar -L $URL -o $DOWNLOAD_DIR/$FILENAME.zip
   unzip -q $DOWNLOAD_DIR/$FILENAME.zip -d $DOWNLOAD_DIR
-  mv $DOWNLOAD_DIR/$FILENAME/fnm $HOME/.fnm/fnm
-  chmod u+x $HOME/.fnm/fnm
+  mv $DOWNLOAD_DIR/$FILENAME/fnm $INSTALL_DIR/fnm
+  chmod u+x $INSTALL_DIR/fnm
 }
 
 check_dependencies() {
@@ -112,4 +141,6 @@ setup_shell() {
 
 check_dependencies
 download_fnm
-setup_shell
+if [ "$SKIP_SHELL" != "true" ]; then 
+  setup_shell
+fi
