@@ -116,7 +116,11 @@ setup_shell() {
     echo 'eval (fnm env --multi --fish)' >> $CONF_FILE
 
   elif [ "$CURRENT_SHELL" == "bash" ]; then
-    CONF_FILE=$HOME/.bashrc
+    if [ "$OS" == "Darwin" ]; then
+      CONF_FILE=$HOME/.profile
+    else
+      CONF_FILE=$HOME/.bashrc
+    fi
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
