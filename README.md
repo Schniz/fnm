@@ -38,7 +38,8 @@ Set a custom directory for fnm to be installed. The default is `$HOME/.fnm`.
 
 Skip appending shell specific loader to shell config file, based on the current user shell, defined in `$SHELL`. e.g. for Bash, `$HOME/.bashrc`. `$HOME/.zshrc` for Zsh. For Fish - `$HOME/.config/fish/config.fish`
 
-Example: 
+Example:
+
 ```bash
 curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash --install-dir "./.fnm" --skip-shell
 ```
@@ -90,7 +91,6 @@ Prints the required shell commands in order to configure your shell, Bash compli
 
 ## Future Plans
 
-- [ ] Feature: make versions complete the latest: `10` would infer the latest minor and patch versions of node 10. `10.1` would infer the latest patch version of node 10.1
 - [ ] Feature: `fnm use --install`
 - [ ] Feature: `fnm install lts`?
 - [ ] OSX: Add to homebrew?

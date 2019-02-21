@@ -1,3 +1,32 @@
+## v1.5.0 (2019-02-21)
+
+#### New Feature 🎉
+
+- [#60](https://github.com/Schniz/fnm/pull/60) Disable colors for non-tty devices ([@Schniz](https://github.com/Schniz))
+- [#48](https://github.com/Schniz/fnm/pull/48) Add parameters to the install script, enabling custom installs (`--install-dir` and `--skip-shell`) ([@from-nibly](https://github.com/from-nibly))
+- [#54](https://github.com/Schniz/fnm/pull/54) Infer complete semver (`vX.X.X`) out of partial input (`vX`/`vX.X`). ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#58](https://github.com/Schniz/fnm/pull/58) Adding check for OSX during writing for bash shell ([@maxknee](https://github.com/maxknee))
+- [#56](https://github.com/Schniz/fnm/pull/56) Correct status code on `install` failures ([@ranyitz](https://github.com/ranyitz))
+
+#### Internal 🛠
+
+- [#55](https://github.com/Schniz/fnm/pull/55) Make tests faster by using cnpmjs as Node.js mirror in tests ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#49](https://github.com/Schniz/fnm/pull/49) Add a `--fnm-dir` option to `fnm env` ([@Schniz](https://github.com/Schniz))
+- [#50](https://github.com/Schniz/fnm/pull/50) Added CHANGELOG ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 4
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Jordan Davidson ([@from-nibly](https://github.com/from-nibly))
+- Max Knee ([@maxknee](https://github.com/maxknee))
+- Ran Yitzhaki ([@ranyitz](https://github.com/ranyitz))
+
 ## v1.4.0 (2019-02-18)
 
 #### New Feature 🎉
