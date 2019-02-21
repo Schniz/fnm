@@ -64,10 +64,6 @@ let makeRequest = url =>
   );
 
 let download = (url, ~into) => {
-  let%lwt response =
-    System.unix_exec(
-      "curl",
-      ~args=[|url, "-L", "-D", "-", "--silent", "-o", into|],
-    );
-  response |> parseResponse |> verifyStatus;
+  let%lwt _ = makeRequest(url) >>= (({body}) => Fs.writeFile(into, body));
+  Lwt.return();
 };
