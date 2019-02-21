@@ -20,11 +20,7 @@ let rec makeTemporarySymlink = () => {
     let%lwt suggestedName = makeTemporarySymlink();
     Lwt.return(suggestedName);
   } else {
-    let%lwt _ =
-      Lwt_unix.symlink(
-        Filename.concat(Directories.defaultVersion, "installation"),
-        suggestedName,
-      );
+    let%lwt _ = Lwt_unix.symlink(Directories.defaultVersion, suggestedName);
     Lwt.return(suggestedName);
   };
 };
