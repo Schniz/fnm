@@ -1,5 +1,5 @@
 {
-  "checksum": "b320babfc52df910a5bce15c1384fd54",
+  "checksum": "ee02dd9eff49793a9d5b7b685b6c8108",
   "root": "fnm@link:./package.json",
   "node": {
     "yup@0.26.10@d41d8cd9": {
@@ -3809,8 +3809,8 @@
         "refmterr@3.1.10@d41d8cd9",
         "pesy@0.4.1@d41d8cd9",
         "ocaml@4.6.10@d41d8cd9",
-        "@reason-native/rely@1.1.0@d41d8cd9",
-        "@reason-native/pastel@0.1.0@d41d8cd9",
+        "@reason-native/rely@1.2.0@d41d8cd9",
+        "@reason-native/pastel@0.2.0@d41d8cd9",
         "@reason-native/console@0.0.3@d41d8cd9",
         "@opam/semver@opam:0.1.0@595ed2e0",
         "@opam/ppx_let@opam:v0.11.0@15f51b1c",
@@ -5403,35 +5403,35 @@
       "dependencies": ["any-observable@0.3.0@d41d8cd9"],
       "devDependencies": []
     },
-    "@reason-native/rely@1.1.0@d41d8cd9": {
-      "id": "@reason-native/rely@1.1.0@d41d8cd9",
+    "@reason-native/rely@1.2.0@d41d8cd9": {
+      "id": "@reason-native/rely@1.2.0@d41d8cd9",
       "name": "@reason-native/rely",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://registry.npmjs.org/@reason-native/rely/-/rely-1.1.0.tgz#sha1:f60e228c997d7c24b660624db647a1ffac9a113a"
+          "archive:https://registry.npmjs.org/@reason-native/rely/-/rely-1.2.0.tgz#sha1:8be65108fd1e6cd2fc5ebc1acf4cb3fdb24b097e"
         ]
       },
       "overrides": [],
       "dependencies": [
         "refmterr@3.1.10@d41d8cd9",
         "ocaml@4.6.10@d41d8cd9",
-        "@reason-native/pastel@0.1.0@d41d8cd9",
+        "@reason-native/pastel@0.2.0@d41d8cd9",
         "@reason-native/file-context-printer@0.0.2@d41d8cd9",
         "@opam/dune@opam:1.7.1@6f40bfee",
         "@esy-ocaml/reason@3.4.0@d41d8cd9"
       ],
       "devDependencies": []
     },
-    "@reason-native/pastel@0.1.0@d41d8cd9": {
-      "id": "@reason-native/pastel@0.1.0@d41d8cd9",
+    "@reason-native/pastel@0.2.0@d41d8cd9": {
+      "id": "@reason-native/pastel@0.2.0@d41d8cd9",
       "name": "@reason-native/pastel",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://registry.npmjs.org/@reason-native/pastel/-/pastel-0.1.0.tgz#sha1:2b262a654b8d807215df74768e628e9b05b3f5e3"
+          "archive:https://registry.npmjs.org/@reason-native/pastel/-/pastel-0.2.0.tgz#sha1:90d6afacf90db0350705c08d151043ca96dcea10"
         ]
       },
       "overrides": [],
@@ -5455,7 +5455,7 @@
       "overrides": [],
       "dependencies": [
         "ocaml@4.6.10@d41d8cd9",
-        "@reason-native/pastel@0.1.0@d41d8cd9",
+        "@reason-native/pastel@0.2.0@d41d8cd9",
         "@opam/re@opam:1.7.3@83095efd",
         "@opam/dune@opam:1.7.1@6f40bfee",
         "@esy-ocaml/reason@3.4.0@d41d8cd9"
