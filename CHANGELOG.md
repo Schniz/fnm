@@ -1,3 +1,13 @@
+## v1.5.1 (2019-02-22)
+
+#### Bugfix 🐛
+
+- [#61](https://github.com/Schniz/fnm/pull/61) Fix a bug where `fnm env --multi` didn't used the default alias ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.5.0 (2019-02-21)
 
 #### New Feature 🎉
