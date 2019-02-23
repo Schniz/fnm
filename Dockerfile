@@ -1,6 +1,6 @@
 FROM frolvlad/alpine-glibc
 
-RUN apk add --no-cache nodejs bash npm curl g++ make m4 patch gmp-dev perl git jq
+RUN apk add --no-cache nodejs bash npm curl g++ make m4 patch gmp-dev perl git jq libressl-dev
 ADD .ci/shasum /usr/bin/shasum
 
 USER root
