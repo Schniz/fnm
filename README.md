@@ -80,7 +80,6 @@ Prints the required shell commands in order to configure your shell, Bash compli
 - [ ] Feature: `fnm install lts`?
 - [ ] OSX: Add to homebrew?
 - [ ] Windows Support?
-- [ ] Linux: Replace `curl` usage with `cohttp`/`ocurl` or something else which is statically-linkable
 - [ ] Linux: Replace `tar` with a statically linked library too (for ungzip + untar)
 
 ## Contributing
