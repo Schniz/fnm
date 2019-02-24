@@ -1,6 +1,8 @@
 #!/bin/bash
 
-OS=$(uname -a | cut -d" " -f 1)
+set -e
+
+OS=$(uname -s)
 
 if [ "$OS" == "Darwin" ]; then
   FILENAME="fnm-macos"
