@@ -1,6 +1,6 @@
 {
   "name": "fnm",
-  "version": "1.4.0",
+  "version": "1.5.1",
   "description": "Fast and simple Node.js version manager, built in ReasonML",
   "esy": {
     "build": "pesy",
@@ -88,8 +88,8 @@
     "@opam/ssl": "*",
     "@opam/lwt_ssl": "*",
     "@reason-native/console": "*",
-    "@reason-native/pastel": "*",
-    "@reason-native/rely": "*",
+    "@reason-native/pastel": "~0.2.0",
+    "@reason-native/rely": "~1.2.0",
     "@esy-ocaml/reason": "*",
     "@opam/lambdasoup": "*",
     "refmterr": "*",
