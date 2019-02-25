@@ -1,3 +1,8 @@
+open Lwt;
+open Cohttp;
+open Cohttp_lwt;
+open Cohttp_lwt_unix;
+
 type response = {
   body: string,
   status: int,
@@ -6,57 +11,29 @@ type response = {
 let body = response => response.body;
 let status = response => response.status;
 
-let rec getBody = listOfStrings =>
-  switch (listOfStrings) {
-  | [] => ""
-  | ["", ...rest] => String.concat("\n", rest)
-  | [_, ...xs] => getBody(xs)
-  };
-
-let getStatus = string =>
-  List.nth(String.split_on_char(' ', string), 1) |> int_of_string;
-
 exception Unknown_status_code(int, response);
 exception Not_found(response);
 exception Internal_server_error(response);
 
-let verifyStatus = response =>
-  switch (response.status) {
-  | 200 => Lwt.return(response)
-  | x when x / 100 == 4 => Lwt.fail(Not_found(response))
-  | x when x / 100 == 5 => Lwt.fail(Internal_server_error(response))
-  | x => Lwt.fail(Unknown_status_code(response.status, response))
-  };
+let rec makeRequest = url =>
+  Uri.of_string(url)
+  |> Cohttp_lwt_unix.Client.get
+  >>= (
+    ((resp, body)) => {
+      let status = resp |> Response.status;
+      let code_of_status = status |> Code.code_of_status;
+      let location = resp |> Response.headers |> Header.get_location;
 
-let rec skipRedirects = (~skipping=false, lines) =>
-  switch (skipping, lines) {
-  | (_, []) => failwith("Response is empty")
-  | (true, ["", ...xs]) => skipRedirects(~skipping=false, xs)
-  | (true, [x, ...xs]) => skipRedirects(~skipping=true, xs)
-  | (false, [x, ...xs])
-      when Str.first_chars(x, 4) == "HTTP" && getStatus(x) / 100 == 3 =>
-    skipRedirects(~skipping=true, xs)
-  | (false, xs) => xs
-  };
-
-let parseResponse = lines => {
-  let linesAfterRedirect = skipRedirects(lines);
-  let body = getBody(linesAfterRedirect);
-  let status = getStatus(linesAfterRedirect |> List.hd);
-  {body, status};
-};
-
-let makeRequest = url => {
-  let%lwt response =
-    System.unix_exec("curl", ~args=[|url, "-D", "-", "--silent"|]);
-  response |> parseResponse |> verifyStatus;
-};
+      switch (Code.is_redirection(code_of_status), location) {
+      | (true, Some(uri)) => makeRequest(Uri.to_string(uri))
+      | _ =>
+        let%lwt body = body |> Cohttp_lwt.Body.to_string;
+        Lwt.return({status: code_of_status, body});
+      };
+    }
+  );
 
 let download = (url, ~into) => {
-  let%lwt response =
-    System.unix_exec(
-      "curl",
-      ~args=[|url, "-L", "-D", "-", "--silent", "-o", into|],
-    );
-  response |> parseResponse |> verifyStatus;
+  let%lwt _ = makeRequest(url) >>= (({body}) => Fs.writeFile(into, body));
+  Lwt.return();
 };
