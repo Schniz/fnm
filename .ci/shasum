@@ -1,3 +1,16 @@
 #!/bin/bash
-shift 2
-sha1sum $@
+shift
+ALGO=$1
+shift
+case $ALGO in
+  1)
+    sha1sum $@
+    ;;
+  256)
+    sha256sum $@
+    ;;
+  *)
+    >&2 echo "Algorithm $ALGO not found"
+    exit 1
+    ;;
+esac
