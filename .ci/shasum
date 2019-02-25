@@ -1,3 +1,0 @@
-#!/bin/bash
-shift 2
-sha1sum $@

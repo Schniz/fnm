@@ -28,9 +28,9 @@ conflicts: [
 synopsis:
   "OCamlbuild is a build system with builtin rules to easily build most OCaml projects."
 depends: [
-  "ocaml" {>= "4.03" & < "4.08.0"}
+  "ocaml" {>= "4.03"}
 ]
 url {
-  src: "https://github.com/ocaml/ocamlbuild/archive/0.12.0.tar.gz"
-  checksum: "md5=442baa19470bd49150f153122e22907b"
+  src: "https://github.com/ocaml/ocamlbuild/archive/0.14.0.tar.gz"
+  checksum: "sha256=87b29ce96958096c0a1a8eeafeb6268077b2d11e1bf2b3de0f5ebc9cf8d42e78"
 }
