@@ -11,7 +11,39 @@ let mkdirp = destination =>
 module Shell = {
   type t =
     | Bash
+    | Zsh
     | Fish;
+
+  let infer = () => {
+    let processInfo = pid => {
+      switch%lwt (unix_exec("ps", ~args=[|"-o", "ppid,comm", pid|])) {
+      | [] => Lwt.return_none
+      | [_headers, line, ..._otherLines] =>
+        let psResult = String.split_on_char(' ', line |> String.trim);
+        let parentPid = List.nth(psResult, 0);
+        let executable = List.nth(psResult, 1) |> Filename.basename;
+        Lwt.return_some((parentPid, executable));
+      | [_, ...xs] => Lwt.return_none
+      };
+    };
+
+    let rec getShell = pid => {
+      switch%lwt (processInfo(pid)) {
+      | Some((_, "sh"))
+      | Some((_, "-sh"))
+      | Some((_, "-bash"))
+      | Some((_, "bash")) => Lwt.return_some(Bash)
+      | Some((_, "-zsh"))
+      | Some((_, "zsh")) => Lwt.return_some(Zsh)
+      | Some((_, "fish"))
+      | Some((_, "-fish")) => Lwt.return_some(Fish)
+      | Some((ppid, _)) => getShell(ppid)
+      | None => Lwt.return_none
+      };
+    };
+
+    getShell(Unix.getpid() |> string_of_int);
+  };
 };
 
 module NodeArch = {

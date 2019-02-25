@@ -6,13 +6,15 @@ module Commands = {
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
-  let env = (isFishShell, isMultishell, nodeDistMirror, fnmDir) =>
+  let env =
+      (isFishShell, isMultishell, nodeDistMirror, fnmDir, shell, useOnCd) =>
     Lwt_main.run(
       Env.run(
-        ~shell=Fnm.System.Shell.(isFishShell ? Fish : Bash),
+        ~forceShell=Fnm.System.Shell.(isFishShell ? Some(Fish) : shell),
         ~multishell=isMultishell,
         ~nodeDistMirror,
         ~fnmDir,
+        ~useOnCd,
       ),
     );
 };
@@ -149,6 +151,14 @@ let env = {
     Arg.(value & flag & info(["fish"], ~doc));
   };
 
+  let shell = {
+    open Fnm.System.Shell;
+    let doc = "Specifies a specific shell type. If omitted, it will be inferred based on the process tree. $(docv)";
+    let shellChoices =
+      Arg.enum([("fish", Fish), ("bash", Bash), ("zsh", Zsh)]);
+    Arg.(value & opt(some(shellChoices), None) & info(["shell"], ~doc));
+  };
+
   let nodeDistMirror = {
     let doc = "https://nodejs.org/dist mirror";
     Arg.(
@@ -172,6 +182,11 @@ let env = {
     Arg.(value & flag & info(["multi"], ~doc));
   };
 
+  let useOnCd = {
+    let doc = "Hook into the shell `cd` and automatically use the specified version for the project";
+    Arg.(value & flag & info(["use-on-cd"], ~doc));
+  };
+
   (
     Term.(
       const(Commands.env)
@@ -179,6 +194,8 @@ let env = {
       $ isMultishell
       $ nodeDistMirror
       $ fnmDir
+      $ shell
+      $ useOnCd
     ),
     Term.info("env", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
   );
