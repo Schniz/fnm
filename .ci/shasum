@@ -2,7 +2,7 @@
 shift
 ALGO=$1
 shift
-case $1 in
+case $ALGO in
   1)
     sha1sum $@
     ;;
@@ -10,7 +10,7 @@ case $1 in
     sha256sum $@
     ;;
   *)
-    >&2 echo "Algorithm $1 not found"
+    >&2 echo "Algorithm $ALGO not found"
     exit 1
     ;;
 esac
