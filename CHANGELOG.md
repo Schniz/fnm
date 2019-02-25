@@ -1,3 +1,23 @@
+## v1.6.0 (2019-02-25)
+
+#### New Feature 🎉
+
+- [#57](https://github.com/Schniz/fnm/pull/57) Switch to cohttp(lwt) instead of curl ([@tatchi](https://github.com/tatchi))
+
+#### Bugfix 🐛
+
+- [#64](https://github.com/Schniz/fnm/pull/64) Throw on errors in installation script ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#67](https://github.com/Schniz/fnm/pull/67) Use `perl-utils` instead of custom written `shasum` ([@Schniz](https://github.com/Schniz))
+- [#66](https://github.com/Schniz/fnm/pull/66) Use newer esy ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- [@tatchi](https://github.com/tatchi)
+
 ## v1.5.1 (2019-02-22)
 
 #### Bugfix 🐛
