@@ -24,7 +24,7 @@ let rec makeTemporarySymlink = () => {
   };
 };
 
-let rec printUseOnCd = (~shell) => {
+let rec printUseOnCd = (~shell) =>
   switch (shell) {
   | System.Shell.Bash => {|
     __fnmcd () {
@@ -41,8 +41,18 @@ let rec printUseOnCd = (~shell) => {
 
     alias cd=__fnmcd
   |}
-  | Fish =>
-    Printf.sprintf("# WARNING: use-on-cd isn't implemented for Fish yet")
+  | Fish => {|
+      function _fnm_autoload_hook --on-variable PWD --description 'Change Node version on directory change'
+        status --is-command-substitution; and return
+        if test -f .node-version
+          echo "fnm: Found .node-version"
+          fnm use
+        else if test -f .nvmrc
+          echo "fnm: Found .nvmrc"
+          fnm use
+        end
+      end
+    |}
   | Zsh => {|
       autoload -U add-zsh-hook
       _fnm_autoload_hook () {
@@ -60,58 +70,66 @@ let rec printUseOnCd = (~shell) => {
         && _fnm_autoload_hook
     |}
   };
-};
 
 let run =
-    (~forceShell as shell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd) => {
-  open Lwt;
-  open System.Shell;
+    (~forceShell as shell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd) =>
+  Lwt.(
+    System.Shell.(
+      {
+        let%lwt shell =
+          switch (shell) {
+          | None =>
+            switch%lwt (System.Shell.infer()) {
+            | Some(shell) => Lwt.return(shell)
+            | None => Lwt.fail_with("Can't infer shell type")
+            }
+          | Some(shell) => Lwt.return(shell)
+          };
 
-  let%lwt shell =
-    switch (shell) {
-    | None =>
-      switch%lwt (System.Shell.infer()) {
-      | Some(shell) => Lwt.return(shell)
-      | None => Lwt.fail_with("Can't infer shell type")
+        Random.self_init();
+
+        let%lwt path =
+          multishell
+            ? makeTemporarySymlink()
+            : Lwt.return(Directories.globalCurrentVersion);
+
+        switch (shell) {
+        | Bash
+        | Zsh =>
+          Printf.sprintf("export PATH=%s/bin:$PATH", path) |> Console.log;
+          Printf.sprintf(
+            "export %s=%s",
+            Config.FNM_MULTISHELL_PATH.name,
+            path,
+          )
+          |> Console.log;
+          Printf.sprintf("export %s=%s", Config.FNM_DIR.name, fnmDir)
+          |> Console.log;
+          Printf.sprintf(
+            "export %s=%s",
+            Config.FNM_NODE_DIST_MIRROR.name,
+            nodeDistMirror,
+          )
+          |> Console.log;
+        | Fish =>
+          Printf.sprintf("set PATH %s/bin $PATH;", path) |> Console.log;
+          Printf.sprintf("set %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
+          |> Console.log;
+          Printf.sprintf("set %s %s;", Config.FNM_DIR.name, fnmDir)
+          |> Console.log;
+          Printf.sprintf(
+            "set %s %s",
+            Config.FNM_NODE_DIST_MIRROR.name,
+            nodeDistMirror,
+          )
+          |> Console.log;
+        };
+
+        if (useOnCd) {
+          printUseOnCd(~shell) |> Console.log;
+        };
+
+        Lwt.return();
       }
-    | Some(shell) => Lwt.return(shell)
-    };
-
-  Random.self_init();
-
-  let%lwt path =
-    multishell
-      ? makeTemporarySymlink() : Lwt.return(Directories.globalCurrentVersion);
-
-  switch (shell) {
-  | Bash
-  | Zsh =>
-    Printf.sprintf("export PATH=%s/bin:$PATH", path) |> Console.log;
-    Printf.sprintf("export %s=%s", Config.FNM_MULTISHELL_PATH.name, path)
-    |> Console.log;
-    Printf.sprintf("export %s=%s", Config.FNM_DIR.name, fnmDir) |> Console.log;
-    Printf.sprintf(
-      "export %s=%s",
-      Config.FNM_NODE_DIST_MIRROR.name,
-      nodeDistMirror,
     )
-    |> Console.log;
-  | Fish =>
-    Printf.sprintf("set PATH %s/bin $PATH;", path) |> Console.log;
-    Printf.sprintf("set %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
-    |> Console.log;
-    Printf.sprintf("set %s %s;", Config.FNM_DIR.name, fnmDir) |> Console.log;
-    Printf.sprintf(
-      "set %s %s",
-      Config.FNM_NODE_DIST_MIRROR.name,
-      nodeDistMirror,
-    )
-    |> Console.log;
-  };
-
-  if (useOnCd) {
-    printUseOnCd(~shell) |> Console.log;
-  };
-
-  Lwt.return();
-};
+  );
