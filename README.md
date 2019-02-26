@@ -57,7 +57,7 @@ curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash -
   If you are using [fish shell](https://fishshell.com/), add this line to your `config.fish` file:
 
   ```fish
-  eval "(fnm env --multi)"
+  fnm env --multi | source
   ```
 
 ## Usage
