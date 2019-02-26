@@ -79,8 +79,8 @@ let run = (~forceShell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd) => {
     switch (forceShell) {
     | None =>
       switch%lwt (System.Shell.infer()) {
+      | None => Lwt.return(Bash)
       | Some(shell) => Lwt.return(shell)
-      | None => Lwt.fail_with("Can't infer shell type")
       }
     | Some(shell) => Lwt.return(shell)
     };

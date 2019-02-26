@@ -27,7 +27,7 @@ module Shell = {
       };
     };
 
-    let rec getShell = pid => {
+    let rec getShell = (~level=0, pid) => {
       switch%lwt (processInfo(pid)) {
       | Some((_, "sh"))
       | Some((_, "-sh"))
@@ -37,7 +37,8 @@ module Shell = {
       | Some((_, "zsh")) => Lwt.return_some(Zsh)
       | Some((_, "fish"))
       | Some((_, "-fish")) => Lwt.return_some(Fish)
-      | Some((ppid, _)) => getShell(ppid)
+      | Some((ppid, _)) when level < 10 => getShell(~level=level + 1, ppid)
+      | Some(_)
       | None => Lwt.return_none
       };
     };
