@@ -71,65 +71,55 @@ let rec printUseOnCd = (~shell) =>
     |}
   };
 
-let run =
-    (~forceShell as shell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd) =>
-  Lwt.(
-    System.Shell.(
-      {
-        let%lwt shell =
-          switch (shell) {
-          | None =>
-            switch%lwt (System.Shell.infer()) {
-            | Some(shell) => Lwt.return(shell)
-            | None => Lwt.fail_with("Can't infer shell type")
-            }
-          | Some(shell) => Lwt.return(shell)
-          };
+let run = (~forceShell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd) => {
+  open Lwt;
+  open System.Shell;
 
-        Random.self_init();
-
-        let%lwt path =
-          multishell
-            ? makeTemporarySymlink()
-            : Lwt.return(Directories.globalCurrentVersion);
-
-        switch (shell) {
-        | Bash
-        | Zsh =>
-          Printf.sprintf("export PATH=%s/bin:$PATH", path) |> Console.log;
-          Printf.sprintf(
-            "export %s=%s",
-            Config.FNM_MULTISHELL_PATH.name,
-            path,
-          )
-          |> Console.log;
-          Printf.sprintf("export %s=%s", Config.FNM_DIR.name, fnmDir)
-          |> Console.log;
-          Printf.sprintf(
-            "export %s=%s",
-            Config.FNM_NODE_DIST_MIRROR.name,
-            nodeDistMirror,
-          )
-          |> Console.log;
-        | Fish =>
-          Printf.sprintf("set PATH %s/bin $PATH;", path) |> Console.log;
-          Printf.sprintf("set %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
-          |> Console.log;
-          Printf.sprintf("set %s %s;", Config.FNM_DIR.name, fnmDir)
-          |> Console.log;
-          Printf.sprintf(
-            "set %s %s",
-            Config.FNM_NODE_DIST_MIRROR.name,
-            nodeDistMirror,
-          )
-          |> Console.log;
-        };
-
-        if (useOnCd) {
-          printUseOnCd(~shell) |> Console.log;
-        };
-
-        Lwt.return();
+  let%lwt shell =
+    switch (forceShell) {
+    | None =>
+      switch%lwt (System.Shell.infer()) {
+      | Some(shell) => Lwt.return(shell)
+      | None => Lwt.fail_with("Can't infer shell type")
       }
+    | Some(shell) => Lwt.return(shell)
+    };
+
+  Random.self_init();
+
+  let%lwt path =
+    multishell
+      ? makeTemporarySymlink() : Lwt.return(Directories.globalCurrentVersion);
+
+  switch (shell) {
+  | Bash
+  | Zsh =>
+    Printf.sprintf("export PATH=%s/bin:$PATH", path) |> Console.log;
+    Printf.sprintf("export %s=%s", Config.FNM_MULTISHELL_PATH.name, path)
+    |> Console.log;
+    Printf.sprintf("export %s=%s", Config.FNM_DIR.name, fnmDir) |> Console.log;
+    Printf.sprintf(
+      "export %s=%s",
+      Config.FNM_NODE_DIST_MIRROR.name,
+      nodeDistMirror,
     )
-  );
+    |> Console.log;
+  | Fish =>
+    Printf.sprintf("set PATH %s/bin $PATH;", path) |> Console.log;
+    Printf.sprintf("set %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
+    |> Console.log;
+    Printf.sprintf("set %s %s;", Config.FNM_DIR.name, fnmDir) |> Console.log;
+    Printf.sprintf(
+      "set %s %s",
+      Config.FNM_NODE_DIST_MIRROR.name,
+      nodeDistMirror,
+    )
+    |> Console.log;
+  };
+
+  if (useOnCd) {
+    printUseOnCd(~shell) |> Console.log;
+  };
+
+  Lwt.return();
+};
