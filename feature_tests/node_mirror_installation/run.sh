@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 eval `fnm env --node-dist-mirror="https://cnpmjs.org/dist"`
 
 fnm install v8.11.3

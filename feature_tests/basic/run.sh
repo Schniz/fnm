@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 eval $(fnm env)
 fnm install v8.11.3
 fnm use v8.11.3

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 eval `fnm env`
 
 echo "> Installing for the first time..."
