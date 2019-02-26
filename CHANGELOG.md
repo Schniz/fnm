@@ -1,3 +1,13 @@
+## v1.6.1 (2019-02-26)
+
+#### Bugfix 🐛
+
+- [#69](https://github.com/Schniz/fnm/pull/69) Fix version inference by throwing on http 404 again ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.6.0 (2019-02-25)
 
 #### New Feature 🎉
