@@ -11,9 +11,12 @@ type response = {
 let body = response => response.body;
 let status = response => response.status;
 
-exception Unknown_status_code(int, response);
 exception Not_found(response);
-exception Internal_server_error(response);
+
+let throwOnKnownErrors =
+  fun
+  | {status: 404} as r => Lwt.fail(Not_found(r))
+  | r => Lwt.return(r);
 
 let rec makeRequest = url =>
   Uri.of_string(url)
@@ -28,7 +31,7 @@ let rec makeRequest = url =>
       | (true, Some(uri)) => makeRequest(Uri.to_string(uri))
       | _ =>
         let%lwt body = body |> Cohttp_lwt.Body.to_string;
-        Lwt.return({status: code_of_status, body});
+        throwOnKnownErrors({status: code_of_status, body});
       };
     }
   );

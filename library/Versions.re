@@ -221,6 +221,7 @@ let getRemoteLatestVersionByPrefix = prefix => {
   open Lwt;
 
   let%lwt remoteVersions = getRemoteVersions();
+
   let compatibleVersions =
     remoteVersions
     |> List.map(x => x.name)

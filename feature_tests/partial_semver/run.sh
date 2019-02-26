@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 eval `fnm env --multi`
 
 fnm install 6 # no new versions would be issued for this unsupported version
