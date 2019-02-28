@@ -74,6 +74,7 @@ module Aliases = {
            versionName:
              Filename.concat(Directories.aliases, alias)
              |> Fs.realpath
+             |> Filename.dirname
              |> Filename.basename,
          };
        })
