@@ -1,10 +1,9 @@
 open Fnm;
 
-let symlinkExists = path => {
+let symlinkExists = path =>
   try%lwt (Lwt_unix.lstat(path) |> Lwt.map(_ => true)) {
   | _ => Lwt.return(false)
   };
-};
 
 let rec makeTemporarySymlink = () => {
   let suggestedName =
@@ -25,8 +24,66 @@ let rec makeTemporarySymlink = () => {
   };
 };
 
-let run = (~shell, ~multishell, ~nodeDistMirror, ~fnmDir) => {
+let rec printUseOnCd = (~shell) =>
+  switch (shell) {
+  | System.Shell.Bash => {|
+    __fnmcd () {
+      cd $@
+
+      if [[ -f .node-version && .node-version ]]; then
+        echo "fnm: Found .node-version"
+        fnm use
+      elif [[ -f .nvmrc && .nvmrc ]]; then
+        echo "fnm: Found .nvmrc"
+        fnm use
+      fi
+    }
+
+    alias cd=__fnmcd
+  |}
+  | Fish => {|
+      function _fnm_autoload_hook --on-variable PWD --description 'Change Node version on directory change'
+        status --is-command-substitution; and return
+        if test -f .node-version
+          echo "fnm: Found .node-version"
+          fnm use
+        else if test -f .nvmrc
+          echo "fnm: Found .nvmrc"
+          fnm use
+        end
+      end
+    |}
+  | Zsh => {|
+      autoload -U add-zsh-hook
+      _fnm_autoload_hook () {
+        if [[ -f .node-version && -r .node-version ]]; then
+          echo "fnm: Found .node-version"
+          fnm use
+          elsif
+        elif [[ -f .nvmrc && -r .nvmrc ]]; then
+          echo "fnm: Found .nvmrc"
+          fnm use
+        fi
+      }
+
+      add-zsh-hook chpwd _fnm_autoload_hook \
+        && _fnm_autoload_hook
+    |}
+  };
+
+let run = (~forceShell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd) => {
   open Lwt;
+  open System.Shell;
+
+  let%lwt shell =
+    switch (forceShell) {
+    | None =>
+      switch%lwt (System.Shell.infer()) {
+      | None => Lwt.return(Bash)
+      | Some(shell) => Lwt.return(shell)
+      }
+    | Some(shell) => Lwt.return(shell)
+    };
 
   Random.self_init();
 
@@ -35,7 +92,8 @@ let run = (~shell, ~multishell, ~nodeDistMirror, ~fnmDir) => {
       ? makeTemporarySymlink() : Lwt.return(Directories.globalCurrentVersion);
 
   switch (shell) {
-  | System.Shell.Bash =>
+  | Bash
+  | Zsh =>
     Printf.sprintf("export PATH=%s/bin:$PATH", path) |> Console.log;
     Printf.sprintf("export %s=%s", Config.FNM_MULTISHELL_PATH.name, path)
     |> Console.log;
@@ -46,7 +104,7 @@ let run = (~shell, ~multishell, ~nodeDistMirror, ~fnmDir) => {
       nodeDistMirror,
     )
     |> Console.log;
-  | System.Shell.Fish =>
+  | Fish =>
     Printf.sprintf("set PATH %s/bin $PATH;", path) |> Console.log;
     Printf.sprintf("set %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
     |> Console.log;
@@ -57,6 +115,10 @@ let run = (~shell, ~multishell, ~nodeDistMirror, ~fnmDir) => {
       nodeDistMirror,
     )
     |> Console.log;
+  };
+
+  if (useOnCd) {
+    printUseOnCd(~shell) |> Console.log;
   };
 
   Lwt.return();
