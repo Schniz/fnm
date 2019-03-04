@@ -1,3 +1,13 @@
+## v1.7.0 (2019-03-04)
+
+#### New Feature 🎉
+
+- [#68](https://github.com/Schniz/fnm/pull/68) Infer shells automatically, and `use` versions based on the current working directory (optional) ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.6.2 (2019-03-04)
 
 #### Bugfix 🐛
