@@ -1,3 +1,17 @@
+## v1.6.2 (2019-03-04)
+
+#### Bugfix 🐛
+
+- [#72](https://github.com/Schniz/fnm/pull/72) Fix alias paths ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#70](https://github.com/Schniz/fnm/pull/70) Fix installation script parameters docs ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.6.1 (2019-02-26)
 
 #### Bugfix 🐛

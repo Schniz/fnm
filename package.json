@@ -1,6 +1,6 @@
 {
   "name": "fnm",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Fast and simple Node.js version manager, built in ReasonML",
   "esy": {
     "build": "pesy",
@@ -71,7 +71,8 @@
     "bootstrap": ".ci/bootstrap",
     "test": "esy x TestFnm.exe",
     "fmt": "bash -c 'refmt --in-place {library,executable,test}/*.re'",
-    "changelog": "bash -c 'esy lerna-changelog --from=v1.0.0 > CHANGELOG.md'"
+    "changelog": "bash -c 'esy lerna-changelog --from=v1.0.0 --next-version=${NEXT_VERSION-Unreleased} > CHANGELOG.md'",
+    "version:prepare": "node ./.ci/prepare-version.js"
   },
   "license": "GPL-3.0",
   "dependencies": {
