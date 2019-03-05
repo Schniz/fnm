@@ -25,7 +25,16 @@ if hash zsh 2>/dev/null; then
       exit 1
     fi
 
-    cd app
+    cd nvmrc
+
+    NODE_VERSION=$(node -v)
+    if [ "$NODE_VERSION" != "v8.11.3" ]; then
+      echo "Failed: Node version ($NODE_VERSION) is not v8.11.3"
+      exit 1
+    fi
+
+    fnm use 6.11.3
+    cd ../dot_node_version
 
     NODE_VERSION=$(node -v)
     if [ "$NODE_VERSION" != "v8.11.3" ]; then
@@ -51,7 +60,16 @@ if hash fish 2>/dev/null; then
       exit 1
     end
 
-    cd app
+    cd nvmrc
+
+    set NODE_VERSION (node -v)
+    if test "$NODE_VERSION" != "v8.11.3"
+      echo "Failed: Node version ($NODE_VERSION) is not v8.11.3"
+      exit 1
+    end
+
+    fnm use 6.11.3
+    cd ../dot_node_version
 
     set NODE_VERSION (node -v)
     if test "$NODE_VERSION" != "v8.11.3"
@@ -73,7 +91,14 @@ bash -c '
     echo "Failed: Node version ($NODE_VERSION) is not v6.11.3"
     exit 1
   fi
-  cd app
+  cd nvmrc
+  NODE_VERSION=$(node -v)
+  if [ "$NODE_VERSION" != "v8.11.3" ]; then
+    echo "Failed: Node version ($NODE_VERSION) is not v8.11.3"
+    exit 1
+  fi
+  fnm use 6.11.3
+  cd ../dot_node_version
   NODE_VERSION=$(node -v)
   if [ "$NODE_VERSION" != "v8.11.3" ]; then
     echo "Failed: Node version ($NODE_VERSION) is not v8.11.3"
