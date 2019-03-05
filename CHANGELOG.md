@@ -1,3 +1,18 @@
+## v1.7.1 (2019-03-05)
+
+#### Bugfix 🐛
+
+- [#77](https://github.com/Schniz/fnm/pull/77) Fix "command not found: elsif" error ([@johnletey](https://github.com/johnletey))
+
+#### Internal 🛠
+
+- [#78](https://github.com/Schniz/fnm/pull/78) Add a test to `use-on-cd` when `.node-version` is found ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- John Letey ([@johnletey](https://github.com/johnletey))
+
 ## v1.7.0 (2019-03-04)
 
 #### New Feature 🎉
