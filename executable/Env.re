@@ -59,7 +59,6 @@ let rec printUseOnCd = (~shell) =>
         if [[ -f .node-version && -r .node-version ]]; then
           echo "fnm: Found .node-version"
           fnm use
-          elsif
         elif [[ -f .nvmrc && -r .nvmrc ]]; then
           echo "fnm: Found .nvmrc"
           fnm use
