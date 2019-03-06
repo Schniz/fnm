@@ -1,3 +1,13 @@
+## v1.7.2 (2019-03-06)
+
+#### Bugfix 🐛
+
+- [#79](https://github.com/Schniz/fnm/pull/79) Guard from more non-existent directories errors ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.7.1 (2019-03-05)
 
 #### Bugfix 🐛
@@ -64,8 +74,8 @@
 
 #### Committers: 2
 
+- Corentin Leruth ([@tatchi](https://github.com/tatchi))
 - Gal Schlezinger ([@Schniz](https://github.com/Schniz))
-- [@tatchi](https://github.com/tatchi)
 
 ## v1.5.1 (2019-02-22)
 
