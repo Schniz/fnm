@@ -35,4 +35,10 @@ let writeFile = (path, contents) => {
   Lwt.return();
 };
 
+let exists = path => {
+  try%lwt (Lwt_unix.file_exists(path)) {
+  | Unix.Unix_error(_, _, _) => Lwt.return(false)
+  };
+};
+
 let realpath = Filename.realpath;

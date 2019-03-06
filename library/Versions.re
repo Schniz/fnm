@@ -36,9 +36,13 @@ module Local = {
   let getLatestInstalledNameByPrefix = prefix => {
     open Lwt;
     let%lwt versions =
-      Fs.readdir(Directories.nodeVersions)
-      >|= List.filter(isVersionFitsPrefix(prefix))
-      >|= List.sort(flip(compare));
+      Lwt.catch(
+        () =>
+          Fs.readdir(Directories.nodeVersions)
+          >|= List.filter(isVersionFitsPrefix(prefix))
+          >|= List.sort(flip(compare)),
+        _ => Lwt.return_nil,
+      );
     switch (versions) {
     | [version, ...xs] => Lwt.return_some(version)
     | [] => Lwt.return_none
@@ -291,8 +295,8 @@ let parse = version => {
   let aliasPath = Aliases.toDirectory(version);
   let versionPath = Local.toDirectory(formattedVersion);
 
-  let%lwt aliasExists = Lwt_unix.file_exists(aliasPath)
-  and versionExists = Lwt_unix.file_exists(versionPath)
+  let%lwt aliasExists = Fs.exists(aliasPath)
+  and versionExists = Fs.exists(versionPath)
   and versionByPrefixPath =
     Local.getLatestInstalledNameByPrefix(formattedVersion);
 
