@@ -41,7 +41,7 @@ Skip appending shell specific loader to shell config file, based on the current 
 Example:
 
 ```bash
-curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash -s --install-dir "./.fnm" --skip-shell
+curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash -s -- --install-dir "./.fnm" --skip-shell
 ```
 
 ### Manually
