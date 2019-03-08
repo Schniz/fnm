@@ -115,7 +115,7 @@ setup_shell() {
     echo '' >> $CONF_FILE
     echo '# fnm' >> $CONF_FILE
     echo 'set PATH $HOME/.fnm $PATH' >> $CONF_FILE
-    echo 'fnm env --multi | source"' >> $CONF_FILE
+    echo 'fnm env --multi | source' >> $CONF_FILE
 
   elif [ "$CURRENT_SHELL" == "bash" ]; then
     if [ "$OS" == "Darwin" ]; then
