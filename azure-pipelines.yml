@@ -44,6 +44,7 @@ jobs:
   - script: brew install fish
   - template: .ci/esy-build-steps.yml
   - script: cp _build/default/executable/FnmApp.exe _build/fnm
+  - script: strip _build/fnm
   - script: ./feature_tests/run.sh $(pwd)/_build/fnm
   # - template: .ci/publish-build-cache.yml
   - task: PublishBuildArtifacts@1
