@@ -16,7 +16,8 @@ module EnvVar =
          },
        ) => {
   include M;
-  let getOpt = () => Sys.getenv_opt(name) |> Opt.map(parse);
+  let optValue = Sys.getenv_opt(name) |> Opt.map(parse);
+  let getOpt = () => optValue;
   let get = () => Opt.(getOpt() or default);
   let docInfo = {name, doc, default: unparse(default)};
 };
@@ -62,4 +63,38 @@ module FNM_MULTISHELL_PATH =
     let default = "";
   });
 
-let getDocs = () => [FNM_DIR.docInfo, FNM_NODE_DIST_MIRROR.docInfo];
+let parseBooleanOrDie = (~name, str) =>
+  switch (bool_of_string_opt(str)) {
+  | Some(boolean) => boolean
+  | None =>
+    let errorString =
+      <Pastel color=Pastel.Red>
+        <Pastel color=Pastel.Cyan> str </Pastel>
+        " isn't a valid option for "
+        <Pastel color=Pastel.Magenta> name </Pastel>
+        " which assumes a boolean value. Consider passing "
+        <Pastel color=Pastel.Cyan> "true" </Pastel>
+        " or "
+        <Pastel color=Pastel.Cyan> "false" </Pastel>
+        "."
+      </Pastel>;
+    Printf.eprintf("%s\n", errorString);
+    exit(1);
+  };
+
+module FNM_INTERACTIVE_CLI =
+  EnvVar({
+    type t = bool;
+    let default = Unix.(isatty(stdin) && isatty(stdout) && isatty(stderr));
+    let unparse = string_of_bool;
+    let name = "FNM_INTERACTIVE_CLI";
+    let doc = "Should the CLI be interactive? true/false";
+    let parse = parseBooleanOrDie(~name);
+  });
+
+let getDocs = () => [
+  FNM_DIR.docInfo,
+  FNM_NODE_DIST_MIRROR.docInfo,
+  FNM_MULTISHELL_PATH.docInfo,
+  FNM_INTERACTIVE_CLI.docInfo,
+];

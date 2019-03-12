@@ -31,6 +31,7 @@
         "ppx_let"
       ],
       "require": [
+        "pastel.lib",
         "str",
         "core",
         "lwt",
