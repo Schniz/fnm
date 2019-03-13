@@ -1,4 +1,19 @@
-## v1.7.2 (2019-03-06)
+## v1.8.0 (2019-03-13)
+
+#### Bugfix 🐛
+
+- [#83](https://github.com/Schniz/fnm/pull/83) fix: remove unmatched quote written in the fish config file ([@ThomasMarcel](https://github.com/ThomasMarcel))
+
+#### Internal 🛠
+
+- [#84](https://github.com/Schniz/fnm/pull/84) Strip binaries to make them smaller ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Thomas Alcala Schneider ([@ThomasMarcel](https://github.com/ThomasMarcel))
+
+## v1.7.2 (2019-03-07)
 
 #### Bugfix 🐛
 
