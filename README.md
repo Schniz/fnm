@@ -4,7 +4,7 @@
   <a href="https://dev.azure.com/galstar0385/fnm/_build/latest?definitionId=1?branchName=master"><img alt="Build Status" src="https://dev.azure.com/galstar0385/fnm/_apis/build/status/Schniz.fnm?branchName=master" /></a>
 </h1>
 
-> :rocket: Fast and simple Node.js version manager, built in ReasonML
+> :rocket: Fast and simple Node.js version manager, built in native ReasonML
 
 <div align="center">
   <img src="./docs/fnm.svg" alt="Blazing fast!">
@@ -12,7 +12,7 @@
 
 ## Features
 
-:sparkles: Single file, easy installation
+:sparkles: Single file, easy installation, instant startup
 
 :rocket: Built with speed in mind
 
