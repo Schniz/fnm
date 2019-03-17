@@ -69,17 +69,41 @@ let main = (~version as providedVersion, ~quiet) => {
   switchVersion(~version, ~quiet);
 };
 
-let run = (~version, ~quiet) =>
+let rec askIfInstall = (~version, ~quiet, retry) => {
+  let%lwt _ =
+    Lwt_io.write(
+      Lwt_io.stderr,
+      <Pastel color=Pastel.Red> "Do you want to install it? [y/n] " </Pastel>,
+    );
+  switch%lwt (Lwt_io.read_line(Lwt_io.stdin)) {
+  | "Y"
+  | "y" =>
+    let%lwt _ = Install.run(~version);
+    retry(~version, ~quiet);
+  | "N"
+  | "n" => Lwt_io.write_line(Lwt_io.stderr, "not installing!")
+  | _ =>
+    let%lwt _ =
+      Lwt_io.write_line(Lwt_io.stderr, "Invalid response. Please try again:");
+    askIfInstall(~version, ~quiet, retry);
+  };
+};
+
+let rec run = (~version, ~quiet) =>
   try%lwt (main(~version, ~quiet)) {
-  | Version_Not_Installed(version) =>
+  | Version_Not_Installed(versionString) =>
     log(
       ~quiet,
       <Pastel color=Pastel.Red>
         "The following version is not installed: "
-        version
+        versionString
       </Pastel>,
     );
-    exit(1);
+    if (Fnm.Config.FNM_INTERACTIVE_CLI.get()) {
+      askIfInstall(~version, ~quiet, run);
+    } else {
+      exit(1);
+    };
   | Dotfiles.Conflicting_Dotfiles_Found(v1, v2) =>
     log(
       ~quiet,
