@@ -1,3 +1,17 @@
+## v1.9.0 (2019-03-18)
+
+#### New Feature 🎉
+
+- [#86](https://github.com/Schniz/fnm/pull/86) Add support for interactive installation for use ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#85](https://github.com/Schniz/fnm/pull/85) Update README.md ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.8.0 (2019-03-13)
 
 #### Bugfix 🐛
