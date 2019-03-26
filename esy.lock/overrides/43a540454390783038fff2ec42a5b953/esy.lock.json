@@ -1,0 +1,16 @@
+{
+  "hash": "d10585b707b5ab54802c6c85154328fd",
+  "root": "root@path:./package.json",
+  "node": {
+    "root@path:./package.json": {
+      "record": {
+        "name": "root",
+        "version": "path:./package.json",
+        "source": "path:./package.json",
+        "files": [],
+        "opam": null
+      },
+      "dependencies": []
+    }
+  }
+}

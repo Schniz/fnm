@@ -100,7 +100,12 @@
     "@opam/lambdasoup": "*",
     "refmterr": "*",
     "ocaml": "~4.6.0",
-    "pesy": "*"
+    "pesy": "*",
+    "esy-openssl": "*"
+  },
+  "resolutions": {
+    "esy-openssl": "esy-packages/esy-openssl#100f884",
+    "@opam/ssl": "ulrikstrid/ocaml-ssl:ssl.opam#5921900"
   },
   "devDependencies": {
     "@opam/merlin": "*",

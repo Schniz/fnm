@@ -3995,6 +3995,22 @@
       ],
       "devDependencies": []
     },
+    "esy-openssl@archive:https://github.com/openssl/openssl/archive/OpenSSL_1_1_1a.tar.gz#sha1:0a7d7382e3e608fc037d4955a0ddad224acc1fc8@43a54045": {
+      "id":
+        "esy-openssl@archive:https://github.com/openssl/openssl/archive/OpenSSL_1_1_1a.tar.gz#sha1:0a7d7382e3e608fc037d4955a0ddad224acc1fc8@43a54045",
+      "name": "esy-openssl",
+      "version":
+        "archive:https://github.com/openssl/openssl/archive/OpenSSL_1_1_1a.tar.gz#sha1:0a7d7382e3e608fc037d4955a0ddad224acc1fc8",
+      "source": {
+        "type": "install",
+        "source": [
+          "archive:https://github.com/openssl/openssl/archive/OpenSSL_1_1_1a.tar.gz#sha1:0a7d7382e3e608fc037d4955a0ddad224acc1fc8"
+        ]
+      },
+      "overrides": [ "esy.lock/overrides/43a540454390783038fff2ec42a5b953" ],
+      "dependencies": [],
+      "devDependencies": []
+    },
     "esprima@4.0.1@d41d8cd9": {
       "id": "esprima@4.0.1@d41d8cd9",
       "name": "esprima",
@@ -5596,21 +5612,13 @@
         "ocaml@4.6.10@d41d8cd9", "@opam/base@opam:v0.12.0@72570ef9"
       ]
     },
-    "@opam/ssl@opam:0.5.7@893f9f78": {
-      "id": "@opam/ssl@opam:0.5.7@893f9f78",
+    "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#5921900@d41d8cd9": {
+      "id": "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#5921900@d41d8cd9",
       "name": "@opam/ssl",
-      "version": "opam:0.5.7",
+      "version": "github:ulrikstrid/ocaml-ssl:ssl.opam#5921900",
       "source": {
         "type": "install",
-        "source": [
-          "archive:https://opam.ocaml.org/cache/md5/47/47ce60f1a019ddb9c66c4f1c8b9ed862#md5:47ce60f1a019ddb9c66c4f1c8b9ed862",
-          "archive:https://github.com/savonet/ocaml-ssl/archive/0.5.7.tar.gz#md5:47ce60f1a019ddb9c66c4f1c8b9ed862"
-        ],
-        "opam": {
-          "name": "ssl",
-          "version": "0.5.7",
-          "path": "esy.lock/opam/ssl.0.5.7"
-        }
+        "source": [ "github:ulrikstrid/ocaml-ssl:ssl.opam#5921900" ]
       },
       "overrides": [],
       "dependencies": [
