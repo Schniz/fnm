@@ -40,19 +40,8 @@ parse_args() {
   done
 }
 
-parse_args "$@"
-
-
-get_latest_release() {
-  # Taken from https://gist.github.com/lukechilds/a83e1d7127b78fef38c2914c4ececc3c
-  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' |                                            # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
-}
-
 download_fnm() {
-  LATEST_RELEASE=$(get_latest_release Schniz/fnm)
-  URL=https://github.com/Schniz/fnm/releases/download/$LATEST_RELEASE/$FILENAME.zip
+  URL=https://github.com/Schniz/fnm/releases/latest/download/$FILENAME.zip
   DOWNLOAD_DIR=$(mktemp -d)
 
   echo "Downloading $URL..."
@@ -145,6 +134,7 @@ setup_shell() {
   echo "  source $CONF_FILE"
 }
 
+parse_args "$@"
 check_dependencies
 download_fnm
 if [ "$SKIP_SHELL" != "true" ]; then 
