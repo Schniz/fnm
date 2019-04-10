@@ -104,12 +104,12 @@ let run = (~forceShell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd) => {
     )
     |> Console.log;
   | Fish =>
-    Printf.sprintf("set PATH %s/bin $PATH;", path) |> Console.log;
-    Printf.sprintf("set %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
+    Printf.sprintf("set -gx PATH %s/bin $PATH;", path) |> Console.log;
+    Printf.sprintf("set -gx %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
     |> Console.log;
-    Printf.sprintf("set %s %s;", Config.FNM_DIR.name, fnmDir) |> Console.log;
+    Printf.sprintf("set -gx %s %s;", Config.FNM_DIR.name, fnmDir) |> Console.log;
     Printf.sprintf(
-      "set %s %s",
+      "set -gx %s %s",
       Config.FNM_NODE_DIST_MIRROR.name,
       nodeDistMirror,
     )
