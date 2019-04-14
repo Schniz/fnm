@@ -1,3 +1,15 @@
+## v1.9.1 (2019-04-14)
+
+#### Bugfix 🐛
+
+- [#91](https://github.com/Schniz/fnm/pull/91) Fix `fnm env` for fish shell. ([@hwartig](https://github.com/hwartig))
+- [#90](https://github.com/Schniz/fnm/pull/90) Installation script doesn't use GitHub API, but a link to the latest directly ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Harald Wartig ([@hwartig](https://github.com/hwartig))
+
 ## v1.9.0 (2019-03-18)
 
 #### New Feature 🎉
