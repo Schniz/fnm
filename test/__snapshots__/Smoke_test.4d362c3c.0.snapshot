@@ -3,4 +3,5 @@ export PATH=<sfwRoot>/current/bin:$PATH
 export FNM_MULTISHELL_PATH=<sfwRoot>/current
 export FNM_DIR=<sfwRoot>/
 export FNM_NODE_DIST_MIRROR=https://nodejs.org/dist
+export FNM_LOGLEVEL=all
 

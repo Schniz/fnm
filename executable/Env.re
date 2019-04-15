@@ -70,7 +70,8 @@ let rec printUseOnCd = (~shell) =>
     |}
   };
 
-let run = (~forceShell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd) => {
+let run =
+    (~forceShell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd, ~logLevel) => {
   open Lwt;
   open System.Shell;
 
@@ -103,11 +104,18 @@ let run = (~forceShell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd) => {
       nodeDistMirror,
     )
     |> Console.log;
+    Printf.sprintf(
+      "export %s=%s",
+      Config.FNM_LOGLEVEL.name,
+      Fnm.LogLevel.toString(logLevel),
+    )
+    |> Console.log;
   | Fish =>
     Printf.sprintf("set -gx PATH %s/bin $PATH;", path) |> Console.log;
     Printf.sprintf("set -gx %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
     |> Console.log;
-    Printf.sprintf("set -gx %s %s;", Config.FNM_DIR.name, fnmDir) |> Console.log;
+    Printf.sprintf("set -gx %s %s;", Config.FNM_DIR.name, fnmDir)
+    |> Console.log;
     Printf.sprintf(
       "set -gx %s %s",
       Config.FNM_NODE_DIST_MIRROR.name,
