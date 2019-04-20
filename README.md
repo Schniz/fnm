@@ -25,7 +25,7 @@
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
 
 ```bash
-curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash
+curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
 ```
 
 #### Parameters
@@ -41,7 +41,7 @@ Skip appending shell specific loader to shell config file, based on the current 
 Example:
 
 ```bash
-curl https://raw.githubusercontent.com/Schniz/fnm/master/.ci/install.sh | bash -s -- --install-dir "./.fnm" --skip-shell
+curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- --install-dir "./.fnm" --skip-shell
 ```
 
 ### Manually
