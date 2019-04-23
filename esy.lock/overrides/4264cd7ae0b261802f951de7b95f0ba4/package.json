@@ -1,0 +1,29 @@
+{
+  "version": "1.2.11",
+  "source": "https://downloads.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz#e6d119755acdf9104d7ba236b1242696940ed6dd",
+  "override": {
+    "buildsInSource": true,
+    "build": [
+      [
+        "./configure",
+        "--prefix=#{self.install}",
+        "#{os == 'windows' ? 'CC=x86_64-w64-mingw32-gcc' : ''}"
+      ],
+      "make",
+      "make install"
+    ],
+    "install": [
+      "make install"
+    ],
+    "exportedEnv": {
+      "ZLIB_INCLUDE_PATH": {
+        "val": "#{self.install / 'include'}",
+        "scope": "global"
+      },
+      "ZLIB_BIN_PATH": {
+        "val": "#{self.install / 'zlib'}",
+        "scope": "global"
+      }
+    }
+  }
+}
