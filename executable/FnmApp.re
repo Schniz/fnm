@@ -7,7 +7,15 @@ module Commands = {
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
   let env =
-      (isFishShell, isMultishell, nodeDistMirror, fnmDir, shell, useOnCd) =>
+      (
+        isFishShell,
+        isMultishell,
+        nodeDistMirror,
+        fnmDir,
+        shell,
+        useOnCd,
+        logLevel,
+      ) =>
     Lwt_main.run(
       Env.run(
         ~forceShell=Fnm.System.Shell.(isFishShell ? Some(Fish) : shell),
@@ -15,6 +23,7 @@ module Commands = {
         ~nodeDistMirror,
         ~fnmDir,
         ~useOnCd,
+        ~logLevel,
       ),
     );
 };
@@ -187,6 +196,22 @@ let env = {
     Arg.(value & flag & info(["use-on-cd"], ~doc));
   };
 
+  let logLevel = {
+    let doc = "The log level of fnm commands, can be 'quiet', 'error' or 'all'";
+    Arg.(
+      value
+      & opt(
+          enum([
+            ("quiet", Fnm.LogLevel.Quiet),
+            ("error", Fnm.LogLevel.Error),
+            ("all", Fnm.LogLevel.All),
+          ]),
+          Fnm.Config.FNM_LOGLEVEL.get(),
+        )
+      & info(["log-level"], ~doc)
+    );
+  };
+
   (
     Term.(
       const(Commands.env)
@@ -196,6 +221,7 @@ let env = {
       $ fnmDir
       $ shell
       $ useOnCd
+      $ logLevel
     ),
     Term.info("env", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
   );

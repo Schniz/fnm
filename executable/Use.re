@@ -6,7 +6,7 @@ exception Version_Not_Installed(string);
 
 let log = (~quiet, arg) =>
   if (!quiet) {
-    Console.log(arg);
+    Logger.log(arg);
   };
 
 let switchVersion = (~version, ~quiet) => {

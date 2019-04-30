@@ -63,6 +63,16 @@ module FNM_MULTISHELL_PATH =
     let default = "";
   });
 
+module FNM_LOGLEVEL =
+  EnvVar({
+    type t = LogLevel.t;
+    let parse = LogLevel.fromString;
+    let unparse = LogLevel.toString;
+    let name = "FNM_LOGLEVEL";
+    let doc = "The log level of fnm commands";
+    let default = LogLevel.All;
+  });
+
 let parseBooleanOrDie = (~name, str) =>
   switch (bool_of_string_opt(str)) {
   | Some(boolean) => boolean
@@ -97,4 +107,5 @@ let getDocs = () => [
   FNM_NODE_DIST_MIRROR.docInfo,
   FNM_MULTISHELL_PATH.docInfo,
   FNM_INTERACTIVE_CLI.docInfo,
+  FNM_LOGLEVEL.docInfo,
 ];

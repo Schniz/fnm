@@ -3,7 +3,7 @@ open Fnm;
 let mkDownloadsDir = () => {
   let exists = Lwt_unix.file_exists(Directories.downloads);
   if%lwt (exists |> Lwt.map(x => !x)) {
-    Console.log(
+    Logger.log(
       <Pastel>
         "Creating "
         <Pastel color=Pastel.Cyan> Directories.downloads </Pastel>
@@ -29,7 +29,7 @@ let main = (~version as versionName) => {
   let versionName = Versions.format(versionName);
   let%lwt _ = Versions.throwIfInstalled(versionName);
 
-  Console.log(
+  Logger.log(
     <Pastel>
       "Looking for node "
       <Pastel color=Pastel.Cyan> versionName </Pastel>
@@ -53,7 +53,7 @@ let main = (~version as versionName) => {
       versionName ++ Versions.Remote.downloadFileSuffix,
     );
 
-  Console.log(
+  Logger.log(
     <Pastel>
       "Downloading "
       <Pastel color=Pastel.Cyan> filepath </Pastel>
@@ -67,7 +67,7 @@ let main = (~version as versionName) => {
   let extractionDestination =
     Filename.concat(Directories.nodeVersions, versionName);
 
-  Console.log(
+  Logger.log(
     <Pastel>
       "Extracting "
       <Pastel color=Pastel.Cyan> tarDestination </Pastel>
@@ -85,7 +85,7 @@ let main = (~version as versionName) => {
 let run = (~version) =>
   try%lwt (main(~version)) {
   | Versions.No_Download_For_System(os, arch) =>
-    Console.log(
+    Logger.log(
       <Pastel>
         "Version exists, but can't find a file for your system:\n"
         "  OS:           "
@@ -97,7 +97,7 @@ let run = (~version) =>
     );
     exit(1);
   | Versions.Already_installed(version) =>
-    Console.log(
+    Logger.log(
       <Pastel>
         "Version "
         <Pastel color=Pastel.Cyan> version </Pastel>
@@ -106,7 +106,7 @@ let run = (~version) =>
     )
     |> Lwt.return
   | Versions.Version_not_found(version) =>
-    Console.log(
+    Logger.log(
       <Pastel>
         "Version "
         <Pastel color=Pastel.Cyan> version </Pastel>

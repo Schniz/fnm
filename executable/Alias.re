@@ -10,7 +10,7 @@ let run = (~name, ~version) => {
   let%lwt versionInstalled = Lwt_unix.file_exists(versionPath);
 
   if (!versionInstalled) {
-    Console.error(
+    Logger.error(
       <Pastel color=Pastel.Red>
         "Can't find a version installed in "
         versionPath
@@ -19,7 +19,7 @@ let run = (~name, ~version) => {
     exit(1);
   };
 
-  Console.log(
+  Logger.log(
     <Pastel>
       "Aliasing "
       <Pastel color=Pastel.Cyan> name </Pastel>

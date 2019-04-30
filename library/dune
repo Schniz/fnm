@@ -7,6 +7,6 @@
    (name Fnm)
    ; Other libraries list this name in their package.json 'require' field to use this library.
    (public_name fnm.lib)
-   (libraries  pastel.lib str core lwt ssl lwt_ssl lambdasoup semver cohttp cohttp-lwt cohttp-lwt-unix )
+   (libraries  pastel.lib str core lwt ssl lwt_ssl lambdasoup semver cohttp cohttp-lwt cohttp-lwt-unix console.lib )
    (preprocess ( pps lwt_ppx ppx_let ))  ; From package.json preprocess field
 )

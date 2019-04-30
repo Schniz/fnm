@@ -41,7 +41,8 @@
         "semver",
         "cohttp",
         "cohttp-lwt",
-        "cohttp-lwt-unix"
+        "cohttp-lwt-unix",
+        "console.lib"
       ],
       "name": "fnm.lib",
       "namespace": "Fnm"

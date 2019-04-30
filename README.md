@@ -80,7 +80,7 @@ Lists the installed Node versions.
 
 Lists the Node versions available to download remotely.
 
-### `fnm env [--multi] [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--use-on-cd] [--base-dir=DIR]`
+### `fnm env [--multi] [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--use-on-cd] [--base-dir=DIR] [--log-level=quiet|error|all]`
 
 Prints the required shell commands in order to configure your shell, Bash compliant by default.
 
