@@ -1,3 +1,18 @@
+## v1.10.0 (2019-05-01)
+
+#### New Feature 🎉
+
+- [#93](https://github.com/Schniz/fnm/pull/93) Add support for log level (Closes [#33](https://github.com/Schniz/fnm/issues/33)) ([@ohana54](https://github.com/ohana54))
+
+#### Documentation 📝
+
+- [#95](https://github.com/Schniz/fnm/pull/95) Shorten installation script url ([@vladimyr](https://github.com/vladimyr))
+
+#### Committers: 2
+
+- Dario Vladović ([@vladimyr](https://github.com/vladimyr))
+- Tomer Ohana ([@ohana54](https://github.com/ohana54))
+
 ## v1.9.1 (2019-04-14)
 
 #### Bugfix 🐛
