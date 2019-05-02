@@ -20,6 +20,14 @@
 
 ## Installation
 
+### Using Homebrew (OSX)
+
+```bash
+brew install Schniz/tap/fnm
+```
+
+[This is a custom tap I'm maintaining](https://github.com/Schniz/homebrew-tap), and will be used until fnm will move to the official one.
+
 ### Using a script
 
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
