@@ -11,8 +11,8 @@ build: [
 conflicts: [ "jbuilder" { = "1.0+beta19" } ]
 depends: [
   "ocaml" {>= "4.04.1"}
-  "base" {>= "v0.11" & < "v0.12"}
-  "stdio" {>= "v0.11" & < "v0.12"}
+  "base" {>= "v0.11"}
+  "stdio" {>= "v0.11"}
   "jbuilder" {build & >= "1.0+beta18.1"}
 ]
 synopsis: "Helper library for gathering system configuration"

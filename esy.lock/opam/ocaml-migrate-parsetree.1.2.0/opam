@@ -17,7 +17,7 @@ depends: [
   "result"
   "ppx_derivers"
   "dune" {build & >= "1.6.0"}
-  "ocaml" {>= "4.02.3"}
+  "ocaml" {>= "4.02.3" & < "4.08.0"}
 ]
 synopsis: "Convert OCaml parsetrees between different versions"
 description: """

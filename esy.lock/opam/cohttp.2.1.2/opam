@@ -1,0 +1,59 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+]
+synopsis: "An OCaml library for HTTP clients and servers"
+description: """
+Cohttp is an OCaml library for creating HTTP daemons. It has a portable
+HTTP parser, and implementations using various asynchronous programming
+libraries.
+
+See the cohttp-async, cohttp-lwt, cohttp-lwt-unix, cohttp-lwt-jsoo and
+cohttp-mirage libraries for concrete implementations for particular
+targets.
+
+You can implement other targets using the parser very easily. Look at the `IO`
+signature in `lib/s.mli` and implement that in the desired backend.
+
+You can activate some runtime debugging by setting `COHTTP_DEBUG` to any
+value, and all requests and responses will be written to stderr.  Further
+debugging of the connection layer can be obtained by setting `CONDUIT_DEBUG`
+to any value."""
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "dune" {build & >= "1.1.0"}
+  "re" {>= "1.7.2"}
+  "uri" {>= "2.0.0"}
+  "fieldslib"
+  "sexplib0"
+  "ppx_fields_conv" {>= "v0.9.0"}
+  "ppx_sexp_conv" {>= "v0.9.0"}
+  "stringext"
+  "base64" {>= "3.1.0"}
+  "fmt" {with-test}
+  "jsonm" {build}
+  "alcotest" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v2.1.2/cohttp-v2.1.2.tbz"
+  checksum: "md5=1bdde705d853175c67666b45bf3edc43"
+}

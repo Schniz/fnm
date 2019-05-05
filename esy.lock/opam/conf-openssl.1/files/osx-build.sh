@@ -1,5 +1,15 @@
 #!/bin/sh
 
+# Try just executing pkg-config openssl before looking
+# explicitly for Nix -> Homebrew -> MacPorts.
+# This handles the case where the user has set
+# PKG_CONFIG_PATH themselves.
+res=$(pkg-config openssl)
+if [ $? -eq 0 ]; then
+    echo $res
+    exit 0
+fi
+
 if [ -e "$HOME/.nix-profile/lib/pkgconfig/openssl.pc" ]; then
   # Nix on macOS
   res=$(env PKG_CONFIG_PATH=$HOME/.nix-profile/lib/pkgconfig pkg-config openssl)

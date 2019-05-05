@@ -1,0 +1,27 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: ["David Sheets" "Anil Madhavapeddy" "Hugo Heuzard"]
+synopsis: "A library for manipulation of MAC address representations"
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-ipaddr"
+doc: "https://mirage.github.io/ocaml-ipaddr/"
+bug-reports: "https://github.com/mirage/ocaml-ipaddr/issues"
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "dune" {build}
+  "sexplib0"
+  "ounit" {with-test}
+  "ppx_sexp_conv" {with-test}
+]
+conflicts: [ "ipaddr" {< "3.0.0"} ]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-ipaddr.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-ipaddr/releases/download/v3.1.0/ipaddr-v3.1.0.tbz"
+  checksum: "md5=471a594563bb9c3dd91ae912b5ffd6ed"
+}
