@@ -24,7 +24,7 @@ let rec makeTemporarySymlink = () => {
   };
 };
 
-let rec printUseOnCd = (~shell) =>
+let printUseOnCd = (~shell) =>
   switch (shell) {
   | System.Shell.Bash => {|
     __fnmcd () {
@@ -72,7 +72,6 @@ let rec printUseOnCd = (~shell) =>
 
 let run =
     (~forceShell, ~multishell, ~nodeDistMirror, ~fnmDir, ~useOnCd, ~logLevel) => {
-  open Lwt;
   open System.Shell;
 
   let%lwt shell =
