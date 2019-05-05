@@ -171,16 +171,25 @@ let endsWith = (~suffix, str) => {
 
 exception No_Download_For_System(System.NodeOS.t, System.NodeArch.t);
 
-let getCurrentVersion = () =>
+let getCurrentVersion = () => {
   switch (Fs.realpath(Directories.currentVersion)) {
   | installationPath =>
     let fullPath = Filename.dirname(installationPath);
     Some(
       Local.{fullPath, name: Core.Filename.basename(fullPath), aliases: []},
     );
-  | exception (Unix.Unix_error(_, _, _)) => None
+  | exception (Unix.Unix_error(_, _, _)) =>
+    switch (Fs.try_readlink(Directories.currentVersion)) {
+    | Ok(x)
+        when
+          Core.String.substr_index(x, ~pattern=Local.systemVersion.fullPath)
+          == Some(0) =>
+      Some(Local.systemVersion)
+    | Ok(_)
+    | Error(_) => None
+    }
   };
-
+};
 let getInstalledVersions = () => {
   let%lwt versions =
     Fs.readdir(Directories.nodeVersions) |> Lwt.map(List.sort(compare))
