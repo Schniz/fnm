@@ -1,0 +1,50 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/ocaml/dune"
+bug-reports: "https://github.com/ocaml/dune/issues"
+dev-repo: "git+https://github.com/ocaml/dune.git"
+license: "MIT"
+depends: [
+  "ocaml" {>= "4.02"}
+  "base-unix"
+  "base-threads"
+]
+build: [
+  # opam 2 sets OPAM_SWITCH_PREFIX, so we don't need a hardcoded path
+  ["ocaml" "configure.ml" "--libdir" lib] {opam-version < "2"}
+  ["ocaml" "bootstrap.ml"]
+  ["./boot.exe" "--release" "--subst"] {pinned}
+  ["./boot.exe" "--release" "-j" jobs]
+]
+conflicts: [
+  "jbuilder" {!= "transition"}
+  "odoc" {< "1.3.0"}
+]
+
+synopsis: "Fast, portable and opinionated build system"
+description: """
+dune is a build system that was designed to simplify the release of
+Jane Street packages. It reads metadata from "dune" files following a
+very simple s-expression syntax.
+
+dune is fast, it has very low-overhead and support parallel builds on
+all platforms. It has no system dependencies, all you need to build
+dune and packages using dune is OCaml. You don't need or make or bash
+as long as the packages themselves don't use bash explicitly.
+
+dune supports multi-package development by simply dropping multiple
+repositories into the same directory.
+
+It also supports multi-context builds, such as building against
+several opam roots/switches simultaneously. This helps maintaining
+packages across several versions of OCaml and gives cross-compilation
+for free.
+"""
+url {
+  src: "https://github.com/ocaml/dune/releases/download/1.9.1/dune-1.9.1.tbz"
+  checksum: [
+    "sha256=c9a1e258a14d96fd95fb525e7659c371e8b1d253905e3d39c5b2efa280b4927c"
+    "sha512=842d0aa7fbe97bc5a0fde974fa9ddd95d8e2f60a7018b60779cf782282e2bc362f4ae347cd7795b857a8e05ebb9d82f1236c0e4d1e7ec10d3b210028bc2058c1"
+  ]
+}

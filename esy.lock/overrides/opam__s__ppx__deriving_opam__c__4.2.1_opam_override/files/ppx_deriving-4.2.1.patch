@@ -1,0 +1,78 @@
+--- ./pkg/topkg.ml
++++ ./pkg/topkg.ml
+@@ -152,7 +152,63 @@
+ module Exts : Exts = struct
+   let interface = [".mli"; ".cmi"; ".cmti"]
+   let interface_opt = ".cmx" :: interface
+-  let c_library = if Sys.win32 then [".lib"] else [".a"]
++  let c_library =
++    match Sys.win32 with
++    | false -> [".a"]
++    | true ->
++      let input_line ch =
++        try
++          let s = input_line ch in
++          let len = String.length s in
++          if len > 0 && Sys.os_type = "Win32" && s.[len-1] = '\r' then
++            Some (String.sub s 0 (pred len))
++          else
++            Some s
++        with
++        | End_of_file -> None
++      in
++      let rec get_ext_lib ch =
++        match input_line ch with
++        | None -> ".a"
++        | Some s ->
++          let len = String.length s in
++          if len < 11 || s.[0] <> 'e' || String.sub s 0 9 <> "ext_lib: " then
++            get_ext_lib ch
++          else
++            String.sub s 9 (len - 9)
++      in
++      let get_ext_lib fln =
++        let ch = open_in fln in
++        let ch_closed = ref false in
++        try
++          let res = get_ext_lib ch in
++          ch_closed := true;
++          close_in ch ;
++          res
++        with
++        | x when !ch_closed = false ->
++          close_in_noerr ch;
++          raise x
++      in
++      let e_null = if Sys.win32 then " 2>NUL" else " 2>/dev/null" in
++      let fln = Filename.temp_file "get_ext" ".txt" in
++      let cleanup = lazy (try Sys.remove fln with Sys_error _ -> ()) in
++      try
++        let qfln = Filename.quote fln in
++        let cmd = "ocamlfind ocamlc -config > " ^ qfln ^ e_null in
++        let ec = Sys.command cmd in
++        if ec <> 0 then (
++          let cmd = "ocamlc -config > " ^ qfln ^ e_null in
++          let ec = Sys.command cmd in
++          if ec <> 0 then
++            failwith (Printf.sprintf "couldn't call ocamlc -config");
++        );
++        let res = get_ext_lib fln in
++        Lazy.force cleanup;
++        [res]
++      with
++      | x -> Lazy.force cleanup; raise x
++
+   let c_dll_library = if Sys.win32 then [".dll"] else [".so"]
+   let library = [".cma"; ".cmxa"; ".cmxs"] @ c_library
+   let module_library = (interface_opt @ library)
+@@ -258,7 +314,9 @@
+     let src, dst =
+       if not auto then src, dst else
+       let dst = match dst with
+-      | None -> Some (Filename.basename src)
++      | None ->
++        let src = if Sys.os_type <> "Win32" then src else src ^ ".exe" in
++        Some (Filename.basename src)
+       | Some _ as dst -> dst
+       in
+       let src = if Env.native then src ^ ".native" else src ^ ".byte" in

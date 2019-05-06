@@ -9,7 +9,7 @@ build: [make]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "merlin_extend"]
 depends: [
-  "ocaml" {>= "4.02.3"}
+  "ocaml" {>= "4.02.3" & < "4.08.0"}
   "ocamlfind" {build}
   "cppo" {build}
 ]

@@ -28,7 +28,8 @@
       "preprocess": [
         "pps",
         "lwt_ppx",
-        "ppx_let"
+        "ppx_let",
+        "ppx_deriving.show"
       ],
       "require": [
         "pastel.lib",
@@ -85,6 +86,7 @@
     "@opam/lwt": "*",
     "@opam/lwt_ppx": "*",
     "@opam/ppx_let": "*",
+    "@opam/ppx_deriving": "*",
     "@opam/cohttp": "*",
     "@opam/cohttp-lwt": "*",
     "@opam/cohttp-lwt-unix": "*",

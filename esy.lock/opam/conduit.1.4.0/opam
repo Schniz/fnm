@@ -11,8 +11,8 @@ bug-reports: "https://github.com/mirage/ocaml-conduit/issues"
 depends: [
   "ocaml" {>= "4.03.0"}
   "dune" {build}
-  "ppx_sexp_conv" {< "v0.12"}
-  "sexplib" {< "v0.12"}
+  "ppx_sexp_conv" {< "v0.13"}
+  "sexplib" {< "v0.13"}
   "astring"
   "uri"
   "result"

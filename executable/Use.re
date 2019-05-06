@@ -19,12 +19,14 @@ let switchVersion = (~version, ~quiet) => {
     switch (parsedVersion) {
     | Local(version) => Versions.Local.toDirectory(version) |> Lwt.return
     | Alias(alias) => Versions.Aliases.toDirectory(alias) |> Lwt.return
+    | System => Versions.Local.systemVersion.fullPath |> Lwt.return
     };
 
   let versionName =
     switch (parsedVersion) {
     | Local(v) => v
     | Alias(v) => v
+    | System => "system"
     };
 
   let destination = Filename.concat(versionPath, "installation");

@@ -1,0 +1,58 @@
+opam-version: "2.0"
+
+synopsis: "Promises and event-driven I/O"
+
+license: "MIT"
+homepage: "https://github.com/ocsigen/lwt"
+doc: "https://ocsigen.org/lwt/manual/"
+bug-reports: "https://github.com/ocsigen/lwt/issues"
+
+authors: [
+  "Jérôme Vouillon"
+  "Jérémie Dimino"
+]
+maintainer: [
+  "Anton Bachin <antonbachin@yahoo.com>"
+  "Mauricio Fernandez <mfp@acm.org>"
+  "Simon Cruanes <simon.cruanes.2007@m4x.org>"
+]
+dev-repo: "git+https://github.com/ocsigen/lwt.git"
+
+depends: [
+  "cppo" {build & >= "1.1.0"}
+  "dune" {build}
+  "mmap"  # mmap is needed as long as Lwt supports OCaml < 4.06.0.
+  "ocaml" {>= "4.02.0"}
+  "result" # result is needed as long as Lwt supports OCaml 4.02.
+  "seq" # seq is needed as long as Lwt supports OCaml < 4.07.0.
+
+  "bisect_ppx" {dev & >= "1.3.0"}
+  "ocamlfind" {dev & >= "1.7.3-1"}
+]
+depopts: [
+  "base-threads"
+  "base-unix"
+  "conf-libev"
+]
+
+conflicts: [
+  "ocaml-variants" {= "4.02.1+BER"}
+]
+
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+
+description: "A promise is a value that may become determined in the future.
+
+Lwt provides typed, composable promises. Promises that are resolved by I/O are
+resolved by Lwt in parallel.
+
+Meanwhile, OCaml code, including code creating and waiting on promises, runs in
+a single thread by default. This reduces the need for locks or other
+synchronization primitives. Code can be run in parallel on an opt-in basis."
+
+url {
+  src: "https://github.com/ocsigen/lwt/archive/4.2.1.tar.gz"
+  checksum: "md5=9d648386ca0a9978eb9487de36b781cc"
+}

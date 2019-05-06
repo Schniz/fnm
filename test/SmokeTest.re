@@ -1,6 +1,6 @@
 open TestFramework;
 
-describe("Smoke test", ({test}) => {
+describe("Smoke test", ({test, _}) => {
   test("Tests run!", ({expect}) =>
     expect.int(1).toBe(1)
   );

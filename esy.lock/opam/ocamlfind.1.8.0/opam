@@ -3,6 +3,7 @@ maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
 homepage:     "http://projects.camlcity.org/projects/findlib.html"
 bug-reports:  "https://gitlab.camlcity.org/gerd/lib-findlib/issues"
 dev-repo: "git+https://gitlab.camlcity.org/gerd/lib-findlib.git"
+patches: ["no-awk-check.patch"]
 build: [
   [
     "./configure"
@@ -15,6 +16,7 @@ build: [
     "-config"
     "%{lib}%/findlib.conf"
     "-no-custom"
+    "-no-camlp4" {!ocaml:preinstalled & ocaml:version >= "4.02.0"}
     "-no-topfind" {ocaml:preinstalled}
   ]
   [make "all"]
@@ -36,6 +38,7 @@ remove: [
     man
     "-config"
     "%{lib}%/findlib.conf"
+    "-no-camlp4" {!ocaml:preinstalled & ocaml:version >= "4.02.0"}
     "-no-topfind" {ocaml:preinstalled}
   ]
   [make "uninstall"]
@@ -56,6 +59,7 @@ authors: "Gerd Stolpmann <gerd@gerd-stolpmann.de>"
 extra-files: [
   ["ocamlfind.install" "md5=06f2c282ab52d93aa6adeeadd82a2543"]
   ["ocaml-stub" "md5=181f259c9e0bad9ef523e7d4abfdf87a"]
+  ["no-awk-check.patch" "md5=0378123bf1a45fccdea434c053ddb687"]
 ]
 url {
   src: "http://download.camlcity.org/download/findlib-1.8.0.tar.gz"

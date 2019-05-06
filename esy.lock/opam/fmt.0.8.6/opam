@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: [ "The fmt programmers" ]
+homepage: "https://erratique.ch/software/fmt"
+doc: "https://erratique.ch/software/fmt"
+dev-repo: "git+https://erratique.ch/repos/fmt.git"
+bug-reports: "https://github.com/dbuenzli/fmt/issues"
+tags: [ "string" "format" "pretty-print" "org:erratique" ]
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build & >= "0.9.0"}
+  # Can be removed once ocaml >= 4.07
+  "seq"
+  "stdlib-shims"
+]
+depopts: [ "base-unix" "cmdliner" ]
+conflicts: [ "cmdliner" {< "0.9.8"} ]
+build: [[
+  "ocaml" "pkg/pkg.ml" "build"
+          "--dev-pkg" "%{pinned}%"
+          "--with-base-unix" "%{base-unix:installed}%"
+          "--with-cmdliner" "%{cmdliner:installed}%" ]]
+
+synopsis: """OCaml Format pretty-printer combinators"""
+description: """\
+
+Fmt exposes combinators to devise `Format` pretty-printing functions.
+
+Fmt depends only on the OCaml standard library. The optional `Fmt_tty`
+library that allows to setup formatters for terminal color output
+depends on the Unix library. The optional `Fmt_cli` library that
+provides command line support for Fmt depends on [`Cmdliner`][cmdliner].
+
+Fmt is distributed under the ISC license.
+
+[cmdliner]: http://erratique.ch/software/cmdliner
+"""
+url {
+archive: "https://erratique.ch/software/fmt/releases/fmt-0.8.6.tbz"
+checksum: "5407789e5f0ea42272ca19353b1abfd3"
+}

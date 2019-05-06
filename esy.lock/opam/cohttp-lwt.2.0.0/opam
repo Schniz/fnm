@@ -27,10 +27,10 @@ bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
 depends: [
   "ocaml" {>= "4.04.1"}
   "dune" {build & >= "1.1.0"}
-  "cohttp" {>= "1.0.0"}
+  "cohttp" {>= "2.0.0"}
   "lwt" {>= "2.5.0"}
-  "sexplib0" {< "v0.12"}
-  "ppx_sexp_conv" {>= "v0.9.0" & < "v0.12"}
+  "sexplib0" {< "v0.13"}
+  "ppx_sexp_conv" {>= "v0.9.0" & < "v0.13"}
   "logs"
 ]
 build: [

@@ -23,7 +23,7 @@ module Shell = {
         let parentPid = List.nth(psResult, 0);
         let executable = List.nth(psResult, 1) |> Filename.basename;
         Lwt.return_some((parentPid, executable));
-      | [_, ...xs] => Lwt.return_none
+      | [_, ..._] => Lwt.return_none
       };
     };
 

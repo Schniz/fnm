@@ -19,17 +19,18 @@ post-messages: [
 depexts: [
   ["pkg-config"] {os-distribution = "debian"}
   ["pkg-config"] {os-distribution = "ubuntu"}
-  ["pkg-config"] {os-distribution = "archlinux"}
+  ["pkg-config"] {os-distribution = "arch"}
   ["pkgconfig"] {os-distribution = "fedora"}
   ["pkgconfig"] {os-distribution = "centos"}
   ["pkgconfig"] {os-distribution = "mageia"}
   ["pkgconfig"] {os-distribution = "rhel"}
-  ["pkgconfig"] {os-distribution = "oraclelinux"}
+  ["pkgconfig"] {os-distribution = "ol"}
   ["pkgconfig"] {os-distribution = "alpine"}
   ["devel/pkgconf"] {os = "freebsd"}
   ["devel/pkgconf"] {os = "openbsd"}
   ["pkg-config"] {os = "macos" & os-distribution = "homebrew"}
   ["pkgconf"] {os = "freebsd"}
+  ["pkg-config"] {os-distribution = "cygwinports"}
 ]
 synopsis: "Virtual package relying on pkg-config installation"
 description: """
