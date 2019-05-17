@@ -6,6 +6,7 @@ module Commands = {
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
+  let uninstall = version => Lwt_main.run(Uninstall.run(~version));
   let env =
       (
         isFishShell,
@@ -71,6 +72,23 @@ let install = {
   (
     Term.(const(Commands.install) $ selectedVersion),
     Term.info("install", ~version, ~doc, ~exits=Term.default_exits, ~man),
+  );
+};
+
+let uninstall = {
+  let doc = "Uninstall a node version";
+  let man = [];
+
+  let selectedVersion = {
+    let doc = "Uninstall the node version specified in $(docv).";
+    Arg.(
+      value & pos(0, some(string), None) & info([], ~docv="VERSION", ~doc)
+    );
+  };
+
+  (
+    Term.(const(Commands.uninstall) $ selectedVersion),
+    Term.info("uninstall", ~version, ~doc, ~exits=Term.default_exits, ~man),
   );
 };
 
@@ -248,6 +266,6 @@ let defaultCmd = {
 let _ =
   Term.eval_choice(
     defaultCmd,
-    [install, use, alias, listLocal, listRemote, env],
+    [install, uninstall, use, alias, listLocal, listRemote, env],
   )
   |> Term.exit;
