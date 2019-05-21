@@ -42,9 +42,9 @@ packages across several versions of OCaml and gives cross-compilation
 for free.
 """
 url {
-  src: "https://github.com/ocaml/dune/releases/download/1.9.1/dune-1.9.1.tbz"
+  src: "https://github.com/ocaml/dune/releases/download/1.9.3/dune-1.9.3.tbz"
   checksum: [
-    "sha256=c9a1e258a14d96fd95fb525e7659c371e8b1d253905e3d39c5b2efa280b4927c"
-    "sha512=842d0aa7fbe97bc5a0fde974fa9ddd95d8e2f60a7018b60779cf782282e2bc362f4ae347cd7795b857a8e05ebb9d82f1236c0e4d1e7ec10d3b210028bc2058c1"
+    "sha256=317bec6de4429b5dee157e9864294e1534b722a2acfc50480bd16c804ab790ca"
+    "sha512=17450333156622d4612816f9ad5a224c741d62b247d63c1d77b5359d37517c1f9bc598dd11fa024f4e02ccf7eef474cd532eef1d9c34ed13439db6c781f9fa7a"
   ]
 }

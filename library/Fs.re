@@ -26,12 +26,11 @@ let readdir = dir => {
 };
 
 let writeFile = (path, contents) => {
-  let%lwt x = Lwt_unix.openfile(path, [Unix.O_RDWR, Unix.O_CREAT], 777);
-  let%lwt _ =
-    Lwt.finalize(
-      () => Lwt_unix.write_string(x, contents, 0, String.length(contents)),
-      () => Lwt_unix.close(x),
-    );
+  let%lwt targetFile = Lwt_io.open_file(~mode=Lwt_io.Output, path);
+
+  let%lwt () = Lwt_io.write(targetFile, contents);
+  let%lwt () = Lwt_io.close(targetFile);
+
   Lwt.return();
 };
 
