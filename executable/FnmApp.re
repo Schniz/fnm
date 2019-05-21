@@ -82,7 +82,9 @@ let uninstall = {
   let selectedVersion = {
     let doc = "Uninstall the node version specified in $(docv).";
     Arg.(
-      value & pos(0, some(string), None) & info([], ~docv="VERSION", ~doc)
+      required
+      & pos(0, some(string), None)
+      & info([], ~docv="VERSION", ~doc)
     );
   };
 

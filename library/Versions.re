@@ -35,6 +35,8 @@ module Local = {
 
   let toDirectory = name => Filename.concat(Directories.nodeVersions, name);
 
+  let remove = version => Fs.rmdir(version.fullPath);
+
   let getLatestInstalledNameByPrefix = prefix => {
     open Lwt;
     let%lwt versions =
