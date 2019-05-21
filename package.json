@@ -29,7 +29,10 @@
         "pps",
         "lwt_ppx",
         "ppx_let",
-        "ppx_deriving.show"
+        "ppx_deriving.show",
+        "ppx_deriving.eq",
+        "ppx_deriving.make",
+        "ppx_deriving.ord"
       ],
       "require": [
         "pastel.lib",
@@ -39,7 +42,6 @@
         "ssl",
         "lwt_ssl",
         "lambdasoup",
-        "semver",
         "cohttp",
         "cohttp-lwt",
         "cohttp-lwt-unix",
@@ -80,7 +82,6 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@opam/dune": "*",
-    "@opam/semver": "*",
     "@opam/core": "*",
     "@opam/cmdliner": "*",
     "@opam/lwt": "*",

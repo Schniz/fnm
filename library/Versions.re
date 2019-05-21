@@ -7,7 +7,7 @@ let flip = (fn, a, b) => fn(b, a);
 let skip = (~amount, str) =>
   Str.last_chars(str, String.length(str) - amount);
 
-let parseSemver = version => version |> skip(~amount=1) |> Semver.of_string;
+let parseSemver = version => version |> skip(~amount=1) |> Semver.fromString;
 
 let compare = (v1, v2) =>
   switch (parseSemver(v1), parseSemver(v2)) {
