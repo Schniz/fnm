@@ -1,0 +1,43 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/parsexp"
+bug-reports: "https://github.com/janestreet/parsexp/issues"
+dev-repo: "git+https://github.com/janestreet/parsexp.git"
+doc: "https://ocaml.janestreet.com/ocaml-core/latest/doc/parsexp/index.html"
+license: "MIT"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml"    {>= "4.04.2"}
+  "base"     {>= "v0.12" & < "v0.13"}
+  "sexplib0" {>= "v0.12" & < "v0.13"}
+  "dune"     {build & >= "1.5.1"}
+]
+synopsis: "S-expression parsing library"
+description: "
+This library provides generic parsers for parsing S-expressions from
+strings or other medium.
+
+The library is focused on performances but still provide full generic
+parsers that can be used with strings, bigstrings, lexing buffers,
+character streams or any other sources effortlessly.
+
+It provides three different class of parsers:
+- the normal parsers, producing [Sexp.t] or [Sexp.t list] values
+- the parsers with positions, building compact position sequences so
+  that one can recover original positions in order to report properly
+  located errors at little cost
+- the Concrete Syntax Tree parsers, produce values of type
+  [Parsexp.Cst.t] which record the concrete layout of the s-expression
+  syntax, including comments
+
+This library is portable and doesn't provide IO functions. To read
+s-expressions from files or other external sources, you should use
+parsexp_io.
+"
+url {
+  src: "https://ocaml.janestreet.com/ocaml-core/v0.12/files/parsexp-v0.12.0.tar.gz"
+  checksum: "md5=741b2c6f59b9618e3affabaa34d468a2"
+}

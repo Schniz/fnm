@@ -9,7 +9,7 @@ let fromString = str =>
   switch (
     String.split_on_char('.', str)
     |> List.map(int_of_string_opt)
-    |> Core.Option.all
+    |> Base.Option.all
   ) {
   | Some([major, minor, patch]) => Some({major, minor, patch})
   | _ => None

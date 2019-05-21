@@ -13,7 +13,7 @@ let compare = (v1, v2) =>
   switch (parseSemver(v1), parseSemver(v2)) {
   | (Some(v1), Some(v2)) => Semver.compare(v1, v2)
   | (None, _)
-  | (_, None) => - Core.String.compare(v1, v2)
+  | (_, None) => - Base.String.compare(v1, v2)
   };
 
 let isVersionFitsPrefix = (prefix, version) => {
@@ -138,7 +138,7 @@ module Remote = {
     |> Soup.select("pre a")
     |> Soup.to_list
     |> List.map(Soup.attribute("href"))
-    |> Core.List.filter_map(~f=x => x)
+    |> Base.List.filter_map(~f=x => x)
     |> List.map(x => {
          let parts = String.split_on_char('/', x) |> List.rev;
          switch (parts) {
@@ -182,7 +182,15 @@ let getCurrentVersion = () => {
   | Exists(installationPath) =>
     let fullPath = Filename.dirname(installationPath);
     Lwt.return_some(
-      Local.{fullPath, name: Core.Filename.basename(fullPath), aliases: []},
+      Local.{
+        fullPath,
+        name:
+          fullPath
+          |> Path.absolute
+          |> Base.Option.bind(~f=Path.baseName)
+          |> Base.Option.value(~default=""),
+        aliases: [],
+      },
     );
   };
 };
@@ -214,10 +222,10 @@ let getRemoteVersions = () => {
   let%lwt installedVersions = Remote.getInstalledVersionSet();
 
   versions
-  |> Core.List.filter(~f=x =>
+  |> List.filter(x =>
        Str.last_chars(x, 1) == "/" && Str.first_chars(x, 1) != "."
      )
-  |> Core.List.map(~f=x => Str.first_chars(x, String.length(x) - 1))
+  |> List.map(x => Str.first_chars(x, String.length(x) - 1))
   |> List.sort(compare)
   |> List.map(name =>
        Remote.{
