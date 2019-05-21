@@ -22,7 +22,7 @@ let run = (~version) => {
         <Pastel>
           "The version "
           <Pastel color=Pastel.Cyan> versionName </Pastel>
-          " of node is not installed."
+          " is not installed."
         </Pastel>,
       );
       exit(1);
