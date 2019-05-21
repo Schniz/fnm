@@ -5,7 +5,9 @@ let run = (~version) => {
   let versionName =
     switch (version) {
     | None =>
-      Logger.log(<Pastel> "You should provide a node version" </Pastel>);
+      Logger.error(
+        <Pastel color=Pastel.Red> "You must provide version" </Pastel>,
+      );
       exit(1);
     | Some(versionName) => versionName
     };
