@@ -21,6 +21,7 @@ describe("Semver", ({test, _}) => {
 
     let sorted =
       List.sort(Semver.compare, [semver1, semver2, semver4, semver3]);
+
     expect.list(sorted).toEqual([semver1, semver2, semver3, semver4]);
   });
 });
