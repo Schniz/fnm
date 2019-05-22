@@ -80,6 +80,11 @@ module Aliases = {
            versionName:
              Filename.concat(Directories.aliases, alias)
              |> Fs.realpath
+             |> (
+               fun
+               | Fs.Exists(x) => x
+               | Fs.Missing(x) => x
+             )
              |> Filename.dirname
              |> Filename.basename,
          };
@@ -173,23 +178,16 @@ exception No_Download_For_System(System.NodeOS.t, System.NodeArch.t);
 
 let getCurrentVersion = () => {
   switch (Fs.realpath(Directories.currentVersion)) {
-  | installationPath =>
+  | Missing(x) when x == Directories.currentVersion => None
+  | Missing(_) => Some(Local.systemVersion)
+  | Exists(installationPath) =>
     let fullPath = Filename.dirname(installationPath);
     Some(
       Local.{fullPath, name: Core.Filename.basename(fullPath), aliases: []},
     );
-  | exception (Unix.Unix_error(_, _, _)) =>
-    switch (Fs.try_readlink(Directories.currentVersion)) {
-    | Ok(x)
-        when
-          Core.String.substr_index(x, ~pattern=Local.systemVersion.fullPath)
-          == Some(0) =>
-      Some(Local.systemVersion)
-    | Ok(_)
-    | Error(_) => None
-    }
   };
 };
+
 let getInstalledVersions = () => {
   let%lwt versions =
     Fs.readdir(Directories.nodeVersions) |> Lwt.map(List.sort(compare))

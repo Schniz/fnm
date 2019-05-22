@@ -1,5 +1,3 @@
-open Core;
-
 let readdir = dir => {
   let items = ref([]);
   let%lwt dir = Lwt_unix.opendir(dir);
@@ -40,9 +38,26 @@ let exists = path => {
   };
 };
 
-let realpath = Filename.realpath;
-
-let try_readlink = path =>
-  try (Ok(Unix.readlink(path))) {
-  | err => Error(err)
+let readlink = path =>
+  try%lwt (Lwt_unix.readlink(path) |> Lwt.map(x => Ok(x))) {
+  | err => Lwt.return_error(err)
   };
+
+type path =
+  | Exists(string)
+  | Missing(string);
+
+let realpath = path => {
+  let rec step = path => {
+    switch%lwt (readlink(path)) {
+    | Ok(path) => step(path)
+    | Error(_) =>
+      switch%lwt (exists(path)) {
+      | true => Exists(path) |> Lwt.return
+      | false => Missing(path) |> Lwt.return
+      }
+    };
+  };
+
+  step(path) |> Lwt_main.run;
+};
