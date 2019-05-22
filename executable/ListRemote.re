@@ -3,8 +3,8 @@ open Fnm;
 let run = () => {
   Console.log("Looking for some node versions upstream...");
 
-  let%lwt versions = Versions.getRemoteVersions();
-  let currentVersion = Versions.getCurrentVersion();
+  let%lwt versions = Versions.getRemoteVersions()
+  and currentVersion = Versions.getCurrentVersion();
 
   versions
   |> List.iter(version => {
