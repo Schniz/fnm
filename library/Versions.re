@@ -72,24 +72,23 @@ module Aliases = {
       | _ => Lwt.return([])
       };
     aliases
-    |> List.map(alias => {
+    |> Lwt_list.map_p(alias => {
          let fullPath = Filename.concat(Directories.aliases, alias);
-         {
+         let%lwt realpath =
+           Filename.concat(Directories.aliases, alias)
+           |> Fs.realpath
+           |> Lwt.map(
+                fun
+                | Fs.Exists(x) => x
+                | Fs.Missing(x) => x,
+              );
+
+         Lwt.return({
            name: alias,
            fullPath,
-           versionName:
-             Filename.concat(Directories.aliases, alias)
-             |> Fs.realpath
-             |> (
-               fun
-               | Fs.Exists(x) => x
-               | Fs.Missing(x) => x
-             )
-             |> Filename.dirname
-             |> Filename.basename,
-         };
-       })
-    |> Lwt.return;
+           versionName: realpath |> Filename.dirname |> Filename.basename,
+         });
+       });
   };
 
   let byVersion = () => {
@@ -177,12 +176,12 @@ let endsWith = (~suffix, str) => {
 exception No_Download_For_System(System.NodeOS.t, System.NodeArch.t);
 
 let getCurrentVersion = () => {
-  switch (Fs.realpath(Directories.currentVersion)) {
-  | Missing(x) when x == Directories.currentVersion => None
-  | Missing(_) => Some(Local.systemVersion)
+  switch%lwt (Fs.realpath(Directories.currentVersion)) {
+  | Missing(x) when x == Directories.currentVersion => Lwt.return_none
+  | Missing(_) => Lwt.return_some(Local.systemVersion)
   | Exists(installationPath) =>
     let fullPath = Filename.dirname(installationPath);
-    Some(
+    Lwt.return_some(
       Local.{fullPath, name: Core.Filename.basename(fullPath), aliases: []},
     );
   };

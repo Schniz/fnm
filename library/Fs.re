@@ -47,17 +47,13 @@ type path =
   | Exists(string)
   | Missing(string);
 
-let realpath = path => {
-  let rec step = path => {
-    switch%lwt (readlink(path)) {
-    | Ok(path) => step(path)
-    | Error(_) =>
-      switch%lwt (exists(path)) {
-      | true => Exists(path) |> Lwt.return
-      | false => Missing(path) |> Lwt.return
-      }
-    };
+let rec realpath = path => {
+  switch%lwt (readlink(path)) {
+  | Ok(path) => realpath(path)
+  | Error(_) =>
+    switch%lwt (exists(path)) {
+    | true => Exists(path) |> Lwt.return
+    | false => Missing(path) |> Lwt.return
+    }
   };
-
-  step(path) |> Lwt_main.run;
 };

@@ -8,8 +8,8 @@ let main = () =>
       let%lwt versions =
         try%lwt (Versions.getInstalledVersions()) {
         | _ => Lwt.fail(Cant_read_local_versions)
-        };
-      let currentVersion = Versions.getCurrentVersion();
+        }
+      and currentVersion = Versions.getCurrentVersion();
 
       Console.log("The following versions are installed:");
 
