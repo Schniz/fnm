@@ -33,6 +33,6 @@ provided by companion libraries such as stdio:
   https://github.com/janestreet/stdio
 "
 url {
-  src: "https://ocaml.janestreet.com/ocaml-core/v0.12/files/base-v0.12.0.tar.gz"
-  checksum: "md5=e522176bc2cca7c12745539fa72356ad"
+  src: "https://github.com/janestreet/base/archive/v0.12.1.tar.gz"
+  checksum: "md5=8df12fc6f12669ad6c702673ec84214c"
 }
