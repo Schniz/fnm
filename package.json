@@ -37,7 +37,7 @@
       "require": [
         "pastel.lib",
         "str",
-        "core",
+        "base",
         "lwt",
         "ssl",
         "lwt_ssl",
@@ -57,7 +57,7 @@
         "ppx_let"
       ],
       "require": [
-        "core",
+        "base",
         "cmdliner",
         "lwt",
         "lambdasoup",
@@ -82,7 +82,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@opam/dune": "*",
-    "@opam/core": "*",
+    "@opam/base": "*",
     "@opam/cmdliner": "*",
     "@opam/lwt": "*",
     "@opam/lwt_ppx": "*",
