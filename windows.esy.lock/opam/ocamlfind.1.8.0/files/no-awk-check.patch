@@ -1,0 +1,19 @@
+commit 40142bc941e6e308686e86be6fc2da92f346a22f
+Author: Kate <kit.ty.kate@disroot.org>
+Date:   Tue Mar 19 16:29:06 2019 +0000
+
+    Remove awk from the set of checked unix tools as it's not used anywhere
+
+diff --git a/configure b/configure
+index d9b587c..20e8dca 100755
+--- a/configure
++++ b/configure
+@@ -184,7 +184,7 @@ echo "Configuring core..."
+ 
+ # Some standard Unix tools must be available:
+ 
+-for tool in sed awk ocaml ocamlc uname rm make cat m4 dirname basename; do
++for tool in sed ocaml ocamlc uname rm make cat m4 dirname basename; do
+     if in_path $tool; then true; else
+ 	echo "configure: $tool not in PATH; this is required" 1>&2
+ 	exit 1

@@ -1,0 +1,74 @@
+opam-version: "2.0"
+name: "merlin"
+synopsis: "Installation with Opam"
+description: """
+If you have a working [Opam](https://opam.ocaml.org/) installation, Merlin is only two commands away:
+
+```shell
+opam install merlin
+opam user-setup install
+```
+
+[opam-user-setup](https://github.com/OCamlPro/opam-user-setup) takes care of configuring Emacs and Vim to make best use of your current install.
+
+You can also [configure the editor](#editor-setup) yourself, if you prefer."""
+maintainer: "defree@gmail.com"
+authors: "The Merlin team"
+homepage: "https://github.com/ocaml/merlin"
+bug-reports: "https://github.com/ocaml/merlin/issues"
+depends: [
+  "ocaml" {>= "4.02.1" & < "4.08"}
+  "dune" {build}
+  "ocamlfind" {>= "1.5.2"}
+  "yojson"
+  "craml" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+post-messages:
+  """
+merlin installed.
+
+Quick setup for VIM
+-------------------
+Append this to your .vimrc to add merlin to vim's runtime-path:
+  let g:opamshare = substitute(system('opam config var share'),'\\n$','','''')
+  execute "set rtp+=" . g:opamshare . "/merlin/vim"
+
+Also run the following line in vim to index the documentation:
+  :execute "helptags " . g:opamshare . "/merlin/vim/doc"
+
+Quick setup for EMACS
+-------------------
+Add opam emacs directory to your load-path by appending this to your .emacs:
+  (let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
+   (when (and opam-share (file-directory-p opam-share))
+    ;; Register Merlin
+    (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
+    (autoload 'merlin-mode "merlin" nil t nil)
+    ;; Automatically start it in OCaml buffers
+    (add-hook 'tuareg-mode-hook 'merlin-mode t)
+    (add-hook 'caml-mode-hook 'merlin-mode t)
+    ;; Use opam switch to lookup ocamlmerlin binary
+    (setq merlin-command 'opam)))
+
+Take a look at https://github.com/ocaml/merlin for more information
+
+Quick setup with opam-user-setup
+--------------------------------
+
+Opam-user-setup support Merlin.
+
+  $ opam user-setup install
+
+should take care of basic setup.
+See https://github.com/OCamlPro/opam-user-setup"""
+    {success & !user-setup:installed}
+dev-repo: "git+https://github.com/ocaml/merlin.git"
+url {
+  src:
+    "https://github.com/ocaml/merlin/releases/download/v3.2.2/merlin-v3.2.2.tbz"
+  checksum: "md5=ede35b65f8ac9c440cfade5445662c54"
+}

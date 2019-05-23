@@ -100,22 +100,7 @@
     "@opam/lambdasoup": "*",
     "refmterr": "*",
     "ocaml": "~4.6.0",
-    "pesy": "*",
-    "esy-openssl": "*",
-    "esy-zlib": "*"
-  },
-  "resolutions": {
-    "esy-openssl": "esy-packages/esy-openssl#100f884",
-    "@opam/ssl": "ulrikstrid/ocaml-ssl:ssl.opam#5921900",
-    "esy-zlib": "ulrikstrid/esy-zlib#eb88c61",
-    "yarn-pkg-config": {
-      "source": "esy-ocaml/yarn-pkg-config#b53d5bf",
-      "override": {
-        "dependencies": {
-          "esy-zlib": "*"
-        }
-      }
-    }
+    "pesy": "*"
   },
   "devDependencies": {
     "@opam/merlin": "*",

@@ -1,0 +1,32 @@
+{
+    "source": "./package.json",
+    "override": {
+      "build": "refmterr dune build --profile=windows",
+      "resolutions": {
+        "@opam/ssl": {
+          "source": "ulrikstrid/ocaml-ssl:ssl.opam#a6c18eb",
+          "override": {
+            "build": [
+              "ls #{esy-openssl.install / 'include'}",
+              "ls #{esy-openssl.install / 'include' / 'openssl'}",
+              "dune build -p ssl -j 4"
+            ],
+            "dependencies": {
+              "esy-openssl": "esy-packages/esy-openssl#100f884"
+            },
+            "buildEnv": {
+              "CFLAGS": "-I#{esy-openssl.install / 'include'}",
+              "LDFLAGS": "-L#{esy-openssl.lib}"
+            },
+            "exportedEnv": {
+              "CAML_LD_LIBRARY_PATH": {
+                "val": "#{self.lib / 'ssl' : $CAML_LD_LIBRARY_PATH}",
+                "scope": "global"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  

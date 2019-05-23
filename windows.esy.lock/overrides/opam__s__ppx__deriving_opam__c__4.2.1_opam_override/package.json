@@ -1,0 +1,15 @@
+{
+  "build": [
+    [
+      "bash",
+      "-c",
+      "#{os == 'windows' ? 'patch -p1 < ppx_deriving-4.2.1.patch' : 'true'}"
+    ],
+    [
+      "ocaml",
+      "pkg/build.ml",
+      "native=true",
+      "native-dynlink=true"
+    ]
+  ]
+}

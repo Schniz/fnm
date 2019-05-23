@@ -1,0 +1,37 @@
+opam-version: "2.0"
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: ["Daniel Bünzli <daniel.buenzl i@erratique.ch>"]
+homepage: "http://erratique.ch/software/jsonm"
+doc: "http://erratique.ch/software/jsonm/doc/Jsonm"
+dev-repo: "git+http://erratique.ch/repos/jsonm.git"
+bug-reports: "https://github.com/dbuenzli/jsonm/issues"
+tags: [ "json" "codec" "org:erratique" ]
+license: "ISC"
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "uchar"
+  "uutf" {>= "1.0.0"}
+]
+build:[[
+  "ocaml" "pkg/pkg.ml" "build"
+          "--pinned" "%{pinned}%" ]]
+synopsis: "Non-blocking streaming JSON codec for OCaml"
+description: """
+Jsonm is a non-blocking streaming codec to decode and encode the JSON
+data format. It can process JSON text without blocking on IO and
+without a complete in-memory representation of the data.
+
+The alternative "uncut" codec also processes whitespace and
+(non-standard) JSON with JavaScript comments.
+
+Jsonm is made of a single module and depends on [Uutf][uutf]. It is distributed
+under the ISC license.
+
+[uutf]: http://erratique.ch/software/uutf"""
+url {
+  src: "http://erratique.ch/software/jsonm/releases/jsonm-1.0.1.tbz"
+  checksum: "md5=e2ca39eaefd55b8d155c4f1ec5885311"
+}

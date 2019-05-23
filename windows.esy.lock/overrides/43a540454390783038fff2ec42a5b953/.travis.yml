@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+- 8
+os:
+- linux
+- osx
+install:
+- npm install --global esy@0.3.0
+- esy install
+script:
+- travis_wait 40 esy build
+cache:
+    timeout: 360
+    directories:
+        - '$HOME/.esy/'

@@ -1,0 +1,15 @@
+{
+  "buildEnv": {
+    "PATCH_CMD": "#{ocaml.version == '4.2.3007' ? 'patch -p1 < merlin-extend-winfix-4.2.3007.patch' : 'patch -p1 < merlin-extend-winfix.patch'}"
+  },
+  "build": [
+    [
+      "bash",
+      "-c",
+      "#{os == 'windows' ? $PATCH_CMD : 'true'}"
+    ],
+    [
+      "make"
+    ]
+  ]
+}

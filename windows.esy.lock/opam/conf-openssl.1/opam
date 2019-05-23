@@ -1,0 +1,30 @@
+opam-version: "2.0"
+maintainer: "David Sheets <sheets@alum.mit.edu>"
+authors: ["The OpenSSL Project"]
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+homepage: "https://www.openssl.org/"
+license: "Apache-1.0"
+build: [
+  ["pkg-config" "openssl"]
+    {os != "macos" & os != "freebsd" & os != "openbsd" & os != "netbsd"}
+  ["./osx-build.sh"] {os = "macos"}
+]
+depends: ["conf-pkg-config" {build}]
+depexts: [
+  ["libssl-dev"] {os-distribution = "debian"}
+  ["libssl-dev"] {os-distribution = "ubuntu"}
+  ["openssl-devel"] {os-distribution = "centos"}
+  ["openssl-devel"] {os-distribution = "ol"}
+  ["openssl-devel"] {os-distribution = "fedora"}
+  ["openssl"] {os = "macos" & os-distribution = "homebrew"}
+  ["openssl"] {os = "macos" & os-distribution = "macports"}
+  ["libressl-dev"] {os-distribution = "alpine"}
+  ["openssl"] {os-distribution = "nixos"}
+  ["openssl"] {os-distribution = "arch"}
+  ["libopenssl-devel"] {os-family = "suse"}
+]
+synopsis: "Virtual package relying on an OpenSSL system installation"
+description:
+  "This package can only install if OpenSSL is installed on the system."
+extra-files: ["osx-build.sh" "md5=e216c6189d0dfb4185521c8ace09fe40"]
+flags: conf

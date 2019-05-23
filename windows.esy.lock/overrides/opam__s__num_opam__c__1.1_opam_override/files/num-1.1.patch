@@ -1,0 +1,20 @@
+--- ./src/Makefile
++++ ./src/Makefile
+@@ -80,7 +80,7 @@
+ ifeq "$(NATDYNLINK)" "true"
+ TOINSTALL+=nums.cmxs
+ endif
+ ifeq "$(SUPPORTS_SHARED_LIBRARIES)" "true"
+-TOINSTALL_STUBS=dllnums.$(SO)
++TOINSTALL_STUBS=dllnums$(EXT_DLL)
+ else
+ TOINSTALL_STUBS=
+@@ -112,7 +112,7 @@
+ endif
+ 
+ clean:
+-	rm -f *.cm[ioxta] *.cmx[as] *.cmti *.$(O) *.$(A) *.$(SO)
++	rm -f *.cm[ioxta] *.cmx[as] *.cmti *.$(O) *.$(A) *$(EXE_DLL)
+ 
+ depend:
+ 	$(OCAMLDEP) -slash *.mli *.ml > .depend
