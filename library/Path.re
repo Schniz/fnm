@@ -4,6 +4,8 @@
  * @emails oncall+ads_front_end_infra
  */;
 
+[@warning "-27-39-32-34"];
+
 let sep = "/";
 let homeChar = "~";
 
