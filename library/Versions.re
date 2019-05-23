@@ -31,9 +31,17 @@ module Local = {
     aliases: list(string),
   };
 
-  let systemVersion: t = {name: "system", fullPath: "/dev/null", aliases: []};
+  let systemVersion: t = {
+    name: "system",
+    fullPath: "/dev/null/installation",
+    aliases: [],
+  };
 
-  let toDirectory = name => Filename.concat(Directories.nodeVersions, name);
+  let toDirectory = name =>
+    Filename.concat(
+      Filename.concat(Directories.nodeVersions, name),
+      "installation",
+    );
 
   let getLatestInstalledNameByPrefix = prefix => {
     open Lwt;

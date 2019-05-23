@@ -29,7 +29,6 @@ let switchVersion = (~version, ~quiet) => {
     | System => "system"
     };
 
-  let destination = Filename.concat(versionPath, "installation");
   let source = Directories.currentVersion;
 
   log(
@@ -37,17 +36,17 @@ let switchVersion = (~version, ~quiet) => {
       "Linking "
       <Pastel color=Pastel.Cyan> source </Pastel>
       " to "
-      <Pastel color=Pastel.Cyan> destination </Pastel>
+      <Pastel color=Pastel.Cyan> versionPath </Pastel>
     </Pastel>,
   );
 
   let%lwt _ = Lwt_unix.unlink(Directories.currentVersion) |> lwtIgnore;
-  let%lwt _ = Lwt_unix.symlink(destination, Directories.currentVersion)
+  let%lwt _ = Lwt_unix.symlink(versionPath, Directories.currentVersion)
   and defaultAliasExists = Lwt_unix.file_exists(Directories.defaultVersion);
 
   let%lwt _ =
     if (!defaultAliasExists) {
-      Versions.Aliases.set(~alias="default", ~versionPath=destination);
+      Versions.Aliases.set(~alias="default", ~versionPath);
     } else {
       Lwt.return();
     };
