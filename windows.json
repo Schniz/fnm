@@ -1,7 +1,7 @@
 {
   "source": "./package.json",
   "override": {
-    "build": "refmterr dune build --profile=windows",
+    "build": "refmterr dune build",
     "resolutions": {
       "esy-openssl": {
         "source": "esy-packages/esy-openssl#100f884",
