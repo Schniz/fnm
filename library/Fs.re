@@ -64,8 +64,6 @@ let rec rmdir = dir => {
   Lwt_unix.rmdir(dir);
 };
 
-let realpath = Filename.realpath;
-
 type path =
   | Exists(string)
   | Missing(string);
