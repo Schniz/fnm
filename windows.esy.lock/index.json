@@ -1,5 +1,5 @@
 {
-  "checksum": "ba7a41faafff35e476f0b6b257c16e9c",
+  "checksum": "1a5e77e7f38ee06e079f41275bc0f66d",
   "root": "fnm@link-dev:./package.json",
   "node": {
     "yup@0.27.0@d41d8cd9": {
@@ -3731,7 +3731,7 @@
         "ocaml@4.6.10@d41d8cd9", "@reason-native/rely@1.2.0@d41d8cd9",
         "@reason-native/pastel@0.2.1@d41d8cd9",
         "@reason-native/console@0.1.0@d41d8cd9",
-        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#bff2ae0@41a79c39",
+        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@03468d4a",
         "@opam/ppx_let@opam:v0.12.0@8bca1692",
         "@opam/ppx_deriving@opam:4.2.1@7927b93a",
         "@opam/lwt_ssl@opam:1.1.2@ac833920",
@@ -5614,13 +5614,13 @@
         "ocaml@4.6.10@d41d8cd9", "@opam/base@opam:v0.12.2@e209c8f2"
       ]
     },
-    "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#bff2ae0@41a79c39": {
-      "id": "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#bff2ae0@41a79c39",
+    "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@03468d4a": {
+      "id": "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@03468d4a",
       "name": "@opam/ssl",
-      "version": "github:ulrikstrid/ocaml-ssl:ssl.opam#bff2ae0",
+      "version": "github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66",
       "source": {
         "type": "install",
-        "source": [ "github:ulrikstrid/ocaml-ssl:ssl.opam#bff2ae0" ]
+        "source": [ "github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66" ]
       },
       "overrides": [
         {
@@ -5628,11 +5628,9 @@
             "@opam/conf-openssl": "*",
             "esy-openssl": "esy-packages/esy-openssl#f731e9c"
           },
-          "exportedEnv": {
-            "CAML_LD_LIBRARY_PATH": {
-              "val": "#{self.lib / 'ssl' : $CAML_LD_LIBRARY_PATH}",
-              "scope": "global"
-            }
+          "buildEnv": {
+            "CFLAGS": "-I$OPENSSL_INCLUDE_PATH",
+            "LDFLAGS": "-L$OPENSSL_LIB_PATH"
           }
         }
       ],
@@ -5640,12 +5638,12 @@
         "ocaml@4.6.10@d41d8cd9",
         "esy-openssl@archive:https://github.com/openssl/openssl/archive/OpenSSL_1_1_1b.tar.gz#sha1:1b09930a6099c6c8fa15dd6c6842e134e65e0a31@1538fd5a",
         "@opam/dune@opam:1.9.3@cccbbfe7",
-        "@opam/conf-openssl@no-source:@e4a7480e",
+        "@opam/conf-openssl@no-source:@484cc572",
         "@opam/base-unix@opam:base@87d0b2eb",
         "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": [
-        "ocaml@4.6.10@d41d8cd9", "@opam/conf-openssl@no-source:@e4a7480e",
+        "ocaml@4.6.10@d41d8cd9", "@opam/conf-openssl@no-source:@484cc572",
         "@opam/base-unix@opam:base@87d0b2eb"
       ]
     },
@@ -6360,7 +6358,7 @@
       "overrides": [],
       "dependencies": [
         "ocaml@4.6.10@d41d8cd9",
-        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#bff2ae0@41a79c39",
+        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@03468d4a",
         "@opam/lwt@opam:4.2.1@c1888ec9",
         "@opam/jbuilder@opam:transition@58bdfe0a",
         "@opam/base-unix@opam:base@87d0b2eb",
@@ -6368,7 +6366,7 @@
       ],
       "devDependencies": [
         "ocaml@4.6.10@d41d8cd9",
-        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#bff2ae0@41a79c39",
+        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@03468d4a",
         "@opam/lwt@opam:4.2.1@c1888ec9", "@opam/base-unix@opam:base@87d0b2eb"
       ]
     },
@@ -6773,13 +6771,14 @@
       ],
       "devDependencies": []
     },
-    "@opam/conf-openssl@no-source:@e4a7480e": {
-      "id": "@opam/conf-openssl@no-source:@e4a7480e",
+    "@opam/conf-openssl@no-source:@484cc572": {
+      "id": "@opam/conf-openssl@no-source:@484cc572",
       "name": "@opam/conf-openssl",
       "version": "no-source:",
       "source": { "type": "install", "source": [ "no-source:" ] },
       "overrides": [
         {
+          "build": [ "pkg-config openssl" ],
           "dependencies": {
             "@opam/conf-pkg-config": "1.1",
             "esy-openssl": "esy-packages/esy-openssl#f731e9c"
