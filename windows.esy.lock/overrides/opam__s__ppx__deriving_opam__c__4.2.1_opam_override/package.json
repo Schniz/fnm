@@ -10,11 +10,6 @@
       "pkg/build.ml",
       "native=true",
       "native-dynlink=true"
-    ],
-    [
-      "bash",
-      "-c",
-      "./use-exe.sh #{os} #{self.target_dir  / 'ppx_deriving.install'}"
     ]
   ]
 }
