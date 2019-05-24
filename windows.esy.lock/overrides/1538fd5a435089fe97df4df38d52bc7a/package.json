@@ -2,8 +2,8 @@
   "name": "esy-openssl",
   "version": "0.1.0",
   "description": "Mirror of OpenSSL",
-  "license": "GPLv3",
-  "source": "https://github.com/openssl/openssl/archive/OpenSSL_1_1_1a.tar.gz#0a7d7382e3e608fc037d4955a0ddad224acc1fc8",
+  "license": "Apache 2.0",
+  "source": "https://github.com/openssl/openssl/archive/OpenSSL_1_1_1b.tar.gz#1b09930a6099c6c8fa15dd6c6842e134e65e0a31",
   "override": {
     "build": [
         ["bash", "-c", "#{os == 'windows' ? './configure mingw64 --prefix=$cur__install --cross-compile-prefix=x86_64-w64-mingw32-' : './config --prefix=$cur__install'}"],
@@ -33,5 +33,6 @@
     }
   },
   "dependencies": {
+    "@esy-packages/esy-autoconf": "esy-packages/esy-autoconf:package.json#71a8836"
   }
 }

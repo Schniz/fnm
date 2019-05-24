@@ -1,0 +1,30 @@
+parameters:
+  host: ''
+  pool: ''
+  sign: false
+
+jobs:
+- job: ${{ parameters.host }}
+  pool: ${{ parameters.pool }}
+  steps:
+  - ${{ if eq(parameters.sign, 'true') }}:
+    - script: 'npm install -g esy@latest --unsafe-perm'
+      displayName: 'Installing deps'
+  - ${{ if eq(parameters.sign, 'false') }}:
+    - script: 'sudo npm install -g esy@latest --unsafe-perm'
+      displayName: 'Installing deps'
+  - script: mkdir -p test_dir
+    displayName: 'make test dir'
+  - bash: |
+      cd test_dir
+      echo '{"dependencies": {"@esy-packages/esy-openssl" : "esy-packages/esy-openssl:package.json#'$(git rev-parse --short HEAD)'"}}' > package.json
+    displayName: 'create test package.json'
+  - script: |
+      cd test_dir
+      esy install
+    displayName: 'Install esy-deps'
+  - script: |
+      cd test_dir
+      esy x which openssl
+      esy sh ../esy/test.sh
+    displayName: 'Building and dry run'

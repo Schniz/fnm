@@ -33,7 +33,6 @@ type firstClass =
   | Relative(t(relative));
 type opaqueBase =
   | Base(base('exists)): opaqueBase;
-type opaqueT = (opaqueBase, list(string));
 
 let drive = name => (Abs(Some(name)), []);
 let root = (Abs(None), []);
@@ -66,9 +65,9 @@ let isDescendent: type kind. (~ofPath: t(kind), t(kind)) => bool =
       | (None, Some(_)) => false
       }
     | ((Rel(Any, d1), l1), (Rel(Any, d2), l2)) =>
-      d1 === d1 && segmentsAreInside(~ofSegments=l1, l2)
+      d1 === d2 && segmentsAreInside(~ofSegments=l1, l2)
     | ((Rel(Home, d1), l1), (Rel(Home, d2), l2)) =>
-      d1 === d1 && segmentsAreInside(~ofSegments=l1, l2)
+      d1 === d2 && segmentsAreInside(~ofSegments=l1, l2)
     | ((Rel(Any, _), _), (Rel(Home, _), _)) => false
     | ((Rel(Home, _), _), (Rel(Any, _), _)) => false
     };
@@ -92,16 +91,16 @@ let toString: type kind. t(kind) => string =
       let rest =
         lst
         |> List.rev
-        |> List.append(Array.to_list(Array.init(i, i => "..")))
+        |> List.append(Array.to_list(Array.init(i, _ => "..")))
         |> String.concat(sep);
       init ++ rest;
     };
 
 /**
-  * Expose this under the name `toDebugString` and accept any kind of path.
-  * The name is to warn people about using this for relative paths. This may
-  * print paths like `"."` and `"~"`, which is not very meaningful.
-  */
+ * Expose this under the name `toDebugString` and accept any kind of path.
+ * The name is to warn people about using this for relative paths. This may
+ * print paths like `"."` and `"~"`, which is not very meaningful.
+ */
 let toDebugString = toString;
 
 type token =
@@ -145,16 +144,16 @@ let lex = s => {
     prevEsc.contents = ch === '\\' && !prevEsc.contents;
   };
   let rev =
-    j.contents === len - 1
-      ? revTokens.contents
-      : [
+    j.contents === len - 1 ?
+      revTokens.contents :
+      [
         makeToken(String.sub(s, j.contents + 1, len - 1 - j.contents)),
         ...revTokens.contents,
       ];
   List.rev(rev);
 };
 
-let parseFirstToken = token =>
+let _parseFirstToken = token =>
   switch (token) {
   | SLASH => (Base(Abs(None)), [])
   | DOT => (Base(Rel(Any, 0)), [])
@@ -164,7 +163,7 @@ let parseFirstToken = token =>
   | TXT(s) => (Base(Rel(Any, 0)), [s])
   };
 
-let rec parseNextToken: type kind. (t(kind), token) => t(kind) =
+let parseNextToken: type kind. (t(kind), token) => t(kind) =
   (path, nextToken) =>
     switch (path, nextToken) {
     | (path, SLASH) => path
@@ -252,27 +251,23 @@ let relativeExn = s =>
   };
 
 /**
-  * Relates two positive integers to zero and eachother.
-  */
+ * Relates two positive integers to zero and eachother.
+ */
 type ord =
-  | /** 0 === i === j */
-    Zeros
-  | /** 0 === i < j */
-    ZeroPositive
-  | /** i > 0 === j */
-    PositiveZero
-  | /** 0 < i && 0 < j */
-    Positives;
+  | /** 0 === i === j */ Zeros
+  | /** 0 === i < j */ ZeroPositive
+  | /** i > 0 === j */ PositiveZero
+  | /** 0 < i && 0 < j */ Positives;
 
 /**
-  * Using `ord` allows us to retain exhaustiveness pattern matching checks that
-  * would normally be lost when adding `when i < j` guards to matches. It's
-  * very likely inlined so there's no performance hit. Annotate as int so that
-  * it isn't inferred to be polymorphic.
-  */
+ * Using `ord` allows us to retain exhaustiveness pattern matching checks that
+ * would normally be lost when adding `when i < j` guards to matches. It's
+ * very likely inlined so there's no performance hit. Annotate as int so that
+ * it isn't inferred to be polymorphic.
+ */
 let ord = (i: int, j: int) =>
-  i === 0 && j === 0
-    ? Zeros : i === 0 ? ZeroPositive : j === 0 ? PositiveZero : Positives;
+  i === 0 && j === 0 ?
+    Zeros : i === 0 ? ZeroPositive : j === 0 ? PositiveZero : Positives;
 
 let rec repeat = (soFar, i, s) =>
   i === 0 ? soFar : repeat(soFar ++ s, i - 1, s);
@@ -337,14 +332,14 @@ let relativizeExn: type k. (~source: t(k), ~dest: t(k)) => t(relative) =
         | (Some(_), None) => raiseDriveMismatch(source, dest)
         | (None, Some(_)) => raiseDriveMismatch(source, dest)
         | (Some(d1), Some(d2)) =>
-          String.compare(d1, d2) !== 0
-            ? raiseDriveMismatch(source, dest)
-            : relativizeDepth((0, List.rev(s1)), (0, List.rev(s2)))
+          String.compare(d1, d2) !== 0 ?
+            raiseDriveMismatch(source, dest) :
+            relativizeDepth((0, List.rev(s1)), (0, List.rev(s2)))
         }
       | ((Rel(w1, r1), s1), (Rel(w2, r2), s2)) =>
-        w1 === w2
-          ? relativizeDepth((r1, List.rev(s1)), (r2, List.rev(s2)))
-          : raiseDriveMismatch(source, dest)
+        w1 === w2 ?
+          relativizeDepth((r1, List.rev(s1)), (r2, List.rev(s2))) :
+          raiseDriveMismatch(source, dest)
       };
     (Rel(Any, depth), List.rev(segs));
   };
@@ -416,9 +411,9 @@ let rec join: type k1 k2. (t(k1), t(k2)) => t(k1) =
     switch (p1, p2) {
     | ((Rel(w, r1), []), (Rel(Any, r2), s2)) => (Rel(w, r1 + r2), s2)
     | ((Rel(w, r1), [s1hd, ...s1tl] as s1), (Rel(Any, r2), s2)) =>
-      r2 > 0
-        ? join((Rel(w, r1), s1tl), (Rel(Any, r2 - 1), s2))
-        : (Rel(w, r1), List.append(s2, s1))
+      r2 > 0 ?
+        join((Rel(w, r1), s1tl), (Rel(Any, r2 - 1), s2)) :
+        (Rel(w, r1), List.append(s2, s1))
     | ((b1, s1), (Rel(Home, r2), s2)) =>
       join((b1, [homeChar, ...List.append(s2, s1)]), (Rel(Any, r2), s2))
     | ((b1, s1), (Abs(Some(ll)), s2)) => (
@@ -428,12 +423,12 @@ let rec join: type k1 k2. (t(k1), t(k2)) => t(k1) =
     | ((b1, s1), (Abs(None), s2)) => (b1, List.append(s2, s1))
     | ((Abs(_) as d, []), (Rel(Any, r2), s2)) => (d, s2)
     | ((Abs(_) as d, [s1hd, ...s1tl] as s1), (Rel(Any, r2), s2)) =>
-      r2 > 0
-        ? join((d, s1tl), (Rel(Any, r2 - 1), s2))
-        : (d, List.append(s2, s1))
+      r2 > 0 ?
+        join((d, s1tl), (Rel(Any, r2 - 1), s2)) :
+        (d, List.append(s2, s1))
     };
 
-let rec dirName: type k1. t(k1) => t(k1) =
+let dirName: type k1. t(k1) => t(k1) =
   p1 =>
     switch (p1) {
     | (Rel(w, r1), []) => (Rel(w, r1 + 1), [])
@@ -442,7 +437,7 @@ let rec dirName: type k1. t(k1) => t(k1) =
     | (Abs(_) as d, [s1hd, ...s1tl]) => (d, s1tl)
     };
 
-let rec baseName: type k1. t(k1) => option(string) =
+let baseName: type k1. t(k1) => option(string) =
   p1 =>
     switch (p1) {
     | (Rel(w, r1), []) => None
@@ -455,38 +450,38 @@ let sub: type k1. (string, t(k1)) => t(k1) =
   (name, path) => continue(name, path);
 
 /**
-  * Append functions always follow their "natural" left/right ordering,
-  * regardless of t-first/last.
-  *
-  * The following pairs are equivalent but note that `append` is always safe.
-  *
-  *     Path.append(Path.root, "foo");
-  *     Option.getUnsafe(Path.absolute("/foo"));
-  *
-  *     Path.append(Path.root, "foo/bar");
-  *     Option.getUnsafe(Path.absolute("/foo/bar"));
-  *
-  *     Path.append(Path.drive("C"), "foo/bar");
-  *     Option.getUnsafe(Path.absolute("C:/foo/bar"));
-  *
-  *     Path.append(Path.dot, "foo");
-  *     Option.getUnsafe(Path.relative("./foo"));
-  */
+ * Append functions always follow their "natural" left/right ordering,
+ * regardless of t-first/last.
+ *
+ * The following pairs are equivalent but note that `append` is always safe.
+ *
+ *     Path.append(Path.root, "foo");
+ *     Option.getUnsafe(Path.absolute("/foo"));
+ *
+ *     Path.append(Path.root, "foo/bar");
+ *     Option.getUnsafe(Path.absolute("/foo/bar"));
+ *
+ *     Path.append(Path.drive("C"), "foo/bar");
+ *     Option.getUnsafe(Path.absolute("C:/foo/bar"));
+ *
+ *     Path.append(Path.dot, "foo");
+ *     Option.getUnsafe(Path.relative("./foo"));
+ */
 let append: type k1. (t(k1), string) => t(k1) =
   (path, name) => continue(name, path);
 
 module At = {
   let (/) = append;
   /**
-    * Applies `dirName` to the first argument, then passes the result to
-    * `append` with the second.
-    *
-    *     let result = root / "foo" / "bar" /../ "baz";
-    *
-    * Would result in
-    *
-    *     "/foo/baz"
-    */
+   * Applies `dirName` to the first argument, then passes the result to
+   * `append` with the second.
+   *
+   *     let result = root / "foo" / "bar" /../ "baz";
+   *
+   * Would result in
+   *
+   *     "/foo/baz"
+   */
   let (/../) = (dir, s) => append(dirName(dir), s);
   let (/../../) = (dir, s) => append(dirName(dirName(dir)), s);
   let (/../../../) = (dir, s) =>
