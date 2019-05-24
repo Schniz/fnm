@@ -78,7 +78,3 @@ let rec realpath = path => {
     }
   };
 };
-let try_readlink = path =>
-  try (Ok(Unix.readlink(path))) {
-  | err => Error(err)
-  };
