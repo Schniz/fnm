@@ -43,6 +43,27 @@ let readlink = path =>
   | err => Lwt.return_error(err)
   };
 
+// Credit: https://github.com/fastpack/fastpack/blob/9f6aa7d5b83ffef03e73a15679200576ff9dbcb7/FastpackUtil/FS.re#L94
+let rec rmdir = dir => {
+  let%lwt files = Lwt_unix.files_of_directory(dir) |> Lwt_stream.to_list;
+  let%lwt () =
+    Lwt_list.iter_s(
+      filename =>
+        switch (filename) {
+        | "."
+        | ".." => Lwt.return_unit
+        | _ =>
+          let path = Filename.concat(dir, filename);
+          switch%lwt (Lwt_unix.stat(path)) {
+          | {st_kind: Lwt_unix.S_DIR, _} => rmdir(path)
+          | _ => Lwt_unix.unlink(path)
+          };
+        },
+      files,
+    );
+  Lwt_unix.rmdir(dir);
+};
+
 type path =
   | Exists(string)
   | Missing(string);
