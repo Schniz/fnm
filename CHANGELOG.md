@@ -1,3 +1,27 @@
+## v1.11.0 (2019-05-27)
+
+#### New Feature 🎉
+
+- [#98](https://github.com/Schniz/fnm/pull/98) Add `uninstall` command ([@tatchi](https://github.com/tatchi))
+- [#97](https://github.com/Schniz/fnm/pull/97) Add the ability to use system version of Node ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#103](https://github.com/Schniz/fnm/pull/103) Fix missing aliases due to newer `realpath` ([@Schniz](https://github.com/Schniz))
+- [#99](https://github.com/Schniz/fnm/pull/99) fix EACCES error when installing an already downloaded version ([@tatchi](https://github.com/tatchi))
+
+#### Internal 🛠
+
+- [#101](https://github.com/Schniz/fnm/pull/101) Move from base to core ([@ulrikstrid](https://github.com/ulrikstrid))
+- [#102](https://github.com/Schniz/fnm/pull/102) Implement `realpath` instead of binding to C library ([@Schniz](https://github.com/Schniz))
+- [#100](https://github.com/Schniz/fnm/pull/100) Add Semver to library, an simple non-spec implementation of semver ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 3
+
+- Corentin Leruth ([@tatchi](https://github.com/tatchi))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Ulrik Strid ([@ulrikstrid](https://github.com/ulrikstrid))
+
 ## v1.10.0 (2019-05-01)
 
 #### New Feature 🎉
