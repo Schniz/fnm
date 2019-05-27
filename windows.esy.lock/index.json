@@ -1,5 +1,5 @@
 {
-  "checksum": "b811e03fab1c8aaf33256475a19e975a",
+  "checksum": "d8f66a3df4962dbd06bbe3abb4312ae3",
   "root": "fnm@link-dev:./package.json",
   "node": {
     "yup@0.27.0@d41d8cd9": {
@@ -20,16 +20,16 @@
       ],
       "devDependencies": []
     },
-    "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#cca65f99674ed2d954d28788edeb8c57fada5ed0@d41d8cd9": {
+    "yarn-pkg-config@github:prometheansacrifice/yarn-pkg-config#cc5b4f913cccee781461b16d49b902c84727e7ed@d41d8cd9": {
       "id":
-        "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#cca65f99674ed2d954d28788edeb8c57fada5ed0@d41d8cd9",
+        "yarn-pkg-config@github:prometheansacrifice/yarn-pkg-config#cc5b4f913cccee781461b16d49b902c84727e7ed@d41d8cd9",
       "name": "yarn-pkg-config",
       "version":
-        "github:esy-ocaml/yarn-pkg-config#cca65f99674ed2d954d28788edeb8c57fada5ed0",
+        "github:prometheansacrifice/yarn-pkg-config#cc5b4f913cccee781461b16d49b902c84727e7ed",
       "source": {
         "type": "install",
         "source": [
-          "github:esy-ocaml/yarn-pkg-config#cca65f99674ed2d954d28788edeb8c57fada5ed0"
+          "github:prometheansacrifice/yarn-pkg-config#cc5b4f913cccee781461b16d49b902c84727e7ed"
         ]
       },
       "overrides": [],
@@ -3731,7 +3731,7 @@
         "ocaml@4.6.10@d41d8cd9", "@reason-native/rely@1.2.0@d41d8cd9",
         "@reason-native/pastel@0.2.1@d41d8cd9",
         "@reason-native/console@0.1.0@d41d8cd9",
-        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@615e24c7",
+        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@d2c58536",
         "@opam/ppx_let@opam:v0.12.0@8bca1692",
         "@opam/ppx_deriving@opam:4.2.1@230fa24e",
         "@opam/lwt_ssl@opam:1.1.2@ac833920",
@@ -5596,8 +5596,8 @@
         "ocaml@4.6.10@d41d8cd9", "@opam/base@opam:v0.12.2@e209c8f2"
       ]
     },
-    "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@615e24c7": {
-      "id": "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@615e24c7",
+    "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@d2c58536": {
+      "id": "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@d2c58536",
       "name": "@opam/ssl",
       "version": "github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66",
       "source": {
@@ -5611,8 +5611,8 @@
             "@esy-packages/esy-openssl": "esy-packages/esy-openssl#f731e9c"
           },
           "buildEnv": {
-            "CFLAGS": "-I$OPENSSL_INCLUDE_PATH",
-            "LDFLAGS": "-L$OPENSSL_LIB_PATH"
+            "CFLAGS": "-I$OPENSSL_INCLUDE_PATH $CFLAGS",
+            "LDFLAGS": "-L$OPENSSL_LIB_PATH $LDFLAGS"
           }
         }
       ],
@@ -6339,7 +6339,7 @@
       "overrides": [],
       "dependencies": [
         "ocaml@4.6.10@d41d8cd9",
-        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@615e24c7",
+        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@d2c58536",
         "@opam/lwt@opam:4.2.1@c1888ec9",
         "@opam/jbuilder@opam:transition@58bdfe0a",
         "@opam/base-unix@opam:base@87d0b2eb",
@@ -6347,7 +6347,7 @@
       ],
       "devDependencies": [
         "ocaml@4.6.10@d41d8cd9",
-        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@615e24c7",
+        "@opam/ssl@github:ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66@d2c58536",
         "@opam/lwt@opam:4.2.1@c1888ec9", "@opam/base-unix@opam:base@87d0b2eb"
       ]
     },
@@ -6743,7 +6743,7 @@
         }
       ],
       "dependencies": [
-        "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#cca65f99674ed2d954d28788edeb8c57fada5ed0@d41d8cd9",
+        "yarn-pkg-config@github:prometheansacrifice/yarn-pkg-config#cc5b4f913cccee781461b16d49b902c84727e7ed@d41d8cd9",
         "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": []
