@@ -70,6 +70,8 @@ jobs:
     displayName: 'npm install -g esy@latest'
   - script: esy install --project windows
     displayName: 'esy install'
+  - script: esy build --project windows -p @opam/conf-openssl
+    displayName: 'build conf-openssl'
   - script: esy build --project windows
     displayName: 'esy build'
 
