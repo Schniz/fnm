@@ -3,12 +3,13 @@
   "override": {
     "build": "refmterr dune build --profile release",
     "resolutions": {
+      "@esy-packages/esy-openssl": "esy-packages/esy-openssl#f731e9c",
       "@opam/ssl": {
         "source": "ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66",
         "override": {
           "dependencies": {
             "@opam/conf-openssl": "*",
-            "esy-openssl": "esy-packages/esy-openssl#f731e9c"
+            "@esy-packages/esy-openssl": "esy-packages/esy-openssl#f731e9c"
           },
           "buildEnv": {
             "CFLAGS": "-I$OPENSSL_INCLUDE_PATH",
@@ -22,7 +23,7 @@
           "build": ["pkg-config openssl"],
           "dependencies": {
             "@opam/conf-pkg-config": "1.1",
-            "esy-openssl": "esy-packages/esy-openssl#f731e9c"
+            "@esy-packages/esy-openssl": "esy-packages/esy-openssl#f731e9c"
           },
           "buildEnv": {
             "CFLAGS": "-I$OPENSSL_INCLUDE_PATH $CFLAGS",
