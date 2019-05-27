@@ -224,7 +224,9 @@ let env = {
           enum([
             ("quiet", Fnm.LogLevel.Quiet),
             ("error", Fnm.LogLevel.Error),
-            ("all", Fnm.LogLevel.All),
+            ("info", Fnm.LogLevel.Info),
+            ("all", Fnm.LogLevel.Debug),
+            ("debug", Fnm.LogLevel.Debug),
           ]),
           Fnm.Config.FNM_LOGLEVEL.get(),
         )

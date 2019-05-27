@@ -3,7 +3,7 @@ open Fnm;
 let mkDownloadsDir = () => {
   let exists = Lwt_unix.file_exists(Directories.downloads);
   if%lwt (exists |> Lwt.map(x => !x)) {
-    Logger.log(
+    Logger.debug(
       <Pastel>
         "Creating "
         <Pastel color=Pastel.Cyan> Directories.downloads </Pastel>
@@ -29,7 +29,7 @@ let main = (~version as versionName) => {
   let versionName = Versions.format(versionName);
   let%lwt _ = Versions.throwIfInstalled(versionName);
 
-  Logger.log(
+  Logger.debug(
     <Pastel>
       "Looking for node "
       <Pastel color=Pastel.Cyan> versionName </Pastel>
@@ -53,7 +53,7 @@ let main = (~version as versionName) => {
       versionName ++ Versions.Remote.downloadFileSuffix,
     );
 
-  Logger.log(
+  Logger.debug(
     <Pastel>
       "Downloading "
       <Pastel color=Pastel.Cyan> filepath </Pastel>
@@ -67,12 +67,20 @@ let main = (~version as versionName) => {
   let extractionDestination =
     Filename.concat(Directories.nodeVersions, versionName);
 
-  Logger.log(
+  Logger.debug(
     <Pastel>
       "Extracting "
       <Pastel color=Pastel.Cyan> tarDestination </Pastel>
       " to "
       <Pastel color=Pastel.Cyan> extractionDestination </Pastel>
+    </Pastel>,
+  );
+
+  Logger.info(
+    <Pastel>
+      "Version "
+      <Pastel color=Pastel.Cyan> versionName </Pastel>
+      " was successfuly downloaded"
     </Pastel>,
   );
 
@@ -85,7 +93,7 @@ let main = (~version as versionName) => {
 let run = (~version) =>
   try%lwt (main(~version)) {
   | Versions.No_Download_For_System(os, arch) =>
-    Logger.log(
+    Logger.error(
       <Pastel>
         "Version exists, but can't find a file for your system:\n"
         "  OS:           "
@@ -97,7 +105,7 @@ let run = (~version) =>
     );
     exit(1);
   | Versions.Already_installed(version) =>
-    Logger.log(
+    Logger.error(
       <Pastel>
         "Version "
         <Pastel color=Pastel.Cyan> version </Pastel>
@@ -106,7 +114,7 @@ let run = (~version) =>
     )
     |> Lwt.return
   | Versions.Version_not_found(version) =>
-    Logger.log(
+    Logger.error(
       <Pastel>
         "Version "
         <Pastel color=Pastel.Cyan> version </Pastel>

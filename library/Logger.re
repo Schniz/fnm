@@ -1,8 +1,18 @@
 let configuredLogLevel = Config.FNM_LOGLEVEL.get();
 
-let log = message => {
+let info = message => {
   switch (configuredLogLevel) {
-  | LogLevel.All => Console.log(message)
+  | LogLevel.Debug
+  | LogLevel.Info => Console.log(message)
+  | LogLevel.Error
+  | LogLevel.Quiet => ()
+  };
+};
+
+let debug = message => {
+  switch (configuredLogLevel) {
+  | LogLevel.Debug => Console.log(message)
+  | LogLevel.Info
   | LogLevel.Error
   | LogLevel.Quiet => ()
   };
@@ -10,7 +20,8 @@ let log = message => {
 
 let error = message => {
   switch (configuredLogLevel) {
-  | LogLevel.All
+  | LogLevel.Debug
+  | LogLevel.Info
   | LogLevel.Error => Console.error(message)
   | LogLevel.Quiet => ()
   };

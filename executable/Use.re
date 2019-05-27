@@ -4,14 +4,25 @@ let lwtIgnore = lwt => Lwt.catch(() => lwt, _ => Lwt.return());
 
 exception Version_Not_Installed(string);
 
-let log = (~quiet, arg) =>
+let info = (~quiet, arg) =>
   if (!quiet) {
-    Logger.log(arg);
+    Logger.info(arg);
+  };
+
+let debug = (~quiet, arg) =>
+  if (!quiet) {
+    Logger.debug(arg);
+  };
+
+let error = (~quiet, arg) =>
+  if (!quiet) {
+    Logger.error(arg);
   };
 
 let switchVersion = (~version, ~quiet) => {
   open Lwt;
-  let log = log(~quiet);
+  let info = info(~quiet);
+  let debug = debug(~quiet);
   let%lwt parsedVersion =
     Versions.parse(version) >>= Opt.toLwt(Version_Not_Installed(version));
 
@@ -31,7 +42,7 @@ let switchVersion = (~version, ~quiet) => {
 
   let source = Directories.currentVersion;
 
-  log(
+  debug(
     <Pastel>
       "Linking "
       <Pastel color=Pastel.Cyan> source </Pastel>
@@ -51,7 +62,7 @@ let switchVersion = (~version, ~quiet) => {
       Lwt.return();
     };
 
-  log(
+  info(
     <Pastel>
       "Using "
       <Pastel color=Pastel.Cyan> versionName </Pastel>
@@ -93,7 +104,7 @@ let rec askIfInstall = (~version, ~quiet, retry) => {
 let rec run = (~version, ~quiet) =>
   try%lwt (main(~version, ~quiet)) {
   | Version_Not_Installed(versionString) =>
-    log(
+    error(
       ~quiet,
       <Pastel color=Pastel.Red>
         "The following version is not installed: "
@@ -106,7 +117,7 @@ let rec run = (~version, ~quiet) =>
       exit(1);
     };
   | Dotfiles.Conflicting_Dotfiles_Found(v1, v2) =>
-    log(
+    error(
       ~quiet,
       <Pastel color=Pastel.Red>
         "Can't infer version from dotfiles: .node-version and .nvmrc have differing version strings:\n"
@@ -119,7 +130,7 @@ let rec run = (~version, ~quiet) =>
     );
     exit(1);
   | Dotfiles.Version_Not_Provided =>
-    log(
+    error(
       ~quiet,
       <Pastel color=Pastel.Red>
         "No .nvmrc or .node-version file was found in the current directory. Please provide a version number."

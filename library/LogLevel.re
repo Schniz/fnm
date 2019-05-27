@@ -1,19 +1,23 @@
 type t =
   | Quiet
   | Error
-  | All;
+  | Info
+  | Debug;
 
 let toString = logLevel =>
   switch (logLevel) {
   | Quiet => "quiet"
   | Error => "error"
-  | All => "all"
+  | Info => "info"
+  | Debug => "debug"
   };
 
 let fromString = logLevelString =>
   switch (logLevelString) {
   | "quiet" => Quiet
   | "error" => Error
-  | "all" => All
+  | "info" => Info
+  | "debug"
+  | "all" => Debug
   | _ => failwith("Unsupported level: " ++ logLevelString)
   };

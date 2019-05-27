@@ -70,7 +70,7 @@ module FNM_LOGLEVEL =
     let unparse = LogLevel.toString;
     let name = "FNM_LOGLEVEL";
     let doc = "The log level of fnm commands";
-    let default = LogLevel.All;
+    let default = LogLevel.Info;
   });
 
 let parseBooleanOrDie = (~name, str) =>
