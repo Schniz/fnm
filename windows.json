@@ -12,8 +12,8 @@
             "@esy-packages/esy-openssl": "esy-packages/esy-openssl#f731e9c"
           },
           "buildEnv": {
-            "CFLAGS": "-I$OPENSSL_INCLUDE_PATH",
-            "LDFLAGS": "-L$OPENSSL_LIB_PATH"
+            "CFLAGS": "-I$OPENSSL_INCLUDE_PATH $CFLAGS",
+            "LDFLAGS": "-L$OPENSSL_LIB_PATH $LDFLAGS"
           }
         }
       },
