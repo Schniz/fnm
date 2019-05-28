@@ -53,19 +53,27 @@ jobs:
         PathtoPublish: '_build/fnm'
         ArtifactName: fnm-macos
 
-# - job: Windows
-#   timeoutInMinutes: 0
-#   pool:
-#     vmImage: 'vs2017-win2016'
+- job: Windows
+  timeoutInMinutes: 0
+  pool:
+    vmImage: 'vs2017-win2016'
 
-#   variables:
-#     ESY__CACHE_INSTALL_PATH: C:\Users\VssAdministrator\.esy\3_\i
-#     ESY__CACHE_SOURCE_TARBALL_PATH: C:\Users\VssAdministrator\.esy\source\i
+  variables:
+    ESY__CACHE_INSTALL_PATH: C:\Users\VssAdministrator\.esy\3_\i
+    ESY__CACHE_SOURCE_TARBALL_PATH: C:\Users\VssAdministrator\.esy\source\i
 
-#   steps:
-#   - template: .ci/restore-build-cache.yml
-#   - template: .ci/esy-build-steps.yml
-#   - template: .ci/publish-build-cache.yml
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '8.9'
+  - script: npm install -g esy@latest
+    displayName: 'npm install -g esy@latest'
+  - script: esy install --project windows
+    displayName: 'esy install'
+  - script: esy build --project windows -p @opam/conf-openssl
+    displayName: 'build conf-openssl'
+  - script: esy build --project windows
+    displayName: 'esy build'
 
 - job: Release
   timeoutInMinutes: 0

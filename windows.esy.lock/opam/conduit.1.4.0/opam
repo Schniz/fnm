@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy" "Thomas Leonard" "Thomas Gazagnaire" "Rudi Grinberg"
+]
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/ocaml-conduit"
+doc: "https://mirage.github.io/ocaml-conduit/"
+bug-reports: "https://github.com/mirage/ocaml-conduit/issues"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {build}
+  "ppx_sexp_conv" {< "v0.13"}
+  "sexplib" {< "v0.13"}
+  "astring"
+  "uri"
+  "result"
+  "logs" {>= "0.5.0"}
+  "ipaddr" {>= "3.0.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-conduit.git"
+synopsis: "A network connection establishment library"
+description: """
+The `conduit` library takes care of establishing and listening for 
+TCP and SSL/TLS connections for the Lwt and Async libraries.
+
+The reason this library exists is to provide a degree of abstraction
+from the precise SSL library used, since there are a variety of ways
+to bind to a library (e.g. the C FFI, or the Ctypes library), as well
+as well as which library is used (just OpenSSL for now).
+
+By default, OpenSSL is used as the preferred connection library, but
+you can force the use of the pure OCaml TLS stack by setting the
+environment variable `CONDUIT_TLS=native` when starting your program.
+
+The useful opam packages available that extend this library are:
+
+- `conduit`: the main `Conduit` module
+- `conduit-lwt`: the portable Lwt implementation
+- `conduit-lwt-unix`: the Lwt/Unix implementation
+- `conduit-async` the Jane Street Async implementation
+- `mirage-conduit`: the MirageOS compatible implementation
+"""
+url {
+  src:
+    "https://github.com/mirage/ocaml-conduit/releases/download/v1.4.0/conduit-v1.4.0.tbz"
+  checksum: "md5=204222b8a61692083b79c67c8967fb28"
+}

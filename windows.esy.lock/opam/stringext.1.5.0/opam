@@ -1,0 +1,27 @@
+opam-version: "2.0"
+maintainer:   "rudi.grinberg@gmail.com"
+authors:      "Rudi Grinberg"
+homepage:     "https://github.com/rgrinberg/stringext"
+bug-reports:  "https://github.com/rgrinberg/stringext/issues"
+license:      "MIT"
+dev-repo: "git+https://github.com/rgrinberg/stringext.git"
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["jbuilder" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "jbuilder" {build & >= "1.0+beta10"}
+  "ounit" {with-test}
+  "qtest" {with-test & >= "2.2"}
+  "base-bytes"
+]
+synopsis: "Extra string functions for OCaml"
+description: """
+Extra string functions for OCaml. Mainly splitting. All functions are in the
+`Stringext` module."""
+url {
+  src: "https://github.com/rgrinberg/stringext/archive/1.5.0.zip"
+  checksum: "md5=867263ea97532f150516677fa994cdf2"
+}

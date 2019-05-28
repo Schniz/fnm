@@ -1,0 +1,28 @@
+opam-version: "2.0"
+version: "1.1.2"
+homepage: "https://github.com/aantron/lwt_ssl"
+doc: "https://github.com/aantron/lwt_ssl/blob/master/src/lwt_ssl.mli"
+bug-reports: "https://github.com/aantron/lwt_ssl/issues"
+license: "LGPL with OpenSSL linking exception"
+
+authors: [
+  "Jérôme Vouillon"
+  "Jérémie Dimino"
+]
+maintainer: "Anton Bachin <antonbachin@yahoo.com>"
+dev-repo: "git+https://github.com/aantron/lwt_ssl.git"
+depends: [
+  "ocaml"
+  "base-unix"
+  "jbuilder" {build & >= "1.0+beta10"}
+  "lwt" {>= "3.0.0"}
+  "ssl" {>= "0.5.0"}
+]
+build: [
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+synopsis: "OpenSSL binding with concurrent I/O"
+url {
+  src: "https://github.com/aantron/lwt_ssl/archive/1.1.2.tar.gz"
+  checksum: "md5=d239353b1e7c6e3fd4192c71a3b25ce2"
+}

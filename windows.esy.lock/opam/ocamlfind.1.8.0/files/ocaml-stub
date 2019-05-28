@@ -1,0 +1,4 @@
+#!/bin/sh
+
+BINDIR=$(dirname "$(command -v ocamlc)")
+"$BINDIR/ocaml" -I "$OCAML_TOPLEVEL_PATH" "$@"

@@ -1,0 +1,38 @@
+{
+  "name": "esy-openssl",
+  "version": "0.1.0",
+  "description": "Mirror of OpenSSL",
+  "license": "Apache 2.0",
+  "source": "https://github.com/openssl/openssl/archive/OpenSSL_1_1_1b.tar.gz#1b09930a6099c6c8fa15dd6c6842e134e65e0a31",
+  "override": {
+    "build": [
+        ["bash", "-c", "#{os == 'windows' ? './configure mingw64 --prefix=$cur__install --cross-compile-prefix=x86_64-w64-mingw32-' : './config --prefix=$cur__install'}"],
+        ["make"]
+    ],
+    "install": [
+      ["make", "install"]
+    ],
+    "buildsInSource": true,
+    "exportedEnv": {
+      "OPENSSL_LIB_PATH": {
+          "val": "#{self.lib}",
+          "scope": "global"
+      },
+      "OPENSSL_INCLUDE_PATH": {
+          "val": "#{self.install / 'include'}",
+          "scope": "global"
+      },
+      "OPENSSL_BIN_PATH": {
+          "val": "#{self.bin}",
+          "scope": "global"
+      },
+      "PKG_CONFIG_PATH": {
+          "val": "#{self.lib / 'pkgconfig'}",
+          "scope": "global"
+      }
+    }
+  },
+  "dependencies": {
+    "@esy-packages/esy-autoconf": "esy-packages/esy-autoconf:package.json#71a8836"
+  }
+}

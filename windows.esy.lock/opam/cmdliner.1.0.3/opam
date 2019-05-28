@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "Daniel Bünzli <daniel.buenzl i@erratique.ch>"
+authors: ["Daniel Bünzli <daniel.buenzl i@erratique.ch>"]
+homepage: "http://erratique.ch/software/cmdliner"
+doc: "http://erratique.ch/software/cmdliner/doc/Cmdliner"
+dev-repo: "git+http://erratique.ch/repos/cmdliner.git"
+bug-reports: "https://github.com/dbuenzli/cmdliner/issues"
+tags: [ "cli" "system" "declarative" "org:erratique" ]
+license: "ISC"
+depends:[ "ocaml" {>= "4.03.0"} ]
+build: [[ make "all" "PREFIX=%{prefix}%" ]]
+install:
+[[make "install" "LIBDIR=%{_:lib}%" "DOCDIR=%{_:doc}%" ]
+ [make "install-doc" "LIBDIR=%{_:lib}%" "DOCDIR=%{_:doc}%"  ]]
+
+synopsis: """Declarative definition of command line interfaces for OCaml"""
+description: """\
+
+Cmdliner allows the declarative definition of command line interfaces
+for OCaml.
+
+It provides a simple and compositional mechanism to convert command
+line arguments to OCaml values and pass them to your functions. The
+module automatically handles syntax errors, help messages and UNIX man
+page generation. It supports programs with single or multiple commands
+and respects most of the [POSIX][1] and [GNU][2] conventions.
+
+Cmdliner has no dependencies and is distributed under the ISC license.
+
+[1]: http://pubs.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap12.html
+[2]: http://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html
+"""
+url {
+archive: "http://erratique.ch/software/cmdliner/releases/cmdliner-1.0.3.tbz"
+checksum: "3674ad01d4445424105d33818c78fba8"
+}

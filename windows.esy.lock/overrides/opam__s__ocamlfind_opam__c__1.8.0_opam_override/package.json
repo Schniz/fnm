@@ -1,0 +1,61 @@
+{
+  "build": [
+    [
+      "bash",
+      "-c",
+      "#{os == 'windows' ? 'patch -p1 < findlib-1.8.0.patch' : 'true'}"
+    ],
+    [
+      "./configure",
+      "-bindir",
+      "#{self.bin}",
+      "-sitelib",
+      "#{self.lib}",
+      "-mandir",
+      "#{self.man}",
+      "-config",
+      "#{self.lib}/findlib.conf",
+      "-no-custom",
+      "-no-topfind"
+    ],
+    [
+      "make",
+      "all"
+    ],
+    [
+      "make",
+      "opt"
+    ]
+  ],
+  "install": [
+    [
+      "make",
+      "install"
+    ],
+    [
+      "install",
+      "-m",
+      "0755",
+      "ocaml-stub",
+      "#{self.bin}/ocaml"
+    ],
+    [
+      "mkdir",
+      "-p",
+      "#{self.toplevel}"
+    ],
+    [
+      "install",
+      "-m",
+      "0644",
+      "src/findlib/topfind",
+      "#{self.toplevel}/topfind"
+    ]
+  ],
+  "exportedEnv": {
+    "OCAML_TOPLEVEL_PATH": {
+      "val": "#{self.toplevel}",
+      "scope": "global"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+opam-version: "2.0"
+maintainer: "jeremie@dimino.org"
+authors: ["Jérémie Dimino <jeremie@dimino.org>" "Anton Bachin" ]
+homepage: "https://github.com/mirage/mmap"
+bug-reports: "https://github.com/mirage/mmap/issues"
+doc: "https://mirage.github.io/mmap/"
+dev-repo: "git+https://github.com/mirage/mmap.git"
+license: "LGPL 2.1 with linking exception"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.02.3"}
+  "dune" {build & >= "1.6"}
+]
+synopsis: "File mapping functionality"
+description: """
+This project provides a Mmap.map_file functions for mapping files in memory.
+"""
+url {
+  src:
+    "https://github.com/mirage/mmap/releases/download/v1.1.0/mmap-v1.1.0.tbz"
+  checksum: "md5=8c5d5fbc537296dc525867535fb878ba"
+}
