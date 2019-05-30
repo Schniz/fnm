@@ -19,7 +19,7 @@ let run = (~name, ~version) => {
     exit(1);
   };
 
-  Logger.log(
+  Logger.info(
     <Pastel>
       "Aliasing "
       <Pastel color=Pastel.Cyan> name </Pastel>

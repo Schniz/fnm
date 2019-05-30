@@ -8,7 +8,7 @@ let run = (~version) => {
     installedVersion =>
       switch (installedVersion) {
       | None =>
-        Logger.log(
+        Logger.error(
           <Pastel>
             "The version "
             <Pastel color=Pastel.Cyan> version </Pastel>
@@ -17,18 +17,16 @@ let run = (~version) => {
         );
         exit(1);
       | Some(installedVersion) =>
-        {
-          Logger.log(
-            <Pastel>
-              "Uninstalling node "
-              <Pastel color=Pastel.Cyan>
-                Versions.Local.(installedVersion.name)
-              </Pastel>
-            </Pastel>,
-          );
-        };
+        Logger.debug(
+          <Pastel>
+            "Uninstalling node "
+            <Pastel color=Pastel.Cyan>
+              Versions.Local.(installedVersion.name)
+            </Pastel>
+          </Pastel>,
+        );
         let%lwt _ = Versions.Local.remove(installedVersion);
-        Logger.log(
+        Logger.info(
           <Pastel>
             "Node version "
             <Pastel color=Pastel.Cyan>
