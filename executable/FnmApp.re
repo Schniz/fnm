@@ -3,6 +3,7 @@ let version = Fnm.Fnm__Package.version;
 module Commands = {
   let use = (version, quiet) => Lwt_main.run(Use.run(~version, ~quiet));
   let alias = (version, name) => Lwt_main.run(Alias.run(~name, ~version));
+  let default = (version, name) => Lwt_main.run(Alias.run(~name, ~version));
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
@@ -170,6 +171,33 @@ let alias = {
   );
 };
 
+let default = {
+  let doc = "Alias a version as default";
+  let man = [];
+  let sdocs = Manpage.s_common_options;
+
+  let selectedVersion = {
+    let doc = "The version to be aliased as default";
+    Arg.(
+      required
+      & pos(0, some(string), None)
+      & info([], ~docv="VERSION", ~doc)
+    );
+  };
+
+  (
+    Term.(const(Commands.alias) $ selectedVersion $ const("default")),
+    Term.info(
+      "default",
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
+  );
+};
+
 let env = {
   let doc = "Show env configurations";
   let sdocs = Manpage.s_common_options;
@@ -268,6 +296,6 @@ let defaultCmd = {
 let _ =
   Term.eval_choice(
     defaultCmd,
-    [install, uninstall, use, alias, listLocal, listRemote, env],
+    [install, uninstall, use, alias, default, listLocal, listRemote, env],
   )
   |> Term.exit;
