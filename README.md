@@ -88,6 +88,14 @@ Lists the installed Node versions.
 
 Lists the Node versions available to download remotely.
 
+### `fnm alias [VERSION] [NAME]`
+
+Aliases a Node version to a given name.
+
+### `fnm default [VERSION]`
+
+Aliases a Node version as default. Uses `fnm alias` underneath.
+
 ### `fnm env [--multi] [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--use-on-cd] [--base-dir=DIR] [--log-level=quiet|error|all]`
 
 Prints the required shell commands in order to configure your shell, Bash compliant by default.
