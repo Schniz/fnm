@@ -3,7 +3,8 @@ let version = Fnm.Fnm__Package.version;
 module Commands = {
   let use = (version, quiet) => Lwt_main.run(Use.run(~version, ~quiet));
   let alias = (version, name) => Lwt_main.run(Alias.run(~name, ~version));
-  let default = (version, name) => Lwt_main.run(Alias.run(~name, ~version));
+  let default = version =>
+    Lwt_main.run(Alias.run(~name="default", ~version));
   let listRemote = () => Lwt_main.run(ListRemote.run());
   let listLocal = () => Lwt_main.run(ListLocal.run());
   let install = version => Lwt_main.run(Install.run(~version));
@@ -186,7 +187,7 @@ let default = {
   };
 
   (
-    Term.(const(Commands.alias) $ selectedVersion $ const("default")),
+    Term.(const(Commands.default) $ selectedVersion),
     Term.info(
       "default",
       ~version,
