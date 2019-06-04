@@ -1,3 +1,20 @@
+## Unreleased (2019-06-04)
+
+#### New Feature 🎉
+
+- [#106](https://github.com/Schniz/fnm/pull/106) Add `default`, as a shortcut for `alias default` ([@dangdennis](https://github.com/dangdennis))
+- [#104](https://github.com/Schniz/fnm/pull/104) Add a 'debug' log level ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#88](https://github.com/Schniz/fnm/pull/88) Successfully build on Windows ([@ulrikstrid](https://github.com/ulrikstrid))
+
+#### Committers: 3
+
+- Dennis Dang ([@dangdennis](https://github.com/dangdennis))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Ulrik Strid ([@ulrikstrid](https://github.com/ulrikstrid))
+
 ## v1.11.0 (2019-05-27)
 
 #### New Feature 🎉
