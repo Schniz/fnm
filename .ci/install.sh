@@ -18,25 +18,24 @@ INSTALL_DIR="$HOME/.fnm"
 
 # Parse Flags
 parse_args() {
-  while [[ $# -gt 0 ]]
-  do
-  key="$1"
+  while [[ $# -gt 0 ]]; do
+    key="$1"
 
-  case $key in
-	  -d|--install-dir)
-	  INSTALL_DIR="$2"
-	  shift # past argument
-	  shift # past value
-	  ;;
-	  -s|--skip-shell)
-	  SKIP_SHELL="true"
-	  shift # past argument
-	  ;;
-	  *)
-	  echo "Unrecognized argument $key"
-	  exit 1
-	  ;;
-  esac
+    case $key in
+    -d | --install-dir)
+      INSTALL_DIR="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -s | --skip-shell)
+      SKIP_SHELL="true"
+      shift # past argument
+      ;;
+    *)
+      echo "Unrecognized argument $key"
+      exit 1
+      ;;
+    esac
   done
 }
 
@@ -46,7 +45,7 @@ download_fnm() {
 
   echo "Downloading $URL..."
 
-  mkdir -p $INSTALL_DIR &> /dev/null
+  mkdir -p $INSTALL_DIR &>/dev/null
   curl --progress-bar -L $URL -o $DOWNLOAD_DIR/$FILENAME.zip
   unzip -q $DOWNLOAD_DIR/$FILENAME.zip -d $DOWNLOAD_DIR
   mv $DOWNLOAD_DIR/$FILENAME/fnm $INSTALL_DIR/fnm
@@ -85,26 +84,26 @@ setup_shell() {
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
-    echo '  export PATH=$HOME/.fnm:$PATH'
+    echo '  export PATH='"$INSTALL_DIR"':$PATH'
     echo '  eval "`fnm env --multi`"'
 
-    echo '' >> $CONF_FILE
-    echo '# fnm' >> $CONF_FILE
-    echo 'export PATH=$HOME/.fnm:$PATH' >> $CONF_FILE
-    echo 'eval "`fnm env --multi`"' >> $CONF_FILE
+    echo '' >>$CONF_FILE
+    echo '# fnm' >>$CONF_FILE
+    echo 'export PATH='$INSTALL_DIR':$PATH' >>$CONF_FILE
+    echo 'eval "`fnm env --multi`"' >>$CONF_FILE
 
   elif [ "$CURRENT_SHELL" == "fish" ]; then
     CONF_FILE=$HOME/.config/fish/config.fish
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
-    echo '  set PATH $HOME/.fnm $PATH'
+    echo '  set PATH '"$INSTALL_DIR"' $PATH'
     echo '  fnm env --multi | source'
 
-    echo '' >> $CONF_FILE
-    echo '# fnm' >> $CONF_FILE
-    echo 'set PATH $HOME/.fnm $PATH' >> $CONF_FILE
-    echo 'fnm env --multi | source' >> $CONF_FILE
+    echo '' >>$CONF_FILE
+    echo '# fnm' >>$CONF_FILE
+    echo 'set PATH '"$INSTALL_DIR"' $PATH' >>$CONF_FILE
+    echo 'fnm env --multi | source' >>$CONF_FILE
 
   elif [ "$CURRENT_SHELL" == "bash" ]; then
     if [ "$OS" == "Darwin" ]; then
@@ -115,13 +114,13 @@ setup_shell() {
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
-    echo '  export PATH=$HOME/.fnm:$PATH'
+    echo '  export PATH='"$INSTALL_DIR"':$PATH'
     echo '  eval "`fnm env --multi`"'
 
-    echo '' >> $CONF_FILE
-    echo '# fnm' >> $CONF_FILE
-    echo 'export PATH=$HOME/.fnm:$PATH' >> $CONF_FILE
-    echo 'eval "`fnm env --multi`"' >> $CONF_FILE
+    echo '' >>$CONF_FILE
+    echo '# fnm' >>$CONF_FILE
+    echo 'export PATH='"$INSTALL_DIR"':$PATH' >>$CONF_FILE
+    echo 'eval "`fnm env --multi`"' >>$CONF_FILE
 
   else
     echo "Could not infer shell type. Please set up manually."
@@ -137,6 +136,6 @@ setup_shell() {
 parse_args "$@"
 check_dependencies
 download_fnm
-if [ "$SKIP_SHELL" != "true" ]; then 
+if [ "$SKIP_SHELL" != "true" ]; then
   setup_shell
 fi
