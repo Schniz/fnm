@@ -56,7 +56,7 @@ curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- 
 
 - Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
 - Make it available globally on `$PATH`
-- Add the following line to your `.bashrc`/`.zshrc` file:
+- Add the following line to your `.bashrc`/`.zshrc`/`.bash_profile` file:
 
   ```bash
   eval "`fnm env --multi`"
