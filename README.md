@@ -36,6 +36,10 @@ For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](
 curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
 ```
 
+### Upgrade 
+
+Upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file add `--skip-shell` to install command.
+
 #### Parameters
 
 `--install-dir`
