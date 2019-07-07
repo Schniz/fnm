@@ -80,7 +80,7 @@ let main = (~version as versionName) => {
     <Pastel>
       "Version "
       <Pastel color=Pastel.Cyan> versionName </Pastel>
-      " was successfuly downloaded"
+      " was successfully downloaded"
     </Pastel>,
   );
 
