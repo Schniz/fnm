@@ -20,7 +20,7 @@ let error = (~quiet, arg) =>
   };
 
 let switchVersion = (~version, ~quiet) => {
-  open Lwt;
+  open Lwt.Infix;
   let info = info(~quiet);
   let debug = debug(~quiet);
   let%lwt parsedVersion =

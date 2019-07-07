@@ -46,7 +46,7 @@ module Local = {
   let remove = version => Fs.rmdir(version.fullPath);
 
   let getLatestInstalledNameByPrefix = prefix => {
-    open Lwt;
+    open Lwt.Infix;
     let%lwt versions =
       Lwt.catch(
         () =>
