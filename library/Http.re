@@ -1,4 +1,4 @@
-open Lwt;
+open Lwt.Infix;
 open Cohttp;
 open Cohttp_lwt_unix;
 
