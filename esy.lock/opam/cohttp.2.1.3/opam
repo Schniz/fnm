@@ -34,8 +34,9 @@ bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
 depends: [
   "ocaml" {>= "4.04.1"}
   "dune" {>= "1.1.0"}
-  "re" {>= "1.7.2"}
-  "uri" {>= "2.0.0" & < "3.0.0"}
+  "re" {>= "1.9.0"}
+  "uri" {>= "2.0.0"}
+  "uri-sexp"
   "fieldslib"
   "sexplib0"
   "ppx_fields_conv" {>= "v0.9.0"}
@@ -54,6 +55,9 @@ build: [
 dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
 url {
   src:
-    "https://github.com/mirage/ocaml-cohttp/releases/download/v2.1.2/cohttp-v2.1.2.tbz"
-  checksum: "md5=1bdde705d853175c67666b45bf3edc43"
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v2.1.3/cohttp-v2.1.3.tbz"
+  checksum: [
+    "sha256=6d9dd309dbf454c238bfeb39f012a3044f4a80ec9e4baa7070fcdf738fb5eff7"
+    "sha512=0d7d97ad228745213cbb2a0f6267d7441d4409d0f1b1c971c6c4a506a0351291d5c7d4b881d94847627e806af63066d503c872735bce8c598679082871070694"
+  ]
 }

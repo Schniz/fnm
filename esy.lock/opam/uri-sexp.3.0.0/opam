@@ -9,17 +9,14 @@ dev-repo: "git+https://github.com/mirage/ocaml-uri.git"
 doc: "https://mirage.github.io/ocaml-uri/"
 synopsis: "An RFC3986 URI/URL parsing library"
 description: """
-This is an OCaml implementation of the [RFC3986](http://tools.ietf.org/html/rfc3986) specification 
-for parsing URI or URLs.
+ocaml-uri with sexp support
 """
 depends: [
-  "ocaml" {>= "4.04.0"}
+  "uri" {= version}
   "dune" {>= "1.2.0"}
-  "ounit" {with-test & >= "1.0.2"}
-  "ppx_sexp_conv" {build & >= "v0.9.0"}
-  "re" {>= "1.9.0"}
+  "ppx_sexp_conv" {>= "v0.9.0"}
   "sexplib0"
-  "stringext" {>= "1.4.0"}
+  "ounit" {with-test}
 ]
 build: [
   ["dune" "subst"] {pinned}
@@ -28,9 +25,9 @@ build: [
 ]
 url {
   src:
-    "https://github.com/mirage/ocaml-uri/releases/download/v2.2.1/uri-v2.2.1.tbz"
+    "https://github.com/mirage/ocaml-uri/releases/download/v3.0.0/uri-v3.0.0.tbz"
   checksum: [
-    "sha256=f6348edbae9b9011b3f65e85e775f2cf7b87735c5ceb54d6962377daec3bf56b"
-    "sha512=28a4a659695d5d02f8a1b2965cbb05bc864bea5576c447707bb7db0e7411cafc78323ba6729e32b8b31fdc24a53e906274812d377e62829ebc9ebd6602331176"
+    "sha256=8fb334fba6ebbf879e2e82d80d6adee8bdaf6cec3bb3da248110d805477d19fa"
+    "sha512=553c18032a7c96cccdc8e37f497ce34e821b9dd089cfc8685783b7ade1d4dfa422722e4724abcba8b1171b51fa91a2bee297396fc7c349118069b6352e07881e"
   ]
 }

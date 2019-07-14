@@ -1,0 +1,29 @@
+opam-version: "2.0"
+maintainer: "Louis Roché <louis@louisroche.net>"
+authors: "Louis Roché <louis@louisroche.net>"
+homepage: "https://github.com/Khady/ocaml-junit"
+bug-reports: "https://github.com/Khady/ocaml-junit/issues"
+license: "LGPLv3+ with OCaml linking exception"
+dev-repo: "git+https://github.com/Khady/ocaml-junit.git"
+doc: "https://khady.github.io/ocaml-junit/"
+tags: ["junit" "jenkins"]
+depends: [
+  "dune" {>= "1.0"}
+  "ptime"
+  "tyxml" {>= "4.0.0"}
+  "odoc" {with-doc & >= "1.1.1"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "-p" name "-j" jobs] {with-doc}
+]
+name: "junit"
+synopsis: "JUnit XML reports generation library"
+description: "JUnit XML reports generation library"
+url {
+  src:
+    "https://github.com/Khady/ocaml-junit/releases/download/2.0.1/junit-2.0.1.tbz"
+  checksum: "md5=40224fb3d4f5e47dc5ff4605587d383b"
+}
