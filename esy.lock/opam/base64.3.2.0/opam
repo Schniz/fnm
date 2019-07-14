@@ -17,7 +17,7 @@ representation.  It is specified in RFC 4648.
 depends: [
   "ocaml" {>="4.03.0"}
   "base-bytes"
-  "dune" {build & >= "1.0.1"}
+  "dune" {>= "1.0.1"}
   "bos" {with-test}
   "rresult" {with-test}
   "alcotest" {with-test}

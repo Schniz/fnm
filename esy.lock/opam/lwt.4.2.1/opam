@@ -20,7 +20,7 @@ dev-repo: "git+https://github.com/ocsigen/lwt.git"
 
 depends: [
   "cppo" {build & >= "1.1.0"}
-  "dune" {build}
+  "dune"
   "mmap"  # mmap is needed as long as Lwt supports OCaml < 4.06.0.
   "ocaml" {>= "4.02.0"}
   "result" # result is needed as long as Lwt supports OCaml 4.02.

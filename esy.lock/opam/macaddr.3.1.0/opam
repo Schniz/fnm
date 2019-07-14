@@ -9,7 +9,7 @@ doc: "https://mirage.github.io/ocaml-ipaddr/"
 bug-reports: "https://github.com/mirage/ocaml-ipaddr/issues"
 depends: [
   "ocaml" {>= "4.04.0"}
-  "dune" {build}
+  "dune"
   "sexplib0"
   "ounit" {with-test}
   "ppx_sexp_conv" {with-test}

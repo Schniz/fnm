@@ -17,8 +17,7 @@ post-messages: [
   "conf-pkg-config: A symlink to /usr/local/bin/pkgconf has been installed in the OPAM bin directory (%{bin}%) on your PATH as 'pkg-config'. This is necessary for correct operation." {os = "openbsd"}
 ]
 depexts: [
-  ["pkg-config"] {os-distribution = "debian"}
-  ["pkg-config"] {os-distribution = "ubuntu"}
+  ["pkg-config"] {os-family = "debian"}
   ["pkg-config"] {os-distribution = "arch"}
   ["pkgconfig"] {os-distribution = "fedora"}
   ["pkgconfig"] {os-distribution = "centos"}

@@ -28,8 +28,8 @@ doc: "https://mirage.github.io/ocaml-ipaddr/"
 bug-reports: "https://github.com/mirage/ocaml-ipaddr/issues"
 depends: [
   "ocaml" {>= "4.04.0"}
-  "dune" {build}
-  "macaddr"
+  "dune"
+  "macaddr" {=version}
   "sexplib0"
   "ounit" {with-test}
   "ppx_sexp_conv" {with-test}

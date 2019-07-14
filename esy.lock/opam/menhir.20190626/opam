@@ -1,0 +1,29 @@
+opam-version: "2.0"
+maintainer: "francois.pottier@inria.fr"
+authors: [
+  "François Pottier <francois.pottier@inria.fr>"
+  "Yann Régis-Gianas <yrg@pps.univ-paris-diderot.fr>"
+]
+homepage: "http://gitlab.inria.fr/fpottier/menhir"
+dev-repo: "git+https://gitlab.inria.fr/fpottier/menhir.git"
+bug-reports: "menhir@inria.fr"
+build: [
+  [make "-f" "Makefile" "PREFIX=%{prefix}%" "USE_OCAMLFIND=true" "docdir=%{doc}%/menhir" "libdir=%{lib}%/menhir" "mandir=%{man}%/man1"]
+]
+install: [
+  [make "-f" "Makefile" "install" "PREFIX=%{prefix}%" "docdir=%{doc}%/menhir" "libdir=%{lib}%/menhir" "mandir=%{man}%/man1"]
+]
+depends: [
+  "ocaml" {>= "4.02"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+synopsis: "An LR(1) parser generator"
+url {
+  src:
+    "https://gitlab.inria.fr/fpottier/menhir/repository/20190626/archive.tar.gz"
+  checksum: [
+    "md5=783961f8d124449a1a335cc8e50f013f"
+    "sha512=bacc5161682130d894a6476fb79363aa73e5582543265a0c23c9a1f9d974007c04853dc8f6faa2b8bd2e82b2323b8604dcc4cb74308af667698079b394dfd492"
+  ]
+}

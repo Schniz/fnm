@@ -9,8 +9,7 @@ depexts: [
   ["which"] {os-distribution = "centos"}
   ["which"] {os-distribution = "fedora"}
   ["which"] {os-family = "suse"}
-  ["debianutils"] {os-distribution = "debian"}
-  ["debianutils"] {os-distribution = "ubuntu"}
+  ["debianutils"] {os-family = "debian"}
   ["which"] {os-distribution = "nixos"}
   ["which"] {os-distribution = "arch"}
 ]

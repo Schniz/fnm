@@ -26,7 +26,7 @@ doc: "https://mirage.github.io/ocaml-cohttp/"
 bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
 depends: [
   "ocaml" {>= "4.04.1"}
-  "dune" {build & >= "1.1.0"}
+  "dune" {>= "1.1.0"}
   "conduit-lwt-unix" {>= "1.0.3"}
   "cmdliner"
   "magic-mime"

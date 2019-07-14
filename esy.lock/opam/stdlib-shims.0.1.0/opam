@@ -8,7 +8,7 @@ bug-reports: "https://github.com/ocaml/stdlib-shims/issues"
 tags: ["stdlib" "compatibility" "org:ocaml"]
 license: ["typeof OCaml system"]
 depends: [
-  "dune" {build}
+  "dune"
   "ocaml" {>= "4.02.3"}
 ]
 build: [ "dune" "build" "-p" name "-j" jobs ]

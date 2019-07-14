@@ -10,7 +10,7 @@ build: [
 ]
 depends: [
   "ocaml"
-  "dune" {build}
+  "dune"
 ]
 synopsis: "Shared [@@deriving] plugin registry"
 description: """

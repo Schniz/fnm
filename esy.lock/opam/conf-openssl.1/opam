@@ -11,8 +11,7 @@ build: [
 ]
 depends: ["conf-pkg-config" {build}]
 depexts: [
-  ["libssl-dev"] {os-distribution = "debian"}
-  ["libssl-dev"] {os-distribution = "ubuntu"}
+  ["libssl-dev"] {os-family = "debian"}
   ["openssl-devel"] {os-distribution = "centos"}
   ["openssl-devel"] {os-distribution = "ol"}
   ["openssl-devel"] {os-distribution = "fedora"}

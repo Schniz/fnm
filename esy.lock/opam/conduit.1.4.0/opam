@@ -10,14 +10,14 @@ doc: "https://mirage.github.io/ocaml-conduit/"
 bug-reports: "https://github.com/mirage/ocaml-conduit/issues"
 depends: [
   "ocaml" {>= "4.03.0"}
-  "dune" {build}
+  "dune"
   "ppx_sexp_conv" {< "v0.13"}
   "sexplib" {< "v0.13"}
   "astring"
   "uri"
   "result"
   "logs" {>= "0.5.0"}
-  "ipaddr" {>= "3.0.0"}
+  "ipaddr" {>= "3.0.0" & < "4.0.0"}
 ]
 build: [
   ["dune" "subst"] {pinned}
