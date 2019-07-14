@@ -7,7 +7,7 @@ describe("Smoke test", ({test, _}) => {
 
   test("Get version", ({expect}) => {
     let version = run([|"--version"|]);
-    expect.string(version).toMatch("^[0-9]+.[0-9]+.[0-9]+$");
+    expect.string(version |> String.trim).toMatch("^\\d+.\\d+.\\d+$");
   });
 
   test("env", ({expect}) => {
