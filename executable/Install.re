@@ -17,40 +17,11 @@ let mkDownloadsDir = () => {
   };
 };
 
-let main = (~version as versionName) => {
-  let%lwt os = System.NodeOS.get()
-  and arch = System.NodeArch.get()
-  and versionName =
-    switch (versionName) {
-    | Some(versionName) => Lwt.return(versionName)
-    | None => Dotfiles.getVersion()
-    };
-
-  let versionName = Versions.format(versionName);
-  let%lwt _ = Versions.throwIfInstalled(versionName);
-
-  Logger.debug(
-    <Pastel>
-      "Looking for node "
-      <Pastel color=Pastel.Cyan> versionName </Pastel>
-      " for "
-      <Pastel color=Pastel.Cyan>
-        {System.NodeOS.toString(os)}
-        " "
-        {System.NodeArch.toString(arch)}
-      </Pastel>
-    </Pastel>,
-  );
-
-  let%lwt (versionName, filepath) =
-    Versions.getFileToDownload(~version=versionName, ~os, ~arch);
-
-  let%lwt _ = Versions.throwIfInstalled(versionName);
-
+let download = (~version, ~filepath) => {
   let tarDestination =
     Filename.concat(
       Directories.downloads,
-      versionName ++ Versions.Remote.downloadFileSuffix,
+      version ++ Versions.Remote.downloadFileSuffix,
     );
 
   Logger.debug(
@@ -65,7 +36,7 @@ let main = (~version as versionName) => {
   let%lwt _ = System.mkdirp(Filename.dirname(tarDestination));
   let%lwt _ = Http.download(filepath, ~into=tarDestination);
   let extractionDestination =
-    Filename.concat(Directories.nodeVersions, versionName);
+    Filename.concat(Directories.nodeVersions, version);
 
   Logger.debug(
     <Pastel>
@@ -79,13 +50,66 @@ let main = (~version as versionName) => {
   Logger.info(
     <Pastel>
       "Version "
-      <Pastel color=Pastel.Cyan> versionName </Pastel>
+      <Pastel color=Pastel.Cyan> version </Pastel>
       " was successfully downloaded"
     </Pastel>,
   );
 
   let%lwt _ =
     Compression.extractFile(tarDestination, ~into=extractionDestination);
+  Lwt.return_unit;
+};
+
+let main = (~version as versionName) => {
+  let%lwt os = System.NodeOS.get()
+  and arch = System.NodeArch.get()
+  and versionName =
+    switch (versionName) {
+    | Some(versionName) => Lwt.return(versionName)
+    | None => Dotfiles.getVersion()
+    };
+
+  let versionName = Versions.format(versionName);
+
+  Logger.debug(
+    <Pastel>
+      "Looking for node "
+      <Pastel color=Pastel.Cyan> versionName </Pastel>
+      " for "
+      <Pastel color=Pastel.Cyan>
+        {System.NodeOS.toString(os)}
+        " "
+        {System.NodeArch.toString(arch)}
+      </Pastel>
+    </Pastel>,
+  );
+
+  let%lwt (fullVersionName, filepath) =
+    Versions.getFileToDownload(~version=versionName, ~os, ~arch);
+
+  let%lwt isAlreadyInstalled = Versions.isInstalled(fullVersionName);
+
+  let%lwt _ =
+    if (isAlreadyInstalled) {
+      Logger.error(
+        <Pastel>
+          "Version "
+          <Pastel color=Pastel.Cyan> fullVersionName </Pastel>
+          " is already installed."
+        </Pastel>,
+      );
+      Lwt.return_unit;
+    } else {
+      download(~version=fullVersionName, ~filepath);
+    };
+
+  let%lwt _ =
+    if (Base.String.is_prefix(versionName, ~prefix="latest")) {
+      let%lwt _ = Alias.run(~name=versionName, ~version=fullVersionName);
+      Lwt.return_unit;
+    } else {
+      Lwt.return_unit;
+    };
 
   Lwt.return();
 };
@@ -104,15 +128,6 @@ let run = (~version) =>
       </Pastel>,
     );
     exit(1);
-  | Versions.Already_installed(version) =>
-    Logger.error(
-      <Pastel>
-        "Version "
-        <Pastel color=Pastel.Cyan> version </Pastel>
-        " is already installed."
-      </Pastel>,
-    )
-    |> Lwt.return
   | Versions.Version_not_found(version) =>
     Logger.error(
       <Pastel>
