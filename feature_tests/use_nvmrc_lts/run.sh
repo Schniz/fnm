@@ -6,4 +6,4 @@ eval "$(fnm env)"
 fnm install
 fnm use
 
-fnm ls | grep lts-dubnium
+fnm ls | grep latest-dubnium
