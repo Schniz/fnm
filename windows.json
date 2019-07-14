@@ -4,6 +4,7 @@
     "build": "refmterr dune build --profile release",
     "resolutions": {
       "yarn-pkg-config": "prometheansacrifice/yarn-pkg-config#cc5b4f913cccee781461b16d49b902c84727e7ed",
+      "@opam/macaddr": "mirage/ocaml-ipaddr:macaddr.opam#633e0d7f10d7dd505490a4185c265064a906c482",
       "@esy-packages/esy-openssl": "esy-packages/esy-openssl#f731e9c",
       "@opam/ssl": {
         "source": "ulrikstrid/ocaml-ssl:ssl.opam#2ec4c66",

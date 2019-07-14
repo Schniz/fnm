@@ -21,7 +21,7 @@ build: [
 
 depends: [
   "ocaml" {>= "4.02"}
-  "dune" {build}
+  "dune"
   "ounit" {with-test}
   "seq"
 ]

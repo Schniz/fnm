@@ -25,7 +25,7 @@ bug-reports: "https://github.com/mirage/ocaml-magic-mime/issues"
 dev-repo: "git+https://github.com/mirage/ocaml-magic-mime.git"
 depends: [
   "ocaml" {>= "4.03.0"}
-  "dune" {build}
+  "dune"
 ]
 build: [
   ["dune" "subst"] {pinned}

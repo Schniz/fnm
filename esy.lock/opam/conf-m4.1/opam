@@ -6,8 +6,7 @@ authors: "GNU Project"
 license: "GPL-3"
 build: [["sh" "-exc" "echo | m4"]]
 depexts: [
-  ["m4"] {os-distribution = "debian"}
-  ["m4"] {os-distribution = "ubuntu"}
+  ["m4"] {os-family = "debian"}
   ["m4"] {os-distribution = "fedora"}
   ["m4"] {os-distribution = "rhel"}
   ["m4"] {os-distribution = "centos"}

@@ -45,25 +45,26 @@ module Local = {
 
   let remove = version => Fs.rmdir(version.fullPath);
 
-  let getLatestInstalledNameByPrefix = prefix => {
-    open Lwt.Infix;
-    let%lwt versions =
-      Lwt.catch(
-        () =>
-          Fs.readdir(Directories.nodeVersions)
-          >|= List.filter(isVersionFitsPrefix(prefix))
-          >|= List.sort(flip(compare)),
-        _ => Lwt.return_nil,
-      );
-    switch (versions) {
-    | [version, ..._xs] => Lwt.return_some(version)
-    | [] => Lwt.return_none
-    };
-  };
+  let getLatestInstalledNameByPrefix = prefix =>
+    Lwt.Infix.(
+      {
+        let%lwt versions =
+          Lwt.catch(
+            () =>
+              Fs.readdir(Directories.nodeVersions)
+              >|= List.filter(isVersionFitsPrefix(prefix))
+              >|= List.sort(flip(compare)),
+            _ => Lwt.return_nil,
+          );
+        switch (versions) {
+        | [version, ..._xs] => Lwt.return_some(version)
+        | [] => Lwt.return_none
+        };
+      }
+    );
 };
 
 exception Version_not_found(string);
-exception Already_installed(string);
 
 module Aliases = {
   module VersionAliasMap = Map.Make(String);
@@ -166,11 +167,27 @@ module Remote = {
   };
 };
 
+let ltsVersion = version =>
+  if (Base.String.is_prefix(version, ~prefix="lts/")) {
+    switch (Str.last_chars(version, String.length(version) - 4)) {
+    | exception _ => None
+    | x => Some(x)
+    };
+  } else {
+    None;
+  };
+
 let format = version => {
   let version =
     switch (Str.first_chars(version, 1) |> Int32.of_string) {
     | _ => "v" ++ version
     | exception _ => version
+    };
+
+  let version =
+    switch (ltsVersion(version)) {
+    | Some(lts) => "latest-" ++ lts
+    | None => version
     };
 
   version;
@@ -185,7 +202,7 @@ let endsWith = (~suffix, str) => {
 
 exception No_Download_For_System(System.NodeOS.t, System.NodeArch.t);
 
-let getCurrentVersion = () => {
+let getCurrentVersion = () =>
   switch%lwt (Fs.realpath(Directories.currentVersion)) {
   | Missing(x) when x == Directories.currentVersion => Lwt.return_none
   | Missing(_) => Lwt.return_some(Local.systemVersion)
@@ -203,7 +220,6 @@ let getCurrentVersion = () => {
       },
     );
   };
-};
 
 let getInstalledVersions = () => {
   let%lwt versions =
@@ -248,22 +264,23 @@ let getRemoteVersions = () => {
   |> Lwt.return;
 };
 
-let getRemoteLatestVersionByPrefix = prefix => {
-  open Remote;
+let getRemoteLatestVersionByPrefix = prefix =>
+  Remote.(
+    {
+      let%lwt remoteVersions = getRemoteVersions();
 
-  let%lwt remoteVersions = getRemoteVersions();
+      let compatibleVersions =
+        remoteVersions
+        |> List.map(x => x.name)
+        |> List.filter(isVersionFitsPrefix(prefix))
+        |> List.sort(flip(compare));
 
-  let compatibleVersions =
-    remoteVersions
-    |> List.map(x => x.name)
-    |> List.filter(isVersionFitsPrefix(prefix))
-    |> List.sort(flip(compare));
-
-  switch (compatibleVersions) {
-  | [version, ..._vs] => Lwt.return_some(version)
-  | [] => Lwt.return_none
-  };
-};
+      switch (compatibleVersions) {
+      | [version, ..._vs] => Lwt.return_some(version)
+      | [] => Lwt.return_none
+      };
+    }
+  );
 
 let getExactFileToDownload = (~version as versionName, ~os, ~arch) => {
   let versionName =
@@ -301,7 +318,7 @@ let getExactFileToDownload = (~version as versionName, ~os, ~arch) => {
   };
 };
 
-let getFileToDownload = (~version, ~os, ~arch) => {
+let getFileToDownload = (~version, ~os, ~arch) =>
   try%lwt (getExactFileToDownload(~version, ~os, ~arch)) {
   | Version_not_found(_) as e =>
     switch%lwt (getRemoteLatestVersionByPrefix(version)) {
@@ -310,7 +327,6 @@ let getFileToDownload = (~version, ~os, ~arch) => {
       getExactFileToDownload(~version=exactVersion, ~os, ~arch)
     }
   };
-};
 
 type t =
   | System
@@ -323,33 +339,35 @@ let parse = version => {
   if (formattedVersion == Local.systemVersion.name) {
     Lwt.return_some(System);
   } else {
-    let aliasPath = Aliases.toDirectory(version);
-    let versionPath = Local.toDirectory(formattedVersion);
-
-    let%lwt aliasExists = Fs.exists(aliasPath)
-    and versionExists = Fs.exists(versionPath)
+    let%lwt aliasExists = Aliases.toDirectory(version) |> Fs.exists
+    and aliasExistsOnFormatted =
+      Aliases.toDirectory(formattedVersion) |> Fs.exists
+    and versionExists = Local.toDirectory(formattedVersion) |> Fs.exists
     and versionByPrefixPath =
       Local.getLatestInstalledNameByPrefix(formattedVersion);
 
-    switch (versionExists, aliasExists, versionByPrefixPath) {
-    | (true, _, _) => Some(Local(formattedVersion)) |> Lwt.return
-    | (_, true, _) => Some(Alias(version)) |> Lwt.return
-    | (_, false, Some(version)) => Some(Local(version)) |> Lwt.return
-    | (false, false, None) => Lwt.return_none
+    switch (
+      versionExists,
+      aliasExists,
+      aliasExistsOnFormatted,
+      versionByPrefixPath,
+    ) {
+    | (true, _, _, _) => Some(Local(formattedVersion)) |> Lwt.return
+    | (_, true, _, _) => Some(Alias(version)) |> Lwt.return
+    | (_, _, true, _) => Some(Alias(formattedVersion)) |> Lwt.return
+    | (_, false, false, Some(version)) =>
+      Some(Local(version)) |> Lwt.return
+    | (false, false, false, None) => Lwt.return_none
     };
   };
 };
 
-let throwIfInstalled = versionName => {
+let isInstalled = versionName => {
   let%lwt installedVersions =
     try%lwt (getInstalledVersions()) {
     | _ => Lwt.return([])
     };
-  let isAlreadyInstalled =
-    installedVersions |> List.exists(x => Local.(x.name == versionName));
-  if (isAlreadyInstalled) {
-    Lwt.fail(Already_installed(versionName));
-  } else {
-    Lwt.return();
-  };
+  installedVersions
+  |> List.exists(x => Local.(x.name == versionName))
+  |> Lwt.return;
 };
