@@ -62,7 +62,8 @@ let envs =
 
 let install = {
   let doc = "Install another node version";
-  let man = [];
+  let man = help_secs;
+  let sdocs = Manpage.s_common_options;
 
   let selectedVersion = {
     let doc = "Install another version specified in $(docv).";
@@ -73,13 +74,22 @@ let install = {
 
   (
     Term.(const(Commands.install) $ selectedVersion),
-    Term.info("install", ~version, ~doc, ~exits=Term.default_exits, ~man),
+    Term.info(
+      "install",
+      ~envs,
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
   );
 };
 
 let uninstall = {
   let doc = "Uninstall a node version";
-  let man = [];
+  let sdocs = Manpage.s_common_options;
+  let man = help_secs;
 
   let selectedVersion = {
     let doc = "Uninstall the node version specified in $(docv).";
@@ -92,33 +102,60 @@ let uninstall = {
 
   (
     Term.(const(Commands.uninstall) $ selectedVersion),
-    Term.info("uninstall", ~version, ~doc, ~exits=Term.default_exits, ~man),
+    Term.info(
+      "uninstall",
+      ~envs,
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
   );
 };
 
 let listLocal = {
   let doc = "List all the installed versions";
-  let man = [];
+  let sdocs = Manpage.s_common_options;
+  let man = help_secs;
 
   (
     Term.(app(const(Commands.listLocal), const())),
-    Term.info("ls", ~version, ~doc, ~exits=Term.default_exits, ~man),
+    Term.info(
+      "ls",
+      ~envs,
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
   );
 };
 
 let listRemote = {
   let doc = "List all the versions upstream";
-  let man = [];
+  let sdocs = Manpage.s_common_options;
+  let man = help_secs;
 
   (
     Term.(app(const(Commands.listRemote), const())),
-    Term.info("ls-remote", ~version, ~doc, ~exits=Term.default_exits, ~man),
+    Term.info(
+      "ls-remote",
+      ~version,
+      ~envs,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
   );
 };
 
 let use = {
   let doc = "Switch to another installed node version";
-  let man = [];
+  let man = help_secs;
+  let sdocs = Manpage.s_common_options;
 
   let quiet = {
     let doc = "Don't print stuff";
@@ -134,7 +171,15 @@ let use = {
 
   (
     Term.(const(Commands.use) $ selectedVersion $ quiet),
-    Term.info("use", ~version, ~doc, ~exits=Term.default_exits, ~man),
+    Term.info(
+      "use",
+      ~envs,
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
   );
 };
 
@@ -163,6 +208,7 @@ let alias = {
     Term.(const(Commands.alias) $ selectedVersion $ aliasName),
     Term.info(
       "alias",
+      ~envs,
       ~version,
       ~doc,
       ~exits=Term.default_exits,
@@ -174,7 +220,7 @@ let alias = {
 
 let default = {
   let doc = "Alias a version as default";
-  let man = [];
+  let man = help_secs;
   let sdocs = Manpage.s_common_options;
 
   let selectedVersion = {
@@ -190,6 +236,7 @@ let default = {
     Term.(const(Commands.default) $ selectedVersion),
     Term.info(
       "default",
+      ~envs,
       ~version,
       ~doc,
       ~exits=Term.default_exits,
@@ -274,7 +321,15 @@ let env = {
       $ useOnCd
       $ logLevel
     ),
-    Term.info("env", ~version, ~doc, ~exits=Term.default_exits, ~man, ~sdocs),
+    Term.info(
+      "env",
+      ~envs,
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
   );
 };
 
