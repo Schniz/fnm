@@ -1,7 +1,7 @@
 
 ; !!!! This dune file is generated from the package.json file by pesy. If you modify it by hand
 ; !!!! your changes will be undone! Instead, edit the package.json and then rerun 'esy pesy' at the project root.
-; !!!! If you want to stop using pesy and manage this file by hand, change pacakge.json's 'esy.build' command to: refmterr dune build -p  fnm
+; !!!! If you want to stop using pesy and manage this file by hand, change package.json's 'esy.build' command to: refmterr dune build -p  fnm
 (library
    ; The namespace that other packages/libraries will access this library through
    (name Fnm)
