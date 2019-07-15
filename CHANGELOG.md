@@ -1,4 +1,27 @@
-## v1.12.0 (2019-06-04)
+## v1.13.0 (2019-07-15)
+
+#### New Feature 🎉
+
+- [#129](https://github.com/Schniz/fnm/pull/129) Alias latest versions on installation ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#125](https://github.com/Schniz/fnm/pull/125) format versions in `uninstall` ([@Schniz](https://github.com/Schniz))
+- [#114](https://github.com/Schniz/fnm/pull/114) installation script: use $INSTALL_DIR instead of hard-coded $HOME/.fnm ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#130](https://github.com/Schniz/fnm/pull/130) Fix issues related to help pages ([@Schniz](https://github.com/Schniz))
+- [#123](https://github.com/Schniz/fnm/pull/123) Fix typo in successfully ([@pavelloz](https://github.com/pavelloz))
+- [#118](https://github.com/Schniz/fnm/pull/118) Add note about upgrading ([@pavelloz](https://github.com/pavelloz))
+- [#119](https://github.com/Schniz/fnm/pull/119) Remove "Homebrew" from future plans as it is done ([@pavelloz](https://github.com/pavelloz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Paweł Kowalski ([@pavelloz](https://github.com/pavelloz))
+
+## v1.12.0 (2019-06-06)
 
 #### New Feature 🎉
 
