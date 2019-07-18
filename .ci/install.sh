@@ -20,6 +20,7 @@ parse_args() {
       shift # past argument
       ;;
     --force-install)
+      echo "\`--force-install\`: I hope you know what you're doing." >&2
       FORCE_INSTALL="true"
       shift
       ;;
