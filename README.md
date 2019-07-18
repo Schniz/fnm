@@ -36,7 +36,7 @@ For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](
 curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
 ```
 
-### Upgrade 
+### Upgrade
 
 Upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file add `--skip-shell` to install command.
 
@@ -49,6 +49,10 @@ Set a custom directory for fnm to be installed. The default is `$HOME/.fnm`.
 `--skip-shell`
 
 Skip appending shell specific loader to shell config file, based on the current user shell, defined in `$SHELL`. e.g. for Bash, `$HOME/.bashrc`. `$HOME/.zshrc` for Zsh. For Fish - `$HOME/.config/fish/config.fish`
+
+`--force-install`
+
+MacOS installations using the installation script are deprecated in favor of the Homebrew formula, but this forces the script to install using it anyway.
 
 Example:
 

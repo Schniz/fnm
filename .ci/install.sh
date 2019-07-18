@@ -2,18 +2,6 @@
 
 set -e
 
-OS=$(uname -s)
-
-if [ "$OS" == "Darwin" ]; then
-  FILENAME="fnm-macos"
-elif [ "$OS" == "Linux" ]; then
-  FILENAME="fnm-linux"
-else
-  echo "OS $OS is not supported."
-  echo "If you think that's a bug - please file an issue to https://github.com/Schniz/fnm/issues"
-  exit 1
-fi
-
 INSTALL_DIR="$HOME/.fnm"
 
 # Parse Flags
@@ -31,12 +19,39 @@ parse_args() {
       SKIP_SHELL="true"
       shift # past argument
       ;;
+    --force-install)
+      FORCE_INSTALL="true"
+      shift
+      ;;
     *)
       echo "Unrecognized argument $key"
       exit 1
       ;;
     esac
   done
+}
+
+set_filename() {
+  local OS
+
+  OS=$(uname -s)
+
+  if [ "$OS" == "Linux" ]; then
+    FILENAME="fnm-linux"
+  elif [ "$OS" == "Darwin" ] && [ "$FORCE_INSTALL" == "true" ]; then
+    FILENAME="fnm-macos"
+  elif [ "$OS" == "Darwin" ]; then
+    echo "Hey! Thanks for trying fnm."
+    echo "MacOS installation works better using Homebrew."
+    echo "Please consider installing using:"
+    echo "    $ brew install Schniz/tap/fnm"
+    echo "or run the script again with the \`--force-install\` option."
+    exit 1
+  else
+    echo "OS $OS is not supported."
+    echo "If you think that's a bug - please file an issue to https://github.com/Schniz/fnm/issues"
+    exit 1
+  fi
 }
 
 download_fnm() {
@@ -134,6 +149,7 @@ setup_shell() {
 }
 
 parse_args "$@"
+set_filename
 check_dependencies
 download_fnm
 if [ "$SKIP_SHELL" != "true" ]; then
