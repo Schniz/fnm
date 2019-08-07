@@ -351,9 +351,19 @@ let defaultCmd = {
   );
 };
 
+let argv =
+  Sys.argv
+  |> Array.map(arg =>
+       switch (arg) {
+       | "-v" => "--version"
+       | x => x
+       }
+     );
+
 let _ =
   Term.eval_choice(
     defaultCmd,
     [install, uninstall, use, alias, default, listLocal, listRemote, env],
+    ~argv,
   )
   |> Term.exit;
