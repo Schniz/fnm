@@ -1,3 +1,21 @@
+## v1.14.0 (2019-08-20)
+
+#### New Feature 🎉
+
+- [#134](https://github.com/Schniz/fnm/pull/134) Alias -v to --version ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#131](https://github.com/Schniz/fnm/pull/131) Deprecates MacOS installation using the script in favor of Homebrew ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#133](https://github.com/Schniz/fnm/pull/133) Fix Windows build once again! ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.13.0 (2019-07-15)
 
 #### New Feature 🎉
