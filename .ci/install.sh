@@ -71,7 +71,7 @@ download_fnm() {
 check_dependencies() {
   echo "Checking dependencies for the installation script..."
 
-  echo -n "Checking availablity of curl... "
+  echo -n "Checking availability of curl... "
   if hash curl 2>/dev/null; then
     echo "OK!"
   else
@@ -79,7 +79,7 @@ check_dependencies() {
     SHOULD_EXIT="true"
   fi
 
-  echo -n "Checking availablity of unzip... "
+  echo -n "Checking availability of unzip... "
   if hash unzip 2>/dev/null; then
     echo "OK!"
   else
