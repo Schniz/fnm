@@ -66,37 +66,16 @@ let rec listDirRecursively = dir => {
   };
 };
 
-/* let rmdir = dir => { */
-/*   let%lwt entities = listDirRecursively(dir); */
+let rmdir = dir => {
+  let%lwt entities = listDirRecursively(dir);
 
-/*   entities */
-/*   |> Lwt_list.map_s( */
-/*        fun */
-/*        | Dir(dir) => Lwt_unix.rmdir(dir) */
-/*        | File(file) => Lwt_unix.unlink(file), */
-/*      ) */
-/*   |> Lwt.map(_ => ()); */
-/* }; */
-
-// Credit: https://github.com/fastpack/fastpack/blob/9f6aa7d5b83ffef03e73a15679200576ff9dbcb7/FastpackUtil/FS.re#L94
-let rec rmdir = dir => {
-  let%lwt files = Lwt_unix.files_of_directory(dir) |> Lwt_stream.to_list;
-  let%lwt () =
-    Lwt_list.iter_s(
-      filename =>
-        switch (filename) {
-        | "."
-        | ".." => Lwt.return_unit
-        | _ =>
-          let path = Filename.concat(dir, filename);
-          switch%lwt (Lwt_unix.stat(path)) {
-          | {st_kind: Lwt_unix.S_DIR, _} => rmdir(path)
-          | _ => Lwt_unix.unlink(path)
-          };
-        },
-      files,
-    );
-  Lwt_unix.rmdir(dir);
+  entities
+  |> Lwt_list.map_s(
+       fun
+       | Dir(dir) => Lwt_unix.rmdir(dir)
+       | File(file) => Lwt_unix.unlink(file),
+     )
+  |> Lwt.map(_ => ());
 };
 
 type path =
