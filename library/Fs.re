@@ -43,25 +43,39 @@ let readlink = path =>
   | err => Lwt.return_error(err)
   };
 
-// Credit: https://github.com/fastpack/fastpack/blob/9f6aa7d5b83ffef03e73a15679200576ff9dbcb7/FastpackUtil/FS.re#L94
-let rec rmdir = dir => {
-  let%lwt files = Lwt_unix.files_of_directory(dir) |> Lwt_stream.to_list;
-  let%lwt () =
-    Lwt_list.iter_s(
-      filename =>
-        switch (filename) {
-        | "."
-        | ".." => Lwt.return_unit
-        | _ =>
-          let path = Filename.concat(dir, filename);
-          switch%lwt (Lwt_unix.stat(path)) {
-          | {st_kind: Lwt_unix.S_DIR, _} => rmdir(path)
-          | _ => Lwt_unix.unlink(path)
-          };
-        },
-      files,
-    );
-  Lwt_unix.rmdir(dir);
+[@deriving show]
+type file_type =
+  | File(string)
+  | Dir(string);
+
+// Based on: https://github.com/fastpack/fastpack/blob/9f6aa7d5b83ffef03e73a15679200576ff9dbcb7/FastpackUtil/FS.re#L94
+let rec listDirRecursively = dir => {
+  switch%lwt (Lwt_unix.lstat(dir)) {
+  | {st_kind: Lwt_unix.S_DIR, _} =>
+    Lwt_unix.files_of_directory(dir)
+    |> Lwt_stream.map_list_s(
+         fun
+         | "."
+         | ".." => Lwt.return([])
+         | filename => Filename.concat(dir, filename) |> listDirRecursively,
+       )
+    |> Lwt_stream.to_list
+    |> Lwt.map(xs => List.append(xs, [Dir(dir)]))
+  | _ => Lwt.return([File(dir)])
+  | exception (Unix.Unix_error(Unix.ENOENT, _, _)) => Lwt.return([])
+  };
+};
+
+let rmdir = dir => {
+  let%lwt entities = listDirRecursively(dir);
+
+  entities
+  |> Lwt_list.map_s(
+       fun
+       | Dir(dir) => Lwt_unix.rmdir(dir)
+       | File(file) => Lwt_unix.unlink(file),
+     )
+  |> Lwt.map(_ => ());
 };
 
 type path =
