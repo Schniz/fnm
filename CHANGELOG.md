@@ -1,3 +1,18 @@
+## v1.15.0 (2019-09-23)
+
+#### Bugfix 🐛
+
+- [#138](https://github.com/Schniz/fnm/pull/138) Do uninstallation in steps ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#132](https://github.com/Schniz/fnm/pull/132) Fix spelling of availability in install.sh ([@trevershick](https://github.com/trevershick))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Trever Shick ([@trevershick](https://github.com/trevershick))
+
 ## v1.14.0 (2019-08-20)
 
 #### New Feature 🎉
