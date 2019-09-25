@@ -3,7 +3,7 @@ maintainer: "simon.cruanes.2007@m4x.org"
 authors: "Simon Cruanes"
 homepage: "https://github.com/c-cube/seq/"
 bug-reports: "https://github.com/c-cube/seq/issues"
-license: "GPL"
+license: "GPL-1.0-or-later"
 tags: ["iterator" "seq" "pure" "list" "compatibility" "cascade"]
 dev-repo: "git+https://github.com/c-cube/seq.git"
 build: [make "build"]

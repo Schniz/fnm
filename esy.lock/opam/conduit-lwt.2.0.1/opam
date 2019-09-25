@@ -1,0 +1,32 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy" "Thomas Leonard" "Thomas Gazagnaire" "Rudi Grinberg"
+]
+license: "ISC"
+tags: "org:mirage"
+homepage: "https://github.com/mirage/ocaml-conduit"
+bug-reports: "https://github.com/mirage/ocaml-conduit/issues"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune"
+  "base-unix"
+  "ppx_sexp_conv" {>="v0.9.0"}
+  "sexplib"
+  "conduit" {=version}
+  "lwt" {>= "3.0.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/mirage/ocaml-conduit.git"
+synopsis: "A portable network connection establishment library using Lwt"
+url {
+  src:
+    "https://github.com/mirage/ocaml-conduit/releases/download/v2.0.1/conduit-v2.0.1.tbz"
+  checksum: [
+    "sha256=faf9c1a74bb9f7e0c97637a96968c5198a9344b1dfccbbc2d124d74ac3bedfbb"
+    "sha512=af30cb72ca65e619eb3f38ab3633c1f0ab28dbd7eedd10bcb80f449db9c9b7c433b8553adcb05ac1590ece1797e55bbe5e915255b1ad2fa2dff461a2bfc488aa"
+  ]
+}

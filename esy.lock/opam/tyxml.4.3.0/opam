@@ -4,7 +4,7 @@ homepage: "https://github.com/ocsigen/tyxml/"
 bug-reports: "https://github.com/ocsigen/tyxml/issues"
 doc: "https://ocsigen.org/tyxml/manual/"
 dev-repo: "git+https://github.com/ocsigen/tyxml.git"
-license: "LGPL-2.1 with OCaml linking exception"
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
 
 build: [
   ["dune" "subst"] {pinned}

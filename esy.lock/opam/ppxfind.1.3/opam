@@ -1,7 +1,7 @@
 opam-version: "2.0"
 maintainer: "jeremie@dimino.org"
 authors: ["Jérémie Dimino"]
-license: "BSD3"
+license: "BSD-3-Clause"
 homepage: "https://github.com/diml/ppxfind"
 bug-reports: "https://github.com/diml/ppxfind/issues"
 dev-repo: "git+https://github.com/diml/ppxfind.git"

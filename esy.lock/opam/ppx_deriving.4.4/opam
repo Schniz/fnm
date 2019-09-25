@@ -22,7 +22,7 @@ depends: [
   "ppx_tools"  {>= "4.02.3"}
   "result"
   "ounit"      {with-test}
-  "ocaml" {>= "4.02" & < "4.09.0"}
+  "ocaml" {>= "4.02" & < "4.10.0"}
 ]
 synopsis: "Type-driven code generation for OCaml >=4.02.2"
 description: """

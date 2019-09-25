@@ -10,9 +10,10 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
 ]
 depends: [
-  "ocaml"             {>= "4.04.2" & < "4.09.0"}
+  "ocaml"             {>= "4.04.2" & < "4.10.0"}
   "sexplib0"          {>= "v0.12" & < "v0.13"}
   "dune"              {>= "1.5.1"}
+  "dune-configurator"
 ]
 depopts: [
   "base-native-int63"

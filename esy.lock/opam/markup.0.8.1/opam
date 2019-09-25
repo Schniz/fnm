@@ -3,7 +3,7 @@ opam-version: "2.0"
 synopsis: "Error-recovering functional HTML5 and XML parsers and writers"
 
 version: "0.8.1"
-license: "BSD"
+license: "BSD-3-Clause"
 homepage: "https://github.com/aantron/markup.ml"
 doc: "http://aantron.github.io/markup.ml"
 bug-reports: "https://github.com/aantron/markup.ml/issues"

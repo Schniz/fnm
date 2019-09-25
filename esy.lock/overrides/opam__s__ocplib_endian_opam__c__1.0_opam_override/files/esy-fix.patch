@@ -1,0 +1,13 @@
+--- ./setup.ml
++++ ./setup.ml
+@@ -6331,9 +6331,7 @@
+           [
+             "-classic-display";
+             "-no-log";
+-            "-no-links";
+-            "-install-lib-dir";
+-            (Filename.concat (standard_library ()) "ocamlbuild")
++            "-no-links"
+           ]
+         else
+           [];

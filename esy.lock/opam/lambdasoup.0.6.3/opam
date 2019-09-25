@@ -3,7 +3,7 @@ version: "0.6.3"
 homepage: "https://github.com/aantron/lambda-soup"
 doc: "http://aantron.github.io/lambda-soup"
 bug-reports: "https://github.com/aantron/lambda-soup/issues"
-license: "BSD"
+license: "BSD-3-Clause"
 
 authors: "Anton Bachin <antonbachin@yahoo.com>"
 maintainer: "Anton Bachin <antonbachin@yahoo.com>"

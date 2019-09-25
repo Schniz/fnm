@@ -1,0 +1,49 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+]
+synopsis: "CoHTTP implementation using the Lwt concurrency library"
+description: """
+This is a portable implementation of HTTP that uses the Lwt
+concurrency library to multiplex IO.  It implements as much of the
+logic in an OS-independent way as possible, so that more specialised
+modules can be tailored for different targets.  For example, you
+can install `cohttp-lwt-unix` or `cohttp-lwt-jsoo` for a Unix or
+JavaScript backend, or `cohttp-mirage` for the MirageOS unikernel
+version of the library. All of these implementations share the same
+IO logic from this module."""
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "dune" {>= "1.1.0"}
+  "cohttp" {=version}
+  "lwt" {>= "2.5.0"}
+  "sexplib0"
+  "ppx_sexp_conv" {>= "v0.9.0"}
+  "logs"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v2.3.0/cohttp-v2.3.0.tbz"
+  checksum: [
+    "sha256=f179ec35d00ecc57e8326fb11de5f6a769ee49ecd0dffacce6530f0695297125"
+    "sha512=2e49f435d6bf4ea8ed55c0c62d27aeec63cb21a97bf4be8f40f6c39fbcec1d37044a1e91d47f2156e2df18fda778f78da12d4b6e5a76775e89b9e059feab194d"
+  ]
+}
