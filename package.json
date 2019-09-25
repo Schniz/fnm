@@ -4,7 +4,6 @@
   "description": "Fast and simple Node.js version manager, built in ReasonML",
   "esy": {
     "build": "pesy",
-    "buildsInSource": "_build",
     "release": {
       "releasedBinaries": [
         "fnm.exe"

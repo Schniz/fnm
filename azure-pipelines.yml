@@ -43,14 +43,14 @@ jobs:
   # - template: .ci/restore-build-cache.yml
   - script: brew install fish
   - template: .ci/esy-build-steps.yml
-  - script: cp _build/default/executable/FnmApp.exe _build/fnm
-  - script: strip _build/fnm
-  - script: ./feature_tests/run.sh $(pwd)/_build/fnm
+  - script: cp _esy/default/build/default/executable/FnmApp.exe _esy/default/build/fnm
+  - script: strip _esy/default/build/fnm
+  - script: ./feature_tests/run.sh $(pwd)/_esy/default/build/fnm
   # - template: .ci/publish-build-cache.yml
   - task: PublishBuildArtifacts@1
     displayName: 'Save artifact'
     inputs:
-        PathtoPublish: '_build/fnm'
+        PathtoPublish: '_esy/default/build/fnm'
         ArtifactName: fnm-macos
 
 - job: Windows

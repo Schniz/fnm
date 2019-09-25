@@ -15,7 +15,8 @@ include Rely.Make({
 
 let run = args => {
   let arguments =
-    args |> Array.append([|"./_build/default/executable/FnmApp.exe"|]);
+    args
+    |> Array.append([|"./_esy/default/build/default/executable/FnmApp.exe"|]);
   let env =
     Unix.environment()
     |> Array.append([|

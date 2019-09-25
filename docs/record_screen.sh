@@ -4,7 +4,7 @@ DIRECTORY=`dirname $0`
 
 function setup_binary() {
   export TEMP_DIR=$(mktemp -d -t fnm)
-  cp _build/default/executable/FnmApp.exe $TEMP_DIR/fnm
+  cp _esy/default/build/default/executable/FnmApp.exe $TEMP_DIR/fnm
   export PATH=$TEMP_DIR:$PATH
   export FNM_DIR=$TEMP_DIR/.fnm
 }
