@@ -31,7 +31,8 @@
         "ppx_deriving.show",
         "ppx_deriving.eq",
         "ppx_deriving.make",
-        "ppx_deriving.ord"
+        "ppx_deriving.ord",
+        "ppx_deriving_yojson"
       ],
       "require": [
         "pastel.lib",
@@ -44,7 +45,8 @@
         "cohttp",
         "cohttp-lwt",
         "cohttp-lwt-unix",
-        "console.lib"
+        "console.lib",
+        "ppx_deriving_yojson.runtime"
       ],
       "name": "fnm.lib",
       "namespace": "Fnm"

@@ -71,6 +71,20 @@ let main = (~version as versionName) => {
 
   let versionName = Versions.format(versionName);
 
+  let%lwt versionName =
+    switch (versionName) {
+    | "latest-*" =>
+      switch%lwt (VersionListing.getLatestLts()) {
+      | Error(err) =>
+        raise(VersionListing.Problem_with_finding_latest_lts(err))
+      | Ok({VersionListing.lts, _}) =>
+        Printf.sprintf("latest-%s", lts) |> Lwt.return
+      }
+    | _ => Lwt.return(versionName)
+    };
+
+  print_endline("yes: " ++ versionName);
+
   Logger.debug(
     <Pastel>
       "Looking for node "
@@ -115,7 +129,7 @@ let main = (~version as versionName) => {
 };
 
 let run = (~version) =>
-  try%lwt (main(~version)) {
+  try%lwt(main(~version)) {
   | Versions.No_Download_For_System(os, arch) =>
     Logger.error(
       <Pastel>
@@ -134,6 +148,21 @@ let run = (~version) =>
         "Version "
         <Pastel color=Pastel.Cyan> version </Pastel>
         " not found!"
+      </Pastel>,
+    );
+    exit(1);
+  | VersionListing.Problem_with_finding_latest_lts(
+      VersionListing.Cant_find_latest_lts,
+    ) =>
+    Logger.error(<Pastel color=Pastel.Red> "Can't find latest LTS" </Pastel>);
+    exit(1);
+  | VersionListing.Problem_with_finding_latest_lts(
+      VersionListing.Cant_parse_remote_version_listing(reason),
+    ) =>
+    Logger.error(
+      <Pastel color=Pastel.Red>
+        "Can't parse json of the response:\n"
+        reason
       </Pastel>,
     );
     exit(1);
