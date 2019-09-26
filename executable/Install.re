@@ -83,8 +83,6 @@ let main = (~version as versionName) => {
     | _ => Lwt.return(versionName)
     };
 
-  print_endline("yes: " ++ versionName);
-
   Logger.debug(
     <Pastel>
       "Looking for node "
