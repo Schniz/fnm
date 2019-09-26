@@ -25,6 +25,18 @@ let bind = (fn, res) =>
   | Error(_) as e => e
   };
 
+let bind_err = (fn, res) =>
+  switch (res) {
+  | Ok(_) as o => o
+  | Error(x) => fn(x)
+  };
+
+let bind_err_lwt = (fn, res) =>
+  switch (res) {
+  | Ok(o) => Lwt.return_ok(o)
+  | Error(x) => fn(x)
+  };
+
 let fold = (error, ok, res) =>
   switch (res) {
   | Ok(x) => ok(x)

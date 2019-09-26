@@ -79,7 +79,7 @@ module Aliases = {
 
   let getAll = () => {
     let%lwt aliases =
-      try%lwt (Fs.readdir(Directories.aliases)) {
+      try%lwt(Fs.readdir(Directories.aliases)) {
       | _ => Lwt.return([])
       };
     aliases
@@ -293,7 +293,7 @@ let getExactFileToDownload = (~version as versionName, ~os, ~arch) => {
     Printf.sprintf("%s%s/", Config.FNM_NODE_DIST_MIRROR.get(), versionName);
 
   let%lwt html =
-    try%lwt (Http.makeRequest(url) |> Lwt.map(Http.body)) {
+    try%lwt(Http.makeRequest(url) |> Lwt.map(Http.body)) {
     | Http.Not_found(_) => Lwt.fail(Version_not_found(versionName))
     };
 
@@ -319,7 +319,7 @@ let getExactFileToDownload = (~version as versionName, ~os, ~arch) => {
 };
 
 let getFileToDownload = (~version, ~os, ~arch) =>
-  try%lwt (getExactFileToDownload(~version, ~os, ~arch)) {
+  try%lwt(getExactFileToDownload(~version, ~os, ~arch)) {
   | Version_not_found(_) as e =>
     switch%lwt (getRemoteLatestVersionByPrefix(version)) {
     | None => Lwt.fail(e)
@@ -337,7 +337,7 @@ let parse = version => {
   let formattedVersion = format(version);
 
   if (formattedVersion == Local.systemVersion.name) {
-    Lwt.return_some(System);
+    Lwt.return_ok(System);
   } else {
     let%lwt aliasExists = Aliases.toDirectory(version) |> Fs.exists
     and aliasExistsOnFormatted =
@@ -352,19 +352,18 @@ let parse = version => {
       aliasExistsOnFormatted,
       versionByPrefixPath,
     ) {
-    | (true, _, _, _) => Some(Local(formattedVersion)) |> Lwt.return
-    | (_, true, _, _) => Some(Alias(version)) |> Lwt.return
-    | (_, _, true, _) => Some(Alias(formattedVersion)) |> Lwt.return
-    | (_, false, false, Some(version)) =>
-      Some(Local(version)) |> Lwt.return
-    | (false, false, false, None) => Lwt.return_none
+    | (true, _, _, _) => Local(formattedVersion) |> Lwt.return_ok
+    | (_, true, _, _) => Alias(version) |> Lwt.return_ok
+    | (_, _, true, _) => Alias(formattedVersion) |> Lwt.return_ok
+    | (_, false, false, Some(version)) => Local(version) |> Lwt.return_ok
+    | (false, false, false, None) => Lwt.return_error(formattedVersion)
     };
   };
 };
 
 let isInstalled = versionName => {
   let%lwt installedVersions =
-    try%lwt (getInstalledVersions()) {
+    try%lwt(getInstalledVersions()) {
     | _ => Lwt.return([])
     };
   installedVersions
