@@ -1,0 +1,41 @@
+--- ./myocamlbuild.ml
++++ ./myocamlbuild.ml
+@@ -573,6 +573,24 @@
+    Add a dependency after dropping support for 4.01 and earlier. *)
+ let dispatch_cppo = function
+   | After_rules -> begin
++    let is_directory s =
++      let slen = String.length s in
++      let s =
++        if Sys.os_type <> "Win32" || slen < 2 then
++          s
++        else
++          match s.[slen-1] with
++          | '\\' | '/' ->
++              if slen <> 3 || s.[1] <> ':' then
++                String.sub s 0 (slen -1)
++              else
++                (match s.[0] with
++                | 'A' .. 'Z' | 'a' .. 'z' -> s
++                | _ -> String.sub s 0 (slen -1))
++          | _ -> s
++	    in
++      Pathname.is_directory s
++    in
+       let cppo_rules ext =
+         let dep   = "%(name).cppo"-.-ext
+         and prod1 = "%(name: <*> and not <*.cppo>)"-.-ext
+@@ -591,11 +609,11 @@
+       pflag ["cppo"] "cppo_D" (fun s -> S [A "-D"; A s]) ;
+       pflag ["cppo"] "cppo_U" (fun s -> S [A "-U"; A s]) ;
+       pflag ["cppo"] "cppo_I" (fun s ->
+-        if Pathname.is_directory s then S [A "-I"; P s]
++        if is_directory s then S [A "-I"; P s]
+         else S [A "-I"; P (Pathname.dirname s)]
+       ) ;
+       pdep ["cppo"] "cppo_I" (fun s ->
+-        if Pathname.is_directory s then [] else [s]) ;
++        if is_directory s then [] else [s]) ;
+       flag ["cppo"; "cppo_q"] (A "-q") ;
+       flag ["cppo"; "cppo_s"] (A "-s") ;
+       flag ["cppo"; "cppo_n"] (A "-n") ;

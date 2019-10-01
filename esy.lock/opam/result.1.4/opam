@@ -4,7 +4,7 @@ authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
 homepage: "https://github.com/janestreet/result"
 dev-repo: "git+https://github.com/janestreet/result.git"
 bug-reports: "https://github.com/janestreet/result/issues"
-license: "BSD3"
+license: "BSD-3-Clause"
 build: [["dune" "build" "-p" name "-j" jobs]]
 depends: [
   "ocaml"

@@ -1,0 +1,40 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: ["David Sheets" "Anil Madhavapeddy" "Hugo Heuzard"]
+synopsis: "A library for manipulation of MAC address representations"
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-ipaddr"
+doc: "https://mirage.github.io/ocaml-ipaddr/"
+bug-reports: "https://github.com/mirage/ocaml-ipaddr/issues"
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "dune" {>="1.9.0"}
+  "ounit" {with-test}
+  "ppx_sexp_conv" {with-test & >= "v0.9.0"}
+]
+conflicts: [ "ipaddr" {< "3.0.0"} ]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-ipaddr.git"
+description: """
+A library for manipulation of MAC address representations.
+
+Features:
+
+ * oUnit-based tests
+ * MAC-48 (Ethernet) address support
+ * `Macaddr` is a `Map.OrderedType`
+ * All types have sexplib serializers/deserializers optionally via the `Macaddr_sexp` library.
+ """
+url {
+  src:
+    "https://github.com/mirage/ocaml-ipaddr/releases/download/v4.0.0/ipaddr-v4.0.0.tbz"
+  checksum: [
+    "sha256=6f4abf9c210b20ccddf4610691a87b8c870790d8f71d4a7edcfca9e21b59fc29"
+    "sha512=ca55a8cfa8b84c0a2f4e1fe7afb4c582066bbb562efb94169c0347e441ce076dc426d191772edb869eca6bd77f42f7141378181057ad8886da25ef915a9ee57f"
+  ]
+}

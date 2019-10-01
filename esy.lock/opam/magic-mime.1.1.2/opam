@@ -1,0 +1,41 @@
+opam-version: "2.0"
+name: "magic-mime"
+synopsis: "Map filenames to common MIME types"
+description: """
+This library contains a database of MIME types that maps filename extensions
+into MIME types suitable for use in many Internet protocols such as HTTP or
+e-mail.  It is generated from the `mime.types` file found in Unix systems, but
+has no dependency on a filesystem since it includes the contents of the
+database as an ML datastructure.
+
+For example, here's how to lookup MIME types in the [utop] REPL:
+
+    #require "magic-mime";;
+    Magic_mime.lookup "/foo/bar.txt";;
+    - : bytes = "text/plain"
+    Magic_mime.lookup "bar.css";;
+    - : bytes = "text/css"
+"""
+maintainer: "Anil Madhavapeddy <anil@recoil.org>"
+authors: ["Anil Madhavapeddy" "Maxence Guesdon"]
+license: "ISC"
+homepage: "https://github.com/mirage/ocaml-magic-mime"
+doc: "https://mirage.github.io/ocaml-magic-mime/"
+bug-reports: "https://github.com/mirage/ocaml-magic-mime/issues"
+dev-repo: "git+https://github.com/mirage/ocaml-magic-mime.git"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune"
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+url {
+  src:
+    "https://github.com/mirage/ocaml-magic-mime/releases/download/v1.1.2/magic-mime-v1.1.2.tbz"
+  checksum: [
+    "sha256=0c590bbc747531b56d392ee8f063d879df1e2026ba2dfa2d1bc98c9a9acb04eb"
+    "sha512=8264db78adc2c75b8adabc23c26ad34eab98383bd3a8f2068f2236ff3425d653c0238fbd7361e55a3d70d843413ef8671b6e97293074b4d3a1e300628d5292ab"
+  ]
+}

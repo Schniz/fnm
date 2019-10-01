@@ -3,7 +3,7 @@ maintainer: "tim@gfxmonk.net"
 homepage: "http://www.gnu.org/software/m4/m4.html"
 bug-reports: "https://github.com/ocaml/opam-repository/issues"
 authors: "GNU Project"
-license: "GPL-3"
+license: "GPL-3.0-only"
 build: [["sh" "-exc" "echo | m4"]]
 depexts: [
   ["m4"] {os-family = "debian"}

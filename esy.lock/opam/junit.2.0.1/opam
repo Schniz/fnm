@@ -3,7 +3,7 @@ maintainer: "Louis Roché <louis@louisroche.net>"
 authors: "Louis Roché <louis@louisroche.net>"
 homepage: "https://github.com/Khady/ocaml-junit"
 bug-reports: "https://github.com/Khady/ocaml-junit/issues"
-license: "LGPLv3+ with OCaml linking exception"
+license: "LGPL-3.0-or-later with OCaml-LGPL-linking-exception"
 dev-repo: "git+https://github.com/Khady/ocaml-junit.git"
 doc: "https://khady.github.io/ocaml-junit/"
 tags: ["junit" "jenkins"]

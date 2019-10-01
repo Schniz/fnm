@@ -1,0 +1,29 @@
+opam-version: "2.0"
+maintainer: "Frederic Bour <frederic.bour@lakaban.net>"
+authors: "Frederic Bour <frederic.bour@lakaban.net>"
+homepage: "https://github.com/let-def/merlin-extend"
+bug-reports: "https://github.com/let-def/merlin-extend"
+license: "MIT"
+dev-repo: "git+https://github.com/let-def/merlin-extend.git"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "dune" {>= "1.0"}
+  "cppo" {build}
+  "ocaml" {>= "4.02.3"}
+]
+synopsis: "A protocol to provide custom frontend to Merlin"
+description: """
+This protocol allows to replace the OCaml frontend of Merlin.
+It extends what used to be done with the `-pp' flag to handle a few more cases."""
+doc: "https://let-def.github.io/merlin-extend"
+url {
+  src:
+    "https://github.com/let-def/merlin-extend/releases/download/v0.5/merlin-extend-v0.5.tbz"
+  checksum: [
+    "sha256=ca3a38c360c7d4827eb4789abf7a6aa4b6e3b4e3c3ef69a5be64dce4601ec227"
+    "sha512=55c5a3637337abb8ca8db679128a81ca8ccce567bc214d55b2e6444dc0e905b74c64d629bdea2457d0fe4be5306414feefcdbc4d4761fdafd59aa107550936b6"
+  ]
+}

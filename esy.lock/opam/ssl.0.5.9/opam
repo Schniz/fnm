@@ -1,0 +1,25 @@
+opam-version: "2.0"
+maintainer: "Samuel Mimram <samuel.mimram@ens-lyon.org>"
+homepage: "https://github.com/savonet/ocaml-ssl"
+dev-repo: "git+https://github.com/savonet/ocaml-ssl.git"
+bug-reports: "https://github.com/savonet/ocaml-ssl/issues"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "dune" {>= "1.2.1"}
+  "dune-configurator"
+  "base-unix"
+  "conf-openssl"
+]
+synopsis: "Bindings for OpenSSL"
+authors: "Samuel Mimram <samuel.mimram@ens-lyon.org>"
+url {
+  src: "https://github.com/savonet/ocaml-ssl/archive/0.5.9.tar.gz"
+  checksum: [
+    "md5=09265ae2dee5ac48507ccb8a81244a15"
+    "sha512=6826e5a6ab9f51013e8d097900f443d091e085e3d2d232a315a0e3a90ca334c9b9779d20dcae267f9ed961bc4a08fcb80372e669389c59a22d5c7706d37fcd5f"
+  ]
+}

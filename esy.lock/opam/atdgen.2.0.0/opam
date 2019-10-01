@@ -1,0 +1,44 @@
+opam-version: "2.0"
+maintainer: "martin@mjambon.com"
+authors: ["Martin Jambon"]
+
+homepage: "https://github.com/mjambon/atd"
+bug-reports: "https://github.com/mjambon/atd/issues"
+dev-repo: "git://github.com/mjambon/atd.git"
+
+build: [
+  ["jbuilder" "subst" "-p" name] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+
+# Restore when https://github.com/mjambon/atd/issues/121 is resolved.
+# build-test: [
+#   ["jbuilder" "runtest" "-p" name]
+# ]
+
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "jbuilder" {build}
+  "atd" {>= "2.0.0"}
+  "atdgen-runtime" {>= "2.0.0"}
+  "biniou" {>= "1.0.6"}
+  "yojson" {>= "1.2.1"}
+]
+synopsis:
+  "Generates efficient JSON serializers, deserializers and validators"
+description: """
+Atdgen is a command-line program that takes as input type definitions in the
+ATD syntax and produces OCaml code suitable for data serialization and
+deserialization.
+
+Two data formats are currently supported, these are biniou and JSON.
+Atdgen-biniou and Atdgen-json will refer to Atdgen used in one context or the
+other.
+
+Atdgen was designed with efficiency and durability in mind. Software authors
+are encouraged to use Atdgen directly and to write tools that may reuse part of
+Atdgen’s source code."""
+url {
+  src: "https://github.com/mjambon/atd/releases/download/2.0.0/atd-2.0.0.tbz"
+  checksum: "md5=14e47609397c524ea0eae7c3f14f7ccf"
+}

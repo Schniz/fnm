@@ -8,7 +8,7 @@ authors: [
   "Rudi Grinberg"
   "Gabriel Radanne"
 ]
-license: "LGPL-2.0 with OCaml linking exception"
+license: "LGPL-2.0-only with OCaml-LGPL-linking-exception"
 homepage: "https://github.com/ocaml/ocaml-re"
 bug-reports: "https://github.com/ocaml/ocaml-re/issues"
 dev-repo: "git+https://github.com/ocaml/ocaml-re.git"

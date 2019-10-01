@@ -1,0 +1,46 @@
+opam-version: "2.0"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "-p" name "@doc"] {with-doc}
+]
+maintainer: ["martin@mjambon.com" "rudi.grinberg@gmail.com"]
+authors: ["Martin Jambon"]
+bug-reports: "https://github.com/mjambon/easy-format/issues"
+homepage: "https://github.com/mjambon/easy-format"
+doc: "https://mjambon.github.io/easy-format/"
+license: "BSD-3-Clause"
+dev-repo: "git+https://github.com/mjambon/easy-format.git"
+synopsis:
+  "High-level and functional interface to the Format module of the OCaml standard library"
+description: """
+
+This module offers a high-level and functional interface to the Format module of
+the OCaml standard library. It is a pretty-printing facility, i.e. it takes as
+input some code represented as a tree and formats this code into the most
+visually satisfying result, breaking and indenting lines of code where
+appropriate.
+
+Input data must be first modelled and converted into a tree using 3 kinds of
+nodes:
+
+* atoms
+* lists
+* labelled nodes
+
+Atoms represent any text that is guaranteed to be printed as-is. Lists can model
+any sequence of items such as arrays of data or lists of definitions that are
+labelled with something like "int main", "let x =" or "x:"."""
+depends: [
+  "dune" {>= "1.10"}
+  "ocaml" {>= "4.02.3"}
+]
+url {
+  src:
+    "https://github.com/mjambon/easy-format/releases/download/1.3.2/easy-format-1.3.2.tbz"
+  checksum: [
+    "sha256=3440c2b882d537ae5e9011eb06abb53f5667e651ea4bb3b460ea8230fa8c1926"
+    "sha512=e39377a2ff020ceb9ac29e8515a89d9bdbc91dfcfa871c4e3baafa56753fac2896768e5d9822a050dc1e2ade43c8967afb69391a386c0a8ecd4e1f774e236135"
+  ]
+}

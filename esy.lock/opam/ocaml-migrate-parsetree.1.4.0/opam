@@ -4,7 +4,7 @@ authors: [
   "Frédéric Bour <frederic.bour@lakaban.net>"
   "Jérémie Dimino <jeremie@dimino.org>"
 ]
-license: "LGPL-2.1 with OCaml linking exception"
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
 homepage: "https://github.com/ocaml-ppx/ocaml-migrate-parsetree"
 bug-reports: "https://github.com/ocaml-ppx/ocaml-migrate-parsetree/issues"
 dev-repo: "git+https://github.com/ocaml-ppx/ocaml-migrate-parsetree.git"

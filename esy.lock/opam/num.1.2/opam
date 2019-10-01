@@ -6,7 +6,7 @@ authors: [
   "Pierre Weis"
   "Xavier Leroy"
 ]
-license: "LGPL 2.1 with OCaml linking exception"
+license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
 
 homepage: "https://github.com/ocaml/num/"
 bug-reports: "https://github.com/ocaml/num/issues"

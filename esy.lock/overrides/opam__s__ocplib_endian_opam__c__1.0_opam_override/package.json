@@ -1,0 +1,34 @@
+{
+  "build": [
+    [
+      "bash",
+      "-c",
+      "#{os == 'windows' ? 'patch -p1 < ocplib-endian-0.8.patch' : 'true'}"
+    ],
+    [
+      "bash",
+      "-c",
+      "#{os == 'windows' ? 'patch -p1 < esy-fix.patch' : 'true'}"
+    ],
+    [
+      "ocaml",
+      "setup.ml",
+      "-configure",
+      "--disable-debug",
+      "--prefix",
+      "#{self.install}"
+    ],
+    [
+      "ocaml",
+      "setup.ml",
+      "-build"
+    ]
+  ],
+  "install": [
+    [
+      "ocaml",
+      "setup.ml",
+      "-install"
+    ]
+  ]
+}
