@@ -25,9 +25,9 @@ let getVersion = version => {
     switch (parsed) {
     | Ok(x) => Lwt.return_ok(x)
     | Error("latest-*") =>
-      switch%lwt (VersionListing.getLatestLts()) {
+      switch%lwt (VersionListingLts.getLatest()) {
       | Error(_) => Lwt.return_error(Version_Not_Installed(version))
-      | Ok({VersionListing.lts, _}) =>
+      | Ok({VersionListingLts.lts, _}) =>
         Versions.Alias("latest-" ++ lts) |> Lwt.return_ok
       }
     | _ => Version_Not_Installed(version) |> Lwt.return_error

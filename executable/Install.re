@@ -74,10 +74,10 @@ let main = (~version as versionName) => {
   let%lwt versionName =
     switch (versionName) {
     | "latest-*" =>
-      switch%lwt (VersionListing.getLatestLts()) {
+      switch%lwt (VersionListingLts.getLatest()) {
       | Error(err) =>
-        raise(VersionListing.Problem_with_finding_latest_lts(err))
-      | Ok({VersionListing.lts, _}) =>
+        raise(VersionListingLts.Problem_with_finding_latest_lts(err))
+      | Ok({VersionListingLts.lts, _}) =>
         Printf.sprintf("latest-%s", lts) |> Lwt.return
       }
     | _ => Lwt.return(versionName)
@@ -149,13 +149,13 @@ let run = (~version) =>
       </Pastel>,
     );
     exit(1);
-  | VersionListing.Problem_with_finding_latest_lts(
-      VersionListing.Cant_find_latest_lts,
+  | VersionListingLts.Problem_with_finding_latest_lts(
+      VersionListingLts.Cant_find_latest_lts,
     ) =>
     Logger.error(<Pastel color=Pastel.Red> "Can't find latest LTS" </Pastel>);
     exit(1);
-  | VersionListing.Problem_with_finding_latest_lts(
-      VersionListing.Cant_parse_remote_version_listing(reason),
+  | VersionListingLts.Problem_with_finding_latest_lts(
+      VersionListingLts.Cant_parse_remote_version_listing(reason),
     ) =>
     Logger.error(
       <Pastel color=Pastel.Red>
