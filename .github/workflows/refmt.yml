@@ -14,9 +14,7 @@ jobs:
       - uses: actions/checkout@master
         with:
           fetch-depth: 1
-      - run: sudo npm install -g bs-platform
-        name: "Install `bsrefmt`"
-      - run: bsrefmt --in-place ./*/*.re
+      - run: npx --package bs-platform bsrefmt --in-place ./*/*.re
         name: "bsrefmt --in-place"
       - run: |
           if [ -n "$(git status --porcelain)" ]; then
