@@ -353,7 +353,7 @@ let relativizeExn: type k. (~source: t(k), ~dest: t(k)) => t(relative) =
 let relativize:
   type k. (~source: t(k), ~dest: t(k)) => result(t(relative), exn) =
   (~source, ~dest) =>
-    try (Ok(relativizeExn(~source, ~dest))) {
+    try(Ok(relativizeExn(~source, ~dest))) {
     | Invalid_argument(_) as e => Error(e)
     };
 

@@ -76,6 +76,7 @@
     "verify-fnm-package": "node ./.ci/prepare-fnm-package.js --fail-on-difference",
     "bootstrap": ".ci/bootstrap",
     "test": "esy x TestFnm.exe",
+    "fmt": "bash -c 'esy @fmt refmt --in-place ./*/*.re'",
     "changelog": "bash -c 'esy lerna-changelog --from=v1.0.0 --next-version=${NEXT_VERSION-Unreleased} > CHANGELOG.md'",
     "version:prepare": "node ./.ci/prepare-version.js"
   },
@@ -122,7 +123,7 @@
   },
   "lint-staged": {
     "*.re": [
-      "./scripts/fmt_base.sh --in-place",
+      "esy @fmt refmt --in-place",
       "git add"
     ],
     "*.{js,md,json}": [

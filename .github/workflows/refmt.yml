@@ -57,7 +57,7 @@ jobs:
             git status --porcelain
             echo "----"
             echo ""
-            echo 'Please run `scripts/fmt_all.sh` locally to fix the issues.'
+            echo 'Please run `esy fmt` locally to fix the issues.'
             exit 1
           fi
         name: "Throw if something changed"
