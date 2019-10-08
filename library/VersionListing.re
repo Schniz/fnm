@@ -11,9 +11,9 @@ let item_of_yojson = (json: Yojson.Safe.t) => {
   let files = json |> member("files") |> to_list |> List.map(to_string);
   let date = json |> member("date") |> to_string;
   let lts =
-    Base.Option.try_with(() => {
+    Base.Option.try_with(() =>
       json |> member("lts") |> to_string |> String.lowercase_ascii
-    });
+    );
   Ok({version, date, files, lts});
 };
 

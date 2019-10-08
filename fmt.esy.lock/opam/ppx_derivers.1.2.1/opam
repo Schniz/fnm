@@ -1,0 +1,23 @@
+opam-version: "2.0"
+maintainer: "jeremie@dimino.org"
+authors: ["Jérémie Dimino"]
+license: "BSD-3-Clause"
+homepage: "https://github.com/ocaml-ppx/ppx_derivers"
+bug-reports: "https://github.com/ocaml-ppx/ppx_derivers/issues"
+dev-repo: "git://github.com/ocaml-ppx/ppx_derivers.git"
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+depends: [
+  "ocaml"
+  "dune"
+]
+synopsis: "Shared [@@deriving] plugin registry"
+description: """
+Ppx_derivers is a tiny package whose sole purpose is to allow
+ppx_deriving and ppx_type_conv to inter-operate gracefully when linked
+as part of the same ocaml-migrate-parsetree driver."""
+url {
+  src: "https://github.com/ocaml-ppx/ppx_derivers/archive/1.2.1.tar.gz"
+  checksum: "md5=5dc2bf130c1db3c731fe0fffc5648b41"
+}

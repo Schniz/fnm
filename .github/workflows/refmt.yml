@@ -1,0 +1,63 @@
+name: Check formatting
+on: [push]
+
+# consider using docker: ocaml/opam2:4.06
+# - sudo apt-get update && apt-get install -y m4
+# - opam update && opam install reason
+# - refmt # is new
+
+jobs:
+  # build:
+  #   name: build project
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #       with:
+  #         fetch-depth: 1
+  #     - uses: actions/setup-node@v1
+  #       with:
+  #         node-version: '10.x'
+  #     - run: npm install -g esy@latest
+  #     - run: esy i
+  #     - run: esy b
+  #     - run: esy export-dependencies
+  #     - run: tar -czf build.tar.gz _export
+  #     - uses: actions/upload-artifact@master
+  #       with:
+  #         name: cache-linux-build-dependencies
+  #         path: build.tar.gz
+
+  test_refmt:
+    name: run refmt
+    runs-on: ubuntu-latest
+    # needs: [build]
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      # - run: npm install -g esy@latest
+      # - uses: actions/download-artifact@master
+      #   with:
+      #     name: cache-linux-build-dependencies
+      # - run: tar -xzf cache-linux-build-dependencies/build.tar.gz
+      # - run: esy import-build _export/*
+      # - run: esy i
+      # - run: esy fmt
+      - run: npm i -g esy@latest
+      - run: esy @fmt i
+      - run: esy @fmt refmt --in-place */*.re
+      # - run: ./scripts/fmt_all.sh
+      #   name: refmt all the files
+      - run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "There are differences:"
+            git status --porcelain
+            echo "----"
+            echo ""
+            echo 'Please run `esy fmt` locally to fix the issues.'
+            exit 1
+          fi
+        name: "Throw if something changed"
