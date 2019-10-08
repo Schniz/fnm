@@ -46,9 +46,10 @@ jobs:
       # - run: esy import-build _export/*
       # - run: esy i
       # - run: esy fmt
-      - run: npm i -g esy@latest
-      - run: esy @fmt i
-      - run: esy @fmt refmt --in-place */*.re
+      - run: |
+          curl https://12991-46261404-gh.circle-artifacts.com/0/refmt.exe -L > /tmp/refmt
+          chmod u+x /tmp/refmt
+      - run: /tmp/refmt --in-place */*.re
       # - run: ./scripts/fmt_all.sh
       #   name: refmt all the files
       - run: |
