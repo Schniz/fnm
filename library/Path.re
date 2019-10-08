@@ -146,9 +146,9 @@ let lex = s => {
     prevEsc.contents = ch === '\\' && !prevEsc.contents;
   };
   let rev =
-    j.contents === len - 1 ?
-      revTokens.contents :
-      [
+    j.contents === len - 1
+      ? revTokens.contents
+      : [
         makeToken(String.sub(s, j.contents + 1, len - 1 - j.contents)),
         ...revTokens.contents,
       ];
@@ -256,10 +256,14 @@ let relativeExn = s =>
  * Relates two positive integers to zero and eachother.
  */
 type ord =
-  | /** 0 === i === j */ Zeros
-  | /** 0 === i < j */ ZeroPositive
-  | /** i > 0 === j */ PositiveZero
-  | /** 0 < i && 0 < j */ Positives;
+  | /** 0 === i === j */
+    Zeros
+  | /** 0 === i < j */
+    ZeroPositive
+  | /** i > 0 === j */
+    PositiveZero
+  | /** 0 < i && 0 < j */
+    Positives;
 
 /**
  * Using `ord` allows us to retain exhaustiveness pattern matching checks that
@@ -268,8 +272,8 @@ type ord =
  * it isn't inferred to be polymorphic.
  */
 let ord = (i: int, j: int) =>
-  i === 0 && j === 0 ?
-    Zeros : i === 0 ? ZeroPositive : j === 0 ? PositiveZero : Positives;
+  i === 0 && j === 0
+    ? Zeros : i === 0 ? ZeroPositive : j === 0 ? PositiveZero : Positives;
 
 let rec repeat = (soFar, i, s) =>
   i === 0 ? soFar : repeat(soFar ++ s, i - 1, s);
@@ -334,14 +338,14 @@ let relativizeExn: type k. (~source: t(k), ~dest: t(k)) => t(relative) =
         | (Some(_), None) => raiseDriveMismatch(source, dest)
         | (None, Some(_)) => raiseDriveMismatch(source, dest)
         | (Some(d1), Some(d2)) =>
-          String.compare(d1, d2) !== 0 ?
-            raiseDriveMismatch(source, dest) :
-            relativizeDepth((0, List.rev(s1)), (0, List.rev(s2)))
+          String.compare(d1, d2) !== 0
+            ? raiseDriveMismatch(source, dest)
+            : relativizeDepth((0, List.rev(s1)), (0, List.rev(s2)))
         }
       | ((Rel(w1, r1), s1), (Rel(w2, r2), s2)) =>
-        w1 === w2 ?
-          relativizeDepth((r1, List.rev(s1)), (r2, List.rev(s2))) :
-          raiseDriveMismatch(source, dest)
+        w1 === w2
+          ? relativizeDepth((r1, List.rev(s1)), (r2, List.rev(s2)))
+          : raiseDriveMismatch(source, dest)
       };
     (Rel(Any, depth), List.rev(segs));
   };
@@ -349,7 +353,7 @@ let relativizeExn: type k. (~source: t(k), ~dest: t(k)) => t(relative) =
 let relativize:
   type k. (~source: t(k), ~dest: t(k)) => result(t(relative), exn) =
   (~source, ~dest) =>
-    try (Ok(relativizeExn(~source, ~dest))) {
+    try(Ok(relativizeExn(~source, ~dest))) {
     | Invalid_argument(_) as e => Error(e)
     };
 
@@ -413,9 +417,9 @@ let rec join: type k1 k2. (t(k1), t(k2)) => t(k1) =
     switch (p1, p2) {
     | ((Rel(w, r1), []), (Rel(Any, r2), s2)) => (Rel(w, r1 + r2), s2)
     | ((Rel(w, r1), [s1hd, ...s1tl] as s1), (Rel(Any, r2), s2)) =>
-      r2 > 0 ?
-        join((Rel(w, r1), s1tl), (Rel(Any, r2 - 1), s2)) :
-        (Rel(w, r1), List.append(s2, s1))
+      r2 > 0
+        ? join((Rel(w, r1), s1tl), (Rel(Any, r2 - 1), s2))
+        : (Rel(w, r1), List.append(s2, s1))
     | ((b1, s1), (Rel(Home, r2), s2)) =>
       join((b1, [homeChar, ...List.append(s2, s1)]), (Rel(Any, r2), s2))
     | ((b1, s1), (Abs(Some(ll)), s2)) => (
@@ -425,9 +429,9 @@ let rec join: type k1 k2. (t(k1), t(k2)) => t(k1) =
     | ((b1, s1), (Abs(None), s2)) => (b1, List.append(s2, s1))
     | ((Abs(_) as d, []), (Rel(Any, r2), s2)) => (d, s2)
     | ((Abs(_) as d, [s1hd, ...s1tl] as s1), (Rel(Any, r2), s2)) =>
-      r2 > 0 ?
-        join((d, s1tl), (Rel(Any, r2 - 1), s2)) :
-        (d, List.append(s2, s1))
+      r2 > 0
+        ? join((d, s1tl), (Rel(Any, r2 - 1), s2))
+        : (d, List.append(s2, s1))
     };
 
 let dirName: type k1. t(k1) => t(k1) =

@@ -6,7 +6,7 @@ let main = () =>
   Versions.Local.(
     {
       let%lwt versions =
-        try%lwt (Versions.getInstalledVersions()) {
+        try%lwt(Versions.getInstalledVersions()) {
         | _ => Lwt.fail(Cant_read_local_versions)
         }
       and currentVersion = Versions.getCurrentVersion();
@@ -36,7 +36,7 @@ let main = () =>
   );
 
 let run = () =>
-  try%lwt (main()) {
+  try%lwt(main()) {
   | Cant_read_local_versions =>
     Console.log("No versions installed!") |> Lwt.return
   };

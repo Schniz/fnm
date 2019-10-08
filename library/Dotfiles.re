@@ -2,7 +2,7 @@ exception Version_Not_Provided;
 exception Conflicting_Dotfiles_Found(string, string);
 
 let versionString = fileName => {
-  try%lwt (
+  try%lwt(
     Lwt_io.lines_of_file(fileName)
     |> Lwt_stream.to_list
     |> Lwt.map(List.hd)
