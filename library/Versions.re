@@ -79,7 +79,7 @@ module Aliases = {
 
   let getAll = () => {
     let%lwt aliases =
-      try%lwt(Fs.readdir(Directories.aliases)) {
+      try%lwt (Fs.readdir(Directories.aliases)) {
       | _ => Lwt.return([])
       };
     aliases
@@ -293,7 +293,7 @@ let getExactFileToDownload = (~version as versionName, ~os, ~arch) => {
     Printf.sprintf("%s%s/", Config.FNM_NODE_DIST_MIRROR.get(), versionName);
 
   let%lwt html =
-    try%lwt(Http.makeRequest(url) |> Lwt.map(Http.body)) {
+    try%lwt (Http.makeRequest(url) |> Lwt.map(Http.body)) {
     | Http.Not_found(_) => Lwt.fail(Version_not_found(versionName))
     };
 
@@ -319,7 +319,7 @@ let getExactFileToDownload = (~version as versionName, ~os, ~arch) => {
 };
 
 let getFileToDownload = (~version, ~os, ~arch) =>
-  try%lwt(getExactFileToDownload(~version, ~os, ~arch)) {
+  try%lwt (getExactFileToDownload(~version, ~os, ~arch)) {
   | Version_not_found(_) as e =>
     switch%lwt (getRemoteLatestVersionByPrefix(version)) {
     | None => Lwt.fail(e)
@@ -363,7 +363,7 @@ let parse = version => {
 
 let isInstalled = versionName => {
   let%lwt installedVersions =
-    try%lwt(getInstalledVersions()) {
+    try%lwt (getInstalledVersions()) {
     | _ => Lwt.return([])
     };
   installedVersions

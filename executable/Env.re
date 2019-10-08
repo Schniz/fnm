@@ -1,7 +1,7 @@
 open Fnm;
 
 let symlinkExists = path =>
-  try%lwt(Lwt_unix.lstat(path) |> Lwt.map(_ => true)) {
+  try%lwt (Lwt_unix.lstat(path) |> Lwt.map(_ => true)) {
   | _ => Lwt.return(false)
   };
 

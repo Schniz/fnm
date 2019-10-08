@@ -116,7 +116,7 @@ let rec askIfInstall = (~version, ~quiet, retry) => {
 };
 
 let rec run = (~version, ~quiet) =>
-  try%lwt(main(~version, ~quiet)) {
+  try%lwt (main(~version, ~quiet)) {
   | Version_Not_Installed(versionString) =>
     error(
       ~quiet,

@@ -70,7 +70,7 @@ module NodeArch = {
     switch (Sys.os_type) {
     | "Unix" =>
       let%lwt result = unix_exec("uname", ~args=[|"-a"|]);
-      try(result |> findArches |> Lwt.return) {
+      try (result |> findArches |> Lwt.return) {
       | _ => Lwt.fail_with("Error getting unix information")
       };
     | _ => Lwt.return(Other)

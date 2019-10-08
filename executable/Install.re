@@ -127,7 +127,7 @@ let main = (~version as versionName) => {
 };
 
 let run = (~version) =>
-  try%lwt(main(~version)) {
+  try%lwt (main(~version)) {
   | Versions.No_Download_For_System(os, arch) =>
     Logger.error(
       <Pastel>

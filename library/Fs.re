@@ -15,7 +15,7 @@ let readdir = dir => {
   };
 
   let%lwt items =
-    try%lwt(iterate()) {
+    try%lwt (iterate()) {
     | End_of_file => Lwt.return(items^)
     };
 
@@ -33,13 +33,13 @@ let writeFile = (path, contents) => {
 };
 
 let exists = path => {
-  try%lwt(Lwt_unix.file_exists(path)) {
+  try%lwt (Lwt_unix.file_exists(path)) {
   | Unix.Unix_error(_, _, _) => Lwt.return(false)
   };
 };
 
 let readlink = path =>
-  try%lwt(Lwt_unix.readlink(path) |> Lwt.map(x => Ok(x))) {
+  try%lwt (Lwt_unix.readlink(path) |> Lwt.map(x => Ok(x))) {
   | err => Lwt.return_error(err)
   };
 
