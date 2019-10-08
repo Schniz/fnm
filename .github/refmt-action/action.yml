@@ -1,0 +1,15 @@
+name: 'refmt files'
+description: 'Run refmt on the files in the repo and fail if they changed'
+inputs:
+  pattern:  # id of input
+    description: 'What is the glob pattern for the files'
+    required: false
+    default: '*/*.re'
+# outputs:
+  # time: # id of output
+  #   description: 'The time we greeted you'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  # args:
+  #   - ${{ inputs.who-to-greet }}
