@@ -14,14 +14,13 @@ jobs:
       - uses: actions/checkout@master
         with:
           fetch-depth: 1
-      - uses: './.github/refmt-action'
-      # - run: sudo npm install -g reason-cli@latest-linux
-      #   name: "Install `reason-cli`"
-      # - run: refmt --in-place ./*/*.re
-      #   name: "refmt --in-place"
-      # - run: |
-      #     if [ -n "$(git status --porcelain)" ]; then
-      #       echo "There are pending changes"
-      #       exit 1
-      #     fi
-      #   name: "Throw if something changed"
+      - run: sudo npm install -g bs-platform
+        name: "Install `bsrefmt`"
+      - run: bsrefmt --in-place ./*/*.re
+        name: "bsrefmt --in-place"
+      - run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "There are pending changes"
+            exit 1
+          fi
+        name: "Throw if something changed"
