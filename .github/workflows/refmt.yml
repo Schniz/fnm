@@ -52,6 +52,8 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             echo "There are differences:"
             git status --porcelain
+            echo "----\n"
+            echo 'Please run `scripts/fmt_all.sh` locally to fix the issues.'
             exit 1
           fi
         name: "Throw if something changed"
