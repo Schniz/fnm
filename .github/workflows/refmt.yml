@@ -46,8 +46,8 @@ jobs:
       # - run: esy import-build _export/*
       # - run: esy i
       # - run: esy fmt
-      - run: npm i -g bs-platform
-      - run: bsrefmt --in-place ./*/*.re
+      - run: ./scripts/fmt_all.sh
+        name: refmt all the files
       - run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "There are differences:"
