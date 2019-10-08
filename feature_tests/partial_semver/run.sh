@@ -8,8 +8,8 @@ fnm install 6 # no new versions would be issued for this unsupported version
 fnm install 8.11.3
 
 fnm use 6
-if [ "$(node -v)" != "v6.16.0" ]; then
-  echo "Node version mismatch: $(node -v). Expected: v6.16.0"
+if [ "$(node -v)" != "v6.17.1" ]; then
+  echo "Node version mismatch: $(node -v). Expected: v6.17.1"
 fi
 
 fnm use 8
