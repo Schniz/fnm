@@ -7,6 +7,26 @@ on: [push]
 # - refmt # is new
 
 jobs:
+  build:
+    name: build project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - run: npm install -g esy@latest
+      - run: esy i
+      - run: esy b
+      - run: esy export-dependencies
+      - run: tar -czf build.tar.gz _export
+      - uses: actions/upload-artifact@master
+        with:
+          name: linux-build.tar.gz
+          path: build.tar.gz
+
   test:
     name: run refmt
     runs-on: ubuntu-latest
