@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@master
         with:
           fetch-depth: 1
-      - run: npm install -g reason-cli@latest-linux
+      - run: sudo npm install -g reason-cli@latest-linux
         name: "Install `reason-cli`"
       - run: refmt --in-place ./*/*.re
         name: "refmt --in-place"
