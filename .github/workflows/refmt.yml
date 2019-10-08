@@ -11,7 +11,9 @@ jobs:
     name: run refmt
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 1
       - run: npm install -g reason-cli@latest-linux
         name: "Install `reason-cli`"
       - run: refmt --in-place ./*/*.re
