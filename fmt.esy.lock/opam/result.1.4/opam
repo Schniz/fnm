@@ -1,0 +1,22 @@
+opam-version: "2.0"
+maintainer: "opensource@janestreet.com"
+authors: ["Jane Street Group, LLC <opensource@janestreet.com>"]
+homepage: "https://github.com/janestreet/result"
+dev-repo: "git+https://github.com/janestreet/result.git"
+bug-reports: "https://github.com/janestreet/result/issues"
+license: "BSD-3-Clause"
+build: [["dune" "build" "-p" name "-j" jobs]]
+depends: [
+  "ocaml"
+  "dune" {>= "1.0"}
+]
+synopsis: "Compatibility Result module"
+description: """
+Projects that want to use the new result type defined in OCaml >= 4.03
+while staying compatible with older version of OCaml should use the
+Result module defined in this library."""
+url {
+  src:
+    "https://github.com/janestreet/result/archive/1.4.tar.gz"
+  checksum: "md5=d3162dbc501a2af65c8c71e0866541da"
+}
