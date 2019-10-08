@@ -14,8 +14,12 @@ jobs:
       - uses: actions/checkout@master
         with:
           fetch-depth: 1
-      - run: npx --package bs-platform bsrefmt --in-place ./*/*.re
-        name: "bsrefmt --in-place"
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - run: npm install -g esy@latest
+      - run: esy i
+      - run: esy fmt
       - run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "There are pending changes"
