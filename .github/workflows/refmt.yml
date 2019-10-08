@@ -14,13 +14,15 @@ jobs:
       - uses: actions/checkout@master
         with:
           fetch-depth: 1
-      - run: sudo npm install -g reason-cli@latest-linux
-        name: "Install `reason-cli`"
-      - run: refmt --in-place ./*/*.re
-        name: "refmt --in-place"
-      - run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "There are pending changes"
-            exit 1
-          fi
-        name: "Throw if something changed"
+      - uses: 'docker'
+        image: './.github/workflows/refmt.Dockerfile'
+      # - run: sudo npm install -g reason-cli@latest-linux
+      #   name: "Install `reason-cli`"
+      # - run: refmt --in-place ./*/*.re
+      #   name: "refmt --in-place"
+      # - run: |
+      #     if [ -n "$(git status --porcelain)" ]; then
+      #       echo "There are pending changes"
+      #       exit 1
+      #     fi
+      #   name: "Throw if something changed"
