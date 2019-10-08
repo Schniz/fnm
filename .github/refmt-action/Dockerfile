@@ -1,5 +1,6 @@
-FROM ocaml/opam2:4.06
+FROM akabe/ocaml:4.06
 
-RUN opam update && opam install reason
+RUN opam update
+RUN opam install -y --best-effort reason
 
 CMD ["refmt", "--version"]
