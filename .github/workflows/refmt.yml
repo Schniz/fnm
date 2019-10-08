@@ -1,0 +1,25 @@
+name: Check formatting
+on: [push]
+
+# consider using docker: ocaml/opam2:4.06
+# - sudo apt-get update && apt-get install -y m4
+# - opam update && opam install reason
+# - refmt # is new
+
+jobs:
+  test:
+    name: run refmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        fetch-depth: 1
+      - run: npm install -g reason-cli@latest-linux
+        name: "Install `reason-cli`"
+      - run: refmt --in-place ./*/*.re
+        name: "refmt --in-place"
+      - run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "There are pending changes"
+            exit 1
+          fi
+        name: "Throw if something changed"
