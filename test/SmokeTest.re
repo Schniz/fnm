@@ -11,7 +11,7 @@ describe("Smoke test", ({test, _}) => {
   });
 
   test("env", ({expect}) => {
-    let env = run([|"env"|]) |> redactSfwRoot;
+    let env = run([|"env", "--shell=bash"|]) |> redactSfwRoot;
     expect.string(env).toMatchSnapshot();
   });
 });
