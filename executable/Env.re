@@ -1,5 +1,55 @@
 open Fnm;
 
+module ExportShellVarCmdGetters = {
+  type exportCmdGetter = {
+    getPathCmd: string => string,
+    getMultiShellPathCmd: string => string,
+    getFnmDirCmd: string => string,
+    getNodeDistMirrorCmd: string => string,
+    getLogLevelCmd: string => string,
+  };
+
+  let posixExportCmdGetter: exportCmdGetter = {
+    getPathCmd: path => Printf.sprintf("export PATH=%s/bin:$PATH", path),
+
+    getMultiShellPathCmd: path =>
+      Printf.sprintf("export %s=%s", Config.FNM_MULTISHELL_PATH.name, path),
+
+    getFnmDirCmd: fnmDir =>
+      Printf.sprintf("export %s=%s", Config.FNM_DIR.name, fnmDir),
+
+    getNodeDistMirrorCmd: nodeDistMirror =>
+      Printf.sprintf(
+        "export %s=%s",
+        Config.FNM_NODE_DIST_MIRROR.name,
+        nodeDistMirror,
+      ),
+
+    getLogLevelCmd: logLevel =>
+      Printf.sprintf("export %s=%s", Config.FNM_LOGLEVEL.name, logLevel),
+  };
+
+  let fishExportCmdGetter: exportCmdGetter = {
+    getPathCmd: path => Printf.sprintf("set -gx PATH %s/bin $PATH;", path),
+
+    getMultiShellPathCmd: path =>
+      Printf.sprintf("set -gx %s %s;", Config.FNM_MULTISHELL_PATH.name, path),
+
+    getFnmDirCmd: fnmDir =>
+      Printf.sprintf("set -gx %s %s;", Config.FNM_DIR.name, fnmDir),
+
+    getNodeDistMirrorCmd: nodeDistMirror =>
+      Printf.sprintf(
+        "set -gx %s %s",
+        Config.FNM_NODE_DIST_MIRROR.name,
+        nodeDistMirror,
+      ),
+
+    getLogLevelCmd: logLevel =>
+      Printf.sprintf("set -gx %s %s", Config.FNM_LOGLEVEL.name, logLevel),
+  };
+};
+
 let symlinkExists = path =>
   try%lwt(Lwt_unix.lstat(path) |> Lwt.map(_ => true)) {
   | _ => Lwt.return(false)
@@ -90,38 +140,19 @@ let run =
     multishell
       ? makeTemporarySymlink() : Lwt.return(Directories.globalCurrentVersion);
 
-  switch (shell) {
-  | Bash
-  | Zsh =>
-    Printf.sprintf("export PATH=%s/bin:$PATH", path) |> Console.log;
-    Printf.sprintf("export %s=%s", Config.FNM_MULTISHELL_PATH.name, path)
-    |> Console.log;
-    Printf.sprintf("export %s=%s", Config.FNM_DIR.name, fnmDir) |> Console.log;
-    Printf.sprintf(
-      "export %s=%s",
-      Config.FNM_NODE_DIST_MIRROR.name,
-      nodeDistMirror,
-    )
-    |> Console.log;
-    Printf.sprintf(
-      "export %s=%s",
-      Config.FNM_LOGLEVEL.name,
-      Fnm.LogLevel.toString(logLevel),
-    )
-    |> Console.log;
-  | Fish =>
-    Printf.sprintf("set -gx PATH %s/bin $PATH;", path) |> Console.log;
-    Printf.sprintf("set -gx %s %s;", Config.FNM_MULTISHELL_PATH.name, path)
-    |> Console.log;
-    Printf.sprintf("set -gx %s %s;", Config.FNM_DIR.name, fnmDir)
-    |> Console.log;
-    Printf.sprintf(
-      "set -gx %s %s",
-      Config.FNM_NODE_DIST_MIRROR.name,
-      nodeDistMirror,
-    )
-    |> Console.log;
-  };
+  let exportCmdGetter =
+    shell === Fish
+      ? ExportShellVarCmdGetters.fishExportCmdGetter
+      : ExportShellVarCmdGetters.posixExportCmdGetter;
+
+  exportCmdGetter.getPathCmd(path) |> Console.log;
+  exportCmdGetter.getMultiShellPathCmd(path) |> Console.log;
+  exportCmdGetter.getFnmDirCmd(fnmDir) |> Console.log;
+  exportCmdGetter.getNodeDistMirrorCmd(nodeDistMirror) |> Console.log;
+
+  Fnm.LogLevel.toString(logLevel)
+  |> exportCmdGetter.getLogLevelCmd
+  |> Console.log;
 
   if (useOnCd) {
     printUseOnCd(~shell) |> Console.log;
