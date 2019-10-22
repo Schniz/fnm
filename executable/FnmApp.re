@@ -283,7 +283,7 @@ let env = {
   };
 
   let isMultishell = {
-    let doc = "Allow different Node versions for each shell";
+    let doc = "Allow different node versions for each shell";
     Arg.(value & flag & info(["multi"], ~doc));
   };
 
