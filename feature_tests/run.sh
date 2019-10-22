@@ -19,7 +19,7 @@ rm -rf $TEMP_DIR_BASE
 mkdir $TEMP_DIR_BASE $TEMP_BINARY_PATH
 cp $BINARY $TEMP_BINARY_PATH/fnm
 
-for test_file in $DIRECTORY/latest-lts/run.sh; do
+for test_file in $DIRECTORY/*/run.sh; do
   rm -rf $TEMP_FNM_DIR
 
   echo "Running test in $test_file"
