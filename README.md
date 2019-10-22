@@ -104,7 +104,7 @@ Aliases a Node version to a given name.
 
 Aliases a Node version as default. Uses `fnm alias` underneath.
 
-### `fnm env [--multi] [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--use-on-cd] [--base-dir=DIR] [--log-level=quiet|error|all]`
+### `fnm env [--multi] [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--use-on-cd] [--fnm-dir=DIR] [--log-level=quiet|error|all]`
 
 Prints the required shell commands in order to configure your shell, Bash compliant by default.
 
@@ -112,7 +112,7 @@ Prints the required shell commands in order to configure your shell, Bash compli
 - Providing `--shell=fish` will output the Fish-compliant version. Omitting it and `fnm` will try to infer the current shell based on the process tree
 - Providing `--node-dist-mirror="https://npm.taobao.org/dist"` will use the Chinese mirror of Node.js
 - Providing `--use-on-cd` will also output a script that will automatically change the node version if a `.nvmrc`/`.node-version` file is found
-- Providing `--base-dir="/tmp/fnm"` will install and use versions in `/tmp/fnm` directory
+- Providing `--fnm-dir="/tmp/fnm"` will install and use versions in `/tmp/fnm` directory
 
 ## Future Plans
 
