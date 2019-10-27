@@ -1,3 +1,33 @@
+## v1.16.0 (2019-10-27)
+
+#### New Feature 🎉
+
+- [#146](https://github.com/Schniz/fnm/pull/146) Add support for `lts/*` ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#150](https://github.com/Schniz/fnm/pull/150) Add missing log level to `env` output for Fish shell ([@thomsj](https://github.com/thomsj))
+
+#### Internal 🛠
+
+- [#154](https://github.com/Schniz/fnm/pull/154) Run all feature tests ([@Schniz](https://github.com/Schniz))
+- [#148](https://github.com/Schniz/fnm/pull/148) Make `env` smoke test pass when run with fish ([@thomsj](https://github.com/thomsj))
+- [#153](https://github.com/Schniz/fnm/pull/153) Add missing `exit 1`s to `partial_semver` tests ([@thomsj](https://github.com/thomsj))
+- [#151](https://github.com/Schniz/fnm/pull/151) Add a CI check for code formatting ([@Schniz](https://github.com/Schniz))
+- [#149](https://github.com/Schniz/fnm/pull/149) Update to v6.17.1 in `partial_semver` feature test ([@thomsj](https://github.com/thomsj))
+- [#143](https://github.com/Schniz/fnm/pull/143) Try to install new deps ([@Schniz](https://github.com/Schniz))
+- [#142](https://github.com/Schniz/fnm/pull/142) Drop buildsInSource ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#157](https://github.com/Schniz/fnm/pull/157) Rename `--base-dir` to `--fnm-dir` in README ([@thomsj](https://github.com/thomsj))
+- [#158](https://github.com/Schniz/fnm/pull/158) Uncapitalise "Node" in `--multi` description ([@thomsj](https://github.com/thomsj))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- [@thomsj](https://github.com/thomsj)
+
 ## v1.15.0 (2019-09-23)
 
 #### Bugfix 🐛
