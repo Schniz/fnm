@@ -2,9 +2,7 @@
 
 set -e
 
-DIRECTORY=`dirname $0`
-
-eval "`fnm env --multi`"
+eval "$(fnm env --multi)"
 fnm install 6.11.3
 fnm install 8.11.3
 fnm use 6.11.3
@@ -34,7 +32,7 @@ if hash zsh 2>/dev/null; then
     fi
 
     fnm use 6.11.3
-    cd ../dot_node_version
+    cd ../dot\ node\ version
 
     NODE_VERSION=$(node -v)
     if [ "$NODE_VERSION" != "v8.11.3" ]; then
@@ -69,7 +67,7 @@ if hash fish 2>/dev/null; then
     end
 
     fnm use 6.11.3
-    cd ../dot_node_version
+    cd ../dot\ node\ version
 
     set NODE_VERSION (node -v)
     if test "$NODE_VERSION" != "v8.11.3"
@@ -83,6 +81,7 @@ fi
 
 echo " > Running test on Bash..."
 bash -c '
+  set -e
   shopt -s expand_aliases
   eval "`fnm env --multi --use-on-cd`"
   fnm use 6.11.3
@@ -98,7 +97,7 @@ bash -c '
     exit 1
   fi
   fnm use 6.11.3
-  cd ../dot_node_version
+  cd ../dot\ node\ version
   NODE_VERSION=$(node -v)
   if [ "$NODE_VERSION" != "v8.11.3" ]; then
     echo "Failed: Node version ($NODE_VERSION) is not v8.11.3"

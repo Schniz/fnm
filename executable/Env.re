@@ -78,7 +78,7 @@ let printUseOnCd = (~shell) =>
   switch (shell) {
   | System.Shell.Bash => {|
     __fnmcd () {
-      cd $@
+      cd "$@"
 
       if [[ -f .node-version && .node-version ]]; then
         echo "fnm: Found .node-version"
