@@ -8,6 +8,6 @@
    ; The name of the executable (runnable via esy x fnm.exe) 
    (public_name fnm.exe)  ;  From package.json name field
    (libraries  base cmdliner lwt lambdasoup console.lib pastel.lib fnm.lib ) ;  From package.json require field (array of strings)
+   (flags ( -ccopt -lgmp )) ;  From package.json flags field
    (preprocess ( pps lwt_ppx ppx_let ))  ; From package.json preprocess field
-   (link_flags (-ccopt -lgmp))
 )

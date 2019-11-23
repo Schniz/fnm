@@ -65,6 +65,7 @@
         "pastel.lib",
         "fnm.lib"
       ],
+      "flags": ["-ccopt", "-lgmp"],
       "main": "FnmApp",
       "name": "fnm.exe"
     }
