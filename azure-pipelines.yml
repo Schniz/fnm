@@ -42,7 +42,7 @@ jobs:
   # TODO: Uncomment both this and 'publish-build-cache' below to enable build caching for Mac.
   # - template: .ci/restore-build-cache.yml
   - script: brew install fish gmp
-  - script: sudo rm /usr/local/lib/gmp*.dylib
+  - script: sudo rm $(brew --prefix gmp)/lib/*.dylib
   # remove /usr/local/lib/libgmp.dylib
   - template: .ci/esy-build-steps.yml
   - script: cp _esy/default/build/default/executable/FnmApp.exe _esy/default/build/fnm
