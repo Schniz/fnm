@@ -1,0 +1,17 @@
+{
+  "build": [
+    "#{os == 'windows' ? 'patch --strip 1 --input ocb-stubblr-0.1.1.patch' : 'true'}",
+    [
+      "ocaml",
+      "pkg/pkg.ml",
+      "build",
+      "--pinned",
+      "false",
+      "--tests",
+      "false"
+    ]
+  ],
+  "dependencies": {
+    "@esy-ocaml/fauxpam": "0.1.0"
+  }
+}

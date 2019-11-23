@@ -1,0 +1,8 @@
+{
+  "exportedEnv": {
+    "CAML_LD_LIBRARY_PATH": {
+      "val": "#{self.lib / 'zarith' : $CAML_LD_LIBRARY_PATH}",
+      "scope": "global"
+    }
+  }
+}

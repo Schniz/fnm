@@ -1,0 +1,24 @@
+From 063b3496340fe4c3544b532ec0d27797b7917bb4 Mon Sep 17 00:00:00 2001
+From: Anil Madhavapeddy <anil@recoil.org>
+Date: Tue, 26 Mar 2019 20:07:13 +0000
+Subject: [PATCH 6/6] explicitly depend on sexplib
+
+Need to explicitly depend on sexplib rather than hope
+it is a transitive dependency of cstruct. This lets
+cstruct.4.0.0 work which makes sexplib optional.
+
+--- a/_tags.orig	2019-03-26 20:33:33.000000000 +0000
++++ b/_tags	2019-03-26 20:33:42.000000000 +0000
+@@ -1,7 +1,7 @@
+ true: color(always)
+ true: bin_annot, safe_string
+ true: warn(A-4-29-33-40-41-42-43-34-44-48)
+-true: package(bytes), package(cstruct)
++true: package(bytes), package(sexplib), package(cstruct)
+
+ <src>: include
+ <src/*.ml{,i}>: package(zarith), package(sexplib), package(ppx_sexp_conv)
+
+-- 
+2.18.0
+

@@ -1,0 +1,47 @@
+From 6f97531287a3e3ee749f2277248af28bdc85b8e4 Mon Sep 17 00:00:00 2001
+From: Gabriel Scherer <gabriel.scherer@gmail.com>
+Date: Mon, 26 Mar 2018 16:09:16 +0200
+Subject: [PATCH 1/4] add missing runtime dependencies in _tags
+
+Binaries in <bench/*>, <tests/*> depend on ppx_sexp_conv's runtime
+library within ppx_sexp_conv.
+
+The packed modules <src/nocrypto.cm{x,o}> also depend on the package
+ppx_sexp_conv: its presence at pack-creation time influences the
+generated .cmi interface, see
+
+  https://github.com/ocaml/opam-repository/pull/11628#issuecomment-375697444
+
+Note: the package ppx_sexp_conv.runtime-lib would suffice, but it is
+only available as such under recent ppx_sexp_conv versions, so its
+explicit use would make the build description (needlessly)
+incompatible with older ppx_sexp_conv versions.
+---
+ _tags | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/_tags b/_tags
+index 6d4e7de..c2a6610 100644
+--- a/_tags
++++ b/_tags
+@@ -7,6 +7,7 @@ true: package(bytes), package(cstruct)
+ <src/*.ml{,i}>: package(zarith), package(sexplib), package(ppx_sexp_conv)
+ <src/*.cm{x,o}> and not <src/nocrypto.cmx>: for-pack(Nocrypto)
+ <src/*.cm{,x}a>: link_stubs(src/libnocrypto_stubs)
++<src/nocrypto.cm{x,o}>: package(ppx_sexp_conv)
+ 
+ <unix>: include
+ <unix/*.ml{,i}>: package(unix), package(bytes)
+@@ -19,7 +20,7 @@ true: package(bytes), package(cstruct)
+ 
+ <**/*.c>: ccopt(--std=c99 -Wall -Wextra -O3)
+ 
+-<bench/*>: use_nocrypto, package(zarith), package(cstruct.unix)
+-<tests/*>: use_nocrypto, package(zarith), package(oUnit)
++<bench/*>: use_nocrypto, package(zarith), package(ppx_sexp_conv)
++<tests/*>: use_nocrypto, package(zarith), package(ppx_sexp_conv), package(oUnit)
+ 
+ <rondom>: -traverse
+-- 
+2.18.0
+

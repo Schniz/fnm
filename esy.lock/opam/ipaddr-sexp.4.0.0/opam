@@ -17,7 +17,7 @@ depends: [
   "ipaddr" {=version}
   "ipaddr-cstruct" {with-test & =version}
   "ounit" {with-test}
-  "ppx_sexp_conv" {>= "v0.9.0"}
+  "ppx_sexp_conv" {>= "v0.9.0" & < "v0.13"}
 ]
 build: [
   ["dune" "subst"] {pinned}

@@ -1,0 +1,31 @@
+--- a/_tags	2019-11-03 16:34:40.691766000 +0100
++++ b/_tags	2019-11-03 16:34:41.850239000 +0100
+@@ -1,7 +1,7 @@
+ true: color(always)
+ true: bin_annot, safe_string, strict_sequence
+ true: warn(A-4-41-42-44-48-58)
+-true: package(bytes), package(result), package(cstruct), package(zarith), package(ptime)
++true: package(bytes), package(result), package(cstruct), package(zarith), package(ptime), package(bigarray-compat)
+ 
+ <src>: include
+ 
+--- a/pkg/META	2019-11-03 16:34:20.947072000 +0100
++++ b/pkg/META	2019-11-03 16:34:22.050043000 +0100
+@@ -1,6 +1,6 @@
+ description = "Embed typed ASN.1 grammars in OCaml"
+ version = "0.2.0"
+-requires = "cstruct zarith ptime"
++requires = "cstruct zarith ptime bigarray-compat"
+ archive(byte) = "asn1-combinators.cma"
+ archive(native) = "asn1-combinators.cmxa"
+ plugin(byte) = "asn1-combinators.cma"
+--- a/src/asn_prim.ml.orig	2019-11-03 16:34:00.685635000 +0100
++++ b/src/asn_prim.ml	2019-11-03 16:34:01.930523000 +0100
+@@ -4,6 +4,7 @@
+ open Asn_core
+ 
+ module Writer = Asn_writer
++module Bigarray = Bigarray_compat
+ 
+ module type Prim = sig
+   type t

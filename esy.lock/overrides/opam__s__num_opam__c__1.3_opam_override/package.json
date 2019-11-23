@@ -1,0 +1,25 @@
+{
+  "buildsInSource": true,
+  "build": [
+    [
+      "make"
+    ]
+  ],
+  "install": [
+    [
+      "make",
+      "LIBDIR=#{self.install / 'lib'}",
+      "findlib-install"
+    ]
+  ],
+  "exportedEnv": {
+    "CAML_LD_LIBRARY_PATH": {
+      "val": "#{self.install / 'lib' / 'num' : $CAML_LD_LIBRARY_PATH}",
+      "scope": "global"
+    }
+  },
+  "dependencies": {
+    "ocaml": "*",
+    "@opam/ocamlfind": "*"
+  }
+}

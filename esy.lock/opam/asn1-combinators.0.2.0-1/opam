@@ -1,0 +1,47 @@
+opam-version: "2.0"
+authors: ["David Kaloper Meršinjak <david@numm.org>"]
+maintainer: "David Kaloper Meršinjak <david@numm.org>"
+homepage: "https://github.com/mirleft/ocaml-asn1-combinators"
+doc: "https://mirleft.github.io/ocaml-asn1-combinators/doc"
+license: "ISC"
+dev-repo: "git+https://github.com/mirleft/ocaml-asn1-combinators.git"
+bug-reports: "https://github.com/mirleft/ocaml-asn1-combinators/issues"
+tags: [ "org:mirage" ]
+build: [
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"]
+    {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "result"
+  "cstruct" {>= "4.0.0"}
+  "zarith"
+  "ptime"
+  "ounit" {with-test}
+  "bigarray-compat"
+]
+conflicts: [ "cstruct" {< "1.6.0"} ]
+patches: [ "0001-bigarray-compat.patch" ]
+synopsis: "Embed typed ASN.1 grammars in OCaml"
+description: """
+asn1-combinators is a library for expressing ASN.1 in OCaml. Skip the notation
+part of ASN.1, and embed the abstract syntax directly in the language. These
+abstract syntax representations can be used for parsing, serialization, or
+random testing.
+
+The only ASN.1 encodings currently supported are BER and DER.
+
+asn1-combinators is distributed under the ISC license."""
+url {
+  src:
+    "https://github.com/mirleft/ocaml-asn1-combinators/releases/download/v0.2.0/asn1-combinators-0.2.0.tbz"
+  checksum: "md5=f695aec35f8934d20d966032adbf3520"
+}
+extra-files: [
+  [ "0001-bigarray-compat.patch" "md5=cca9c049641c510b9425fa75b7b669da" ]
+]

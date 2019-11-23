@@ -1,0 +1,31 @@
+--- ./src/ocb_stubblr.ml
++++ ./src/ocb_stubblr.ml
+@@ -158,7 +158,7 @@
+     let name = Pathname.(remove_extension clib |> basename) in
+     let name = String.(if is_prefix ~affix:"lib" name then drop ~max:3 name else name) in
+     S [A switch; A ("-l"^name)]
+-  and dep flag = Pathname.([remove_extension flag -.- "a"]) in
++  and dep flag = Pathname.([remove_extension flag -.- !Options.ext_lib]) in
+   pflag ["link"; "ocaml"; "library"; "byte"] tag (libarg "-dllib");
+   pflag ["link"; "ocaml"; "library"; "native"] tag  (libarg "-cclib");
+   pdep ["link"; "ocaml"] tag dep;
+@@ -174,9 +174,18 @@
+   let c = env c and deps = env deps in
+   let to_list str = List.filter ((<>) "\\") @@
+     String.fields ~empty:false ~is_sep:Char.Ascii.is_white str in
++  let cc =
++    (* very dirty, no msvc support *)
++    if Sys.os_type <> "Win32" then
++      "cc"
++    else if Sys.word_size = 64 then
++      "x86_64-w64-mingw32-gcc"
++    else
++      "i686-w64-mingw32-gcc"
++  in
+   let cmd = Cmd (
+     S [ A "cd"; P root; Sh "&&";
+-        A "cc"; T (tags_of_pathname c); A "-MM"; A "-MG"; P c ]) in
++        A cc; T (tags_of_pathname c); A "-MM"; A "-MG"; P c ]) in
+   let headers = match Command.to_string cmd |> run_and_read |> to_list with
+     | _::_::xs -> List.map (fun p -> Pathname.normalize p ^ "\n") xs
+     | _ -> error_exit_msgf "%s: depends: unrecognized format" c in

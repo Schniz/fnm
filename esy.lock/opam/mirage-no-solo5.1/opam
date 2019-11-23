@@ -1,0 +1,8 @@
+opam-version: "2.0"
+maintainer: "mirageos-devel@lists.xenproject.org"
+authors: ["mirageos-devel@lists.xenproject.org"]
+homepage: "https://mirage.io"
+license: "BSD-2-Clause"
+conflicts: [ "mirage-solo5" ]
+synopsis: "Virtual package conflicting with mirage-solo5"
+depends: ["ocaml"]

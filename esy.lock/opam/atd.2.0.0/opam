@@ -18,7 +18,7 @@ build: [
 
 depends: [
   "ocaml" {>= "4.03.0"}
-  "jbuilder" {build}
+  "jbuilder"
   "menhir" {build}
   "easy-format"
 ]

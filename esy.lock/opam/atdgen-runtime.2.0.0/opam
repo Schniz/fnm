@@ -18,7 +18,7 @@ build: [
 
 depends: [
   "ocaml" {>= "4.02.3"}
-  "jbuilder" {build}
+  "jbuilder"
   "biniou" {>= "1.0.6"}
   "yojson" {>= "1.2.1"}
 ]

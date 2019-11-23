@@ -1,0 +1,38 @@
+From 063b3496340fe4c3544b532ec0d27797b7917bb4 Mon Sep 17 00:00:00 2001
+From: Gabriel Scherer <gabriel.scherer@gmail.com>
+Date: Mon, 26 Mar 2018 16:07:45 +0200
+Subject: [PATCH 4/4] pack+package: workaround ocamlbuild#272
+
+ocamlbuild should pass -package(...) flags to ocamlfind when building
+a -pack-ed file, see
+
+  https://github.com/ocaml/opam-repository/pull/11628#issuecomment-375697444
+---
+ myocamlbuild.ml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/myocamlbuild.ml b/myocamlbuild.ml
+index 7b29635..7a5cdb6 100644
+--- a/myocamlbuild.ml
++++ b/myocamlbuild.ml
+@@ -8,9 +8,17 @@ let runtime_deps_of_ppx ppx =
+       else
+         Some name)
+ 
++let ocamlfind_and_pack = function
++  | After_rules ->
++     if !Options.use_ocamlfind then
++       pflag ["ocaml"; "pack"] "package"
++         (fun pkg -> S [A "-package"; A pkg]);
++  | _ -> ()
++
+ let () = dispatch (fun hook ->
+     Ocb_stubblr.(
+       init & ccopt ~tags:["accelerate"] "-DACCELERATE -msse2 -maes"
++      & ocamlfind_and_pack
+     ) hook;
+     match hook with
+     | After_rules ->
+-- 
+2.18.0
+

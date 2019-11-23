@@ -1,0 +1,17 @@
+{
+  "name": "esy-gmp-test",
+  "description": "For manual testing only",
+  "version": "0.1.0",
+  "description": "GMP packaged for esy",
+  "license": "MIT",
+  "esy": {
+    "buildsInSource": true,
+    "build": [
+      "#{os == 'windows' ? 'x86_64-w64-mingw32-gcc': 'gcc'} $CFLAGS -o testinggmp test.c $LDFLAGS"
+    ],
+    "install": "cp testinggmp #{self.bin}"
+  },
+  "dependencies": {
+    "gmp": "esy-packages/esy-gmp#e2a8fab86e6ff2b26637b3249ee149d29b3430dd"
+  }
+}

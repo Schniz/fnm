@@ -1,0 +1,58 @@
+From: Hannes Mehnert <hannes@mehnert.org>
+Subject: [PATCH 1/1] compile mirage-entropy sublibrary if mirage-entropy is installed
+
+Previously the compilation depended on mirage-xen or ocaml-freestanding being
+present, but _tags show the dependency is actually mirage-entropy.
+
+--- a/opam	2019-11-02 13:38:17.202429000 +0100
++++ b/opam	2019-11-02 13:39:19.173535000 +0100
+@@ -12,6 +12,7 @@
+ 
+ build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+                 "--with-lwt" "%{lwt:installed}%"
++                "--with-mirage" "%{mirage-entropy:installed}%"
+                 "--xen" "%{mirage-xen:installed}%"
+                 "--freestanding" "%{ocaml-freestanding:installed}%"]
+ 
+@@ -26,11 +27,11 @@
+   "cstruct"
+   "zarith"
+   "sexplib"
+-  ("mirage-no-xen" | ("mirage-xen" & "mirage-entropy" & "zarith-xen"))
+-  ("mirage-no-solo5" | ("mirage-solo5" & "mirage-entropy" & "zarith-freestanding"))
++  ("mirage-no-xen" | ("mirage-xen" & "zarith-xen"))
++  ("mirage-no-solo5" | ("mirage-solo5" & "zarith-freestanding"))
+ ]
+ 
+-depopts: [ "lwt" ]
++depopts: [ "lwt" "mirage-entropy" ]
+ conflicts: [
+   "topkg" {<"0.8.0"}
+   "ocb-stubblr" {<"0.1.0"}
+--- a/pkg/pkg.ml	2017-02-01 00:43:04.000000000 +0100
++++ b/pkg/pkg.ml	2019-11-02 13:37:30.295780000 +0100
+@@ -11,6 +11,7 @@
+ 
+ let unix = Conf.with_pkg ~default:true "unix"
+ let lwt  = Conf.with_pkg ~default:false "lwt"
++let mirage_entropy = Conf.with_pkg ~default:false "mirage"
+ let xen  = Conf.(key "xen" bool ~absent:false
+                  ~doc:"Build Mirage/Xen support.")
+ let fs   = Conf.(key "freestanding" bool ~absent:false
+@@ -39,12 +40,14 @@
+     let unix = Conf.value c unix in
+     let lwt  = Conf.value c lwt && unix
+     and xen  = Conf.value c xen
+-    and fs   = Conf.value c fs in
++    and fs   = Conf.value c fs
++    and mirage_entropy = Conf.value c mirage_entropy
++    in
+     Ok [ Pkg.clib "src/libnocrypto_stubs.clib";
+          Pkg.mllib "src/nocrypto.mllib";
+          Pkg.mllib ~cond:unix "unix/nocrypto_unix.mllib";
+          Pkg.mllib ~cond:lwt "lwt/nocrypto_lwt.mllib";
+-         Pkg.mllib ~cond:(xen||fs) "mirage/nocrypto_mirage.mllib";
++         Pkg.mllib ~cond:mirage_entropy "mirage/nocrypto_mirage.mllib";
+          Pkg.test "tests/testrunner";
+          Pkg.test ~run:false "bench/speed";
+          mirage ~xen ~fs "src/libnocrypto_stubs.clib"; ]
