@@ -1,6 +1,0 @@
-opam-version: "2.0"
-maintainer: "https://github.com/ocaml/opam-repository/issues"
-description: """
-Unix library distributed with the OCaml compiler
-"""
-
