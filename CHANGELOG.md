@@ -1,3 +1,17 @@
+## v1.17.0 (2019-11-26)
+
+#### Bugfix 🐛
+
+- [#169](https://github.com/Schniz/fnm/pull/169) Support spaces in directory name in Bash ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#172](https://github.com/Schniz/fnm/pull/172) Revert into using `ocaml-tls` instead of `ocaml-ssl` ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.16.0 (2019-10-27)
 
 #### New Feature 🎉
