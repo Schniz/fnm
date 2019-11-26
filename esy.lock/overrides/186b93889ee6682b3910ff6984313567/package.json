@@ -1,0 +1,39 @@
+{
+  "name": "esy-gmp",
+  "version": "6.1.2001",
+  "description": "GMP packaged for esy",
+  "source": "https://gmplib.org/download/gmp/gmp-6.1.2.tar.xz#9dc6981197a7d92f339192eea974f5eca48fcffe",
+  "override": {
+    "buildsInSource": true,
+    "build": [
+      "find ./ -exec touch -t 200905010101 {} +",
+      "./configure --prefix=#{self.install} #{os == 'windows' ? '--host x86_64-w64-mingw32' : ''} --with-pic",
+      "make"
+    ],
+    "install": [
+      "make install"
+    ],
+    "exportedEnv": {
+      "LDFLAGS": {
+        "scope": "global",
+        "val": "-L#{self.lib} -lgmp"
+      },
+      "CPPFLAGS": {
+        "scope": "global",
+        "val": "-I#{self.install / 'include'}"
+      },
+      "LD_LIBRARY_PATH": {
+        "scope": "global",
+        "val": "#{self.lib}:$LD_LIBRARY_PATH"
+      },
+      "LIBRARY_PATH": {
+        "scope": "global",
+        "val": "#{self.lib}:$LIBRARY_PATH"
+      },
+      "CPATH": {
+        "scope": "global",
+        "val": "#{self.install / 'include'}:$CPATH"
+      }
+    }
+  }
+}

@@ -15,7 +15,7 @@ depends: [
   "uri" {= version}
   "dune" {>= "1.2.0"}
   "ppx_sexp_conv" {>= "v0.9.0"}
-  "sexplib0"
+  "sexplib0" {< "v0.14"}
   "ounit" {with-test}
 ]
 build: [

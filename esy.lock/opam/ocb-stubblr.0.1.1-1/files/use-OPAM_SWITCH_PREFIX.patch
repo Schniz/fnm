@@ -1,0 +1,33 @@
+From f1c9340f3ab973ad1e8dcc4b7065bbe6cfaa028f Mon Sep 17 00:00:00 2001
+From: David Allsopp <david.allsopp@metastack.com>
+Date: Sun, 1 Jul 2018 09:54:32 +0100
+Subject: [PATCH] Use OPAM_SWITCH_PREFIX before opam config var prefix
+
+opam 2's sandbox doesn't expose the mount point for the opam root.
+
+Signed-off-by: David Allsopp <david.allsopp@metastack.com>
+---
+ src/ocb_stubblr.ml | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/ocb_stubblr.ml b/src/ocb_stubblr.ml
+index b68c37a..2cc5332 100644
+--- a/src/ocb_stubblr.ml
++++ b/src/ocb_stubblr.ml
+@@ -31,11 +31,15 @@ module Pkg_config = struct
+ 
+   (* XXX Would be nice to move pkg-config results to a build artefact. *)
+ 
+-  let opam_prefix =
++  let opam_prefix_cmd =
+     let cmd = "opam config var prefix" in
+     lazy ( try run_and_read cmd with Failure _ ->
+             error_msgf "error running opam")
+ 
++  let opam_prefix =
++    lazy (try Sys.getenv "OPAM_SWITCH_PREFIX"
++          with Not_found -> Lazy.force opam_prefix_cmd)
++
+   let var = "PKG_CONFIG_PATH"
+ 
+   let path () =

@@ -1,0 +1,18 @@
+opam-version: "2.0"
+maintainer: "tim@gfxmonk.net"
+homepage: "https://www.perl.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-1.0-or-later"
+authors: "Larry Wall"
+build: [["perl" "--version"]]
+depexts: [
+  ["perl"] {os-family = "debian"}
+  ["perl"] {os-distribution = "alpine"}
+  ["perl"] {os-distribution = "nixos"}
+  ["perl"] {os-distribution = "arch"}
+  ["perl-Pod-Html"] {os-distribution = "fedora"}
+]
+synopsis: "Virtual package relying on perl"
+description:
+  "This package can only install if the perl program is installed on the system."
+flags: conf

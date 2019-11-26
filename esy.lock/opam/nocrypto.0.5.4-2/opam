@@ -1,0 +1,95 @@
+opam-version: "2.0"
+homepage:     "https://github.com/mirleft/ocaml-nocrypto"
+dev-repo: "git+https://github.com/mirleft/ocaml-nocrypto.git"
+bug-reports:  "https://github.com/mirleft/ocaml-nocrypto/issues"
+doc:          "https://mirleft.github.io/ocaml-nocrypto/doc"
+authors:      ["David Kaloper <david@numm.org>"]
+maintainer:   "David Kaloper <david@numm.org>"
+license:      "ISC"
+tags:          [ "org:mirage" ]
+build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+                "--jobs" "1"
+                "--with-lwt" "%{lwt:installed}%"
+                "--with-mirage" "%{mirage-entropy:installed}%"
+                "--xen" "%{mirage-xen:installed}%"
+                "--freestanding" "%{mirage-solo5:installed}%"]
+
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "cpuid" {build}
+  "ocb-stubblr" {build}
+  "ppx_deriving"
+  "ppx_sexp_conv" {>= "113.33.01" & != "v0.11.0" & < "v0.13"}
+  "ounit" {with-test}
+  "cstruct" {>= "3.0.0"}
+  "cstruct-lwt"
+  "zarith"
+  "lwt"
+  "sexplib" {< "v0.13"}
+  "mirage-no-xen" | ("mirage-xen" & "zarith-xen")
+  "mirage-no-solo5" | ("mirage-solo5" & "zarith-freestanding")
+]
+depopts: [ "mirage-entropy" ]
+conflicts: [
+  "topkg" {<"0.9.1"}
+  "ocb-stubblr" {<"0.1.0"}
+  "mirage-xen" {<"2.2.0"}
+  "sexplib" {="v0.9.0"}
+  "ocaml" {= "4.08.0"}
+]
+
+patches: [
+    "0001-add-missing-runtime-dependencies-in-_tags.patch"
+    "0002-add-ppx_sexp_conv-as-a-runtime-dependency-in-the-pac.patch"
+    "0003-Auto-detect-ppx_sexp_conv-runtime-library.patch"
+    "0004-pack-package-workaround-ocamlbuild-272.patch"
+    "0005-use-modern-cstruct-findlib.patch"
+    "0006-explicit-dependency-on-sexplib.patch"
+    "0007-mirage-entropy.patch"
+]
+synopsis: "Simpler crypto"
+description: """
+nocrypto is a small cryptographic library that puts emphasis on the applicative
+style and ease of use. It includes basic ciphers (AES, 3DES, RC4), hashes (MD5,
+SHA1, SHA2), public-key primitives (RSA, DSA, DH) and a strong RNG (Fortuna).
+
+RSA timing attacks are countered by blinding. AES timing attacks are avoided by
+delegating to AES-NI."""
+extra-files: [
+  [
+    "0007-mirage-entropy.patch"
+    "md5=bb3368e3fd64857a6d05e1a3e61f08cf"
+  ]
+  [
+    "0006-explicit-dependency-on-sexplib.patch"
+    "md5=7f552e18ba304eb4e1e19d66d19b7888"
+  ]
+  [
+    "0005-use-modern-cstruct-findlib.patch"
+    "md5=4d4aab890f0ca9327d83548c32d64efc"
+  ]
+  [
+    "0004-pack-package-workaround-ocamlbuild-272.patch"
+    "md5=94615e4a8d5976e9e75c3b031d3484f1"
+  ]
+  [
+    "0003-Auto-detect-ppx_sexp_conv-runtime-library.patch"
+    "md5=871b3f904cf87527b7390993d5598884"
+  ]
+  [
+    "0002-add-ppx_sexp_conv-as-a-runtime-dependency-in-the-pac.patch"
+    "md5=06962f4f2f5b4c3f1e39293b3d3528f2"
+  ]
+  [
+    "0001-add-missing-runtime-dependencies-in-_tags.patch"
+    "md5=ae679a096e14c0a0ecb881bc7432cc2a"
+  ]
+]
+url {
+  src:
+    "https://github.com/mirleft/ocaml-nocrypto/releases/download/v0.5.4/nocrypto-0.5.4.tbz"
+  checksum: "md5=c331a7a4d2a563d1d5ed581aeb849011"
+}

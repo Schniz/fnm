@@ -1,0 +1,29 @@
+opam-version: "2.0"
+maintainer: "nbraud"
+homepage: "http://gmplib.org/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+license: "GPL-1.0-or-later"
+build: [
+  ["sh" "-exc" "cc -c $CFLAGS -I/usr/local/include test.c"] {os != "macos"}
+  [
+    "sh"
+    "-exc"
+    "cc -c $CFLAGS -I/opt/local/include -I/usr/local/include test.c"
+  ] {os = "macos"}
+]
+depexts: [
+  ["libgmp-dev"] {os-family = "debian"}
+  ["gmp"] {os = "macos" & os-distribution = "homebrew"}
+  ["gmp" "gmp-devel"] {os-distribution = "centos"}
+  ["gmp" "gmp-devel"] {os-distribution = "fedora"}
+  ["gmp"] {os = "openbsd"}
+  ["gmp"] {os = "freebsd"}
+  ["gmp-dev"] {os-distribution = "alpine"}
+  ["gmp-devel"] {os-family = "suse"}
+]
+synopsis: "Virtual package relying on a GMP lib system installation"
+description:
+  "This package can only install if the GMP lib is installed on the system."
+authors: "nbraud"
+extra-files: ["test.c" "md5=ec8cc21ab709bdd57103de36e7b0b53f"]
+flags: conf

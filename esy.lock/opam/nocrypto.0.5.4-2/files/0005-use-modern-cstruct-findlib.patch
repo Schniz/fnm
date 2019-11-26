@@ -1,0 +1,32 @@
+From 063b3496340fe4c3544b532ec0d27797b7917bb4 Mon Sep 17 00:00:00 2001
+From: Anil Madhavapeddy <anil@recoil.org>
+Date: Tue, 12 Mar 2019 09:07:13 +0000
+Subject: [PATCH 5/5] use modern cstruct findlib
+
+see https://discuss.ocaml.org/t/psa-cstruct-3-4-0-removes-old-ocamlfind-subpackage-aliases/3275
+
+--- a/_tags.orig        2019-03-12 09:03:58.000000000 +0000
++++ b/_tags     2019-03-12 09:04:12.000000000 +0000
+@@ -13,7 +13,7 @@
+ <unix/*.ml{,i}>: package(unix), package(bytes)
+
+ <lwt>: include
+-<lwt/*.ml{,i}>: package(lwt.unix), package(cstruct.lwt)
++<lwt/*.ml{,i}>: package(lwt.unix), package(cstruct-lwt)
+
+ <mirage>: include
+ <mirage/*.ml{,i}>: package(lwt), package(mirage-entropy)
+--- a/pkg/META.in.orig  2019-03-12 09:03:19.000000000 +0000
++++ b/pkg/META.in       2019-03-12 09:03:33.000000000 +0000
+@@ -23,7 +23,7 @@
+ package "lwt" (
+  version = "0.5.4"
+  description = "Simple crypto for the modern age"
+- requires = "nocrypto nocrypto.unix lwt.unix cstruct.lwt"
++ requires = "nocrypto nocrypto.unix lwt.unix cstruct-lwt"
+  archive(byte) = "nocrypto_lwt.cma"
+  archive(native) = "nocrypto_lwt.cmxa"
+  plugin(byte) = "nocrypto_lwt.cma"
+-- 
+2.18.0
+

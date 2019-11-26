@@ -1,0 +1,36 @@
+opam-version: "2.0"
+maintainer: "Hannes Mehnert <hannes@mehnert.org>"
+authors: "Hannes Mehnert <hannes@mehnert.org>"
+license: "ISC"
+homepage: "https://github.com/hannesm/gmap"
+doc: "https://hannesm.github.io/gmap/doc"
+bug-reports: "https://github.com/hannesm/gmap/issues"
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "dune"
+  "alcotest" {with-test}
+  "fmt" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/hannesm/gmap.git"
+synopsis: "Heterogenous maps over a GADT"
+description: """
+Gmap exposes the functor `Make` which takes a key type (a
+[GADT](https://en.wikipedia.org/wiki/Generalized_algebraic_data_type) 'a key)
+and outputs a type-safe Map where each 'a key is associated with a 'a value.
+This removes the need for additional packing.  It uses OCaml's stdlib
+[Map](http://caml.inria.fr/pub/docs/manual-ocaml/libref/Map.html) data
+structure.
+"""
+url {
+  src:
+    "https://github.com/hannesm/gmap/releases/download/0.3.0/gmap-0.3.0.tbz"
+  checksum: [
+    "sha256=04dd9e6226ac8f8fb4ccb6021048702e34a482fb9c1d240d3852829529507c1c"
+    "sha512=71616981f5a15d6b2a47e18702083e52e81f6547076085b1489f676f50b0cc47c7c2c4fa19cb581e2878dc3d4f7133d0c50d8b51a8390be0e6e30318907d81d3"
+  ]
+}

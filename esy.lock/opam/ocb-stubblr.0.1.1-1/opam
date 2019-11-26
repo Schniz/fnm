@@ -1,0 +1,56 @@
+opam-version: "2.0"
+maintainer: "David Kaloper Meršinjak <david@numm.org>"
+authors: ["David Kaloper Meršinjak <david@numm.org>"]
+homepage: "https://github.com/pqwy/ocb-stubblr"
+doc: "https://pqwy.github.io/ocb-stubblr/doc"
+license: "ISC"
+dev-repo: "git+https://github.com/pqwy/ocb-stubblr.git"
+bug-reports: "https://github.com/pqwy/ocb-stubblr/issues"
+tags: ["ocamlbuild"]
+depends: [
+  "ocaml" {>= "4.01.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {>= "0.9.3" | < "0.9.0"}
+  "topkg" {>= "0.8.1"}
+  "astring"
+]
+build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false" ]
+
+patches: [
+    "custom-cclib.patch"
+    "use-OPAM_SWITCH_PREFIX.patch"
+]
+
+synopsis: "OCamlbuild plugin for C stubs"
+description: """
+Do you get excited by C stubs? Do they sometimes make you swoon, and even faint,
+and in the end no `cmxa`s get properly linked -- not to mention correct
+multi-lib support?
+
+Do you wish that the things that excite you the most, would excite you just a
+little less? Then ocb-stubblr is just the library for you.
+
+ocb-stubblr is about ten lines of code that you need to repeat over, over, over
+and over again if you are using `ocamlbuild` to build OCaml projects that
+contain C stubs -- now with 100% more lib!
+
+It does what everyone wants to do with `.clib` files in their project
+directories. It can also clone the `.clib` and arrange for multiple compilations
+with different sets of discovered `cflags`.
+
+ocb-stubblr is distributed under the ISC license."""
+url {
+  src:
+    "https://github.com/pqwy/ocb-stubblr/releases/download/v0.1.1/ocb-stubblr-0.1.1.tbz"
+  checksum: "md5=607720dd18ca51e40645b42df5c1273e"
+}
+extra-files: [
+  [
+    "custom-cclib.patch"
+    "md5=d479b52a50d53dd79da2d6eea2a9a9e3"
+  ]
+  [
+    "use-OPAM_SWITCH_PREFIX.patch"
+    "md5=a7271bb1f862bd3da4ffd9caa87ca76f"
+  ]
+]

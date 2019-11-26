@@ -1,0 +1,146 @@
+From ad9278021a65d423e30765e58110848adda4b13e Mon Sep 17 00:00:00 2001
+From: Jeremie Dimino <jeremie@dimino.org>
+Date: Fri, 11 May 2018 15:44:47 +0200
+Subject: [PATCH 3/4] Auto-detect ppx_sexp_conv runtime library
+
+---
+ myocamlbuild.ml | 25 ++++++++++++++++++++++---
+ pkg/META        | 43 -------------------------------------------
+ pkg/META.in     | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 65 insertions(+), 46 deletions(-)
+ delete mode 100644 pkg/META
+ create mode 100644 pkg/META.in
+
+diff --git a/myocamlbuild.ml b/myocamlbuild.ml
+index 2752315..7b29635 100644
+--- a/myocamlbuild.ml
++++ b/myocamlbuild.ml
+@@ -1,5 +1,24 @@
+ open Ocamlbuild_plugin
+ 
+-let () = dispatch Ocb_stubblr.(
+-  init & ccopt ~tags:["accelerate"] "-DACCELERATE -msse2 -maes"
+-)
++let runtime_deps_of_ppx ppx =
++  (Findlib.query "ppx_sexp_conv").dependencies
++  |> List.filter_opt (fun { Findlib.name; _ } ->
++      if name = ppx || name = "ppx_deriving" then
++        None
++      else
++        Some name)
++
++let () = dispatch (fun hook ->
++    Ocb_stubblr.(
++      init & ccopt ~tags:["accelerate"] "-DACCELERATE -msse2 -maes"
++    ) hook;
++    match hook with
++    | After_rules ->
++      let meta = "pkg/META" in
++      let meta_in = meta ^ ".in" in
++      rule meta ~dep:meta_in ~prod:meta (fun _ _ ->
++          let deps = String.concat " " (runtime_deps_of_ppx "ppx_sexp_conv") in
++          Echo([String.subst "PPX_SEXP_CONV_RUNTIME" deps
++                  (Pathname.read meta_in)],
++               meta))
++    | _ -> ())
+diff --git a/pkg/META b/pkg/META
+deleted file mode 100644
+index a7929c7..0000000
+--- a/pkg/META
++++ /dev/null
+@@ -1,43 +0,0 @@
+-version = "0.5.4"
+-description = "Simple crypto for the modern age"
+-requires = "cstruct zarith sexplib ppx_sexp_conv"
+-archive(byte) = "nocrypto.cma"
+-archive(native) = "nocrypto.cmxa"
+-plugin(byte) = "nocrypto.cma"
+-plugin(native) = "nocrypto.cmxs"
+-xen_linkopts = "-lnocrypto_stubs+mirage-xen"
+-freestanding_linkopts = "-lnocrypto_stubs+mirage-freestanding"
+-exists_if = "nocrypto.cma"
+-
+-package "unix" (
+- version = "0.5.4"
+- description = "Simple crypto for the modern age"
+- requires = "nocrypto unix bytes"
+- archive(byte) = "nocrypto_unix.cma"
+- archive(native) = "nocrypto_unix.cmxa"
+- plugin(byte) = "nocrypto_unix.cma"
+- plugin(native) = "nocrypto_unix.cmxs"
+- exists_if = "nocrypto_unix.cma"
+-)
+-
+-package "lwt" (
+- version = "0.5.4"
+- description = "Simple crypto for the modern age"
+- requires = "nocrypto nocrypto.unix lwt.unix cstruct.lwt"
+- archive(byte) = "nocrypto_lwt.cma"
+- archive(native) = "nocrypto_lwt.cmxa"
+- plugin(byte) = "nocrypto_lwt.cma"
+- plugin(native) = "nocrypto_lwt.cmxs"
+- exists_if = "nocrypto_lwt.cma"
+-)
+-
+-package "mirage" (
+- version = "0.5.4"
+- description = "Simple crypto for the modern age"
+- requires = "nocrypto lwt mirage-entropy"
+- archive(byte) = "nocrypto_mirage.cma"
+- archive(native) = "nocrypto_mirage.cmxa"
+- plugin(byte) = "nocrypto_mirage.cma"
+- plugin(native) = "nocrypto_mirage.cmxs"
+- exists_if = "nocrypto_mirage.cma"
+-)
+diff --git a/pkg/META.in b/pkg/META.in
+new file mode 100644
+index 0000000..0b263d7
+--- /dev/null
++++ b/pkg/META.in
+@@ -0,0 +1,43 @@
++version = "0.5.4"
++description = "Simple crypto for the modern age"
++requires = "cstruct zarith sexplib PPX_SEXP_CONV_RUNTIME"
++archive(byte) = "nocrypto.cma"
++archive(native) = "nocrypto.cmxa"
++plugin(byte) = "nocrypto.cma"
++plugin(native) = "nocrypto.cmxs"
++xen_linkopts = "-lnocrypto_stubs+mirage-xen"
++freestanding_linkopts = "-lnocrypto_stubs+mirage-freestanding"
++exists_if = "nocrypto.cma"
++
++package "unix" (
++ version = "0.5.4"
++ description = "Simple crypto for the modern age"
++ requires = "nocrypto unix bytes"
++ archive(byte) = "nocrypto_unix.cma"
++ archive(native) = "nocrypto_unix.cmxa"
++ plugin(byte) = "nocrypto_unix.cma"
++ plugin(native) = "nocrypto_unix.cmxs"
++ exists_if = "nocrypto_unix.cma"
++)
++
++package "lwt" (
++ version = "0.5.4"
++ description = "Simple crypto for the modern age"
++ requires = "nocrypto nocrypto.unix lwt.unix cstruct.lwt"
++ archive(byte) = "nocrypto_lwt.cma"
++ archive(native) = "nocrypto_lwt.cmxa"
++ plugin(byte) = "nocrypto_lwt.cma"
++ plugin(native) = "nocrypto_lwt.cmxs"
++ exists_if = "nocrypto_lwt.cma"
++)
++
++package "mirage" (
++ version = "0.5.4"
++ description = "Simple crypto for the modern age"
++ requires = "nocrypto lwt mirage-entropy"
++ archive(byte) = "nocrypto_mirage.cma"
++ archive(native) = "nocrypto_mirage.cmxa"
++ plugin(byte) = "nocrypto_mirage.cma"
++ plugin(native) = "nocrypto_mirage.cmxs"
++ exists_if = "nocrypto_mirage.cma"
++)
+-- 
+2.18.0
+

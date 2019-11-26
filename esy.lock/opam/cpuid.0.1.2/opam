@@ -1,0 +1,22 @@
+opam-version: "2.0"
+maintainer: "David Kaloper Meršinjak <dk505@cam.ac.uk>"
+authors: ["David Kaloper Meršinjak <dk505@cam.ac.uk>"]
+homepage: "https://github.com/pqwy/cpuid"
+doc: "https://pqwy.github.io/cpuid/doc"
+license: "ISC"
+dev-repo: "git+https://github.com/pqwy/cpuid.git"
+bug-reports: "https://github.com/pqwy/cpuid/issues"
+build: [ ["dune" "subst"] {pinned}
+         ["dune" "build" "-p" name "-j" jobs ]
+         ["dune" "runtest"] {with-test} ]
+depends: [
+  "ocaml" {>="4.03.0"}
+  "dune" {>= "1.7"}
+  ]
+synopsis: "Detect CPU features"
+description: "CPUID"
+url {
+  src:
+    "https://github.com/pqwy/cpuid/releases/download/v0.1.2/cpuid-v0.1.2.tbz"
+  checksum: "md5=21079a17bcf6cfe92e2f706b9d0d6d8d"
+}

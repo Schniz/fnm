@@ -1,0 +1,23 @@
+opam-version: "2.0"
+synopsis: "Compatibility library to use Stdlib.Bigarray when possible"
+maintainer: "Lucas Pluvinage <lucas.pluvinage@gmail.com>"
+authors: "Lucas Pluvinage <lucas.pluvinage@gmail.com>"
+license: "ISC"
+homepage: "https://github.com/mirage/bigarray-compat"
+bug-reports: "https://github.com/mirage/bigarray-compat/issues"
+depends: [
+  "ocaml" {>= "4.03.0"}
+  "dune" {>= "1.0"}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+]
+dev-repo: "git+https://github.com/mirage/bigarray-compat.git"
+url {
+  src: "https://github.com/mirage/bigarray-compat/archive/v1.0.0.tar.gz"
+  checksum: [
+    "md5=1cc7c25382a8900bada34aadfd66632e"
+    "sha512=c365fee15582aca35d7b05268cde29e54774ad7df7be56762b4aad78ca1409d4326ad3b34af0f1cc2c7b872837290a9cd9ff43b47987c03bba7bba32fe8a030f"
+  ]
+}

@@ -117,9 +117,8 @@ Prints the required shell commands in order to configure your shell, Bash compli
 ## Future Plans
 
 - [ ] Feature: `fnm use --install`
-- [ ] Feature: `fnm install lts`?
-- [ ] Windows Support?
 - [ ] Linux: Replace `tar` with a statically linked library too (for ungzip + untar)
+- [ ] Windows Support? @ulrikstrid has worked hard to make it compile on Windows, but it will probably need to have different code paths and logic. We can probably make another program and share feature tests with it, instead of relying on Windows for this very-unixy binary.
 
 ## Contributing
 

@@ -1,0 +1,22 @@
+From d51b3f3a49f159469e00d23524db915f19bb0127 Mon Sep 17 00:00:00 2001
+From: Hannes Mehnert <hannes@mehnert.org>
+Date: Tue, 3 Oct 2017 13:55:16 +0100
+Subject: [PATCH] bytecode / custom needs -cclib as well
+
+---
+ src/ocb_stubblr.ml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/ocb_stubblr.ml b/src/ocb_stubblr.ml
+index b68c37a..a0ee035 100644
+--- a/src/ocb_stubblr.ml
++++ b/src/ocb_stubblr.ml
+@@ -160,7 +160,7 @@ let link_flag () =
+     S [A switch; A ("-l"^name)]
+   and dep flag = Pathname.([remove_extension flag -.- "a"]) in
+   pflag ["link"; "ocaml"; "library"; "byte"] tag (libarg "-dllib");
+-  pflag ["link"; "ocaml"; "library"; "native"] tag  (libarg "-cclib");
++  pflag ["link"; "ocaml"; "library"] tag  (libarg "-cclib");
+   pdep ["link"; "ocaml"] tag dep;
+   pdep ["compile"; "ocaml"] tag dep
+   (* XXX sneak in '-I' for compile;ocaml;program ?? *)

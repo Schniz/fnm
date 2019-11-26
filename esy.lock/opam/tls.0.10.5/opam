@@ -1,0 +1,76 @@
+opam-version: "2.0"
+name:         "tls"
+homepage:     "https://github.com/mirleft/ocaml-tls"
+dev-repo:     "git+https://github.com/mirleft/ocaml-tls.git"
+bug-reports:  "https://github.com/mirleft/ocaml-tls/issues"
+doc:          "https://mirleft.github.io/ocaml-tls/doc"
+author:       ["David Kaloper <david@numm.org>" "Hannes Mehnert <hannes@mehnert.org>"]
+maintainer:   ["Hannes Mehnert <hannes@mehnert.org>" "David Kaloper <david@numm.org>"]
+license:      "BSD2"
+
+build: [
+  [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "false"
+    "--with-lwt" "%{lwt+ptime:installed}%"
+    "--with-mirage" "%{mirage-flow+mirage-kv+mirage-clock+ptime:installed}%" ]
+  ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" "--tests" "true"
+    "--with-lwt" "%{lwt+ptime:installed}%"
+    "--with-mirage" "%{mirage-flow+mirage-kv+mirage-clock+ptime:installed}%" ] {with-test}
+  ["ocaml" "pkg/pkg.ml" "test"] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.04.2"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "ppx_sexp_conv" {< "v0.13"}
+  "ppx_deriving"
+  "ppx_cstruct" {>= "3.0.0"}
+  "cstruct" {>= "4.0.0"}
+  "cstruct-sexp"
+  "sexplib" {< "v0.13"}
+  "nocrypto" {>= "0.5.4"}
+  "x509" {>= "0.7.0"}
+  "domain-name" {>= "0.3.0"}
+  "fmt"
+  "cstruct-unix" {with-test & >= "3.0.0"}
+  "ounit" {with-test}
+]
+depopts: [
+  "lwt"
+  "mirage-flow"
+  "mirage-kv"
+  "mirage-clock"
+  "ptime"
+]
+conflicts: [
+  "lwt" {<"2.4.8"}
+  "mirage-kv" {<"3.0.0"}
+  "mirage-flow" {<"2.0.0"}
+  "mirage-clock" {<"3.0.0"}
+  "sexplib" {= "v0.9.0"}
+  "ppx_sexp_conv" {= "v0.11.0"}
+  "ptime" {< "0.8.1"}
+]
+
+tags: [ "org:mirage"]
+synopsis: "Transport Layer Security purely in OCaml"
+description: """\
+
+Transport Layer Security (TLS) is probably the most widely deployed security
+protocol on the Internet. It provides communication privacy to prevent
+eavesdropping, tampering, and message forgery. Furthermore, it optionally
+provides authentication of the involved endpoints. TLS is commonly deployed for
+securing web services ([HTTPS](http://tools.ietf.org/html/rfc2818)), emails,
+virtual private networks, and wireless networks.
+
+TLS uses asymmetric cryptography to exchange a symmetric key, and optionally
+authenticate (using X.509) either or both endpoints. It provides algorithmic
+agility, which means that the key exchange method, symmetric encryption
+algorithm, and hash algorithm are negotiated.
+
+Read [further](https://nqsb.io) and our [Usenix Security 2015 paper](https://usenix15.nqsb.io)."""
+url {
+archive: "https://github.com/mirleft/ocaml-tls/releases/download/v0.10.5/tls-0.10.5.tbz"
+checksum: "57d9477ea79080e9d2485007289cbc5f"
+}

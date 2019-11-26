@@ -10,7 +10,7 @@ maintainer: "Anton Bachin <antonbachin@yahoo.com>"
 dev-repo: "git+https://github.com/aantron/lambda-soup.git"
 depends: [
   "ocaml"
-  "jbuilder" {build & >= "1.0+beta10"}
+  "jbuilder" {>= "1.0+beta10"}
   "markup" {>= "0.7.1"}
   "ounit" {with-test}
 ]
