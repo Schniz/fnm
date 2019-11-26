@@ -47,8 +47,10 @@ jobs:
       # - run: esy i
       # - run: esy fmt
       - run: |
-          curl https://12991-46261404-gh.circle-artifacts.com/0/refmt.exe -L > /tmp/refmt
-          chmod u+x /tmp/refmt
+          # curl https://azure-pipelines.herokuapp.com/reasonml/reason/refs%2Fheads%2Fmaster/artifacts/Linux -L > /tmp/Linux.zip
+          curl -L https://azure-pipelines.herokuapp.com/reasonml/reason/refs%2Fheads%2Fmaster/artifacts/Release > /tmp/Release.zip
+          unzip /tmp/Release.zip 'Release/reason-cli-*.tgz'
+          sudo npm i -g ./Release/reason-cli-*.tgz
       - run: /tmp/refmt --in-place */*.re
       # - run: ./scripts/fmt_all.sh
       #   name: refmt all the files
