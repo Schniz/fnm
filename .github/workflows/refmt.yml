@@ -46,14 +46,16 @@ jobs:
       # - run: esy import-build _export/*
       # - run: esy i
       # - run: esy fmt
-      - run: |
-          # curl https://azure-pipelines.herokuapp.com/reasonml/reason/refs%2Fheads%2Fmaster/artifacts/Linux -L > /tmp/Linux.zip
+      - name: "Download latest Reason release from Azure"
+        run: |
           curl -L https://azure-pipelines.herokuapp.com/reasonml/reason/refs%2Fheads%2Fmaster/artifacts/Release > /tmp/Release.zip
-          unzip /tmp/Release.zip 'Release/reason-cli-*.tgz'
+      - name: "Install reason-cli"
+        run: |
+          # curl https://azure-pipelines.herokuapp.com/reasonml/reason/refs%2Fheads%2Fmaster/artifacts/Linux -L > /tmp/Linux.zip
+          cd /tmp
+          unzip ./Release.zip 'Release/reason-cli-*.tgz'
           npm i ./Release/reason-cli-*.tgz
-      - run: npx refmt --in-place */*.re
-      # - run: ./scripts/fmt_all.sh
-      #   name: refmt all the files
+      - run: /tmp/node_modules/.bin/refmt --in-place */*.re
       - run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "There are differences:"
