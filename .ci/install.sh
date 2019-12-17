@@ -3,6 +3,7 @@
 set -e
 
 INSTALL_DIR="$HOME/.fnm"
+RELEASE="latest"
 
 # Parse Flags
 parse_args() {
@@ -23,6 +24,11 @@ parse_args() {
       echo "\`--force-install\`: I hope you know what you're doing." >&2
       FORCE_INSTALL="true"
       shift
+      ;;
+    -r | --release)
+      RELEASE="$2"
+      shift # past release argument
+      shift # past release value
       ;;
     *)
       echo "Unrecognized argument $key"
@@ -56,13 +62,24 @@ set_filename() {
 }
 
 download_fnm() {
-  URL=https://github.com/Schniz/fnm/releases/latest/download/$FILENAME.zip
+  if [ "$RELEASE" == "latest" ]; then
+    URL=https://github.com/Schniz/fnm/releases/latest/download/$FILENAME.zip
+  else
+    URL=https://github.com/Schniz/fnm/releases/download/$RELEASE/$FILENAME.zip
+  fi
+  
   DOWNLOAD_DIR=$(mktemp -d)
 
   echo "Downloading $URL..."
 
   mkdir -p $INSTALL_DIR &>/dev/null
   curl --progress-bar -L $URL -o $DOWNLOAD_DIR/$FILENAME.zip
+
+  if [ 0 -ne $? ]; then 
+    echo "Download failed.  Check that the release/filename are correct."
+    exit 1
+  fi;
+
   unzip -q $DOWNLOAD_DIR/$FILENAME.zip -d $DOWNLOAD_DIR
   mv $DOWNLOAD_DIR/$FILENAME/fnm $INSTALL_DIR/fnm
   chmod u+x $INSTALL_DIR/fnm
