@@ -1,0 +1,71 @@
+opam-version: "2.0"
+maintainer:   "defree@gmail.com"
+authors:      "The Merlin team"
+homepage:     "https://github.com/ocaml/merlin"
+bug-reports:  "https://github.com/ocaml/merlin/issues"
+dev-repo: "git+https://github.com/ocaml/merlin.git"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+depends: [
+  "ocaml" {>= "4.02.1" & < "4.10"}
+  "dune" {>= "1.8.0"}
+  "ocamlfind" {>= "1.5.2"}
+  "yojson" {>= "1.6.0"}
+  "mdx" {with-test & >= "1.3.0"}
+  "conf-jq" {with-test}
+]
+synopsis:
+  "Editor helper, provides completion, typing and source browsing in Vim and Emacs"
+description:
+  "Merlin is an assistant for editing OCaml code. It aims to provide the features available in modern IDEs: error reporting, auto completion, source browsing and much more."
+post-messages: [
+  "merlin installed.
+
+Quick setup for VIM
+-------------------
+Append this to your .vimrc to add merlin to vim's runtime-path:
+  let g:opamshare = substitute(system('opam config var share'),'\\n$','','''')
+  execute \"set rtp+=\" . g:opamshare . \"/merlin/vim\"
+
+Also run the following line in vim to index the documentation:
+  :execute \"helptags \" . g:opamshare . \"/merlin/vim/doc\"
+
+Quick setup for EMACS
+-------------------
+Add opam emacs directory to your load-path by appending this to your .emacs:
+  (let ((opam-share (ignore-errors (car (process-lines \"opam\" \"config\" \"var\" \"share\")))))
+   (when (and opam-share (file-directory-p opam-share))
+    ;; Register Merlin
+    (add-to-list 'load-path (expand-file-name \"emacs/site-lisp\" opam-share))
+    (autoload 'merlin-mode \"merlin\" nil t nil)
+    ;; Automatically start it in OCaml buffers
+    (add-hook 'tuareg-mode-hook 'merlin-mode t)
+    (add-hook 'caml-mode-hook 'merlin-mode t)
+    ;; Use opam switch to lookup ocamlmerlin binary
+    (setq merlin-command 'opam)))
+
+Take a look at https://github.com/ocaml/merlin for more information
+
+Quick setup with opam-user-setup
+--------------------------------
+
+Opam-user-setup support Merlin.
+
+  $ opam user-setup install
+
+should take care of basic setup.
+See https://github.com/OCamlPro/opam-user-setup
+"
+  {success & !user-setup:installed}
+]
+url {
+  src:
+    "https://github.com/ocaml/merlin/releases/download/v3.3.3/merlin-v3.3.3.tbz"
+  checksum: [
+    "sha256=72909ef47eea1f6fca13b4109a34dccf8fe3923a3c026f1ed1db9eb5ee9aae15"
+    "sha512=2a5f39d966be56c1322982effc05bc98fd5f66cd12f1f76953f8daa9eca74a58c92a186854f4e601e2f0bb038720691446e7591b4613982accded3e579fedb23"
+  ]
+}

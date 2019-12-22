@@ -23,12 +23,12 @@ depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
   "topkg" {build}
-  "ppx_sexp_conv" {< "v0.13"}
+  "ppx_sexp_conv" {< "v0.14"}
   "ppx_deriving"
   "ppx_cstruct" {>= "3.0.0"}
   "cstruct" {>= "4.0.0"}
   "cstruct-sexp"
-  "sexplib" {< "v0.13"}
+  "sexplib" {< "v0.14"}
   "nocrypto" {>= "0.5.4"}
   "x509" {>= "0.7.0"}
   "domain-name" {>= "0.3.0"}
@@ -45,6 +45,7 @@ depopts: [
 ]
 conflicts: [
   "lwt" {<"2.4.8"}
+  "lwt" {with-test & >= "5.0.0"}
   "mirage-kv" {<"3.0.0"}
   "mirage-flow" {<"2.0.0"}
   "mirage-clock" {<"3.0.0"}

@@ -6,7 +6,7 @@ steps:
       versionSpec: '8.9'
   - script: npm install -g esy@latest
     displayName: 'npm install -g esy@latest'
-  - script: esy install
+  - script: esy
     displayName: 'esy install'
   - script: esy verify-fnm-package
     displayName: 'Verify Fnm__Package.re file'

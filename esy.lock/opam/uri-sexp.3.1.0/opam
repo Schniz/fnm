@@ -1,0 +1,33 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: ["Anil Madhavapeddy" "David Sheets" "Rudi Grinberg"]
+license: "ISC"
+tags: ["url" "uri" "org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-uri"
+bug-reports: "https://github.com/mirage/ocaml-uri/issues"
+dev-repo: "git+https://github.com/mirage/ocaml-uri.git"
+doc: "https://mirage.github.io/ocaml-uri/"
+synopsis: "An RFC3986 URI/URL parsing library"
+description: """
+ocaml-uri with sexp support
+"""
+depends: [
+  "uri" {= version}
+  "dune" {>= "1.2.0"}
+  "ppx_sexp_conv" {>= "v0.9.0"}
+  "sexplib0"
+  "ounit" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+url {
+  src:
+    "https://github.com/mirage/ocaml-uri/releases/download/v3.1.0/uri-v3.1.0.tbz"
+  checksum: [
+    "sha256=c452823fd870cf7cffe51aef3e9ca646a382dc6f87282f2b16bfe30a7515ac43"
+    "sha512=c015576bb077fd243022bcd8804e628d23a253dcd8bbdda8dc2a57e86cfeb9fd629087ec7d7e23dc71dd7cd137450ca2c5ecf8fb7d184ec9d1d4e41f6f83ee38"
+  ]
+}

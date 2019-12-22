@@ -29,8 +29,8 @@ depends: [
   "dune" {>= "1.1.0"}
   "cohttp" {=version}
   "lwt" {>= "2.5.0"}
-  "sexplib0" {< "v0.13"}
-  "ppx_sexp_conv" {>= "v0.9.0" & < "v0.13"}
+  "sexplib0" {< "v0.14"}
+  "ppx_sexp_conv" {>= "v0.9.0" & < "v0.14"}
   "logs"
 ]
 build: [

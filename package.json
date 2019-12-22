@@ -93,7 +93,7 @@
     "@opam/cohttp-lwt-unix": "^2.0.0",
     "@opam/dune": "^1.9.3",
     "@opam/lambdasoup": "^0.6.3",
-    "@opam/lwt": "^4.2.1",
+    "@opam/lwt": "4.2.1",
     "@opam/lwt_ppx": "^1.2.2",
     "@opam/ppx_deriving": "^4.2.1",
     "@opam/ppx_deriving_yojson": "3.5.1",
@@ -113,6 +113,9 @@
     "jest-diff": "24.0.0",
     "lint-staged": "*",
     "lerna-changelog": "*"
+  },
+  "resolutions": {
+    "@opam/conf-gmp": "Schniz/esy-gmp#b48f9d1d0cf9df2d939371819635cbe72b0c281c"
   },
   "changelog": {
     "repo": "Schniz/fnm",

@@ -12,6 +12,6 @@
     ]
   ],
   "dependencies": {
-    "@esy-ocaml/fauxpam": "0.1.0"
+    "@esy-ocaml/fauxpam": "0.2.0"
   }
 }
