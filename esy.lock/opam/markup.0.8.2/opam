@@ -1,0 +1,53 @@
+opam-version: "2.0"
+
+synopsis: "Error-recovering functional HTML5 and XML parsers and writers"
+
+version: "0.8.2"
+license: "MIT"
+homepage: "https://github.com/aantron/markup.ml"
+doc: "http://aantron.github.io/markup.ml"
+bug-reports: "https://github.com/aantron/markup.ml/issues"
+
+authors: "Anton Bachin <antonbachin@yahoo.com>"
+maintainer: "Anton Bachin <antonbachin@yahoo.com>"
+dev-repo: "git+https://github.com/aantron/markup.ml.git"
+
+depends: [
+  "dune"
+  "ocaml" {>= "4.02.0"}
+  "uchar"
+  "uutf" {>= "1.0.0"}
+
+  "bisect_ppx" {dev & >= "2.0.0"}
+  "ounit" {dev}
+]
+# Markup.ml implicitly requires OCaml 4.02.3, as this is a contraint of Dune.
+
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]
+
+description: """
+Markup.ml provides an HTML parser and an XML parser. The parsers are wrapped in
+a simple interface: they are functions that transform byte streams to parsing
+signal streams. Streams can be manipulated in various ways, such as processing
+by fold, filter, and map, assembly into DOM tree structures, or serialization
+back to HTML or XML.
+
+Both parsers are based on their respective standards. The HTML parser, in
+particular, is based on the state machines defined in HTML5.
+
+The parsers are error-recovering by default, and accept fragments. This makes it
+very easy to get a best-effort parse of some input. The parsers can, however, be
+easily configured to be strict, and to accept only full documents.
+
+Apart from this, the parsers are streaming (do not build up a document in
+memory), non-blocking (can be used with threading libraries), lazy (do not
+consume input unless the signal stream is being read), and process the input in
+a single pass. They automatically detect the character encoding of the input
+stream, and convert everything to UTF-8."""
+
+url {
+  src: "https://github.com/aantron/markup.ml/archive/0.8.2.tar.gz"
+  checksum: "md5=0fe6b3a04d941ca40a5efdd082f1183d"
+}

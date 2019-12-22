@@ -30,10 +30,10 @@ depends: [
   "ocaml" {>= "4.04.0"}
   "dune" {>="1.9.0"}
   "macaddr" {=version}
-  "sexplib0" {< "v0.13"}
+  "sexplib0" {< "v0.14"}
   "domain-name" {>= "0.3.0"}
   "ounit" {with-test}
-  "ppx_sexp_conv" {with-test & >= "v0.9.0" & < "v0.13"}
+  "ppx_sexp_conv" {with-test & >= "v0.9.0" & < "v0.14"}
 ]
 build: [
   ["dune" "subst"] {pinned}

@@ -22,13 +22,13 @@ depends: [
   "cpuid" {build}
   "ocb-stubblr" {build}
   "ppx_deriving"
-  "ppx_sexp_conv" {>= "113.33.01" & != "v0.11.0" & < "v0.13"}
+  "ppx_sexp_conv" {>= "113.33.01" & != "v0.11.0" & < "v0.14"}
   "ounit" {with-test}
   "cstruct" {>= "3.0.0"}
   "cstruct-lwt"
   "zarith"
   "lwt"
-  "sexplib" {< "v0.13"}
+  "sexplib" {< "v0.14"}
   "mirage-no-xen" | ("mirage-xen" & "zarith-xen")
   "mirage-no-solo5" | ("mirage-solo5" & "zarith-freestanding")
 ]
