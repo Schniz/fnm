@@ -1,0 +1,33 @@
+opam-version: "2.0"
+authors: "Pierre Chambart"
+maintainer: "pierre.chambart@ocamlpro.com"
+homepage: "https://github.com/OCamlPro/ocplib-endian"
+build: [
+  ["ocaml" "setup.ml" "-configure" "--disable-debug" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: [
+  ["ocaml" "setup.ml" "-install"]
+]
+remove: ["ocamlfind" "remove" "ocplib-endian"]
+depends: [
+  "ocaml"
+  "base-bytes"
+  "ocamlfind"
+  "cppo" {>= "1.1.0"}
+  "ocamlbuild" {build}
+]
+dev-repo: "git+https://github.com/OCamlPro/ocplib-endian.git"
+bug-reports: "https://github.com/OCamlPro/ocplib-endian/issues"
+synopsis:
+  "Optimised functions to read and write int16/32/64 from strings and bigarrays, based on new primitives added in version 4.01."
+description: """
+The library implements three modules:
+* [EndianString](https://github.com/OCamlPro/ocplib-endian/blob/master/src/endianString.cppo.mli) works directly on strings, and provides submodules BigEndian and LittleEndian, with their unsafe counter-parts;
+* [EndianBytes](https://github.com/OCamlPro/ocplib-endian/blob/master/src/endianBytes.cppo.mli) works directly on bytes, and provides submodules BigEndian and LittleEndian, with their unsafe counter-parts;
+* [EndianBigstring](https://github.com/OCamlPro/ocplib-endian/blob/master/src/endianBigstring.cppo.mli) works on bigstrings (Bigarrays of chars), and provides submodules BigEndian and LittleEndian, with their unsafe counter-parts;"""
+flags: light-uninstall
+url {
+  src: "https://github.com/OCamlPro/ocplib-endian/archive/1.0.tar.gz"
+  checksum: "md5=74b45ba33e189283170a748c2a3ed477"
+}
