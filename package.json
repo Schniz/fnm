@@ -93,7 +93,7 @@
     "@opam/cohttp-lwt-unix": "^2.0.0",
     "@opam/dune": "^1.9.3",
     "@opam/lambdasoup": "^0.6.3",
-    "@opam/lwt": "^4.2.1",
+    "@opam/lwt": "4.2.1",
     "@opam/lwt_ppx": "^1.2.2",
     "@opam/ppx_deriving": "^4.2.1",
     "@opam/ppx_deriving_yojson": "3.5.1",
