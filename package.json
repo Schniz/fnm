@@ -115,7 +115,7 @@
     "lerna-changelog": "*"
   },
   "resolutions": {
-    "@opam/conf-gmp": "Schniz/esy-gmp#14142a5aa75e752501e7a4d450b4465deb514475"
+    "@opam/conf-gmp": "Schniz/esy-gmp#b48f9d1d0cf9df2d939371819635cbe72b0c281c"
   },
   "changelog": {
     "repo": "Schniz/fnm",
