@@ -1,3 +1,22 @@
+## v1.18.0 (2019-12-23)
+
+#### New Feature 🎉
+
+- [#176](https://github.com/Schniz/fnm/pull/176) Specify the release to the install script ([@chrisdaley](https://github.com/chrisdaley))
+
+#### Bugfix 🐛
+
+- [#177](https://github.com/Schniz/fnm/pull/177) Fix "illegal instruction" errors on some CPUs ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#179](https://github.com/Schniz/fnm/pull/179) Bump lwt version ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Chris Daley ([@chrisdaley](https://github.com/chrisdaley))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.17.0 (2019-11-26)
 
 #### Bugfix 🐛
