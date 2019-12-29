@@ -123,7 +123,7 @@ let main = (~version as versionName) => {
       Lwt.return_unit;
     };
 
-  Lwt.return();
+  Lwt.return_ok();
 };
 
 let run = (~version) =>
@@ -139,7 +139,7 @@ let run = (~version) =>
         <Pastel color=Pastel.Cyan> {System.NodeArch.toString(arch)} </Pastel>
       </Pastel>,
     );
-    exit(1);
+    Lwt.return_error(1);
   | Versions.Version_not_found(version) =>
     Logger.error(
       <Pastel>
@@ -148,7 +148,7 @@ let run = (~version) =>
         " not found!"
       </Pastel>,
     );
-    exit(1);
+    Lwt.return_error(1);
   | VersionListingLts.Problem_with_finding_latest_lts(
       VersionListingLts.Cant_find_latest_lts,
     ) =>
@@ -163,5 +163,5 @@ let run = (~version) =>
         reason
       </Pastel>,
     );
-    exit(1);
+    Lwt.return_error(1);
   };

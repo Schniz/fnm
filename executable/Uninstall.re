@@ -17,7 +17,7 @@ let run = (~version) => {
         " is not installed."
       </Pastel>,
     );
-    exit(1);
+    Lwt.return_error(1);
   | Some(installedVersion) =>
     Logger.debug(
       <Pastel>
@@ -37,6 +37,6 @@ let run = (~version) => {
         " has correctly been removed."
       </Pastel>,
     );
-    Lwt.return_unit;
+    Lwt.return_ok();
   };
 };

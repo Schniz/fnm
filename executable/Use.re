@@ -92,7 +92,8 @@ let main = (~version as providedVersion, ~quiet) => {
     | Some(version) => Lwt.return(version)
     | None => Dotfiles.getVersion()
     };
-  switchVersion(~version, ~quiet);
+  let%lwt () = switchVersion(~version, ~quiet);
+  Lwt.return_ok();
 };
 
 let rec askIfInstall = (~version, ~quiet, retry) => {
@@ -107,7 +108,9 @@ let rec askIfInstall = (~version, ~quiet, retry) => {
     let%lwt _ = Install.run(~version);
     retry(~version, ~quiet);
   | "N"
-  | "n" => Lwt_io.write_line(Lwt_io.stderr, "not installing!")
+  | "n" =>
+    let%lwt () = Lwt_io.write_line(Lwt_io.stderr, "not installing!");
+    Lwt.return_ok();
   | _ =>
     let%lwt _ =
       Lwt_io.write_line(Lwt_io.stderr, "Invalid response. Please try again:");
@@ -128,7 +131,7 @@ let rec run = (~version, ~quiet) =>
     if (Fnm.Config.FNM_INTERACTIVE_CLI.get()) {
       askIfInstall(~version, ~quiet, run);
     } else {
-      exit(1);
+      Lwt.return_error(1);
     };
   | Dotfiles.Conflicting_Dotfiles_Found(v1, v2) =>
     error(
@@ -142,7 +145,7 @@ let rec run = (~version, ~quiet) =>
         v2
       </Pastel>,
     );
-    exit(1);
+    Lwt.return_error(1);
   | Dotfiles.Version_Not_Provided =>
     error(
       ~quiet,
@@ -150,5 +153,5 @@ let rec run = (~version, ~quiet) =>
         "No .nvmrc or .node-version file was found in the current directory. Please provide a version number."
       </Pastel>,
     );
-    exit(1);
+    Lwt.return_error(1);
   };
