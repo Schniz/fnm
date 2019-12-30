@@ -1,6 +1,6 @@
 {
   "name": "fnm",
-  "version": "1.18.0",
+  "version": "1.18.1",
   "description": "Fast and simple Node.js version manager, built in ReasonML",
   "esy": {
     "build": "pesy",

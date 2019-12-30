@@ -1,3 +1,13 @@
+## v1.18.1 (2019-12-30)
+
+#### Bugfix 🐛
+
+- [#182](https://github.com/Schniz/fnm/pull/182) Closes [#181](https://github.com/Schniz/fnm/issues/181) by dropping `exit(1)` ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
 ## v1.18.0 (2019-12-23)
 
 #### New Feature 🎉
