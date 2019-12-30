@@ -158,5 +158,5 @@ let run =
     printUseOnCd(~shell) |> Console.log;
   };
 
-  Lwt.return();
+  Lwt.return_ok();
 };

@@ -31,12 +31,13 @@ let main = () =>
            Console.log(<Pastel ?color> "* " {version.name} aliases </Pastel>);
          });
 
-      Lwt.return();
+      Lwt.return_ok();
     }
   );
 
 let run = () =>
   try%lwt(main()) {
   | Cant_read_local_versions =>
-    Console.log("No versions installed!") |> Lwt.return
+    Console.log("No versions installed!");
+    Lwt.return_ok();
   };

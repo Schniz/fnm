@@ -22,5 +22,5 @@ let run = () => {
        Console.log(<Pastel ?color> str </Pastel>);
      });
 
-  Lwt.return();
+  Lwt.return_ok();
 };

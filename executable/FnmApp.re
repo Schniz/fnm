@@ -1,14 +1,23 @@
 let version = Fnm.Fnm__Package.version;
 
+let runCmd = lwt => {
+  lwt
+  |> Lwt_main.run
+  |> (
+    fun
+    | Error(err_code) => exit(err_code)
+    | Ok () => ()
+  );
+};
+
 module Commands = {
-  let use = (version, quiet) => Lwt_main.run(Use.run(~version, ~quiet));
-  let alias = (version, name) => Lwt_main.run(Alias.run(~name, ~version));
-  let default = version =>
-    Lwt_main.run(Alias.run(~name="default", ~version));
-  let listRemote = () => Lwt_main.run(ListRemote.run());
-  let listLocal = () => Lwt_main.run(ListLocal.run());
-  let install = version => Lwt_main.run(Install.run(~version));
-  let uninstall = version => Lwt_main.run(Uninstall.run(~version));
+  let use = (version, quiet) => Use.run(~version, ~quiet) |> runCmd;
+  let alias = (version, name) => Alias.run(~name, ~version) |> runCmd;
+  let default = version => Alias.run(~name="default", ~version) |> runCmd;
+  let listRemote = () => ListRemote.run() |> runCmd;
+  let listLocal = () => ListLocal.run() |> runCmd;
+  let install = version => Install.run(~version) |> runCmd;
+  let uninstall = version => Uninstall.run(~version) |> runCmd;
   let env =
       (
         isFishShell,
@@ -19,16 +28,15 @@ module Commands = {
         useOnCd,
         logLevel,
       ) =>
-    Lwt_main.run(
-      Env.run(
-        ~forceShell=Fnm.System.Shell.(isFishShell ? Some(Fish) : shell),
-        ~multishell=isMultishell,
-        ~nodeDistMirror,
-        ~fnmDir,
-        ~useOnCd,
-        ~logLevel,
-      ),
-    );
+    Env.run(
+      ~forceShell=Fnm.System.Shell.(isFishShell ? Some(Fish) : shell),
+      ~multishell=isMultishell,
+      ~nodeDistMirror,
+      ~fnmDir,
+      ~useOnCd,
+      ~logLevel,
+    )
+    |> runCmd;
 };
 
 open Cmdliner;

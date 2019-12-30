@@ -16,19 +16,19 @@ let run = (~name, ~version) => {
         versionPath
       </Pastel>,
     );
-    exit(1);
+    Lwt.return_error(1);
+  } else {
+    Logger.info(
+      <Pastel>
+        "Aliasing "
+        <Pastel color=Pastel.Cyan> name </Pastel>
+        " to "
+        <Pastel color=Pastel.Cyan> version </Pastel>
+      </Pastel>,
+    );
+
+    let%lwt () = Versions.Aliases.set(~alias=name, ~versionPath);
+
+    Lwt.return_ok();
   };
-
-  Logger.info(
-    <Pastel>
-      "Aliasing "
-      <Pastel color=Pastel.Cyan> name </Pastel>
-      " to "
-      <Pastel color=Pastel.Cyan> version </Pastel>
-    </Pastel>,
-  );
-
-  let%lwt () = Versions.Aliases.set(~alias=name, ~versionPath);
-
-  Lwt.return();
 };
