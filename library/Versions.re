@@ -144,6 +144,11 @@ module Remote = {
           )
     );
 
+  let isMajor = (majorVersion, version) => {
+    parseSemver(version.name)
+    |> Base.Option.value_map(~f=Semver.isMajor(majorVersion), ~default=false);
+  };
+
   let getRelativeLinksFromHTML = html =>
     Soup.parse(html)
     |> Soup.select("pre a")
