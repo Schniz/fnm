@@ -14,7 +14,7 @@ module Commands = {
   let use = (version, quiet) => Use.run(~version, ~quiet) |> runCmd;
   let alias = (version, name) => Alias.run(~name, ~version) |> runCmd;
   let default = version => Alias.run(~name="default", ~version) |> runCmd;
-  let listRemote = majorVersion => ListRemote.run(~majorVersion) |> runCmd;
+  let listRemote = version => ListRemote.run(~version) |> runCmd;
   let listLocal = () => ListLocal.run() |> runCmd;
   let install = version => Install.run(~version) |> runCmd;
   let uninstall = version => Uninstall.run(~version) |> runCmd;
@@ -73,7 +73,7 @@ let install = {
   let man = help_secs;
   let sdocs = Manpage.s_common_options;
 
-  let selectedMajorVersion = {
+  let selectedVersion = {
     let doc = "Install another version specified in $(docv).";
     Arg.(
       value & pos(0, some(string), None) & info([], ~docv="VERSION", ~doc)
@@ -81,7 +81,7 @@ let install = {
   };
 
   (
-    Term.(const(Commands.install) $ selectedMajorVersion),
+    Term.(const(Commands.install) $ selectedVersion),
     Term.info(
       "install",
       ~envs,
@@ -149,9 +149,7 @@ let listRemote = {
   let selectedVersion = {
     let doc = "Filter by specific $(docv).";
     Arg.(
-      value
-      & pos(0, some(int), None)
-      & info([], ~docv="MAJOR VERSION", ~doc)
+      value & pos(0, some(string), None) & info([], ~docv="VERSION", ~doc)
     );
   };
 

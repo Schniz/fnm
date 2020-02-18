@@ -1,19 +1,24 @@
 open Fnm;
 
-let run = (~majorVersion as maybeMajorVersion) => {
-  open Lwt.Infix;
+let run = (~version as maybeVersionName) => {
   Console.log("Looking for some node versions upstream...");
 
-  let forMajorVersion = maybeMajorVersion =>
-    switch (maybeMajorVersion) {
-    | None => (_ => true)
-    | Some(majorVersion) => Versions.Remote.isMajor(majorVersion)
-    };
-
-  let%lwt versions =
-    Versions.getRemoteVersions()
-    >|= List.filter(forMajorVersion(maybeMajorVersion))
+  let%lwt versions = Versions.getRemoteVersions()
   and currentVersion = Versions.getCurrentVersion();
+
+  let versions =
+    switch (maybeVersionName) {
+    | None => versions
+    | Some(versionName) =>
+      let formattedVersionName = Versions.format(versionName);
+      versions
+      |> Versions.(
+           List.filter(v =>
+             isVersionFitsPrefix(formattedVersionName, Remote.(v.name))
+             || v.name == formattedVersionName
+           )
+         );
+    };
 
   switch (versions) {
   | [] =>
@@ -21,7 +26,9 @@ let run = (~majorVersion as maybeMajorVersion) => {
       <Pastel color=Pastel.Red>
         "No versions found that match your criterias."
       </Pastel>,
-    )
+    );
+    Lwt.return_error(1);
+
   | _ =>
     versions
     |> List.iter(version => {
@@ -37,8 +44,7 @@ let run = (~majorVersion as maybeMajorVersion) => {
            };
          ();
          Console.log(<Pastel ?color> str </Pastel>);
-       })
+       });
+    Lwt.return_ok();
   };
-
-  Lwt.return_ok();
 };
