@@ -9,5 +9,3 @@ let toString: t => string;
 let major: t => int;
 let minor: t => int;
 let patch: t => int;
-
-let isMajor: (int, t) => bool;

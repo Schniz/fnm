@@ -21,5 +21,3 @@ let toString = ({major, minor, patch}) =>
 let major = ({major, _}) => major;
 let minor = ({minor, _}) => minor;
 let patch = ({patch, _}) => patch;
-
-let isMajor = (major, semver) => semver.major == major;
