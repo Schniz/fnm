@@ -1,0 +1,46 @@
+opam-version: "2.0"
+
+synopsis: "Easy functional HTML scraping and manipulation with CSS selectors"
+
+version: "0.7.0"
+license: "MIT"
+homepage: "https://github.com/aantron/lambdasoup"
+doc: "https://aantron.github.io/lambdasoup"
+bug-reports: "https://github.com/aantron/lambdasoup/issues"
+
+authors: "Anton Bachin <antonbachin@yahoo.com>"
+maintainer: "Anton Bachin <antonbachin@yahoo.com>"
+dev-repo: "git+https://github.com/aantron/lambdasoup.git"
+
+depends: [
+  # As a consequence of depending on Dune, Lambda Soup requires OCaml 4.02.3.
+  "dune"
+  "markup" {>= "0.7.1"}
+  "ocaml" {>= "4.02.0"}
+
+  "bisect_ppx" {dev & >= "2.0.0"}
+  "ounit" {with-test}
+]
+
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+
+description: """
+Lambda Soup is an HTML scraping library inspired by Python's Beautiful Soup. It
+provides lazy traversals from HTML nodes to their parents, children, siblings,
+etc., and to nodes matching CSS selectors. The traversals can be manipulated
+using standard functional combinators such as fold, filter, and map.
+
+The DOM tree is mutable. You can use Lambda Soup for automatic HTML rewriting in
+scripts. Lambda Soup rewrites its own ocamldoc page this way.
+
+A major goal of Lambda Soup is to be easy to use, including in interactive
+sessions, and to have a minimal learning curve. It is a very simple library.
+"""
+
+url {
+  src: "https://github.com/aantron/lambdasoup/archive/0.7.0.tar.gz"
+  checksum: "md5=2bb2c7d8a6ac4e12aa7dbdfcbaac0dd8"
+}

@@ -1,9 +1,0 @@
-opam-version: "2.0"
-authors: ["Jérémie Dimino"]
-homepage: "https://github.com/ocaml/dune"
-bug-reports: "https://github.com/ocaml/dune/issues"
-maintainer: "Jérémie Dimino"
-description: """
-dune.configurator library distributed with Dune 1.x
-"""
-depends: ["dune" {<"2.0.0"}]

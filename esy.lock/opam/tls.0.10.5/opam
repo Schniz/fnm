@@ -30,7 +30,7 @@ depends: [
   "cstruct-sexp"
   "sexplib" {< "v0.14"}
   "nocrypto" {>= "0.5.4"}
-  "x509" {>= "0.7.0"}
+  "x509" {>= "0.7.0" & < "0.9.0"}
   "domain-name" {>= "0.3.0"}
   "fmt"
   "cstruct-unix" {with-test & >= "3.0.0"}
