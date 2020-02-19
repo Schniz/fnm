@@ -2,14 +2,20 @@ open Fnm;
 open Lwt.Infix;
 
 let run = (~version) => {
-  let version = Versions.format(version);
+  let%lwt installedVersions = Versions.getInstalledVersions();
 
-  let%lwt installedVersion =
-    Versions.getInstalledVersions()
-    >|= List.find_opt(x => Versions.Local.(x.name == version));
+  let formattedVersionName = Versions.format(version);
+  let matchingLocalVersions =
+    installedVersions
+    |> Versions.(
+         List.filter(v =>
+           isVersionFitsPrefix(formattedVersionName, Local.(v.name))
+           || v.name == formattedVersionName
+         )
+       );
 
-  switch (installedVersion) {
-  | None =>
+  switch (matchingLocalVersions) {
+  | [] =>
     Logger.error(
       <Pastel>
         "The version "
@@ -18,7 +24,7 @@ let run = (~version) => {
       </Pastel>,
     );
     Lwt.return_error(1);
-  | Some(installedVersion) =>
+  | [installedVersion] =>
     Logger.debug(
       <Pastel>
         "Uninstalling node "
@@ -38,5 +44,25 @@ let run = (~version) => {
       </Pastel>,
     );
     Lwt.return_ok();
+  | _ =>
+    Logger.info(
+      <Pastel>
+        "There are multiple versions matching your criterias:"
+      </Pastel>,
+    );
+    matchingLocalVersions
+    |> List.iter(matchingVersion =>
+         Logger.info(
+           <Pastel color=Pastel.Cyan>
+             Versions.Local.(matchingVersion.name)
+           </Pastel>,
+         )
+       );
+    Logger.info(
+      <Pastel color=Pastel.Red>
+        "\nPlease run the command again with the correct version."
+      </Pastel>,
+    );
+    Lwt.return_error(1);
   };
 };
