@@ -60,8 +60,6 @@ let allVersions6_11 = [
 describe("List Remote", ({test}) => {
   let versionRegExp = Str.regexp(".*[0-9]+\.[0-9]+\.[0-9]+\|.*latest-*");
 
-  let formatVersion = version => "* v" ++ version;
-
   let filterVersionNumbers = response =>
     response
     |> String.split_on_char('\n')
