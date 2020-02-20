@@ -37,6 +37,7 @@ jobs:
   variables:
     ESY__CACHE_INSTALL_PATH: /Users/vsts/.esy/3____________________________________________________________________/i/
     ESY__CACHE_SOURCE_TARBALL_PATH: /Users/vsts/.esy/source/i
+    NOCRYPTO_ACCELERATE: false # https://github.com/mirleft/ocaml-nocrypto#illegal-instructions
 
   steps:
   # TODO: Uncomment both this and 'publish-build-cache' below to enable build caching for Mac.

@@ -10,6 +10,9 @@ RUN npm i -g esy@latest
 WORKDIR /app
 ADD . /app
 
+# https://github.com/mirleft/ocaml-nocrypto#illegal-instructions
+ENV NOCRYPTO_ACCELERATE false
+
 RUN jq '. | .buildDirs.executable.flags |= . + ["-ccopt", "-static"]' package.json > package.json.new && mv package.json.new package.json
 RUN npx esy i
 RUN npx esy verify-fnm-package
