@@ -14,7 +14,7 @@ module Commands = {
   let use = (version, quiet) => Use.run(~version, ~quiet) |> runCmd;
   let alias = (version, name) => Alias.run(~name, ~version) |> runCmd;
   let default = version => Alias.run(~name="default", ~version) |> runCmd;
-  let listRemote = () => ListRemote.run() |> runCmd;
+  let listRemote = version => ListRemote.run(~version) |> runCmd;
   let listLocal = () => ListLocal.run() |> runCmd;
   let install = version => Install.run(~version) |> runCmd;
   let uninstall = version => Uninstall.run(~version) |> runCmd;
@@ -146,8 +146,15 @@ let listRemote = {
   let sdocs = Manpage.s_common_options;
   let man = help_secs;
 
+  let selectedVersion = {
+    let doc = "Filter by specific $(docv).";
+    Arg.(
+      value & pos(0, some(string), None) & info([], ~docv="VERSION", ~doc)
+    );
+  };
+
   (
-    Term.(app(const(Commands.listRemote), const())),
+    Term.(const(Commands.listRemote) $ selectedVersion),
     Term.info(
       "ls-remote",
       ~version,
