@@ -106,7 +106,7 @@ describe("List Remote", ({test}) => {
   });
   test(
     "Should display an error message if version does not exist", ({expect}) => {
-    let result = run([|"ls-remote", "190384"|]);
+    let result = run([|"ls-remote", "190385"|]);
 
     let versionNumbers = result |> filterVersionNumbers;
 
