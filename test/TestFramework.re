@@ -21,6 +21,7 @@ let run = args => {
     Unix.environment()
     |> Array.append([|
          Printf.sprintf("%s=%s", Fnm.Config.FNM_DIR.name, tmpDir),
+         "FORCE_COLOR=false",
        |]);
   let result =
     Lwt_process.pread_chars(~env, ("", arguments)) |> Lwt_stream.to_string;
