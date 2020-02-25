@@ -12,26 +12,28 @@ let unsafeRun = (~cmd, ~version as maybeVersion, ~useFileVersion) => {
     | (None, true) => Fnm.Dotfiles.getVersion() |> Lwt.map(x => Some(x))
     | (Some(version), false) => Lwt.return_some(version)
     };
-  let currentVersion =
+  let%lwt currentVersion =
     switch (version) {
-    | Some(version) => Versions.Local.toDirectory(version)
-    | None => Directories.currentVersion
+    | None => Lwt.return(Directories.currentVersion)
+    | Some(version) =>
+      let%lwt matchingLocalVersions =
+        Versions.getMatchingLocalVersions(version);
+      switch (matchingLocalVersions) {
+      | [] => Printf.sprintf("Version %s not found", version) |> Lwt.fail_with
+      | [latestVersion, ..._] =>
+        Versions.Local.toDirectory(latestVersion.name) |> Lwt.return
+      };
     };
   let fnmPath = Filename.concat(currentVersion, "bin");
-  Console.log(fnmPath);
   let path = Opt.(Sys.getenv_opt("PATH") or "");
   let pathEnv = Printf.sprintf("PATH=%s:%s", fnmPath, path);
-  let env =
-    Unix.environment()
-    |> Array.copy
-    |> Base.Array.filter(~f=startsWith(~prefix="PATH="))
-    |> Array.append([|pathEnv|]);
+  let cmd = cmd |> Array.copy |> Array.append([|"env", pathEnv|]);
   let%lwt exitCode =
     Lwt_process.exec(
       ~stdin=`Keep,
       ~stdout=`Keep,
       ~stderr=`Keep,
-      ~env,
+      ~env=Unix.environment(),
       ("", cmd),
     );
 

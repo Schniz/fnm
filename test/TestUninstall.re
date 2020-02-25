@@ -8,7 +8,7 @@ let isVersionInstalled = version =>
   |> String.split_on_char('\n')
   |> List.exists(v => v == "* v" ++ version);
 
-describe("Uninstall", ({test}) => {
+describe("Uninstall", ({test, _}) => {
   test("Should be possible to uninstall a specific version", ({expect, _}) => {
     let version = "6.0.0";
     let _ = installVersion(version);
