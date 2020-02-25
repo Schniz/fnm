@@ -2,8 +2,6 @@ open Fnm;
 
 let lwtIgnore = lwt => Lwt.catch(() => lwt, _ => Lwt.return());
 
-exception Version_Not_Installed(string);
-
 let info = (~quiet, arg) =>
   if (!quiet) {
     Logger.info(arg);
@@ -19,26 +17,10 @@ let error = (~quiet, arg) =>
     Logger.error(arg);
   };
 
-let getVersion = version => {
-  let%lwt parsed = Versions.parse(version);
-  let%lwt resultWithLts =
-    switch (parsed) {
-    | Ok(x) => Lwt.return_ok(x)
-    | Error("latest-*") =>
-      switch%lwt (VersionListingLts.getLatest()) {
-      | Error(_) => Lwt.return_error(Version_Not_Installed(version))
-      | Ok({VersionListingLts.lts, _}) =>
-        Versions.Alias("latest-" ++ lts) |> Lwt.return_ok
-      }
-    | _ => Version_Not_Installed(version) |> Lwt.return_error
-    };
-  resultWithLts |> Result.fold(Lwt.fail, Lwt.return);
-};
-
 let switchVersion = (~version, ~quiet) => {
   let info = info(~quiet);
   let debug = debug(~quiet);
-  let%lwt parsedVersion = getVersion(version);
+  let%lwt parsedVersion = LocalVersionResolver.getVersion(version);
 
   let%lwt versionPath =
     switch (parsedVersion) {
@@ -120,7 +102,7 @@ let rec askIfInstall = (~version, ~quiet, retry) => {
 
 let rec run = (~version, ~quiet) =>
   try%lwt(main(~version, ~quiet)) {
-  | Version_Not_Installed(versionString) =>
+  | LocalVersionResolver.Version_Not_Installed(versionString) =>
     error(
       ~quiet,
       <Pastel color=Pastel.Red>
