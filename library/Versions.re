@@ -370,3 +370,18 @@ let isInstalled = versionName => {
   |> List.exists(x => Local.(x.name == versionName))
   |> Lwt.return;
 };
+
+let getMatchingLocalVersions = version => {
+  let%lwt installedVersions = getInstalledVersions();
+  let formattedVersionName = format(version);
+
+  let matchingVersions =
+    installedVersions
+    |> List.filter(v =>
+         isVersionFitsPrefix(formattedVersionName, Local.(v.name))
+         || v.name == formattedVersionName
+       )
+    |> List.sort((a, b) => - compare(a.Local.name, b.name));
+
+  Lwt.return(matchingVersions);
+};
