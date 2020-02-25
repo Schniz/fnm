@@ -11,7 +11,8 @@ let runCmd = lwt => {
 };
 
 module Commands = {
-  let exec = (version, useFileVersion, cmd) => Exec.run(~cmd=Array.of_list(cmd), ~version, ~useFileVersion) |> runCmd;
+  let exec = (version, useFileVersion, cmd) =>
+    Exec.run(~cmd=Array.of_list(cmd), ~version, ~useFileVersion) |> runCmd;
   let use = (version, quiet) => Use.run(~version, ~quiet) |> runCmd;
   let alias = (version, name) => Alias.run(~name, ~version) |> runCmd;
   let default = version => Alias.run(~name="default", ~version) |> runCmd;
