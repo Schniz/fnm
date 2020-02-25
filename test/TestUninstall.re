@@ -29,9 +29,9 @@ describe("Uninstall", ({test, _}) => {
       uninstallVersion("6")
       |> String.split_on_char('\n')
       |> String.concat(" ");
-    expect.string(response).toMatch(
-      ".*multiple versions.*" ++ v1 ++ ".*" ++ v2 ++ ".*",
-    );
+    expect.string(response).toMatch("multiple versions");
+    expect.string(response).toMatch(" v" ++ v1 ++ " ");
+    expect.string(response).toMatch(" v" ++ v2 ++ " ");
     expect.bool(isVersionInstalled(v1)).toBeTrue();
     expect.bool(isVersionInstalled(v2)).toBeTrue();
     clearTmpDir();
