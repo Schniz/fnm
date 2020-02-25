@@ -2,7 +2,8 @@ open Fnm;
 open Lwt.Infix;
 
 let run = (~version) => {
-  let%lwt matchingLocalVersions = Versions.getMatchingLocalVersions(version);
+  let%lwt matchingLocalVersions =
+    LocalVersionResolver.getMatchingLocalVersions(version);
 
   switch (matchingLocalVersions) {
   | [] =>
