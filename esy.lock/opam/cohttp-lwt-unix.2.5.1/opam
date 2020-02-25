@@ -1,0 +1,53 @@
+opam-version: "2.0"
+maintainer: "anil@recoil.org"
+authors: [
+  "Anil Madhavapeddy"
+  "Stefano Zacchiroli"
+  "David Sheets"
+  "Thomas Gazagnaire"
+  "David Scott"
+  "Rudi Grinberg"
+  "Andy Ray"
+]
+synopsis: "CoHTTP implementation for Unix and Windows using Lwt"
+description: """
+An implementation of an HTTP client and server using the Lwt
+concurrency library. See the `Cohttp_lwt_unix` module for information
+on how to use this.  The package also installs `cohttp-curl-lwt`
+and a `cohttp-server-lwt` binaries for quick uses of a HTTP(S)
+client and server respectively.
+
+Although the name implies that this only works under Unix, it
+should also be fine under Windows too."""
+license: "ISC"
+tags: ["org:mirage" "org:xapi-project"]
+homepage: "https://github.com/mirage/ocaml-cohttp"
+doc: "https://mirage.github.io/ocaml-cohttp/"
+bug-reports: "https://github.com/mirage/ocaml-cohttp/issues"
+depends: [
+  "ocaml" {>= "4.04.1"}
+  "dune" {>= "1.1.0"}
+  "conduit-lwt-unix" {>= "1.0.3"}
+  "cmdliner"
+  "magic-mime"
+  "logs"
+  "fmt" {>= "0.8.2"}
+  "cohttp-lwt" {=version}
+  "lwt" {>= "3.0.0"}
+  "base-unix"
+  "ounit" {with-test}
+]
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]
+dev-repo: "git+https://github.com/mirage/ocaml-cohttp.git"
+url {
+  src:
+    "https://github.com/mirage/ocaml-cohttp/releases/download/v2.5.1/cohttp-v2.5.1.tbz"
+  checksum: [
+    "sha256=268de1479bf010c16f1de1ab5f9c75595dfdcafb2017ed4e73f8773b620da946"
+    "sha512=051aa57ad631ba766f22f6ebc0746545fc74ca1180206c695deb1ca73800f7ea436c88f95a0bb1d78a8dc1da0685a19553cdacd04667893022215bedbc2b880a"
+  ]
+}
