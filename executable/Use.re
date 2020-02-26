@@ -109,7 +109,7 @@ let rec askIfInstall = (~version, ~quiet, retry) => {
     retry(~version, ~quiet);
   | "N"
   | "n" =>
-    let%lwt () = Lwt_io.write_line(Lwt_io.stderr, "not installing!");
+    let%lwt () = Lwt_io.write_line(Lwt_io.stderr, "Not installing!");
     Lwt.return_ok();
   | _ =>
     let%lwt _ =
