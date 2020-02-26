@@ -47,7 +47,7 @@ let run = (~version) => {
   | _ =>
     Logger.info(
       <Pastel>
-        "There are multiple versions matching your criterias:"
+        "There are multiple versions matching your criteria:"
       </Pastel>,
     );
     matchingLocalVersions
