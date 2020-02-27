@@ -2,7 +2,7 @@ opam-version: "2.0"
 
 synopsis: "Promises and event-driven I/O"
 
-version: "5.1.1"
+version: "5.1.2"
 license: "MIT"
 homepage: "https://github.com/ocsigen/lwt"
 doc: "https://ocsigen.org/lwt"
@@ -41,12 +41,9 @@ conflicts: [
   "ocaml-variants" {= "4.02.1+BER"}
 ]
 
-post-messages: [
-  "Lwt 5.0.0 has made some minor breaking changes. See
-  https://github.com/ocsigen/lwt/issues/584"
-]
-
 build: [
+  ["dune" "exec" "src/unix/config/discover.exe" "--root" "." "--" "--save"
+    "--use-libev" "%{conf-libev:installed}%"]
   ["dune" "build" "-p" name "-j" jobs]
 ]
 
@@ -60,6 +57,6 @@ a single thread by default. This reduces the need for locks or other
 synchronization primitives. Code can be run in parallel on an opt-in basis."
 
 url {
-  src: "https://github.com/ocsigen/lwt/archive/5.1.1.tar.gz"
-  checksum: "md5=4ddec0f42b7aa4a310175a14c47c60a3"
+  src: "https://github.com/ocsigen/lwt/archive/5.1.2.tar.gz"
+  checksum: "md5=dc4005582a6ab32227f5ff90cb480dbe"
 }
