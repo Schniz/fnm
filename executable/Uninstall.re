@@ -46,9 +46,7 @@ let run = (~version) => {
     Lwt.return_ok();
   | _ =>
     Logger.info(
-      <Pastel>
-        "There are multiple versions matching your criteria:"
-      </Pastel>,
+      <Pastel> "There are multiple versions matching your criteria:" </Pastel>,
     );
     matchingLocalVersions
     |> List.iter(matchingVersion =>
