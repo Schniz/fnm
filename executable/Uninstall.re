@@ -2,17 +2,8 @@ open Fnm;
 open Lwt.Infix;
 
 let run = (~version) => {
-  let%lwt installedVersions = Versions.getInstalledVersions();
-
-  let formattedVersionName = Versions.format(version);
-  let matchingLocalVersions =
-    installedVersions
-    |> Versions.(
-         List.filter(v =>
-           isVersionFitsPrefix(formattedVersionName, Local.(v.name))
-           || v.name == formattedVersionName
-         )
-       );
+  let%lwt matchingLocalVersions =
+    LocalVersionResolver.getMatchingLocalVersions(version);
 
   switch (matchingLocalVersions) {
   | [] =>

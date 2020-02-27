@@ -11,6 +11,8 @@ let runCmd = lwt => {
 };
 
 module Commands = {
+  let exec = (version, useFileVersion, cmd) =>
+    Exec.run(~cmd=Array.of_list(cmd), ~version, ~useFileVersion) |> runCmd;
   let use = (version, quiet) => Use.run(~version, ~quiet) |> runCmd;
   let alias = (version, name) => Alias.run(~name, ~version) |> runCmd;
   let default = version => Alias.run(~name="default", ~version) |> runCmd;
@@ -233,6 +235,40 @@ let alias = {
   );
 };
 
+let exec = {
+  let doc = "Execute a binary with the current Node.js in the PATH";
+  let man = help_secs;
+  let sdocs = Manpage.s_common_options;
+
+  let usingVersion = {
+    let doc = "Use a specific $(docv)";
+    Arg.(value & opt(some(string), None) & info(["using"], ~doc));
+  };
+
+  let usingFileVersion = {
+    let doc = "Use a version from a version file";
+    Arg.(value & flag & info(["using-file"], ~doc));
+  };
+
+  let command = {
+    let doc = "The $(docv) to execute";
+    Arg.(non_empty & pos_all(string, []) & info([], ~docv="COMMAND", ~doc));
+  };
+
+  (
+    Term.(const(Commands.exec) $ usingVersion $ usingFileVersion $ command),
+    Term.info(
+      "exec",
+      ~envs,
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
+  );
+};
+
 let default = {
   let doc = "Alias a version as default";
   let man = help_secs;
@@ -378,7 +414,17 @@ let argv =
 let _ =
   Term.eval_choice(
     defaultCmd,
-    [install, uninstall, use, alias, default, listLocal, listRemote, env],
+    [
+      install,
+      uninstall,
+      use,
+      alias,
+      default,
+      listLocal,
+      listRemote,
+      env,
+      exec,
+    ],
     ~argv,
   )
   |> Term.exit;

@@ -57,14 +57,14 @@ let allVersions6_11 = [
   "v6.11.5",
 ];
 
-describe("List Remote", ({test}) => {
-  let versionRegExp = Str.regexp(".*[0-9]+\.[0-9]+\.[0-9]+\|.*latest-*");
+describe("List Remote", ({test, _}) => {
+  let versionRegExp = Str.regexp(".*[0-9]+\\.[0-9]+\\.[0-9]+\\|.*latest-*");
 
   let filterVersionNumbers = response =>
     response
     |> String.split_on_char('\n')
     |> List.filter(s => Str.string_match(versionRegExp, s, 0))
-    |> List.map(s => Str.replace_first(Str.regexp("\*"), "", s))
+    |> List.map(s => Str.replace_first(Str.regexp("\\*"), "", s))
     |> List.map(String.trim);
 
   let runAndFilterVersionNumbers = args => run(args) |> filterVersionNumbers;
