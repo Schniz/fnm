@@ -87,8 +87,11 @@ let rec askIfInstall = (~version, ~quiet, retry) => {
   switch%lwt (Lwt_io.read_line(Lwt_io.stdin)) {
   | "Y"
   | "y" =>
-    let%lwt _ = Install.run(~version);
-    retry(~version, ~quiet);
+    let%lwt res = Install.run(~version);
+    switch (res) {
+    | Error(_) => Lwt.return_error(1)
+    | Ok(_) => retry(~version, ~quiet)
+    };
   | "N"
   | "n" =>
     let%lwt () = Lwt_io.write_line(Lwt_io.stderr, "Not installing!");
