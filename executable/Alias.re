@@ -19,7 +19,11 @@ let run = (~name, ~version) => {
     let%lwt () =
       Versions.Aliases.set(
         ~alias=name,
-        ~versionPath=latestMatchingLocalVersion.fullPath,
+        ~versionPath=
+          Filename.concat(
+            latestMatchingLocalVersion.fullPath,
+            "installation",
+          ),
       );
     Lwt.return_ok();
   | None =>
