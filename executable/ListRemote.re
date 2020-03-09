@@ -24,7 +24,7 @@ let run = (~version as maybeVersionName) => {
   | [] =>
     Console.log(
       <Pastel color=Pastel.Red>
-        "No versions found that match your criterias."
+        "No versions found that match your criteria."
       </Pastel>,
     );
     Lwt.return_error(1);
