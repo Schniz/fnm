@@ -1,3 +1,27 @@
+## v1.19.0 (2020-03-09)
+
+#### New Feature 🎉
+
+- [#194](https://github.com/Schniz/fnm/pull/194) Add `fnm exec` to run commands with the fnm environment ([@Schniz](https://github.com/Schniz))
+- [#191](https://github.com/Schniz/fnm/pull/191) uninstall allow prefix (Closes [#121](https://github.com/Schniz/fnm/issues/121)) ([@tatchi](https://github.com/tatchi))
+- [#190](https://github.com/Schniz/fnm/pull/190) Add majorVersion option to ls-remote ([@tatchi](https://github.com/tatchi))
+
+#### Bugfix 🐛
+
+- [#200](https://github.com/Schniz/fnm/pull/200) Do not repeat installation prompt for unrecognized versions ([@tatchi](https://github.com/tatchi))
+- [#197](https://github.com/Schniz/fnm/pull/197) Fix capitalization of message in Use.re ([@waldyrious](https://github.com/waldyrious))
+
+#### Internal 🛠
+
+- [#202](https://github.com/Schniz/fnm/pull/202) Update rely ([@tatchi](https://github.com/tatchi))
+- [#192](https://github.com/Schniz/fnm/pull/192) Bump ocaml to 4.08 ([@tatchi](https://github.com/tatchi))
+
+#### Committers: 3
+
+- Corentin Leruth ([@tatchi](https://github.com/tatchi))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Waldir Pimenta ([@waldyrious](https://github.com/waldyrious))
+
 ## v1.18.1 (2019-12-30)
 
 #### Bugfix 🐛
