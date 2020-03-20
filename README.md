@@ -67,7 +67,7 @@ curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- 
 - Add the following line to your `.bashrc`/`.zshrc` file:
 
   ```bash
-  eval "`fnm env --multi`"
+  eval "$(fnm env --multi)"
   ```
 
   If you are using [fish shell](https://fishshell.com/), add this line to your `config.fish` file:
