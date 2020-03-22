@@ -1,3 +1,23 @@
+## v1.20.0 (2020-03-22)
+
+#### New Feature 🎉
+
+- [#201](https://github.com/Schniz/fnm/pull/201) Create alias from version range (Closes [#185](https://github.com/Schniz/fnm/issues/185)) ([@tatchi](https://github.com/tatchi))
+
+#### Bugfix 🐛
+
+- [#199](https://github.com/Schniz/fnm/pull/199) Fix typo criterias -> criteria ([@waldyrious](https://github.com/waldyrious))
+
+#### Documentation 📝
+
+- [#204](https://github.com/Schniz/fnm/pull/204) Improve eval expression in `README.md` ([@loliee](https://github.com/loliee))
+
+#### Committers: 3
+
+- Corentin Leruth ([@tatchi](https://github.com/tatchi))
+- Maxime Loliée ([@loliee](https://github.com/loliee))
+- Waldir Pimenta ([@waldyrious](https://github.com/waldyrious))
+
 ## v1.19.0 (2020-03-09)
 
 #### New Feature 🎉
