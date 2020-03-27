@@ -11,3 +11,5 @@ fnm.install
 *.install
 .tmp
 docs/screen_recording
+.idea
+.fnmTmp
