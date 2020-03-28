@@ -20,7 +20,7 @@ let getVersion = () => {
 
   switch (nodeVersion, nvmrc) {
   | (None, None) => Lwt.fail(Version_Not_Provided)
-  | (Some(v1), Some(v2)) when v1 != v2 =>
+  | (Some(v1), Some(v2)) when Versions.format(v1) != Versions.format(v2) =>
     Lwt.fail(Conflicting_Dotfiles_Found(v1, v2))
   | (Some(version), Some(_))
   | (Some(version), None)
