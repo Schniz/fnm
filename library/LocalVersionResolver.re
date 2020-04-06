@@ -31,6 +31,7 @@ let getMatchingLocalVersions = version => {
     |> List.filter(v =>
          Versions.isVersionFitsPrefix(formattedVersionName, v.name)
          || v.name == formattedVersionName
+         || List.exists(alias => alias == formattedVersionName, v.aliases)
        )
     |> List.sort((a, b) => - compare(a.name, b.name));
 
