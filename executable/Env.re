@@ -102,6 +102,7 @@ let printUseOnCd = (~shell) =>
           fnm use
         end
       end
+      _fnm_autoload_hook
     |}
   | Zsh => {|
       autoload -U add-zsh-hook
