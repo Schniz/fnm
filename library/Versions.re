@@ -204,7 +204,8 @@ exception No_Download_For_System(System.NodeOS.t, System.NodeArch.t);
 
 let getCurrentVersion = () =>
   switch%lwt (Fs.realpath(Directories.currentVersion)) {
-  | Missing(x) when x == Directories.currentVersion => Lwt.return_none
+  | Missing(x)
+      when x == Directories.currentVersion || x == Directories.defaultVersion => Lwt.return_none
   | Missing(_) => Lwt.return_some(Local.systemVersion)
   | Exists(installationPath) =>
     let fullPath = Filename.dirname(installationPath);
