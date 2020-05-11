@@ -76,7 +76,7 @@ if hash fish 2>/dev/null; then
     end
   '
 else
-  echo "Skipping fish test: \`zsh\` is not installed"
+  echo "Skipping fish test: \`fish\` is not installed"
 fi
 
 echo " > Running test on Bash..."
