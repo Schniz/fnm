@@ -14,6 +14,7 @@ module Commands = {
   let exec = (version, useFileVersion, cmd) =>
     Exec.run(~cmd=Array.of_list(cmd), ~version, ~useFileVersion) |> runCmd;
   let use = (version, quiet) => Use.run(~version, ~quiet) |> runCmd;
+  let current = () => Current.run() |> runCmd;
   let alias = (version, name) => Alias.run(~name, ~version) |> runCmd;
   let default = version => Alias.run(~name="default", ~version) |> runCmd;
   let listRemote = version => ListRemote.run(~version) |> runCmd;
@@ -190,6 +191,25 @@ let use = {
     Term.(const(Commands.use) $ selectedVersion $ quiet),
     Term.info(
       "use",
+      ~envs,
+      ~version,
+      ~doc,
+      ~exits=Term.default_exits,
+      ~man,
+      ~sdocs,
+    ),
+  );
+};
+
+let current = {
+  let doc = "Display currently activated version";
+  let sdocs = Manpage.s_common_options;
+  let man = help_secs;
+
+  (
+    Term.(app(const(Commands.current), const())),
+    Term.info(
+      "current",
       ~envs,
       ~version,
       ~doc,
@@ -417,6 +437,7 @@ let _ =
     [
       install,
       uninstall,
+      current,
       use,
       alias,
       default,
