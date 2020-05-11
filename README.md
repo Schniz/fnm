@@ -88,6 +88,10 @@ Installs `[VERSION]`. If no version provided, it will install the version specif
 
 Activates `[VERSION]` as the current Node version. If no version provided, it will activate the version specified in the `.nvmrc` or `.node-version` file located in the current working directory.
 
+### `fnm current`
+
+Display currenty activated Node version.
+
 ### `fnm ls`
 
 Lists the installed Node versions.
