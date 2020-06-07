@@ -1,3 +1,22 @@
+## v1.21.0 (2020-06-04)
+
+#### New Feature 🎉
+
+- [#220](https://github.com/Schniz/fnm/pull/220) Add `current` command to retrieve the current Node version ([@vladimyr](https://github.com/vladimyr))
+- [#210](https://github.com/Schniz/fnm/pull/210) Allow aliasing and removing an alias ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#217](https://github.com/Schniz/fnm/pull/217) Set version on new shell initialization in fish ([@jaredramirez](https://github.com/jaredramirez))
+- [#207](https://github.com/Schniz/fnm/pull/207) Format dotfiles versions before comparison ([@amitdahan](https://github.com/amitdahan))
+
+#### Committers: 4
+
+- Amit Dahan ([@amitdahan](https://github.com/amitdahan))
+- Dario Vladović ([@vladimyr](https://github.com/vladimyr))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Jared Ramirez ([@jaredramirez](https://github.com/jaredramirez))
+
 ## v1.20.0 (2020-03-22)
 
 #### New Feature 🎉
