@@ -30,7 +30,7 @@ brew install Schniz/tap/fnm
 
 ### Using a script
 
-For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
+For `bash`, `zsh`, `ash` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
 
 ```bash
 curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
