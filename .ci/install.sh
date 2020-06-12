@@ -110,7 +110,7 @@ check_dependencies() {
 }
 
 setup_shell() {
-  CURRENT_SHELL=$(basename $0)
+  CURRENT_SHELL=$(basename $SHELL)
 
   if [ "$CURRENT_SHELL" == "zsh" ]; then
     CONF_FILE=$HOME/.zshrc
