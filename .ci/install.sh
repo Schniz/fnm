@@ -110,7 +110,7 @@ check_dependencies() {
 }
 
 setup_shell() {
-  CURRENT_SHELL=$(basename $SHELL)
+  CURRENT_SHELL=$(basename $0)
 
   if [ "$CURRENT_SHELL" == "zsh" ]; then
     CONF_FILE=$HOME/.zshrc
@@ -145,6 +145,19 @@ setup_shell() {
       CONF_FILE=$HOME/.bashrc
     fi
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
+    echo ""
+    echo '  # fnm'
+    echo '  export PATH='"$INSTALL_DIR"':$PATH'
+    echo '  eval "`fnm env --multi`"'
+
+    echo '' >>$CONF_FILE
+    echo '# fnm' >>$CONF_FILE
+    echo 'export PATH='"$INSTALL_DIR"':$PATH' >>$CONF_FILE
+    echo 'eval "`fnm env --multi`"' >>$CONF_FILE
+
+  elif [ "$CURRENT_SHELL" == "ash" ]; then
+    CONF_FILE=$HOME/.ashrc
+    echo "Installing for Ash. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
     echo '  export PATH='"$INSTALL_DIR"':$PATH'
