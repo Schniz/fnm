@@ -75,6 +75,10 @@ curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- 
   ```fish
   fnm env --multi | source
   ```
+## Completions
+
+- Fish Shell
+  (mf-plugin-fnm)[https://github.com/james2doyle/omf-plugin-fnm]
 
 ## Usage
 
