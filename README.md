@@ -78,7 +78,7 @@ curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- 
 ## Completions
 
 - Fish Shell
-  (mf-plugin-fnm)[https://github.com/james2doyle/omf-plugin-fnm]
+  [omf-plugin-fnm](https://github.com/james2doyle/omf-plugin-fnm)
 
 ## Usage
 
