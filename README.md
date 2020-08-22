@@ -104,6 +104,10 @@ Lists the installed Node versions.
 
 Lists the Node versions available to download remotely.
 
+### `fnm uninstall [VERSION]`
+
+Uninstalls the node version specified in `[VERSION]`.
+
 ### `fnm alias [VERSION] [NAME]`
 
 Aliases a Node version to a given name.
