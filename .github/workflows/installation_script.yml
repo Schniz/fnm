@@ -10,7 +10,8 @@ on:
       - .ci/install.sh
 
 jobs:
-  install_on_linux:
+  test_against_latest_release:
+    name: Test against latest release
     strategy:
       matrix:
         shell: [fish, zsh, bash]
