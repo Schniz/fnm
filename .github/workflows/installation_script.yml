@@ -15,22 +15,25 @@ jobs:
     strategy:
       matrix:
         shell: [fish, zsh, bash]
-        os: [ubuntu, macos]
-        force_no_brew: ['--force-no-brew', '']
-    runs-on: ${{ matrix.os }}-latest
-    if: |
-      (${{ matrix.os }} == 'macos') || (${{ matrix.force_no_brew }} == '')
+        setup: 
+          - os: ubuntu
+            script_arguments: ''
+          - os: macos
+            script_arguments: ''
+          - os: macos
+            script_arguments: '--force-no-brew'
+    runs-on: ${{ matrix.setup.os }}-latest
     steps:
       - uses: actions/checkout@v2
       - run: "sudo apt-get install -y ${{ matrix.shell }}"
         name: Install ${{matrix.shell}} using apt-get
-        if: matrix.os == 'ubuntu'
+        if: matrix.setup.os == 'ubuntu'
       - run: "brew install ${{ matrix.shell }}"
         name: Install ${{matrix.shell}} using Homebrew
-        if: matrix.os == 'macos'
+        if: matrix.setup.os == 'macos'
       - run: "cp ~/.bashrc ~/.bashrc.bak && echo '. ~/.bashrc.bak' > ~/.bashrc"
         name: reset bashrc file
-      - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh ${{ matrix.force_no_brew }}"
+      - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh ${{ matrix.setup.script_arguments }}"
         name: Run the installation script
       - run: ./.ci/test_installation_script.sh ${{ matrix.shell }}
         name: 'Test installation script'
