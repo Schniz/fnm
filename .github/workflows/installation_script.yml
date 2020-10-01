@@ -16,7 +16,6 @@ jobs:
           source: ~/.zshrc
         - shell: bash
           source: ~/.bashrc
-        shell: [bash, zsh, fish]
     steps:
       - uses: actions/checkout@v2
       - run: "sudo apt-get install -y ${{ matrix.shell }}"
