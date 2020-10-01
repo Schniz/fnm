@@ -1,0 +1,16 @@
+name: Installation script
+on: 
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  install_on_linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: @actions/checkout@v2
+      - run: bash ./.ci/install.sh
+        name: Run the installation script
+      - run: bash -c 'fnm --version'
+        name: 'Print fnm version'
