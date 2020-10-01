@@ -109,11 +109,21 @@ check_dependencies() {
   fi
 }
 
+ensure_containing_dir_exists() {
+  local CONTAINING_DIR
+  CONTAINING_DIR="$(dirname "$1")"
+  if [ ! -d "$CONTAINING_DIR" ]; then
+    echo " >> Creating directory $CONTAINING_DIR"
+    mkdir -p "$CONTAINING_DIR"
+  fi
+}
+
 setup_shell() {
   CURRENT_SHELL=$(basename $SHELL)
 
   if [ "$CURRENT_SHELL" == "zsh" ]; then
     CONF_FILE=$HOME/.zshrc
+    ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
@@ -127,6 +137,7 @@ setup_shell() {
 
   elif [ "$CURRENT_SHELL" == "fish" ]; then
     CONF_FILE=$HOME/.config/fish/config.fish
+    ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
@@ -144,6 +155,7 @@ setup_shell() {
     else
       CONF_FILE=$HOME/.bashrc
     fi
+    ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'

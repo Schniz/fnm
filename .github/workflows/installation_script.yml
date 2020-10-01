@@ -1,0 +1,81 @@
+name: Installation script
+on: 
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  install_on_linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - shell: fish
+            source: ~/.config/fish/config.fish
+          - shell: zsh
+            source: ~/.zshrc
+          - shell: bash
+            source: ~/.bashrc
+    steps:
+      - uses: actions/checkout@v2
+      - run: "sudo apt-get install -y ${{ matrix.shell }}"
+        name: Install shell
+      - run: "cp ~/.bashrc ~/.bashrc.bak && echo '. ~/.bashrc.bak' > ~/.bashrc"
+        name: reset bashrc file
+      - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh"
+        name: Run the installation script
+
+      - run: |
+          ${{ matrix.shell }} -c '
+            source ${{ matrix.source }}
+            fnm install 12.5.0
+            fnm ls | grep 12.5.0
+          '
+        name: 'Install a Node version with `fnm install`'
+
+      - run: |
+          ${{ matrix.shell }} -c '
+            source ${{ matrix.source }}
+            fnm use 12.5.0
+            node --version | grep 12.5.0
+          '
+        name: 'Check switching versions with `fnm use`'
+
+  install_on_mac:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+          - shell: fish
+            source: ~/.config/fish/config.fish
+          - shell: zsh
+            source: ~/.zshrc
+          - shell: bash
+            source: ~/.bashrc
+    steps:
+      - uses: actions/checkout@v2
+      - run: "brew install ${{ matrix.shell }}"
+        name: Install shell
+      - name: reset bashrc file
+        run: |
+          cp ~/.bashrc ~/.bashrc.bak
+          echo '. ~/.bashrc.bak' > ~/.bashrc
+      - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh --force-install"
+        name: Run the installation script
+
+      - name: 'Install a Node version with `fnm install`'
+        run: |
+          ${{ matrix.shell }} -c '
+            source ${{ matrix.source }}
+            fnm install 12.5.0
+            fnm ls | grep 12.5.0
+          '
+
+      - name: 'Check switching versions with `fnm use`'
+        run: |
+          ${{ matrix.shell }} -c '
+            source ${{ matrix.source }}
+            fnm use 12.5.0
+            node --version | grep 12.5.0
+          '
