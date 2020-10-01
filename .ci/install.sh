@@ -20,7 +20,7 @@ parse_args() {
       SKIP_SHELL="true"
       shift # past argument
       ;;
-    --force-install | --force-no-brew)
+    --force-install)
       echo "\`--force-install\`: I hope you know what you're doing." >&2
       FORCE_INSTALL="true"
       shift
@@ -47,13 +47,13 @@ set_filename() {
     FILENAME="fnm-linux"
   elif [ "$OS" == "Darwin" ] && [ "$FORCE_INSTALL" == "true" ]; then
     FILENAME="fnm-macos"
-    USE_HOMEBREW="false"
-    echo "Downloading the latest fnm binary from GitHub..."
-    echo "  Pro tip: it's eaiser to use Homebrew for managing fnm in MacOS."
-    echo "           Remove the \`--force-no-brew\` so it will be easy to upgrade."
   elif [ "$OS" == "Darwin" ]; then
-    USE_HOMEBREW="true"
-    echo "Downloading fnm using Homebrew..."
+    echo "Hey! Thanks for trying fnm."
+    echo "MacOS installation works better using Homebrew."
+    echo "Please consider installing using:"
+    echo "    $ brew install Schniz/tap/fnm"
+    echo "or run the script again with the \`--force-install\` option."
+    exit 1
   else
     echo "OS $OS is not supported."
     echo "If you think that's a bug - please file an issue to https://github.com/Schniz/fnm/issues"
@@ -62,31 +62,27 @@ set_filename() {
 }
 
 download_fnm() {
-  if [ "$USE_HOMEBREW" == "true" ]; then
-    brew install Schniz/tap/fnm
+  if [ "$RELEASE" == "latest" ]; then
+    URL=https://github.com/Schniz/fnm/releases/latest/download/$FILENAME.zip
   else
-    if [ "$RELEASE" == "latest" ]; then
-      URL="https://github.com/Schniz/fnm/releases/latest/download/$FILENAME.zip"
-    else
-      URL="https://github.com/Schniz/fnm/releases/download/$RELEASE/$FILENAME.zip"
-    fi
-
-    DOWNLOAD_DIR=$(mktemp -d)
-
-    echo "Downloading $URL..."
-
-    mkdir -p "$INSTALL_DIR" &>/dev/null
-    curl --progress-bar -L "$URL" -o "$DOWNLOAD_DIR/$FILENAME.zip"
-
-    if [ 0 -ne $? ]; then
-      echo "Download failed.  Check that the release/filename are correct."
-      exit 1
-    fi
-
-    unzip -q "$DOWNLOAD_DIR/$FILENAME.zip" -d "$DOWNLOAD_DIR"
-    mv "$DOWNLOAD_DIR/$FILENAME/fnm" "$INSTALL_DIR/fnm"
-    chmod u+x "$INSTALL_DIR/fnm"
+    URL=https://github.com/Schniz/fnm/releases/download/$RELEASE/$FILENAME.zip
   fi
+  
+  DOWNLOAD_DIR=$(mktemp -d)
+
+  echo "Downloading $URL..."
+
+  mkdir -p $INSTALL_DIR &>/dev/null
+  curl --progress-bar -L $URL -o $DOWNLOAD_DIR/$FILENAME.zip
+
+  if [ 0 -ne $? ]; then 
+    echo "Download failed.  Check that the release/filename are correct."
+    exit 1
+  fi;
+
+  unzip -q $DOWNLOAD_DIR/$FILENAME.zip -d $DOWNLOAD_DIR
+  mv $DOWNLOAD_DIR/$FILENAME/fnm $INSTALL_DIR/fnm
+  chmod u+x $INSTALL_DIR/fnm
 }
 
 check_dependencies() {
@@ -106,16 +102,6 @@ check_dependencies() {
   else
     echo "Missing!"
     SHOULD_EXIT="true"
-  fi
-
-  if [ "$USE_HOMEBREW" = "true" ]; then
-    echo -n "Checking availability of Homebrew (brew)... "
-    if hash brew 2>/dev/null; then
-      echo "OK!"
-    else
-      echo "Missing!"
-      SHOULD_EXIT="true"
-    fi
   fi
 
   if [ "$SHOULD_EXIT" = "true" ]; then
