@@ -12,5 +12,5 @@ jobs:
       - uses: actions/checkout@v2
       - run: bash ./.ci/install.sh
         name: Run the installation script
-      - run: bash -c 'fnm --version'
+      - run: bash -c 'source ~/.bashrc && fnm --version'
         name: 'Print fnm version'
