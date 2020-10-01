@@ -8,9 +8,13 @@ on:
 jobs:
   install_on_linux:
     runs-on: ubuntu-latest
+    matrix:
+      shell: [bash, zsh, fish]
     steps:
       - uses: actions/checkout@v2
-      - run: bash ./.ci/install.sh
+      - run: "sudo apt-get install -y ${{ matrix.shell }}"
+        name: Install shell
+      - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh"
         name: Run the installation script
       - run: cat ~/.bashrc
         name: 'Print generated bashrc'
