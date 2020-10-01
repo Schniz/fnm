@@ -30,7 +30,7 @@ jobs:
           ${{ matrix.shell }} -c '
             source ${{ matrix.source }}
             fnm install 12.5.0
-            fnm ls | grep 12.5.1
+            fnm ls | grep 12.5.0
           '
         name: 'Install a Node version with `fnm install`'
 
