@@ -18,7 +18,8 @@ jobs:
         os: [ubuntu, macos]
         force_no_brew: ['--force-no-brew', '']
     runs-on: ${{ matrix.os }}-latest
-    if: ${{ matrix.os }} == 'macos' || ${{ matrix.force_no_brew }} == ''
+    if: |
+      (${{ matrix.os }} == 'macos') || (${{ matrix.force_no_brew }} == '')
     steps:
       - uses: actions/checkout@v2
       - run: "sudo apt-get install -y ${{ matrix.shell }}"
