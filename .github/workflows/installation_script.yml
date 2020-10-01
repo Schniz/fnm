@@ -1,9 +1,13 @@
 name: Installation script
 on: 
   pull_request:
+    paths:
+      - .ci/install.sh
   push:
     branches:
       - master
+    paths:
+      - .ci/install.sh
 
 jobs:
   install_on_linux:
