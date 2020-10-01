@@ -23,5 +23,5 @@ jobs:
         name: Install shell
       - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh"
         name: Run the installation script
-      - run: "${{ matrix.shell }} -c '. ${{ matrix.source }}; echo sourced; fnm --version'"
+      - run: "${{ matrix.shell }} -c '. ${{ matrix.source }}; cat ${{ matrix.source }}; echo $PATH; fnm --version'"
         name: 'Print fnm version'
