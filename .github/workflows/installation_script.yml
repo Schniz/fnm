@@ -8,8 +8,9 @@ on:
 jobs:
   install_on_linux:
     runs-on: ubuntu-latest
-    matrix:
-      shell: [bash, zsh, fish]
+    strategy:
+      matrix:
+        shell: [bash, zsh, fish]
     steps:
       - uses: actions/checkout@v2
       - run: "sudo apt-get install -y ${{ matrix.shell }}"
