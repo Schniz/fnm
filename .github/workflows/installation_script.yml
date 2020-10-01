@@ -10,12 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        - shell: fish
-          source: ~/.config/fish/config.fish
-        - shell: zsh
-          source: ~/.zshrc
-        - shell: bash
-          source: ~/.bashrc
+        include:
+          - shell: fish
+            source: ~/.config/fish/config.fish
+          - shell: zsh
+            source: ~/.zshrc
+          - shell: bash
+            source: ~/.bashrc
     steps:
       - uses: actions/checkout@v2
       - run: "sudo apt-get install -y ${{ matrix.shell }}"
