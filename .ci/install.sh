@@ -63,7 +63,7 @@ set_filename() {
 
 download_fnm() {
   if [ "$USE_HOMEBREW" == "true" ]; then
-    brew install Schniz/tap/fnm
+    brew install Schniz/tap/fnm --quiet
   else
     if [ "$RELEASE" == "latest" ]; then
       URL="https://github.com/Schniz/fnm/releases/latest/download/$FILENAME.zip"
