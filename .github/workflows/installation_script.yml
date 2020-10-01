@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        - shell: fish
+          source: ~/.config/fish/config.fish
+        - shell: zsh
+          source: ~/.zshrc
+        - shell: bash
+          source: ~/.bashrc
         shell: [bash, zsh, fish]
     steps:
       - uses: actions/checkout@v2
@@ -17,7 +23,5 @@ jobs:
         name: Install shell
       - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh"
         name: Run the installation script
-      - run: cat ~/.bashrc
-        name: 'Print generated bashrc'
-      - run: ~/.fnm/fnm --version
+      - run: "${{ matrix.shell }} -c '. ${{ matrix.source }}; echo sourced; fnm --version'"
         name: 'Print fnm version'
