@@ -29,6 +29,14 @@ jobs:
       - run: |
           ${{ matrix.shell }} -c '
             source ${{ matrix.source }}
-            fnm --version
+            fnm install 12.5.0
+            fnm use 12.5.0
+            node --version | grep 12.5.0
           '
-        name: 'Print fnm version'
+        name: 'Install a Node version'
+
+      - run: |
+        ${{ matrix.shell }} -c '
+          source ${{ matrix.source }}
+          fnm ls | grep 12.5.1
+        '
