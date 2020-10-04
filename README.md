@@ -20,25 +20,19 @@
 
 ## Installation
 
-### Using Homebrew (OSX)
-
-```bash
-brew install Schniz/tap/fnm
-```
-
-[This is a custom tap I'm maintaining](https://github.com/Schniz/homebrew-tap), and will be used until fnm will move to the official one.
-
 ### Using a script
 
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
 
 ```bash
-curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash
+curl -fsSL https://fnm.vercel.app/install | bash
 ```
 
 ### Upgrade
 
-Upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file add `--skip-shell` to install command.
+On OSX, it is a simple as `brew upgrade Schniz/tap/fnm`.
+
+On other operating systems, upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file add `--skip-shell` to install command.
 
 #### Parameters
 
@@ -57,10 +51,22 @@ MacOS installations using the installation script are deprecated in favor of the
 Example:
 
 ```bash
-curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- --install-dir "./.fnm" --skip-shell
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --skip-shell
 ```
 
 ### Manually
+
+#### Using Homebrew (OSX)
+
+[This is a custom tap I'm maintaining](https://github.com/Schniz/homebrew-tap), and will be used until fnm will move to the official one.
+
+```bash
+brew install Schniz/tap/fnm
+```
+
+Then apply the changes the installer prints, to set up your shell profile.
+
+#### Using a release binary
 
 - Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
 - Make it available globally on `$PATH`
