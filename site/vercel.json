@@ -1,6 +1,6 @@
 {
   "redirects": [
     { "source": "/", "destination": "https://github.com/Schniz/fnm" },
-    { "source": "/install", "destination": "https://github.com/Schniz/fnm/blob/master/.ci/install.sh" }
+    { "source": "/install", "destination": "https://github.com/Schniz/fnm/raw/master/.ci/install.sh" }
   ]
 }
