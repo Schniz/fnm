@@ -1,10 +1,16 @@
 name: Installation script
 on: 
-  deployment_status:
+  pull_request:
+    paths:
+      - .ci/install.sh
+  push:
+    branches:
+      - master
+    paths:
+      - .ci/install.sh
 
 jobs:
   test_against_latest_release:
-    if: github.event.deployment_status.state == 'success'
     name: Test against latest release
     strategy:
       matrix:
@@ -27,36 +33,7 @@ jobs:
         if: matrix.setup.os == 'macos'
       - run: "cp ~/.bashrc ~/.bashrc.bak && echo '. ~/.bashrc.bak' > ~/.bashrc"
         name: reset bashrc file
-      - run: "curl -fsSL ${{ github.event.deployment_status.target_url }}/install | env SHELL=$(which ${{ matrix.shell }}) bash -s -- ${{ matrix.setup.script_arguments }}"
+      - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh ${{ matrix.setup.script_arguments }}"
         name: Run the installation script
       - run: ./.ci/test_installation_script.sh ${{ matrix.shell }}
         name: 'Test installation script'
-
-      - name: Mark as ✅
-        if: ${{ success() }}
-        # set the merge commit status check
-        # using GitHub REST API
-        # see https://docs.github.com/en/rest/reference/repos#create-a-commit-status
-        run: |
-          curl --request POST \
-          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --header 'content-type: application/json' \
-          --data '{
-            "context": "install script/${{matrix.setup.os}}/${{matrix.shell}}/${{matrix.setup.script_arguments}}",
-            "state": "success",
-            "description": "installation script test passed"
-            }'
-
-      - name: Mark as ❌
-        if: ${{ failure() }}
-        run: |
-          curl --request POST \
-          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          --header 'content-type: application/json' \
-          --data '{
-            "context": "install script/${{matrix.setup.os}}/${{matrix.shell}}/${{matrix.setup.script_arguments}}",
-            "state": "failure",
-            "description": "installation script test failed"
-            }'
