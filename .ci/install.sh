@@ -76,15 +76,20 @@ download_fnm() {
     echo "Downloading $URL..."
 
     mkdir -p "$INSTALL_DIR" &>/dev/null
-    curl --progress-bar -L "$URL" -o "$DOWNLOAD_DIR/$FILENAME.zip"
 
-    if [ 0 -ne $? ]; then
+    if ! curl --progress-bar -L "$URL" -o "$DOWNLOAD_DIR/$FILENAME.zip"; then
       echo "Download failed.  Check that the release/filename are correct."
       exit 1
     fi
 
     unzip -q "$DOWNLOAD_DIR/$FILENAME.zip" -d "$DOWNLOAD_DIR"
-    mv "$DOWNLOAD_DIR/$FILENAME/fnm" "$INSTALL_DIR/fnm"
+
+    if [ -f "$DOWNLOAD_DIR/fnm" ]; then
+      mv "$DOWNLOAD_DIR/fnm" "$INSTALL_DIR/fnm"
+    else
+      mv "$DOWNLOAD_DIR/$FILENAME/fnm" "$INSTALL_DIR/fnm"
+    fi
+
     chmod u+x "$INSTALL_DIR/fnm"
   fi
 }
@@ -133,7 +138,7 @@ ensure_containing_dir_exists() {
 }
 
 setup_shell() {
-  CURRENT_SHELL=$(basename $SHELL)
+  CURRENT_SHELL="$(basename "$SHELL")"
 
   if [ "$CURRENT_SHELL" == "zsh" ]; then
     CONF_FILE=$HOME/.zshrc
