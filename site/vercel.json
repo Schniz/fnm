@@ -1,0 +1,5 @@
+{
+  "redirects": [
+    { "src": "/", "destination": "https://github.com/Schniz/fnm" }
+  ]
+}
