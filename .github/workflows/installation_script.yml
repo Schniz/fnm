@@ -40,23 +40,23 @@ jobs:
         run: |
           curl --request POST \
           --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-        --header 'content-type: application/json' \
-        --data '{
-          "context": "install script/${{matrix.setup.os}}/${{matrix.shell}}/${{matrix.setup.script_arguments}}",
-          "state": "success",
-          "description": "installation script test passed"
-          }'
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "context": "install script/${{matrix.setup.os}}/${{matrix.shell}}/${{matrix.setup.script_arguments}}",
+            "state": "success",
+            "description": "installation script test passed"
+            }'
 
       - name: Mark as ❌
         if: ${{ failure() }}
         run: |
           curl --request POST \
           --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-        --header 'content-type: application/json' \
-        --data '{
-          "context": "install script/${{matrix.setup.os}}/${{matrix.shell}}/${{matrix.setup.script_arguments}}",
-          "state": "failure",
-          "description": "installation script test failed"
-          }'
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "context": "install script/${{matrix.setup.os}}/${{matrix.shell}}/${{matrix.setup.script_arguments}}",
+            "state": "failure",
+            "description": "installation script test failed"
+            }'
