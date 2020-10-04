@@ -1,0 +1,8 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+fnm env | source
+fnm install --lts
+fnm ls | grep lts-latest
+fnm use 'lts/*'

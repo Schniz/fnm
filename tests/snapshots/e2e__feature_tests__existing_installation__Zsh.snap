@@ -1,0 +1,8 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+set -e
+eval "$(fnm env)"
+fnm install v8.11.3
+fnm install v8.11.3 2>&1 | grep 'already installed'

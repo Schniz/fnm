@@ -1,0 +1,26 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
+echo v8.10.0 > .nvmrc
+fnm install
+fnm install v6.10.0
+fnm install v10.10.0
+fnm exec -- node -v | findstr v8.10.0
+if %errorlevel% neq 0 (
+    echo version file exec does not match "v8.10.0"
+    exit 1
+)
+
+fnm exec --using=6 -- node -v | findstr v6.10.0
+if %errorlevel% neq 0 (
+    echo exec:6 node -v does not match "v6.10.0"
+    exit 1
+)
+
+fnm exec --using=10 -- node -v | findstr v10.10.0
+if %errorlevel% neq 0 (
+    echo exec:6 node -v does not match "v10.10.0"
+    exit 1
+)

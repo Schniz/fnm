@@ -1,0 +1,20 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+set -e
+eval "$(fnm --log-level='quiet' env)"
+if [ "$(fnm install v8.11.3)" != "" ]; then
+    echo 'Expected fnm install to be "", Got: '"$(fnm install v8.11.3)"
+    exit 1
+fi
+
+if [ "$(fnm use v8.11.3)" != "" ]; then
+    echo 'Expected fnm use to be "", Got: '"$(fnm use v8.11.3)"
+    exit 1
+fi
+
+if [ "$(fnm alias v8.11.3 something)" != "" ]; then
+    echo 'Expected fnm alias to be "", Got: '"$(fnm alias v8.11.3 something)"
+    exit 1
+fi

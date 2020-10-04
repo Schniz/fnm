@@ -1,0 +1,12 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install v8.11.3
+fnm use v8.11.3
+If ("$(node -v)" -ne "v8.11.3") {
+    Write-Output ('Expected Node version to be "v8.11.3", Got: ' + $(node -v))
+    exit 1
+}

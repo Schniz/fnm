@@ -1,0 +1,9 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+fnm env | source
+echo lts/dubnium > .nvmrc
+fnm install
+fnm use
+fnm ls | grep lts-dubnium

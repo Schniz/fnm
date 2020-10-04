@@ -1,0 +1,33 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
+fnm current | findstr none
+if %errorlevel% neq 0 (
+    echo currently activated version does not match "none"
+    exit 1
+)
+
+fnm install v8.11.3
+fnm install v10.10.0
+fnm use v8.11.3
+fnm current | findstr v8.11.3
+if %errorlevel% neq 0 (
+    echo currently activated version does not match "v8.11.3"
+    exit 1
+)
+
+fnm use v10.10.0
+fnm current | findstr v10.10.0
+if %errorlevel% neq 0 (
+    echo currently activated version does not match "v10.10.0"
+    exit 1
+)
+
+fnm use system
+fnm current | findstr system
+if %errorlevel% neq 0 (
+    echo currently activated version does not match "system"
+    exit 1
+)

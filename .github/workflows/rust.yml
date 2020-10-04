@@ -1,0 +1,175 @@
+name: Rust
+
+on: [push]
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+    - uses: actions/checkout@v1
+    - name: cargo fmt
+      run: cargo fmt -- --check
+
+  unit_tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+    steps:
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+    - uses: actions/checkout@v1
+    - name: Run tests
+      run: cargo test -- --skip=feature_tests
+
+  e2e_tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+    steps:
+    - name: Install Fish and Zsh using brew
+      if: "startsWith(matrix.os, 'macOS')"
+      run: brew install fish zsh
+    - name: Install Fish and Zsh using apt
+      if: "startsWith(matrix.os, 'ubuntu')"
+      run: sudo apt-get install -y fish zsh
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+    - uses: actions/checkout@v1
+    - name: Run tests
+      run: cargo test -- feature_tests
+
+  build_release:
+    runs-on: windows-latest
+    name: "Release build for Windows"
+    steps:
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+    - uses: actions/checkout@v1
+    - name: Build release binary
+      run: cargo build --release
+      env:
+        RUSTFLAGS: "-C target-feature=+crt-static"
+    - name: Compress binary using UPX
+      run: |
+        choco install upx
+        upx target/release/fnm.exe
+    - uses: actions/upload-artifact@v2
+      with:
+        name: fnm-windows
+        path: target/release/fnm.exe
+
+  build_macos_release:
+    runs-on: macOS-latest
+    name: "Release build for MacOS"
+    steps:
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+    - uses: actions/checkout@v1
+    - name: Build release binary
+      run: cargo build --release
+      env:
+        LZMA_API_STATIC: "true"
+    - name: Strip binary from debug symbols
+      run: strip target/release/fnm
+    - name: List dynamically linked libraries
+      run: otool -L target/release/fnm
+    - name: Compress binary using UPX
+      run: |
+        brew install upx
+        upx target/release/fnm
+    - uses: actions/upload-artifact@v2
+      with:
+        name: fnm-macos
+        path: target/release/fnm
+
+  build_static_linux_binary:
+    name: "Build static Linux binary"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build static binary
+      run: |
+        sudo chown -R 1000:1000 .
+        docker run --rm -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:stable \
+          cargo build --release
+        sudo chown -R $(whoami):$(whoami) .
+    - name: Compress binary using UPX
+      run: |
+        sudo apt-get install -y upx
+        upx target/x86_64-unknown-linux-musl/release/fnm
+    - uses: actions/upload-artifact@v2
+      with:
+        name: fnm-linux
+        path: target/x86_64-unknown-linux-musl/release/fnm
+
+  benchmark_on_linux:
+    name: Performance Benchmarks (Linux)
+    needs: [build_static_linux_binary]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: octokit/request-action@v2.x
+        id: get_master_workflows
+        with:
+          route: GET /repos/:repository/actions/runs
+          repository: ${{ github.repository }}
+          branch: master
+          status: completed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: octokit/request-action@v2.x
+        id: get_latest_artifacts
+        with:
+          route: GET /repos/:repository/actions/runs/:workflow_id/artifacts
+          repository: ${{ github.repository }}
+          workflow_id: ${{ fromJson(steps.get_master_workflows.outputs.data).workflow_runs[0].id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Take the output"
+        run: |
+          URL=$(echo '${{ steps.get_latest_artifacts.outputs.data }}' | jq -r '.artifacts | map(select(.name == "fnm-linux")) | .[0].archive_download_url')
+          curl -L $URL -H 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' > /tmp/fnm-latest.zip
+          mkdir ~/.fnm-latest
+          unzip -d ~/.fnm-latest /tmp/fnm-latest.zip
+          ls -lah ~/.fnm-latest
+      - uses: actions/checkout@v2
+      - name: Install Hyperfine
+        run: |
+          wget https://github.com/sharkdp/hyperfine/releases/download/v1.10.0/hyperfine_1.10.0_amd64.deb
+          sudo dpkg -i hyperfine_1.10.0_amd64.deb
+      - name: Install fnm-reason for Linux
+        run: curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- --skip-shell
+      - name: Install nvm
+        run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+      - uses: actions/download-artifact@v2
+        with:
+          name: fnm-linux
+          path: target/release/
+      - name: "Run benchmarks"
+        run: bash benchmarks/run
+
+      - name: Read basic.md for the generated report
+        id: basic_result
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: benchmarks/results/basic.md
+
+      - uses: octokit/request-action@v2.x
+        id: get_latest_release
+        with:
+          route: POST /repos/:repository/commits/:commit_sha/comments
+          repository: ${{ github.repository }}
+          commit_sha: ${{ github.sha }}
+          body: |
+            |
+            ${{ steps.basic_result.outputs.content }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

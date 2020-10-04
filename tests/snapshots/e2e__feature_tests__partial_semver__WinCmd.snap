@@ -1,0 +1,12 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
+fnm install 6
+fnm use 6
+node -v | findstr v6.17.1
+if %errorlevel% neq 0 (
+    echo Node version does not match "v6.17.1"
+    exit 1
+)

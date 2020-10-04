@@ -1,0 +1,20 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm --log-level='quiet' env | Out-String | Invoke-Expression
+If ("$(fnm install v8.11.3)" -ne "") {
+    Write-Output ('Expected fnm install to be "", Got: ' + $(fnm install v8.11.3))
+    exit 1
+}
+
+If ("$(fnm use v8.11.3)" -ne "") {
+    Write-Output ('Expected fnm use to be "", Got: ' + $(fnm use v8.11.3))
+    exit 1
+}
+
+If ("$(fnm alias v8.11.3 something)" -ne "") {
+    Write-Output ('Expected fnm alias to be "", Got: ' + $(fnm alias v8.11.3 something))
+    exit 1
+}

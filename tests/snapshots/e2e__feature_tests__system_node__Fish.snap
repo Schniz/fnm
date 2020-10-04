@@ -1,0 +1,12 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+fnm env | source
+fnm install 10
+fnm use 10
+fnm use system
+if test (node -v) != "custom node"
+    echo 'Expected Node version to be "custom node", Got: '(node -v)
+    exit 1
+end

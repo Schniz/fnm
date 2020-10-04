@@ -1,0 +1,6 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+fnm env | source
+fnm ls

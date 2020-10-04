@@ -1,0 +1,21 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install v8.11.3
+fnm install v11.9.0
+fnm use v8.11.3
+echo '$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm use 11
+If ("$(node -v)" -ne "v11.9.0") {
+    Write-Output (''Expected Node version to be "v11.9.0", Got: '' + $(node -v))
+    exit 1
+}
+' | powershell -NoProfile
+If ("$(node -v)" -ne "v8.11.3") {
+    Write-Output ('Expected Node version to be "v8.11.3", Got: ' + $(node -v))
+    exit 1
+}

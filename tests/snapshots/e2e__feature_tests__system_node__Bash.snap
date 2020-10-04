@@ -1,0 +1,15 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+set -e
+shopt -s expand_aliases
+
+eval "$(fnm env)"
+fnm install 10
+fnm use 10
+fnm use system
+if [ "$(node -v)" != "custom node" ]; then
+    echo 'Expected Node version to be "custom node", Got: '"$(node -v)"
+    exit 1
+fi

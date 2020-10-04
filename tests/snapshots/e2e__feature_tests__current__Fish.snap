@@ -1,0 +1,29 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+fnm env | source
+if test (fnm current) != "none"
+    echo 'Expected currently activated version to be "none", Got: '(fnm current)
+    exit 1
+end
+
+fnm install v8.11.3
+fnm install v10.10.0
+fnm use v8.11.3
+if test (fnm current) != "v8.11.3"
+    echo 'Expected currently activated version to be "v8.11.3", Got: '(fnm current)
+    exit 1
+end
+
+fnm use v10.10.0
+if test (fnm current) != "v10.10.0"
+    echo 'Expected currently activated version to be "v10.10.0", Got: '(fnm current)
+    exit 1
+end
+
+fnm use system
+if test (fnm current) != "system"
+    echo 'Expected currently activated version to be "system", Got: '(fnm current)
+    exit 1
+end

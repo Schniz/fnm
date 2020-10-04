@@ -1,0 +1,12 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+set -e
+eval "$(fnm env)"
+fnm install 6
+fnm use 6
+if [ "$(node -v)" != "v6.17.1" ]; then
+    echo 'Expected Node version to be "v6.17.1", Got: '"$(node -v)"
+    exit 1
+fi

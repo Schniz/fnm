@@ -1,0 +1,5 @@
+*__Fish.snap linguist-language=fish
+*__Zsh.snap linguist-language=Shell
+*__Bash.snap linguist-language=Shell
+*__PowerShell.snap linguist-language=PowerShell
+*__WinCmd.snap linguist-language=Batchfile

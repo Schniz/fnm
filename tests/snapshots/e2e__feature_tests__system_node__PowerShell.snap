@@ -1,0 +1,13 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install 10
+fnm use 10
+fnm use system
+If ("$(node -v)" -ne "custom node") {
+    Write-Output ('Expected Node version to be "custom node", Got: ' + $(node -v))
+    exit 1
+}

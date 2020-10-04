@@ -1,0 +1,9 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+set -e
+shopt -s expand_aliases
+
+eval "$(fnm env)"
+fnm ls

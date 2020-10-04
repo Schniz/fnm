@@ -1,0 +1,15 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+set -e
+shopt -s expand_aliases
+
+eval "$(fnm env)"
+echo v8.11.3 > .nvmrc
+fnm install
+fnm use
+if [ "$(node -v)" != "v8.11.3" ]; then
+    echo 'Expected Node version to be "v8.11.3", Got: '"$(node -v)"
+    exit 1
+fi
