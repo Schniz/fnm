@@ -1,8 +1,9 @@
 use super::command::Command;
 use crate::config::FnmConfig;
 use crate::fs::symlink_dir;
+use crate::outln;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
-use snafu::Snafu;
+use colored::Colorize;
 use std::fmt::Debug;
 use structopt::StructOpt;
 
@@ -12,7 +13,7 @@ pub struct Env {
     #[structopt(long)]
     #[structopt(possible_values = AVAILABLE_SHELLS)]
     shell: Option<Box<dyn Shell>>,
-    /// No-op. This is the default now.
+    /// Deprecated. This is the default now.
     #[structopt(long)]
     multi: bool,
     /// Print the script to change Node versions every directory change
@@ -45,6 +46,10 @@ impl Command for Env {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
+        if self.multi {
+            outln!(config#Error, "{} {} is deprecated. This is now the default.", "warning:".yellow().bold(), "--multi".italic());
+        }
+
         let shell: Box<dyn Shell> = self.shell.unwrap_or_else(&infer_shell);
         let multishell_path = make_symlink(&config);
         let binary_path = if cfg!(windows) {
@@ -76,7 +81,7 @@ impl Command for Env {
     }
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, snafu::Snafu)]
 pub enum Error {}
 
 #[cfg(test)]
