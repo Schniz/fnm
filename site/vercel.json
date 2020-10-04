@@ -1,5 +1,5 @@
 {
   "redirects": [
-    { "src": "/", "destination": "https://github.com/Schniz/fnm" }
+    { "source": "/", "destination": "https://github.com/Schniz/fnm" }
   ]
 }
