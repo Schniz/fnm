@@ -83,7 +83,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
     ensure!(
         !installation_dir.exists(),
         VersionAlreadyInstalled {
-            path: PathBuf::from(installation_dir)
+            path: installation_dir
         }
     );
 

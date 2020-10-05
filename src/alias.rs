@@ -14,7 +14,7 @@ pub fn create_alias(
 
     let version_dir = version
         .installation_path(config)
-        .ok_or(std::io::Error::from(std::io::ErrorKind::NotFound))?;
+        .ok_or_else(|| std::io::Error::from(std::io::ErrorKind::NotFound))?;
     let alias_dir = aliases_dir.join(common_name);
 
     if alias_dir.exists() {

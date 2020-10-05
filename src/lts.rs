@@ -31,7 +31,7 @@ impl Display for LtsType {
 impl LtsType {
     pub fn pick_latest<'vec>(
         &self,
-        versions: &'vec Vec<IndexedNodeVersion>,
+        versions: &'vec [IndexedNodeVersion],
     ) -> Option<&'vec IndexedNodeVersion> {
         match self {
             Self::Latest => versions.iter().filter(|x| x.lts.is_some()).last(),

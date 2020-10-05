@@ -27,8 +27,7 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
         };
 
         pid = process_info.parent_pid;
-
-        visited = visited + 1;
+        visited += 1;
     }
 
     None
@@ -45,16 +44,18 @@ fn get_process_info(pid: u32) -> std::io::Result<ProcessInfo> {
         .stdout(std::process::Stdio::piped())
         .spawn()?
         .stdout
-        .ok_or(Error::from(ErrorKind::UnexpectedEof))?;
+        .ok_or_else(|| Error::from(ErrorKind::UnexpectedEof))?;
 
     let mut lines = BufReader::new(buffer).lines();
 
     // skip header line
     lines
         .next()
-        .ok_or(Error::from(ErrorKind::UnexpectedEof))??;
+        .ok_or_else(|| Error::from(ErrorKind::UnexpectedEof))??;
 
-    let line = lines.next().ok_or(Error::from(ErrorKind::NotFound))??;
+    let line = lines
+        .next()
+        .ok_or_else(|| Error::from(ErrorKind::NotFound))??;
 
     let mut parts = line.trim().split_whitespace();
     let ppid = parts

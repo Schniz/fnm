@@ -19,7 +19,7 @@ impl super::command::Command for LsRemote {
             if let Some(lts) = &version.lts {
                 print!(" ({})", lts);
             }
-            println!("");
+            println!();
         }
 
         Ok(())

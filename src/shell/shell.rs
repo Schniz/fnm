@@ -9,10 +9,10 @@ pub trait Shell: Debug {
 }
 
 #[cfg(windows)]
-pub const AVAILABLE_SHELLS: &[&'static str; 5] = &["cmd", "powershell", "bash", "zsh", "fish"];
+pub const AVAILABLE_SHELLS: &[&str; 5] = &["cmd", "powershell", "bash", "zsh", "fish"];
 
 #[cfg(unix)]
-pub const AVAILABLE_SHELLS: &[&'static str; 4] = &["bash", "zsh", "fish", "powershell"];
+pub const AVAILABLE_SHELLS: &[&str; 4] = &["bash", "zsh", "fish", "powershell"];
 
 impl std::str::FromStr for Box<dyn Shell> {
     type Err = String;

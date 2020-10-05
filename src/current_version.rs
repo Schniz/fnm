@@ -10,7 +10,7 @@ pub fn current_version(config: &FnmConfig) -> Result<Option<Version>, Error> {
         return Ok(Some(Version::Bypassed));
     }
 
-    if let Some(resolved_path) = std::fs::canonicalize(multishell_path).ok() {
+    if let Ok(resolved_path) = std::fs::canonicalize(multishell_path) {
         let installation_path = resolved_path
             .parent()
             .expect("multishell path can't be in the root");
@@ -19,9 +19,7 @@ pub fn current_version(config: &FnmConfig) -> Result<Option<Version>, Error> {
             .expect("Can't get filename")
             .to_str()
             .expect("Invalid OS string");
-        let version = Version::parse(file_name).context(VersionError {
-            version: file_name.clone(),
-        })?;
+        let version = Version::parse(file_name).context(VersionError { version: file_name })?;
         Ok(Some(version))
     } else {
         Ok(None)

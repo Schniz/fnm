@@ -9,10 +9,10 @@ pub fn list<P: AsRef<Path>>(installations_dir: P) -> Result<Vec<Version>, Error>
         let path = entry.path();
         let filename = path
             .file_name()
-            .ok_or(std::io::Error::from(std::io::ErrorKind::NotFound))
+            .ok_or_else(|| std::io::Error::from(std::io::ErrorKind::NotFound))
             .context(IoError)?
             .to_str()
-            .ok_or(std::io::Error::from(std::io::ErrorKind::NotFound))
+            .ok_or_else(|| std::io::Error::from(std::io::ErrorKind::NotFound))
             .context(IoError)?;
         let version = Version::parse(filename).context(SemverError)?;
         vec.push(version);

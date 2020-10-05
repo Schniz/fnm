@@ -2,9 +2,11 @@ mod bash;
 mod fish;
 mod infer;
 mod powershell;
-mod shell;
 mod windows_cmd;
 mod zsh;
+
+#[allow(clippy::module_inception)]
+mod shell;
 
 pub use bash::Bash;
 pub use fish::Fish;

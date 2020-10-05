@@ -5,7 +5,7 @@ use std::io::Read;
 use std::path::Path;
 use std::str::FromStr;
 
-const PATH_PARTS: [&'static str; 2] = [".nvmrc", ".node-version"];
+const PATH_PARTS: [&str; 2] = [".nvmrc", ".node-version"];
 
 pub fn get_user_version_from_file(path: impl AsRef<Path>) -> Option<UserVersion> {
     let path = path.as_ref();
@@ -17,7 +17,7 @@ pub fn get_user_version_from_file(path: impl AsRef<Path>) -> Option<UserVersion>
             new_path.display(),
             new_path.exists()
         );
-        if let Some(file) = std::fs::File::open(new_path).ok() {
+        if let Ok(file) = std::fs::File::open(new_path) {
             let version = {
                 let mut reader = DecodeReaderBytes::new(file);
                 let mut version = String::new();

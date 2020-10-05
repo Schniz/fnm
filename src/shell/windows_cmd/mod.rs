@@ -35,6 +35,6 @@ fn create_cd_file_at(path: &std::path::Path) -> std::io::Result<()> {
     use std::io::Write;
     let cmd_contents = include_bytes!("./cd.cmd");
     let mut file = std::fs::File::create(path)?;
-    file.write(cmd_contents)?;
+    file.write_all(cmd_contents)?;
     Ok(())
 }
