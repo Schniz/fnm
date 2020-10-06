@@ -100,7 +100,7 @@ Activates `[VERSION]` as the current Node version. If no version provided, it wi
 
 ### `fnm current`
 
-Display currenty activated Node version.
+Display currently activated Node version.
 
 ### `fnm ls`
 
