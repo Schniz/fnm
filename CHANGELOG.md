@@ -1,4 +1,34 @@
-## v1.21.0 (2020-06-04)
+## fnm 1.22.0 (2020-10-07)
+
+#### New Feature 🎉
+
+- [#244](https://github.com/Schniz/fnm/pull/244) Allow using homebrew to install with the installation script ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#225](https://github.com/Schniz/fnm/pull/225) Remove unused condition ([@joliss](https://github.com/joliss))
+
+#### Internal 🛠
+
+- [#246](https://github.com/Schniz/fnm/pull/246) Rewrite fnm in Rust (merge fnm.rs into fnm) — adding Windows support! ([@Schniz](https://github.com/Schniz))
+- [#243](https://github.com/Schniz/fnm/pull/243) Add installation script testing ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#247](https://github.com/Schniz/fnm/pull/247) fixed a typo ([@0xflotus](https://github.com/0xflotus))
+- [#245](https://github.com/Schniz/fnm/pull/245) Shorten the installation script ([@Schniz](https://github.com/Schniz))
+- [#237](https://github.com/Schniz/fnm/pull/237) docs: add explanation of uninstall command to README ([@kazushisan](https://github.com/kazushisan))
+- [#235](https://github.com/Schniz/fnm/pull/235) Mention fnm omf plugin for Fish users ([@idkjs](https://github.com/idkjs))
+
+#### Committers: 5
+
+- 0xflotus ([@0xflotus](https://github.com/0xflotus))
+- Alain Armand ([@idkjs](https://github.com/idkjs))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Jo Liss ([@joliss](https://github.com/joliss))
+- Kazushi Konosu ([@kazushisan](https://github.com/kazushisan))
+
+## v1.21.0 (2020-06-07)
 
 #### New Feature 🎉
 
@@ -301,7 +331,7 @@
 
 #### Bugfix 🐛
 
-- [#77](https://github.com/Schniz/fnm/pull/77) Fix "command not found: elsif" error ([@johnletey](https://github.com/johnletey))
+- [#77](https://github.com/Schniz/fnm/pull/77) Fix "command not found: elsif" error ([@jletey](https://github.com/jletey))
 
 #### Internal 🛠
 
@@ -310,7 +340,7 @@
 #### Committers: 2
 
 - Gal Schlezinger ([@Schniz](https://github.com/Schniz))
-- John Letey ([@johnletey](https://github.com/johnletey))
+- John Letey ([@jletey](https://github.com/jletey))
 
 ## v1.7.0 (2019-03-04)
 

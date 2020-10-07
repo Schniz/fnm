@@ -1,0 +1,24 @@
+{
+  "name": "fnm",
+  "version": "0.0.0",
+  "private": true,
+  "repository": "git@github.com:Schniz/fnm.git",
+  "author": "Gal Schlezinger <gal@spitfire.co.il>",
+  "license": "GPLv3",
+  "scripts": {
+    "changelog": "./.ci/generate-changelog.sh"
+  },
+  "changelog": {
+    "repo": "Schniz/fnm",
+    "labels": {
+      "PR: New Feature": "New Feature 🎉",
+      "PR: Bugfix": "Bugfix 🐛",
+      "PR: Internal": "Internal 🛠",
+      "PR: Documentation": "Documentation 📝"
+    }
+  },
+  "devDependencies": {
+    "lerna-changelog": "^1.0.1",
+    "prettier": "^2.1.2"
+  }
+}

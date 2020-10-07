@@ -4,7 +4,7 @@
   <a href="https://dev.azure.com/Schniz/fnm/_build/latest?definitionId=1?branchName=master"><img alt="Build Status" src="https://dev.azure.com/Schniz/fnm/_apis/build/status/Schniz.fnm?branchName=master" /></a>
 </h1>
 
-> :rocket: Fast and simple Node.js version manager, built in native ReasonML
+> :rocket: Fast and simple Node.js version manager, built in Rust
 
 <div align="center">
   <img src="./docs/fnm.svg" alt="Blazing fast!">
@@ -20,7 +20,7 @@
 
 ## Installation
 
-### Using a script
+### Using a script (MacOS/Linux)
 
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
 
