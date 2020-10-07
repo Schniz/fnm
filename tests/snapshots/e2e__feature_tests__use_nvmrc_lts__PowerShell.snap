@@ -1,0 +1,10 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+echo 'lts/dubnium' > '.nvmrc'
+fnm install
+fnm use
+$($__out__ = $(fnm ls | Select-String 'lts-dubnium'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ })

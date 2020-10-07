@@ -1,0 +1,14 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+echo '11.10.0' > '.nvmrc'
+echo '11.10.0' > '.node-version'
+fnm install
+fnm use
+If ("$(node -v)" -ne "v11.10.0") {
+    Write-Output ('Expected Node version to be "v11.10.0", Got: ' + $(node -v))
+    exit 1
+}

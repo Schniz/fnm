@@ -1,0 +1,14 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
+echo 11.10.0 > .nvmrc
+echo 11.10.0 > .node-version
+fnm install
+fnm use
+node -v | findstr v11.10.0
+if %errorlevel% neq 0 (
+    echo Node version does not match "v11.10.0"
+    exit 1
+)

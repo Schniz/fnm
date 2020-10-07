@@ -1,0 +1,8 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install v8.11.3
+$($__out__ = $($($_tmp_err_action = $ErrorActionPreference;$ErrorActionPreference = "Continue";fnm install v8.11.3 2>&1;$ErrorActionPreference = $_tmp_err_action) | Select-String 'already installed'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ })

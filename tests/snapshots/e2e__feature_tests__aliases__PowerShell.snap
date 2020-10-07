@@ -1,0 +1,30 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install 6.11.3
+fnm install 8.11.3
+fnm alias 8.11 oldie
+fnm alias 6 older
+fnm default older
+$($__out__ = $($($__out__ = $(fnm ls | Select-String '8.11.3'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ }) | Select-String 'oldie'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ })
+$($__out__ = $($($__out__ = $($($__out__ = $(fnm ls | Select-String '6.11.3'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ }) | Select-String 'older'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ }) | Select-String 'default'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ })
+fnm use older
+If ("$(node -v)" -ne "v6.11.3") {
+    Write-Output ('Expected Node version to be "v6.11.3", Got: ' + $(node -v))
+    exit 1
+}
+
+fnm use oldie
+If ("$(node -v)" -ne "v8.11.3") {
+    Write-Output ('Expected Node version to be "v8.11.3", Got: ' + $(node -v))
+    exit 1
+}
+
+fnm use default
+If ("$(node -v)" -ne "v6.11.3") {
+    Write-Output ('Expected Node version to be "v6.11.3", Got: ' + $(node -v))
+    exit 1
+}

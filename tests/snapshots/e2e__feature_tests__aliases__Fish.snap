@@ -1,0 +1,29 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+fnm env | source
+fnm install 6.11.3
+fnm install 8.11.3
+fnm alias 8.11 oldie
+fnm alias 6 older
+fnm default older
+fnm ls | grep 8.11.3 | grep oldie
+fnm ls | grep 6.11.3 | grep older | grep default
+fnm use older
+if test (node -v) != "v6.11.3"
+    echo 'Expected Node version to be "v6.11.3", Got: '(node -v)
+    exit 1
+end
+
+fnm use oldie
+if test (node -v) != "v8.11.3"
+    echo 'Expected Node version to be "v8.11.3", Got: '(node -v)
+    exit 1
+end
+
+fnm use default
+if test (node -v) != "v6.11.3"
+    echo 'Expected Node version to be "v6.11.3", Got: '(node -v)
+    exit 1
+end

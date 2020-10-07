@@ -1,0 +1,27 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+fnm --log-level='error' env | source
+if test (fnm install v8.11.3
+echo empty) != "empty"
+    echo 'Expected fnm install to be "empty", Got: '(fnm install v8.11.3
+echo empty)
+    exit 1
+end
+
+if test (fnm use v8.11.3
+echo empty) != "empty"
+    echo 'Expected fnm use to be "empty", Got: '(fnm use v8.11.3
+echo empty)
+    exit 1
+end
+
+if test (fnm alias v8.11.3 something
+echo empty) != "empty"
+    echo 'Expected fnm alias to be "empty", Got: '(fnm alias v8.11.3 something
+echo empty)
+    exit 1
+end
+
+fnm alias abcd efg 2>&1 | grep 'Can'\''t find requested version'

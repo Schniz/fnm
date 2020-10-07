@@ -1,0 +1,30 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+set -e
+shopt -s expand_aliases
+
+eval "$(fnm --log-level='error' env)"
+if [ "$(fnm install v8.11.3
+echo empty)" != "empty" ]; then
+    echo 'Expected fnm install to be "empty", Got: '"$(fnm install v8.11.3
+echo empty)"
+    exit 1
+fi
+
+if [ "$(fnm use v8.11.3
+echo empty)" != "empty" ]; then
+    echo 'Expected fnm use to be "empty", Got: '"$(fnm use v8.11.3
+echo empty)"
+    exit 1
+fi
+
+if [ "$(fnm alias v8.11.3 something
+echo empty)" != "empty" ]; then
+    echo 'Expected fnm alias to be "empty", Got: '"$(fnm alias v8.11.3 something
+echo empty)"
+    exit 1
+fi
+
+fnm alias abcd efg 2>&1 | grep 'Can'\''t find requested version'

@@ -1,0 +1,28 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm --log-level='error' env | Out-String | Invoke-Expression
+If ("$(fnm install v8.11.3
+echo empty)" -ne "empty") {
+    Write-Output ('Expected fnm install to be "empty", Got: ' + $(fnm install v8.11.3
+echo empty))
+    exit 1
+}
+
+If ("$(fnm use v8.11.3
+echo empty)" -ne "empty") {
+    Write-Output ('Expected fnm use to be "empty", Got: ' + $(fnm use v8.11.3
+echo empty))
+    exit 1
+}
+
+If ("$(fnm alias v8.11.3 something
+echo empty)" -ne "empty") {
+    Write-Output ('Expected fnm alias to be "empty", Got: ' + $(fnm alias v8.11.3 something
+echo empty))
+    exit 1
+}
+
+$($__out__ = $($($_tmp_err_action = $ErrorActionPreference;$ErrorActionPreference = "Continue";fnm alias abcd efg 2>&1;$ErrorActionPreference = $_tmp_err_action) | Select-String 'Can''t find requested version'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ })

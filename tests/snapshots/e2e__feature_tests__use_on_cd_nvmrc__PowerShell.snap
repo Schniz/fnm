@@ -1,0 +1,14 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env --use-on-cd | Out-String | Invoke-Expression
+mkdir inner_path
+echo 'v8.11.3' > 'inner_path/.nvmrc'
+fnm install v8.11.3
+cd inner_path
+If ("$(node -v)" -ne "v8.11.3") {
+    Write-Output ('Expected Node version to be "v8.11.3", Got: ' + $(node -v))
+    exit 1
+}

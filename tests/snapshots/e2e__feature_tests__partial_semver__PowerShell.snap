@@ -1,0 +1,12 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install 6
+fnm use 6
+If ("$(node -v)" -ne "v6.17.1") {
+    Write-Output ('Expected Node version to be "v6.17.1", Got: ' + $(node -v))
+    exit 1
+}

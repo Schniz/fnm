@@ -1,0 +1,13 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+fnm env | source
+echo 11.10.0 > .nvmrc
+echo 11.10.0 > .node-version
+fnm install
+fnm use
+if test (node -v) != "v11.10.0"
+    echo 'Expected Node version to be "v11.10.0", Got: '(node -v)
+    exit 1
+end

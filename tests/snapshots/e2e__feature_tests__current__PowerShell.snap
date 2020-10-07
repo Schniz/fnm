@@ -1,0 +1,30 @@
+---
+source: tests/e2e.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+If ("$(fnm current)" -ne "none") {
+    Write-Output ('Expected currently activated version to be "none", Got: ' + $(fnm current))
+    exit 1
+}
+
+fnm install v8.11.3
+fnm install v10.10.0
+fnm use v8.11.3
+If ("$(fnm current)" -ne "v8.11.3") {
+    Write-Output ('Expected currently activated version to be "v8.11.3", Got: ' + $(fnm current))
+    exit 1
+}
+
+fnm use v10.10.0
+If ("$(fnm current)" -ne "v10.10.0") {
+    Write-Output ('Expected currently activated version to be "v10.10.0", Got: ' + $(fnm current))
+    exit 1
+}
+
+fnm use system
+If ("$(fnm current)" -ne "system") {
+    Write-Output ('Expected currently activated version to be "system", Got: ' + $(fnm current))
+    exit 1
+}
