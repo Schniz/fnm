@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ "$1" = "" ]; then
-  echo "Taking version from binary" >&2
-  NEXT_VERSION="$(cargo run --quiet -- --version)"
+  echo "No version provided, using 'Unreleased'" >&2
+  NEXT_VERSION="Unreleased"
 else
   NEXT_VERSION="$1"
 fi

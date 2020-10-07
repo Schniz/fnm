@@ -170,6 +170,15 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
+cmd-ts@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.npmjs.org/cmd-ts/-/cmd-ts-0.6.4.tgz#3390ec94d5f9f25fe5745b7dffb34842701b96ae"
+  integrity sha512-z1xFprGcUjFK8qCITdvHymVZtYyuirezqVRO8K+JGv24Lr+hyQrToPTmGlvWtvEZsHPYfyqNt5+Es9FLthCgsQ==
+  dependencies:
+    chalk "^3.0.0"
+    debug "^4.1.1"
+    strip-ansi "^6.0.0"
+
 color-convert@^1.9.0:
   version "1.9.3"
   resolved "https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
@@ -227,7 +236,7 @@ cross-spawn@^6.0.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-debug@4, debug@^4.1.0:
+debug@4, debug@^4.1.0, debug@^4.1.1:
   version "4.2.0"
   resolved "https://registry.npmjs.org/debug/-/debug-4.2.0.tgz#7f150f93920e94c58f5574c2fd01a3110effe7f1"
   integrity sha512-IX2ncY78vDTjZMFUdmsvIRFY2Cf4FnD0wRs+nQwJU8Lu99/tPFdb0VybiiMTPe3I6rQmwsqQqRBvxU+bZ/I8sg==
@@ -979,6 +988,11 @@ thenify-all@^1.0.0:
   integrity sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==
   dependencies:
     any-promise "^1.0.0"
+
+toml@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/toml/-/toml-3.0.0.tgz#342160f1af1904ec9d204d03a5d61222d762c5ee"
+  integrity sha512-y/mWCZinnvxjTKYhJ+pYxwD0mRLVvOtdS2Awbgxln6iEnt4rk0yBxeSBHkGJcPucRiG0e55mwWp+g/05rsrd6w==
 
 unique-filename@^1.1.1:
   version "1.1.1"

@@ -6,7 +6,8 @@
   "author": "Gal Schlezinger <gal@spitfire.co.il>",
   "license": "GPLv3",
   "scripts": {
-    "changelog": "./.ci/generate-changelog.sh"
+    "changelog": "./.ci/generate-changelog.sh",
+    "version:prepare": "./.ci/prepare-version.js"
   },
   "changelog": {
     "repo": "Schniz/fnm",
@@ -18,7 +19,9 @@
     }
   },
   "devDependencies": {
+    "cmd-ts": "^0.6.4",
     "lerna-changelog": "^1.0.1",
-    "prettier": "^2.1.2"
+    "prettier": "^2.1.2",
+    "toml": "^3.0.0"
   }
 }
