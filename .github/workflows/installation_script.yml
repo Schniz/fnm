@@ -35,7 +35,5 @@ jobs:
         name: reset bashrc file
       - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh ${{ matrix.setup.script_arguments }}"
         name: Run the installation script
-      - run: fnm --version
-        name: Print fnm version
       - run: ./.ci/test_installation_script.sh ${{ matrix.shell }}
         name: 'Test installation script'

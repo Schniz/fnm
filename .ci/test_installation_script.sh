@@ -6,6 +6,8 @@ PROFILE_FILE="$("$DIRECTORY/get_shell_profile.sh" "$SHELL_TO_RUN")"
 
 echo "Profile is $PROFILE_FILE"
 
+fnm --version
+
 $SHELL_TO_RUN -c '
   fnm install 12.5.0
   fnm ls | grep 12.5.0
