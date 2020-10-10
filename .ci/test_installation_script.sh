@@ -1,11 +1,14 @@
 #!/bin/bash
 
+set -e
+
 DIRECTORY="$(dirname "$0")"
 SHELL_TO_RUN="$1"
 PROFILE_FILE="$("$DIRECTORY/get_shell_profile.sh" "$SHELL_TO_RUN")"
 
 echo "Profile is $PROFILE_FILE"
 
+ls -lah ~
 fnm --version
 
 $SHELL_TO_RUN -c '
