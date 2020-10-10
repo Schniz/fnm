@@ -77,7 +77,7 @@ download_fnm() {
 
     mkdir -p "$INSTALL_DIR" &>/dev/null
 
-    if ! curl --progress-bar -L "$URL" -o "$DOWNLOAD_DIR/$FILENAME.zip"; then
+    if ! curl --progress-bar --fail -L "$URL" -o "$DOWNLOAD_DIR/$FILENAME.zip"; then
       echo "Download failed.  Check that the release/filename are correct."
       exit 1
     fi
