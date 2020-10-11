@@ -6,7 +6,7 @@ edition = "2018"
 build = "build.rs"
 
 [dependencies]
-serde = { version = "1.0.115", features = ["derive"] }
+serde = { version = "1.0.116", features = ["derive"] }
 clap = "2.33.3"
 structopt = "0.3.16"
 reqwest = { version = "0.10.7", features = ["blocking", "json"] }
