@@ -33,11 +33,14 @@ jobs:
         if: matrix.setup.os == 'macos'
       - run: |
           if [ -f ~/.bashrc ]; then
-            cp ~/.bashrc ~/.bashrc.bak && echo '. ~/.bashrc.bak' > ~/.bashrc
+            cp ~/.bashrc ~/.bashrc.bak
+            echo 'echo hello world' > ~/.bashrc
+            echo '. ~/.bashrc.bak' >> ~/.bashrc
           fi
 
           if [ -f ~/.zshrc ]; then
-            cp ~/.zshrc ~/.zshrc.bak && echo '. ~/.zshrc.bak' > ~/.zshrc
+            echo 'echo hello world' > ~/.zshrc
+            echo '. ~/.zshrc.bak' >> ~/.zshrc
           fi
         name: reset shell profiles
       - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh ${{ matrix.setup.script_arguments }}"
