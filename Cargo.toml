@@ -9,7 +9,7 @@ build = "build.rs"
 serde = { version = "1.0.116", features = ["derive"] }
 clap = "2.33.3"
 structopt = "0.3.19"
-reqwest = { version = "0.10.7", features = ["blocking", "json"] }
+reqwest = { version = "0.10.8", features = ["blocking", "json"] }
 serde_json = "1.0.58"
 chrono = { version = "0.4.15", features = ["serde"] }
 tar = "0.4.29"
