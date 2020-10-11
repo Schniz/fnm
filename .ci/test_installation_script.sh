@@ -16,6 +16,7 @@ echo "PATH=$PATH"
 echo "---"
 
 $SHELL_TO_RUN -c "
+  . $PROFILE_FILE
   fnm --version
 "
 
