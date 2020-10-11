@@ -20,7 +20,7 @@ colored = "2.0.0"
 zip = "0.5.6"
 tempfile = "3.1.0"
 indoc = "1.0.2"
-snafu = { version = "0.6.8", features = ["backtrace"] }
+snafu = { version = "0.6.9", features = ["backtrace"] }
 log = "0.4.11"
 env_logger = "0.7.1"
 atty = "0.2.14"
