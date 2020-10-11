@@ -10,7 +10,7 @@ serde = { version = "1.0.115", features = ["derive"] }
 clap = "2.33.3"
 structopt = "0.3.16"
 reqwest = { version = "0.10.7", features = ["blocking", "json"] }
-serde_json = "1.0.57"
+serde_json = "1.0.58"
 chrono = { version = "0.4.15", features = ["serde"] }
 tar = "0.4.29"
 xz2 = "0.1.6"
