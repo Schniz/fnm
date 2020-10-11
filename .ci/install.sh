@@ -4,6 +4,7 @@ set -e
 
 INSTALL_DIR="$HOME/.fnm"
 RELEASE="latest"
+OS="$(uname -s)"
 
 # Parse Flags
 parse_args() {
@@ -39,10 +40,6 @@ parse_args() {
 }
 
 set_filename() {
-  local OS
-
-  OS=$(uname -s)
-
   if [ "$OS" == "Linux" ]; then
     FILENAME="fnm-linux"
   elif [ "$OS" == "Darwin" ] && [ "$FORCE_INSTALL" == "true" ]; then
