@@ -1,4 +1,5 @@
 {
+  "labels": ["PR: Dependency Update"],
   "extends": [
     "config:base"
   ]
