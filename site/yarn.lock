@@ -34,7 +34,7 @@
   resolved "https://registry.npmjs.org/@vercel/go/-/go-1.1.6.tgz#45ac3a6bd98a15b8bf1028b8c141a51fd971ac15"
   integrity sha512-swA2crS08fkPmw4UkR9yjmoL8FOCzuNHLFDqj8oM1V9ni610ibJ7Xk57jI8uyS7bTecQVh8VUxihb+SF0GT+aw==
 
-"@vercel/node@1.8.3", "@vercel/node@^1.8.3":
+"@vercel/node@1.8.3":
   version "1.8.3"
   resolved "https://registry.npmjs.org/@vercel/node/-/node-1.8.3.tgz#3fcf06d8405a8e1f08987578888eabba9f34c48b"
   integrity sha512-NTRoQJBQTCT1erz9+hg/juHI9Yz5UpwBuR+O9qNZMFjlqU2913BkeZSNb9FAGcNKks/wK9usktRReys3cATLzg==
@@ -594,9 +594,9 @@ typescript@3.9.3:
   resolved "https://registry.npmjs.org/typescript/-/typescript-3.9.3.tgz#d3ac8883a97c26139e42df5e93eeece33d610b8a"
   integrity sha512-D/wqnB2xzNFIcoBG9FG8cXRDjiqSTbG2wd8DMZeQyJlP1vfTkIxH4GKveWaEBYySKIg+USu+E+EDIR47SqnaMQ==
 
-typescript@^4.0.3:
+typescript@4.0.3:
   version "4.0.3"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-4.0.3.tgz#153bbd468ef07725c1df9c77e8b453f8d36abba5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.3.tgz#153bbd468ef07725c1df9c77e8b453f8d36abba5"
   integrity sha512-tEu6DGxGgRJPb/mVPIZ48e69xCn2yRmCgYmDugAVwmJ6o+0u1RI18eO7E7WBTLYLaEVVOhwQmcdhQHweux/WPg==
 
 unique-string@^2.0.0:
@@ -632,9 +632,9 @@ url-parse-lax@^3.0.0:
   dependencies:
     prepend-http "^2.0.0"
 
-vercel@^20.1.1:
+vercel@20.1.1:
   version "20.1.1"
-  resolved "https://registry.npmjs.org/vercel/-/vercel-20.1.1.tgz#4be4176f65e69033f06352667326c97edc68057f"
+  resolved "https://registry.yarnpkg.com/vercel/-/vercel-20.1.1.tgz#4be4176f65e69033f06352667326c97edc68057f"
   integrity sha512-YsemhAUKAVT1WRX/LqvdRoNJLrycVwvvF4sednS36DRZmkiKKf7sTj5sOyCxEAYDyvBfuzokKz+wbZmn4+fCeg==
   dependencies:
     "@vercel/build-utils" "2.5.3"
