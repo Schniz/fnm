@@ -31,8 +31,18 @@ jobs:
       - run: "brew install ${{ matrix.shell }}"
         name: Install ${{matrix.shell}} using Homebrew
         if: matrix.setup.os == 'macos'
-      - run: "cp ~/.bashrc ~/.bashrc.bak && echo '. ~/.bashrc.bak' > ~/.bashrc"
-        name: reset bashrc file
+      - run: |
+          if [ -f ~/.bashrc ]; then
+            cp ~/.bashrc ~/.bashrc.bak
+            echo 'echo hello world' > ~/.bashrc
+            echo '. ~/.bashrc.bak' >> ~/.bashrc
+          fi
+
+          if [ -f ~/.zshrc ]; then
+            echo 'echo hello world' > ~/.zshrc
+            echo '. ~/.zshrc.bak' >> ~/.zshrc
+          fi
+        name: reset shell profiles
       - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh ${{ matrix.setup.script_arguments }}"
         name: Run the installation script
       - run: ./.ci/test_installation_script.sh ${{ matrix.shell }}

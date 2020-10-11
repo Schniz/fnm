@@ -1,16 +1,14 @@
 #!/bin/bash
 
-OS="$(uname -s)"
-
 case $1 in
   "fish")
-    CONFIG_DIR="$(fish -c 'echo -n $__fish_config_dir')"
-    echo "${CONFIG_DIR-"$HOME/.config/fish"}/fish.config"
+    echo "$HOME/.config/fish/config.fish"
     ;;
   "zsh")
     echo "$HOME/.zshrc"
     ;;
   "bash")
+    OS="$(uname -s)"
     if [ "$OS" = "Darwin" ]; then
       echo "$HOME/.profile"
     else
