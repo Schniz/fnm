@@ -1,5 +1,14 @@
 {
   "labels": ["PR: Dependency Update"],
+  "packageRules": [
+    {
+      "packagePatterns": ["*"],
+      "minor": {
+        "groupName": "all non-major dependencies",
+        "groupSlug": "all-minor-patch"
+      }
+    }
+  ],
   "extends": [
     "config:base"
   ]
