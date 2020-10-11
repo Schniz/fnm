@@ -5,8 +5,8 @@
   "author": "Gal Schlezinger",
   "license": "MIT",
   "devDependencies": {
-    "@vercel/node": "1.8.3",
+    "@vercel/node": "1.8.4",
     "typescript": "4.0.3",
-    "vercel": "20.1.1"
+    "vercel": "20.1.2"
   }
 }
