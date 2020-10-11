@@ -7,8 +7,13 @@ SHELL_TO_RUN="$1"
 PROFILE_FILE="$("$DIRECTORY/get_shell_profile.sh" "$SHELL_TO_RUN")"
 
 ls -lah ~
+echo "---"
 echo "Profile is $PROFILE_FILE"
+echo "---"
 cat ~/.bashrc
+echo "---"
+echo "PATH=$PATH"
+echo "---"
 
 fnm --version
 
