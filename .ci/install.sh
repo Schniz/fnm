@@ -66,7 +66,7 @@ download_fnm() {
     brew install Schniz/tap/fnm > /dev/null
   else
     if [ "$RELEASE" == "latest" ]; then
-      URL="https://github.com/Schniz/fnm/releases/download/v1.22.0-beta-1/$FILENAME.zip"
+      URL="https://github.com/Schniz/fnm/releases/latest/download/$FILENAME.zip"
     else
       URL="https://github.com/Schniz/fnm/releases/download/$RELEASE/$FILENAME.zip"
     fi
