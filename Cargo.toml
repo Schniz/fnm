@@ -19,7 +19,7 @@ dirs = "3.0.1"
 colored = "2.0.0"
 zip = "0.5.8"
 tempfile = "3.1.0"
-indoc = "1.0.2"
+indoc = "1.0.3"
 snafu = { version = "0.6.9", features = ["backtrace"] }
 log = "0.4.11"
 env_logger = "0.7.1"
