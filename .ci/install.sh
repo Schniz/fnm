@@ -152,7 +152,7 @@ setup_shell() {
     echo 'eval "`fnm env --multi`"' >>$CONF_FILE
 
   elif [ "$CURRENT_SHELL" == "fish" ]; then
-    CONF_FILE=$HOME/.config/fish/config.fish
+    CONF_FILE=$HOME/.config/fish/conf.d/fnm.fish
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
     echo ""
@@ -160,7 +160,6 @@ setup_shell() {
     echo '  set PATH '"$INSTALL_DIR"' $PATH'
     echo '  fnm env --multi | source'
 
-    echo '' >>$CONF_FILE
     echo '# fnm' >>$CONF_FILE
     echo 'set PATH '"$INSTALL_DIR"' $PATH' >>$CONF_FILE
     echo 'fnm env --multi | source' >>$CONF_FILE
