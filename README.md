@@ -76,7 +76,7 @@ Then apply the changes the installer prints, to set up your shell profile.
   eval "$(fnm env --multi)"
   ```
 
-  If you are using [fish shell](https://fishshell.com/), create `~/.config/fish/confi.d/fnm.fish` add this line to it:
+  If you are using [fish shell](https://fishshell.com/), create `~/.config/fish/conf.d/fnm.fish` add this line to it:
 
   ```fish
   fnm env --multi | source
