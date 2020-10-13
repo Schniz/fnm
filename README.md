@@ -42,7 +42,7 @@ Set a custom directory for fnm to be installed. The default is `$HOME/.fnm`.
 
 `--skip-shell`
 
-Skip appending shell specific loader to shell config file, based on the current user shell, defined in `$SHELL`. e.g. for Bash, `$HOME/.bashrc`. `$HOME/.zshrc` for Zsh. For Fish - `$HOME/.config/fish/config.fish`
+Skip appending shell specific loader to shell config file, based on the current user shell, defined in `$SHELL`. e.g. for Bash, `$HOME/.bashrc`. `$HOME/.zshrc` for Zsh. For Fish - `$HOME/.config/fish/conf.d/fnm.fish`
 
 `--force-install`
 
@@ -76,11 +76,12 @@ Then apply the changes the installer prints, to set up your shell profile.
   eval "$(fnm env --multi)"
   ```
 
-  If you are using [fish shell](https://fishshell.com/), add this line to your `config.fish` file:
+  If you are using [fish shell](https://fishshell.com/), create `~/.config/fish/confi.d/fnm.fish` add this line to it:
 
   ```fish
   fnm env --multi | source
   ```
+
 ## Completions
 
 - Fish Shell
