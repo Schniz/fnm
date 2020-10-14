@@ -2,7 +2,7 @@
 
 case $1 in
   "fish")
-    echo "$HOME/.config/fish/config.fish"
+    echo "$HOME/.config/fish/conf.d/fnm.fish"
     ;;
   "zsh")
     echo "$HOME/.zshrc"
