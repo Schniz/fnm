@@ -133,7 +133,7 @@ jobs:
     - name: 'Download `cross` crate'
       run: cargo install cross
     - name: Run specific unit test (should fail)
-      run: cross test system_info
+      run: cross test --target $RUST_TARGET system_info
     - name: "Build release"
       run: cross build --target $RUST_TARGET --release
     - uses: actions/upload-artifact@v2
