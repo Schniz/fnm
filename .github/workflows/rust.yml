@@ -132,8 +132,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: 'Download `cross` crate'
       run: cargo install cross
-    - name: Run specific unit test (should fail)
-      run: cross test --target $RUST_TARGET system_info
+    - name: Run unit tests
+      run: cross test --target $RUST_TARGET -- --skip=feature_tests
     - name: "Build release"
       run: cross build --target $RUST_TARGET --release
     - uses: actions/upload-artifact@v2
