@@ -17,103 +17,125 @@ jobs:
     - name: cargo fmt
       run: cargo fmt -- --check
 
-  unit_tests:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    steps:
-    - uses: hecrj/setup-rust-action@v1
-      with:
-        rust-version: stable
-    - uses: actions/checkout@v1
-    - name: Run tests
-      run: cargo test -- --skip=feature_tests
+  # unit_tests:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, macOS-latest, windows-latest]
+  #   steps:
+  #   - uses: hecrj/setup-rust-action@v1
+  #     with:
+  #       rust-version: stable
+  #   - uses: actions/checkout@v1
+  #   - name: Run tests
+  #     run: cargo test -- --skip=feature_tests
 
-  e2e_tests:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    steps:
-    - name: Install Fish and Zsh using brew
-      if: "startsWith(matrix.os, 'macOS')"
-      run: brew install fish zsh
-    - name: Install Fish and Zsh using apt
-      if: "startsWith(matrix.os, 'ubuntu')"
-      run: sudo apt-get install -y fish zsh
-    - uses: hecrj/setup-rust-action@v1
-      with:
-        rust-version: stable
-    - uses: actions/checkout@v1
-    - name: Run tests
-      run: cargo test -- feature_tests
+  # e2e_tests:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, macOS-latest, windows-latest]
+  #   steps:
+  #   - name: Install Fish and Zsh using brew
+  #     if: "startsWith(matrix.os, 'macOS')"
+  #     run: brew install fish zsh
+  #   - name: Install Fish and Zsh using apt
+  #     if: "startsWith(matrix.os, 'ubuntu')"
+  #     run: sudo apt-get install -y fish zsh
+  #   - uses: hecrj/setup-rust-action@v1
+  #     with:
+  #       rust-version: stable
+  #   - uses: actions/checkout@v1
+  #   - name: Run tests
+  #     run: cargo test -- feature_tests
 
-  build_release:
-    runs-on: windows-latest
-    name: "Release build for Windows"
-    steps:
-    - uses: hecrj/setup-rust-action@v1
-      with:
-        rust-version: stable
-    - uses: actions/checkout@v1
-    - name: Build release binary
-      run: cargo build --release
-      env:
-        RUSTFLAGS: "-C target-feature=+crt-static"
-    - name: Compress binary using UPX
-      run: |
-        choco install upx
-        upx target/release/fnm.exe
-    - uses: actions/upload-artifact@v2
-      with:
-        name: fnm-windows
-        path: target/release/fnm.exe
+  # build_release:
+  #   runs-on: windows-latest
+  #   name: "Release build for Windows"
+  #   steps:
+  #   - uses: hecrj/setup-rust-action@v1
+  #     with:
+  #       rust-version: stable
+  #   - uses: actions/checkout@v1
+  #   - name: Build release binary
+  #     run: cargo build --release
+  #     env:
+  #       RUSTFLAGS: "-C target-feature=+crt-static"
+  #   - name: Compress binary using UPX
+  #     run: |
+  #       choco install upx
+  #       upx target/release/fnm.exe
+  #   - uses: actions/upload-artifact@v2
+  #     with:
+  #       name: fnm-windows
+  #       path: target/release/fnm.exe
 
-  build_macos_release:
-    runs-on: macOS-latest
-    name: "Release build for MacOS"
-    steps:
-    - uses: hecrj/setup-rust-action@v1
-      with:
-        rust-version: stable
-    - uses: actions/checkout@v1
-    - name: Build release binary
-      run: cargo build --release
-      env:
-        LZMA_API_STATIC: "true"
-    - name: Strip binary from debug symbols
-      run: strip target/release/fnm
-    - name: List dynamically linked libraries
-      run: otool -L target/release/fnm
-    - name: Compress binary using UPX
-      run: |
-        brew install upx
-        upx target/release/fnm
-    - uses: actions/upload-artifact@v2
-      with:
-        name: fnm-macos
-        path: target/release/fnm
+  # build_macos_release:
+  #   runs-on: macOS-latest
+  #   name: "Release build for MacOS"
+  #   steps:
+  #   - uses: hecrj/setup-rust-action@v1
+  #     with:
+  #       rust-version: stable
+  #   - uses: actions/checkout@v1
+  #   - name: Build release binary
+  #     run: cargo build --release
+  #     env:
+  #       LZMA_API_STATIC: "true"
+  #   - name: Strip binary from debug symbols
+  #     run: strip target/release/fnm
+  #   - name: List dynamically linked libraries
+  #     run: otool -L target/release/fnm
+  #   - name: Compress binary using UPX
+  #     run: |
+  #       brew install upx
+  #       upx target/release/fnm
+  #   - uses: actions/upload-artifact@v2
+  #     with:
+  #       name: fnm-macos
+  #       path: target/release/fnm
 
-  build_static_linux_binary:
-    name: "Build static Linux binary"
+  # build_static_linux_binary:
+  #   name: "Build static Linux binary"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Build static binary
+  #     run: |
+  #       sudo chown -R 1000:1000 .
+  #       docker run --rm -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:stable \
+  #         cargo build --release
+  #       sudo chown -R $(whoami):$(whoami) .
+  #   - name: Compress binary using UPX
+  #     run: |
+  #       sudo apt-get install -y upx
+  #       upx target/x86_64-unknown-linux-musl/release/fnm
+  #   - uses: actions/upload-artifact@v2
+  #     with:
+  #       name: fnm-linux
+  #       path: target/x86_64-unknown-linux-musl/release/fnm
+
+  build_static_arm_binary:
+    name: "Build static ARM binary"
     runs-on: ubuntu-latest
     steps:
+    - name: Set up QEMU
+      id: qemu
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: arm64
     - uses: actions/checkout@v2
-    - name: Build static binary
-      run: |
-        sudo chown -R 1000:1000 .
-        docker run --rm -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:stable \
-          cargo build --release
-        sudo chown -R $(whoami):$(whoami) .
-    - name: Compress binary using UPX
-      run: |
-        sudo apt-get install -y upx
-        upx target/x86_64-unknown-linux-musl/release/fnm
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+    - name: 'Download `cross` crate'
+      run: cargo install cross
+    - name: "Build release"
+      run: cross build --target aarch64-unknown-linux-musl --release
     - uses: actions/upload-artifact@v2
       with:
-        name: fnm-linux
-        path: target/x86_64-unknown-linux-musl/release/fnm
+        name: fnm-arm64
+        path: target/aarch64-unknown-linux-musl/release/fnm
 
   # benchmark_on_linux:
   #   name: Performance Benchmarks (Linux)
