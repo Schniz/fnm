@@ -27,3 +27,12 @@ pub fn platform_arch() -> &'static str {
 pub fn platform_arch() -> &'static str {
     "x64"
 }
+
+#[cfg(test)]
+mod tests {
+    #[cfg(target_arch = "arm")]
+    #[test]
+    fn test_arm64_platform_arch() {
+        todo!();
+    }
+}

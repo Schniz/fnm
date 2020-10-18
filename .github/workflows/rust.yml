@@ -118,24 +118,28 @@ jobs:
   build_static_arm_binary:
     name: "Build static ARM binary"
     runs-on: ubuntu-latest
+    env:
+      RUST_TARGET: aarch64-unknown-linux-musl
     steps:
     - name: Set up QEMU
       id: qemu
       uses: docker/setup-qemu-action@v1
       with:
         platforms: arm64
-    - uses: actions/checkout@v2
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
+    - uses: actions/checkout@v2
     - name: 'Download `cross` crate'
       run: cargo install cross
+    - name: Run specific unit test (should fail)
+      run: cross test system_info
     - name: "Build release"
-      run: cross build --target aarch64-unknown-linux-musl --release
+      run: cross build --target $RUST_TARGET --release
     - uses: actions/upload-artifact@v2
       with:
         name: fnm-arm64
-        path: target/aarch64-unknown-linux-musl/release/fnm
+        path: target/${{ env.RUST_TARGET }}/release/fnm
 
   # benchmark_on_linux:
   #   name: Performance Benchmarks (Linux)
