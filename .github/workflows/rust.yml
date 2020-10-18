@@ -132,10 +132,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: 'Download `cross` crate'
       run: cargo install cross
-    - name: Run unit tests
-      run: cross test --target $RUST_TARGET -- --skip=feature_tests
     - name: "Build release"
       run: cross build --target $RUST_TARGET --release
+    - name: "Run fnm --version"
+      run: docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) arm64v8/ubuntu $(pwd)/target/$RUST_TARGET/release/fnm --version
     - uses: actions/upload-artifact@v2
       with:
         name: fnm-arm64
