@@ -134,6 +134,10 @@ jobs:
       run: cargo install cross
     - name: "Build release"
       run: cross build --target $RUST_TARGET --release
+    - name: Compress binary using UPX
+      run: |
+        sudo apt-get install -y upx
+        upx target/$RUST_TARGET/release/fnm
     - name: "Run fnm --version"
       run: docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) arm64v8/ubuntu $(pwd)/target/$RUST_TARGET/release/fnm --version
     - uses: actions/upload-artifact@v2
