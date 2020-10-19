@@ -116,22 +116,33 @@ jobs:
   #       path: target/x86_64-unknown-linux-musl/release/fnm
 
   build_static_arm_binary:
-    name: "Build static ARM binary"
+    name: "Build ARM binary"
+    strategy:
+      matrix:
+        include:
+          - arch: arm64
+            platform: arm64
+            rust_target: aarch64-unknown-linux-musl
+            docker_image: arm64v8/ubuntu
+          - arch: arm32
+            platform: arm/v7
+            rust_target: armv7-unknown-linux-gnueabihf
+            docker_image: arm32v7/ubuntu
     runs-on: ubuntu-latest
     env:
-      RUST_TARGET: aarch64-unknown-linux-musl
+      RUST_TARGET: ${{ matrix.rust_target }}
     steps:
     - name: Set up QEMU
       id: qemu
       uses: docker/setup-qemu-action@v1
       with:
-        platforms: arm64
+        platforms: ${{ matrix.platform }}
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: actions/checkout@v2
     - name: 'Download `cross` crate'
       run: cargo install cross
+    - uses: actions/checkout@v2
     - name: "Build release"
       run: cross build --target $RUST_TARGET --release
     - name: Compress binary using UPX
@@ -139,10 +150,14 @@ jobs:
         sudo apt-get install -y upx
         upx target/$RUST_TARGET/release/fnm
     - name: "Run fnm --version"
-      run: docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) arm64v8/ubuntu $(pwd)/target/$RUST_TARGET/release/fnm --version
+      run: |
+        docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) arm64v8/ubuntu '
+          $(pwd)/target/$RUST_TARGET/release/fnm --version
+          $(pwd)/target/$RUST_TARGET/release/fnm install 
+        '
     - uses: actions/upload-artifact@v2
       with:
-        name: fnm-arm64
+        name: fnm-${{ matrix.arch }}
         path: target/${{ env.RUST_TARGET }}/release/fnm
 
   # benchmark_on_linux:
