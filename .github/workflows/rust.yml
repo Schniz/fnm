@@ -149,11 +149,14 @@ jobs:
       run: |
         sudo apt-get install -y upx
         upx target/$RUST_TARGET/release/fnm
-    - name: "Run fnm --version"
+    - name: "Sanity test"
       run: |
-        docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) arm64v8/ubuntu '
+        docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) ${{matrix.docker_image}} bash -c '
           $(pwd)/target/$RUST_TARGET/release/fnm --version
-          $(pwd)/target/$RUST_TARGET/release/fnm install 
+          echo "fnm install 12.0.0"
+          $(pwd)/target/$RUST_TARGET/release/fnm install 12.0.0
+          echo "node --version"
+          $HOME/.fnm/node-versions/v12.0.0/bin/node --version
         '
     - uses: actions/upload-artifact@v2
       with:
