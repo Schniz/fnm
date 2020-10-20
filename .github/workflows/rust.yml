@@ -152,9 +152,9 @@ jobs:
     - name: "Sanity test"
       run: |
         docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) ${{matrix.docker_image}} bash -c '
-          $(pwd)/target/$RUST_TARGET/release/fnm --version
+          $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm --version
           echo "fnm install 12.0.0"
-          $(pwd)/target/$RUST_TARGET/release/fnm install 12.0.0
+          $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm install 12.0.0
           echo "node --version"
           $HOME/.fnm/node-versions/v12.0.0/bin/node --version
         '
