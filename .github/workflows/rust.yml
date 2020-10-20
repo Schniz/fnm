@@ -151,7 +151,7 @@ jobs:
         upx target/$RUST_TARGET/release/fnm
     - name: "Sanity test"
       run: |
-        docker run --rm -v $(pwd):$(pwd) --workdir $(pwd) ${{matrix.docker_image}} bash -c '
+        docker run --rm -v $(pwd):$(pwd) -e "RUST_LOG=fnm=debug" --workdir $(pwd) ${{matrix.docker_image}} bash -c '
           $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm --version
           echo "fnm install 12.0.0"
           $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm install 12.0.0
