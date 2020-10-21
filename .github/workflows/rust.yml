@@ -121,11 +121,9 @@ jobs:
       matrix:
         include:
           - arch: arm64
-            platform: arm64
             rust_target: aarch64-unknown-linux-musl
             docker_image: arm64v8/ubuntu
           - arch: arm32
-            platform: arm/v7
             rust_target: armv7-unknown-linux-gnueabihf
             docker_image: arm32v7/ubuntu
     runs-on: ubuntu-latest
@@ -135,8 +133,6 @@ jobs:
     - name: Set up QEMU
       id: qemu
       uses: docker/setup-qemu-action@v1
-      with:
-        platforms: ${{ matrix.platform }}
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
