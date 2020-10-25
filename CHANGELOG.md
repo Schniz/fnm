@@ -1,4 +1,21 @@
-## 1.22.0 (2020-10-07)
+## 1.22.0 (2020-10-25)
+
+#### Bugfix 🐛
+
+- [#275](https://github.com/Schniz/fnm/pull/275) Fix moving a node installation across mounting points ([@jaythomas](https://github.com/jaythomas))
+
+#### Internal 🛠
+
+- [#274](https://github.com/Schniz/fnm/pull/274) Add ARM arch support in downloads ([@jaythomas](https://github.com/jaythomas))
+- [#266](https://github.com/Schniz/fnm/pull/266) Use separate config file for fish config ([@wesbaker](https://github.com/wesbaker))
+
+#### Committers: 3
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Jay Thomas ([@jaythomas](https://github.com/jaythomas))
+- Wes Baker ([@wesbaker](https://github.com/wesbaker))
+
+## v1.22.0-beta-1 (2020-10-07)
 
 #### New Feature 🎉
 
