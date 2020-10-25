@@ -61,10 +61,6 @@ jobs:
       run: cargo build --release
       env:
         RUSTFLAGS: "-C target-feature=+crt-static"
-    - name: Compress binary using UPX
-      run: |
-        choco install upx
-        upx target/release/fnm.exe
     - uses: actions/upload-artifact@v2
       with:
         name: fnm-windows
@@ -86,10 +82,6 @@ jobs:
       run: strip target/release/fnm
     - name: List dynamically linked libraries
       run: otool -L target/release/fnm
-    - name: Compress binary using UPX
-      run: |
-        brew install upx
-        upx target/release/fnm
     - uses: actions/upload-artifact@v2
       with:
         name: fnm-macos
@@ -106,10 +98,6 @@ jobs:
         docker run --rm -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:stable \
           cargo build --release
         sudo chown -R $(whoami):$(whoami) .
-    - name: Compress binary using UPX
-      run: |
-        sudo apt-get install -y upx
-        upx target/x86_64-unknown-linux-musl/release/fnm
     - uses: actions/upload-artifact@v2
       with:
         name: fnm-linux
