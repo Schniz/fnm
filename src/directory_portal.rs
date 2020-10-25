@@ -1,3 +1,4 @@
+use dircpy::copy_dir;
 use log::*;
 use std::path::Path;
 use tempfile::{tempdir, TempDir};
@@ -21,7 +22,8 @@ impl<P: AsRef<Path>> DirectoryPortal<P> {
             self.temp_dir.path(),
             self.target.as_ref()
         );
-        std::fs::rename(&self.temp_dir, &self.target)?;
+        copy_dir(&self.temp_dir, &self.target)?;
+        std::fs::remove_dir_all(&self.temp_dir)?;
         Ok(self.target)
     }
 }
