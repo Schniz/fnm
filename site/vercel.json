@@ -1,6 +1,19 @@
 {
   "redirects": [
-    { "source": "/", "destination": "https://github.com/Schniz/fnm" },
-    { "source": "/install", "destination": "https://github.com/Schniz/fnm/raw/master/.ci/install.sh" }
+    { "source": "/", "destination": "https://github.com/Schniz/fnm" }
+  ],
+  "rewrites": [
+    { "source": "/install", "destination": "/install.txt" }
+  ],
+  "headers": [
+    {
+      "source": "/install",
+      "headers" : [
+        {
+          "key" : "Cache-Control",
+          "value" : "public, max-age=3600"
+        }
+      ]
+    }
   ]
 }
