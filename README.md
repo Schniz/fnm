@@ -73,13 +73,13 @@ Then apply the changes the installer prints, to set up your shell profile.
 - Add the following line to your `.bashrc`/`.zshrc` file:
 
   ```bash
-  eval "$(fnm env --multi)"
+  eval "$(fnm env)"
   ```
 
   If you are using [fish shell](https://fishshell.com/), create `~/.config/fish/conf.d/fnm.fish` add this line to it:
 
   ```fish
-  fnm env --multi | source
+  fnm env | source
   ```
 
 ## Completions
@@ -123,11 +123,10 @@ Aliases a Node version to a given name.
 
 Aliases a Node version as default. Uses `fnm alias` underneath.
 
-### `fnm env [--multi] [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--use-on-cd] [--fnm-dir=DIR] [--log-level=quiet|error|all]`
+### `fnm env [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--use-on-cd] [--fnm-dir=DIR] [--log-level=quiet|error|all]`
 
 Prints the required shell commands in order to configure your shell, Bash compliant by default.
 
-- Providing `--multi` will output the multishell support, allowing a different current Node version per shell
 - Providing `--shell=fish` will output the Fish-compliant version. Omitting it and `fnm` will try to infer the current shell based on the process tree
 - Providing `--node-dist-mirror="https://npm.taobao.org/dist"` will use the Chinese mirror of Node.js
 - Providing `--use-on-cd` will also output a script that will automatically change the node version if a `.node-version`/`.nvmrc` file is found
