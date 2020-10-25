@@ -1,4 +1,14 @@
-## 1.22.0 (2020-10-25)
+## 1.22.1 (2020-10-25)
+
+#### Internal 🛠
+
+- [#279](https://github.com/Schniz/fnm/pull/279) Remove UPX binary compression for now ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.22.0 (2020-10-25)
 
 #### Bugfix 🐛
 
