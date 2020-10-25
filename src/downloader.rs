@@ -148,7 +148,11 @@ mod tests {
     #[test_env_log::test]
     fn test_installing_npm() {
         let installations_dir = tempdir().unwrap();
-        let npm_path = install_in(installations_dir.path()).join("npm");
+        let npm_path = install_in(installations_dir.path()).join(if cfg!(windows) {
+            "npm.cmd"
+        } else {
+            "npm"
+        });
 
         let stdout = duct::cmd(npm_path.to_str().unwrap(), vec!["--version"])
             .stdout_capture()
