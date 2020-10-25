@@ -6,7 +6,7 @@ edition = "2018"
 build = "build.rs"
 
 [dependencies]
-serde = { version = "1.0.116", features = ["derive"] }
+serde = { version = "1.0.117", features = ["derive"] }
 clap = "2.33.3"
 structopt = "0.3.20"
 reqwest = { version = "0.10.8", features = ["blocking", "json", "rustls-tls", "brotli"], default-features = false }
@@ -22,9 +22,10 @@ tempfile = "3.1.0"
 indoc = "1.0.3"
 snafu = { version = "0.6.9", features = ["backtrace"] }
 log = "0.4.11"
-env_logger = "0.7.1"
+env_logger = "0.8.1"
 atty = "0.2.14"
 encoding_rs_io = "0.1.7"
+dircpy = "0.3.4"
 
 [dev-dependencies]
 pretty_assertions = "0.6.1"
