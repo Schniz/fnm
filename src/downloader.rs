@@ -131,52 +131,47 @@ mod tests {
 
     #[test_env_log::test]
     fn test_installing_node_12() {
-        let version = Version::parse("12.0.0").unwrap();
-        let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
         let installations_dir = tempdir().unwrap();
-        install_node_dist(&version, &node_dist_mirror, &installations_dir)
-            .expect("Can't install Node 12");
+        let node_path = install_in(installations_dir.path()).join("node");
 
-        let mut location_path = PathBuf::from(&installations_dir.path());
-        location_path.push(version.v_str());
-        location_path.push("installation");
-
-        if cfg!(unix) {
-            location_path.push("bin");
-        }
-
-        location_path.push("node");
-
-        let result = duct::cmd(location_path.to_str().unwrap(), vec!["--version"])
+        let stdout = duct::cmd(node_path.to_str().unwrap(), vec!["--version"])
             .stdout_capture()
             .run()
-            .expect("Can't run Node binary");
-        assert_eq!(result.stdout, b"v12.0.0\n");
+            .expect("Can't run Node binary")
+            .stdout;
+
+        let result = String::from_utf8(stdout).expect("Can't read `node --version` output");
+
+        assert_eq!(result.trim(), "v12.0.0");
     }
 
     #[test_env_log::test]
     fn test_installing_npm() {
+        let installations_dir = tempdir().unwrap();
+        let npm_path = install_in(installations_dir.path()).join("npm");
+
+        let stdout = duct::cmd(npm_path.to_str().unwrap(), vec!["--version"])
+            .stdout_capture()
+            .run()
+            .expect("Can't run npm")
+            .stdout;
+
+        let result = String::from_utf8(stdout).expect("Can't read npm output");
+
+        assert_eq!(result.trim(), "6.9.0");
+    }
+
+    fn install_in(path: &Path) -> PathBuf {
         let version = Version::parse("12.0.0").unwrap();
         let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
-        let installations_dir = tempdir().unwrap();
-        install_node_dist(&version, &node_dist_mirror, &installations_dir)
-            .expect("Can't install Node 12");
+        install_node_dist(&version, &node_dist_mirror, &path).expect("Can't install Node 12");
 
-        let mut location_path = PathBuf::from(&installations_dir.path());
-        location_path.push(version.v_str());
-        location_path.push("installation");
+        let mut location_path = path.join(version.v_str()).join("installation");
 
         if cfg!(unix) {
             location_path.push("bin");
         }
 
-        location_path.push("npm");
-
-        let result = duct::cmd(location_path.to_str().unwrap(), vec!["--version"])
-            .stdout_capture()
-            .run()
-            .expect("Can't run npm");
-
-        assert_eq!(result.stdout, b"6.9.0\n");
+        location_path
     }
 }
