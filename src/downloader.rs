@@ -88,7 +88,11 @@ pub fn install_node_dist<P: AsRef<Path>>(
     );
 
     std::fs::create_dir_all(installations_dir.as_ref()).context(IoError)?;
-    let portal = DirectoryPortal::new(installation_dir);
+
+    let temp_installations_dir = installations_dir.as_ref().join(".downloads");
+    std::fs::create_dir_all(&temp_installations_dir).context(IoError)?;
+
+    let portal = DirectoryPortal::new_in(&temp_installations_dir, installation_dir);
 
     let url = download_url(node_dist_mirror, version);
     debug!("Going to call for {}", &url);
@@ -123,7 +127,6 @@ mod tests {
     use crate::downloader::install_node_dist;
     use crate::version::Version;
     use pretty_assertions::assert_eq;
-    use std::io::Read;
     use tempfile::tempdir;
 
     #[test_env_log::test]
@@ -144,16 +147,36 @@ mod tests {
 
         location_path.push("node");
 
-        let mut result = String::new();
-        std::process::Command::new(location_path.to_str().unwrap())
-            .arg("--version")
-            .stdout(std::process::Stdio::piped())
-            .spawn()
-            .expect("Can't find node executable")
-            .stdout
-            .expect("Can't capture stdout")
-            .read_to_string(&mut result)
-            .expect("Failed reading stdout");
-        assert_eq!(result.trim(), "v12.0.0");
+        let result = duct::cmd(location_path.to_str().unwrap(), vec!["--version"])
+            .stdout_capture()
+            .run()
+            .expect("Can't run Node binary");
+        assert_eq!(result.stdout, b"v12.0.0\n");
+    }
+
+    #[test_env_log::test]
+    fn test_installing_npm() {
+        let version = Version::parse("12.0.0").unwrap();
+        let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
+        let installations_dir = tempdir().unwrap();
+        install_node_dist(&version, &node_dist_mirror, &installations_dir)
+            .expect("Can't install Node 12");
+
+        let mut location_path = PathBuf::from(&installations_dir.path());
+        location_path.push(version.v_str());
+        location_path.push("installation");
+
+        if cfg!(unix) {
+            location_path.push("bin");
+        }
+
+        location_path.push("npm");
+
+        let result = duct::cmd(location_path.to_str().unwrap(), vec!["--version"])
+            .stdout_capture()
+            .run()
+            .expect("Can't run npm");
+
+        assert_eq!(result.stdout, b"6.9.0\n");
     }
 }

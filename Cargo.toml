@@ -25,7 +25,6 @@ log = "0.4.11"
 env_logger = "0.8.1"
 atty = "0.2.14"
 encoding_rs_io = "0.1.7"
-dircpy = "0.3.4"
 
 [dev-dependencies]
 pretty_assertions = "0.6.1"
