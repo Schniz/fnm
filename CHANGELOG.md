@@ -1,4 +1,20 @@
-## 1.22.1 (2020-10-25)
+## 1.22.2 (2020-10-25)
+
+#### Bugfix 🐛
+
+- [#284](https://github.com/Schniz/fnm/pull/284) Fix npm not working because of wrong file copying ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#271](https://github.com/Schniz/fnm/pull/271) Update README for Windows instructions ([@Schniz](https://github.com/Schniz))
+- [#281](https://github.com/Schniz/fnm/pull/281) docs: removed mentions of --multi from README ([@folke](https://github.com/folke))
+
+#### Committers: 2
+
+- Folke Lemaitre ([@folke](https://github.com/folke))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.22.1 (2020-10-25)
 
 #### Internal 🛠
 
