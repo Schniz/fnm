@@ -1,5 +1,4 @@
 use super::shell::Shell;
-use crate::log_level::LogLevel;
 use indoc::indoc;
 use std::path::PathBuf;
 
@@ -19,37 +18,24 @@ impl Shell for Zsh {
         format!("export {}={:?}", name, value)
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
-        format!(
-            indoc!(
-                "
-                    autoload -U add-zsh-hook
-                    _fnm_autoload_hook () {{
-                        if [[ -f .node-version && -r .node-version ]]; then
-                            {}
-                            fnm use
-                        elif [[ -f .nvmrc && -r .nvmrc ]]; then
-                            {}
-                            fnm use
-                        fi
-                    }}
+    fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
+        indoc!(
+            r#"
+                autoload -U add-zsh-hook
+                _fnm_autoload_hook () {
+                    if [[ -f .node-version && -r .node-version ]]; then
+                        echo "fnm: Found .node-version"
+                        fnm use
+                    elif [[ -f .nvmrc && -r .nvmrc ]]; then
+                        echo "fnm: Found .nvmrc"
+                        fnm use
+                    fi
+                }
 
-                    add-zsh-hook chpwd _fnm_autoload_hook \
-                        && _fnm_autoload_hook
-                ",
-            ),
-            self.echo_found(".node-version", config)
-                .unwrap_or_else(|| "".into()),
-            self.echo_found(".nvmrc", config)
-                .unwrap_or_else(|| "".into()),
+                add-zsh-hook chpwd _fnm_autoload_hook \
+                    && _fnm_autoload_hook
+            "#
         )
         .into()
-    }
-
-    fn echo_found(&self, file_name: &str, config: &crate::config::FnmConfig) -> Option<String> {
-        match config.log_level() {
-            LogLevel::Info => Some(format!(r#"echo "fnm: {}""#, file_name).into()),
-            _ => None,
-        }
     }
 }

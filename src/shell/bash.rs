@@ -1,5 +1,4 @@
 use super::shell::Shell;
-use crate::log_level::LogLevel;
 use indoc::indoc;
 use std::path::PathBuf;
 
@@ -19,37 +18,24 @@ impl Shell for Bash {
         format!("export {}={:?}", name, value)
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
-        format!(
-            indoc!(
-                r#"
-                    __fnmcd () {{
-                        cd "$@"
+    fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
+        indoc!(
+            r#"
+                __fnmcd () {
+                    cd "$@"
 
-                        if [[ -f .node-version && .node-version ]]; then
-                            {}
-                            fnm use
-                        elif [[ -f .nvmrc && .nvmrc ]]; then
-                            {}
-                            fnm use
-                        fi
-                    }}
+                    if [[ -f .node-version && .node-version ]]; then
+                        echo "fnm: Found .node-version"
+                        fnm use
+                    elif [[ -f .nvmrc && .nvmrc ]]; then
+                        echo "fnm: Found .nvmrc"
+                        fnm use
+                    fi
+                }
 
-                    alias cd=__fnmcd
-                "#
-            ),
-            self.echo_found(".node-version", config)
-                .unwrap_or_else(|| "".into()),
-            self.echo_found(".nvmrc", config)
-                .unwrap_or_else(|| "".into()),
+                alias cd=__fnmcd
+            "#
         )
         .into()
-    }
-
-    fn echo_found(&self, file_name: &str, config: &crate::config::FnmConfig) -> Option<String> {
-        match config.log_level() {
-            LogLevel::Info => Some(format!(r#"echo "fnm: {}""#, file_name).into()),
-            _ => None,
-        }
     }
 }

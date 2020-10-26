@@ -25,7 +25,6 @@ impl Shell for PowerShell {
             New-Alias cd Set-LocationWithFnm
         "#).into()
     }
-
     fn into_structopt_shell(&self) -> clap::Shell {
         clap::Shell::PowerShell
     }
