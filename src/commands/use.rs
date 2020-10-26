@@ -24,6 +24,8 @@ impl Command for Use {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
+        let multishell_path = config.multishell_path().context(FnmEnvWasNotSourced)?;
+
         let all_versions =
             installed_versions::list(config.installations_dir()).context(VersionListingError)?;
         let requested_version = self
@@ -83,10 +85,6 @@ impl Command for Use {
             }
         };
 
-        let multishell_path = config
-            .multishell_path()
-            .expect("fnm isn't set up. Have you tried running `fnm env`?");
-
         fs::remove_symlink_dir(&multishell_path).context(SymlinkingDeletionIssue)?;
         fs::symlink_dir(version_path, &multishell_path).context(SymlinkingCreationIssue)?;
 
@@ -134,4 +132,11 @@ pub enum Error {
         "Can't find version in dotfiles. Please provide a version manually to the command."
     ))]
     CantInferVersion,
+    #[snafu(display(
+        "{}\n{}\n{}",
+        "We can't find the necessary environment variables to replace the Node version.",
+        "  Have you set up your shell profile to evaluate `fnm env`?",
+        "Check out our documentation for more information: https://fnm.vercel.app"
+    ))]
+    FnmEnvWasNotSourced,
 }
