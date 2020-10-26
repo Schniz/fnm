@@ -6,6 +6,10 @@ pub fn list<P: AsRef<Path>>(installations_dir: P) -> Result<Vec<Version>, Error>
     let mut vec = vec![];
     for result_entry in installations_dir.as_ref().read_dir().context(IoError)? {
         let entry = result_entry.context(IoError)?;
+        if entry.file_name() == ".downloads" {
+            continue;
+        }
+
         let path = entry.path();
         let filename = path
             .file_name()

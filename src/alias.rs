@@ -70,4 +70,8 @@ impl StoredAlias {
             .to_str()
             .unwrap()
     }
+
+    pub fn path(&self) -> &std::path::Path {
+        &self.alias_path
+    }
 }

@@ -38,6 +38,17 @@ impl Version {
         }
     }
 
+    pub fn find_aliases(
+        &self,
+        config: &crate::config::FnmConfig,
+    ) -> std::io::Result<Vec<crate::alias::StoredAlias>> {
+        let aliases = crate::alias::list_aliases(&config)?
+            .drain(..)
+            .filter(|alias| alias.s_ver() == self.v_str())
+            .collect();
+        Ok(aliases)
+    }
+
     pub fn v_str(&self) -> String {
         format!("{}", self)
     }
@@ -57,6 +68,17 @@ impl Version {
                     .join(v.v_str())
                     .join("installation"),
             ),
+        }
+    }
+
+    pub fn root_path(&self, config: &crate::config::FnmConfig) -> Option<std::path::PathBuf> {
+        match self.installation_path(&config) {
+            None => None,
+            Some(path) => {
+                let mut canon_path = path.canonicalize().ok()?;
+                canon_path.pop();
+                Some(canon_path)
+            }
         }
     }
 }

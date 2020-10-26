@@ -16,17 +16,8 @@ impl super::command::Command for LsLocal {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let base_dir = config.installations_dir();
-        let mut versions: Vec<_> = std::fs::read_dir(&base_dir)
-            .context(CantListLocallyInstalledVersion)?
-            .filter_map(|x| {
-                if let Ok(version_dir) = x {
-                    let file_name = version_dir.file_name();
-                    file_name.to_str().and_then(|x| Version::parse(x).ok())
-                } else {
-                    None
-                }
-            })
-            .collect();
+        let mut versions =
+            crate::installed_versions::list(base_dir).context(CantListLocallyInstalledVersion)?;
         versions.insert(0, Version::Bypassed);
         versions.sort();
         let aliases_hash = generate_aliases_hash(&config).context(CantReadAliases)?;
@@ -73,7 +64,9 @@ fn generate_aliases_hash(config: &FnmConfig) -> std::io::Result<HashMap<String, 
 #[derive(Debug, Snafu)]
 pub enum Error {
     #[snafu(display("Can't list locally installed versions: {}", source))]
-    CantListLocallyInstalledVersion { source: std::io::Error },
+    CantListLocallyInstalledVersion {
+        source: crate::installed_versions::Error,
+    },
     #[snafu(display("Can't read aliases: {}", source))]
     CantReadAliases { source: std::io::Error },
 }

@@ -5,29 +5,59 @@ use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
 pub enum SubCommand {
-    #[structopt(name = "ls-remote", about = "List all remote Node.js versions")]
+    /// List all remote Node.js versions
+    #[structopt(name = "ls-remote")]
     LsRemote(commands::ls_remote::LsRemote),
-    #[structopt(name = "ls", about = "List all local Node.js versions")]
+
+    /// List all locally installed Node.js versions
+    #[structopt(name = "ls")]
     LsLocal(commands::ls_local::LsLocal),
-    #[structopt(name = "install", about = "Install a new Node.js version")]
+
+    /// Install a new Node.js version
+    #[structopt(name = "install")]
     Install(commands::install::Install),
-    #[structopt(name = "use", about = "Change Node.js version")]
+
+    /// Change Node.js version
+    #[structopt(name = "use")]
     Use(commands::r#use::Use),
-    #[structopt(
-        name = "env",
-        about = "Print and setup required environment variables for fnm"
-    )]
+
+    /// Print and set up required environment variables for fnm
+    #[structopt(name = "env")]
     Env(commands::env::Env),
-    #[structopt(name = "completions", about = "Create completions file")]
+
+    /// Print shell completions to stdout
+    #[structopt(name = "completions")]
     Completions(commands::completions::Completions),
-    #[structopt(name = "alias", about = "alias a version to a common name")]
+
+    /// Alias a version to a common name
+    #[structopt(name = "alias")]
     Alias(commands::alias::Alias),
-    #[structopt(name = "default", about = "set a version as the default version")]
+
+    /// Set a version as the default version
+    ///
+    /// This is a shorthand for `fnm alias VERSION default`
+    #[structopt(name = "default")]
     Default(commands::default::Default),
-    #[structopt(name = "current", about = "The current version")]
+
+    /// Print the current Node.js version
+    #[structopt(name = "current")]
     Current(commands::current::Current),
-    #[structopt(name = "exec", about = "Run a command with in fnm context")]
+
+    /// Run a command within fnm context
+    ///
+    /// Example:
+    /// --------
+    /// fnm exec --using=v12.0.0 -- node --version
+    /// => v12.0.0
+    #[structopt(name = "exec")]
     Exec(commands::exec::Exec),
+
+    /// Uninstall a Node.js version
+    ///
+    /// > Warning: when providing an alias, it will remove the Node version the alias
+    /// is pointing to, along with the other aliases that point to the same version.
+    #[structopt(name = "uninstall")]
+    Uninstall(commands::uninstall::Uninstall),
 }
 
 impl SubCommand {
@@ -43,6 +73,7 @@ impl SubCommand {
             Self::Default(cmd) => cmd.call(config),
             Self::Current(cmd) => cmd.call(config),
             Self::Exec(cmd) => cmd.call(config),
+            Self::Uninstall(cmd) => cmd.call(config),
         }
     }
 }

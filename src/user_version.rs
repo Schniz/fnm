@@ -8,11 +8,18 @@ pub enum UserVersion {
 }
 
 impl UserVersion {
-    pub fn to_version<'a, T>(&self, available_versions: T) -> Option<&'a Version>
+    pub fn to_version<'a, T>(
+        &self,
+        available_versions: T,
+        config: &crate::config::FnmConfig,
+    ) -> Option<&'a Version>
     where
         T: IntoIterator<Item = &'a Version>,
     {
-        available_versions.into_iter().filter(|x| &self == x).max()
+        available_versions
+            .into_iter()
+            .filter(|x| self.matches(x, config))
+            .max()
     }
 
     pub fn alias_name(&self) -> Option<String> {
@@ -21,13 +28,19 @@ impl UserVersion {
             _ => None,
         }
     }
-}
 
-impl PartialEq<Version> for UserVersion {
-    fn eq(&self, other: &Version) -> bool {
-        match (self, other) {
+    pub fn matches(&self, version: &Version, config: &crate::config::FnmConfig) -> bool {
+        match (self, version) {
             (Self::Full(a), b) if a == b => true,
-            (Self::Full(_), _) => false,
+            (Self::Full(user_version), maybe_alias) => {
+                match (user_version.alias_name(), maybe_alias.find_aliases(&config)) {
+                    (None, _) | (_, Err(_)) => false,
+                    (Some(user_alias), Ok(aliases)) => aliases
+                        .iter()
+                        .find(|alias| alias.name() == user_alias)
+                        .is_some(),
+                }
+            }
             (_, Version::Bypassed) => false,
             (_, Version::Lts(_)) => false,
             (_, Version::Alias(_)) => false,
@@ -84,7 +97,7 @@ mod tests {
             expected.clone(),
             Version::parse("7.0.1").unwrap(),
         ];
-        let result = UserVersion::OnlyMajor(6).to_version(&versions);
+        let result = UserVersion::OnlyMajor(6).to_version(&versions, &Default::default());
 
         assert_eq!(result, Some(&expected));
     }
@@ -98,7 +111,7 @@ mod tests {
             expected.clone(),
             Version::parse("7.0.1").unwrap(),
         ];
-        let result = UserVersion::MajorMinor(6, 0).to_version(&versions);
+        let result = UserVersion::MajorMinor(6, 0).to_version(&versions, &Default::default());
 
         assert_eq!(result, Some(&expected));
     }
@@ -112,7 +125,7 @@ mod tests {
             Version::parse("6.0.1").unwrap(),
             Version::parse("7.0.1").unwrap(),
         ];
-        let result = UserVersion::Full(expected.clone()).to_version(&versions);
+        let result = UserVersion::Full(expected.clone()).to_version(&versions, &Default::default());
 
         assert_eq!(result, Some(&expected));
     }

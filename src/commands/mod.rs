@@ -8,4 +8,5 @@ pub mod exec;
 pub mod install;
 pub mod ls_local;
 pub mod ls_remote;
+pub mod uninstall;
 pub mod r#use;
