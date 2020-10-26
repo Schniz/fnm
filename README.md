@@ -1,7 +1,7 @@
 <h1 align="center">
   Fast Node Manager (<code>fnm</code>)
   <img alt="Amount of downloads" src="https://img.shields.io/github/downloads/Schniz/fnm/total.svg?style=flat" />
-  <a href="https://dev.azure.com/Schniz/fnm/_build/latest?definitionId=1?branchName=master"><img alt="Build Status" src="https://dev.azure.com/Schniz/fnm/_apis/build/status/Schniz.fnm?branchName=master" /></a>
+  <a href="https://github.com/Schniz/fnm/actions"><img src="https://img.shields.io/github/workflow/status/Schniz/fnm/Rust/master?label=workflow" alt="GitHub Actions workflow status" /></a>
 </h1>
 
 > :rocket: Fast and simple Node.js version manager, built in Rust
