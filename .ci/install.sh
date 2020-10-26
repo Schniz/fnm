@@ -144,12 +144,12 @@ setup_shell() {
     echo ""
     echo '  # fnm'
     echo '  export PATH='"$INSTALL_DIR"':$PATH'
-    echo '  eval "`fnm env --multi`"'
+    echo '  eval "`fnm env`"'
 
     echo '' >>$CONF_FILE
     echo '# fnm' >>$CONF_FILE
     echo 'export PATH='$INSTALL_DIR':$PATH' >>$CONF_FILE
-    echo 'eval "`fnm env --multi`"' >>$CONF_FILE
+    echo 'eval "`fnm env`"' >>$CONF_FILE
 
   elif [ "$CURRENT_SHELL" == "fish" ]; then
     CONF_FILE=$HOME/.config/fish/conf.d/fnm.fish
@@ -158,11 +158,11 @@ setup_shell() {
     echo ""
     echo '  # fnm'
     echo '  set PATH '"$INSTALL_DIR"' $PATH'
-    echo '  fnm env --multi | source'
+    echo '  fnm env | source'
 
     echo '# fnm' >>$CONF_FILE
     echo 'set PATH '"$INSTALL_DIR"' $PATH' >>$CONF_FILE
-    echo 'fnm env --multi | source' >>$CONF_FILE
+    echo 'fnm env | source' >>$CONF_FILE
 
   elif [ "$CURRENT_SHELL" == "bash" ]; then
     if [ "$OS" == "Darwin" ]; then
@@ -175,12 +175,12 @@ setup_shell() {
     echo ""
     echo '  # fnm'
     echo '  export PATH='"$INSTALL_DIR"':$PATH'
-    echo '  eval "`fnm env --multi`"'
+    echo '  eval "`fnm env`"'
 
     echo '' >>$CONF_FILE
     echo '# fnm' >>$CONF_FILE
     echo 'export PATH='"$INSTALL_DIR"':$PATH' >>$CONF_FILE
-    echo 'eval "`fnm env --multi`"' >>$CONF_FILE
+    echo 'eval "`fnm env`"' >>$CONF_FILE
 
   else
     echo "Could not infer shell type. Please set up manually."
