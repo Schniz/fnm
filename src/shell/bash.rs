@@ -25,10 +25,8 @@ impl Shell for Bash {
                     cd "$@"
 
                     if [[ -f .node-version && .node-version ]]; then
-                        echo "fnm: Found .node-version"
                         fnm use
                     elif [[ -f .nvmrc && .nvmrc ]]; then
-                        echo "fnm: Found .nvmrc"
                         fnm use
                     fi
                 }
