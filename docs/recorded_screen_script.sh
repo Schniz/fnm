@@ -9,7 +9,7 @@ function type() {
   echo $* | pv -qL $[10+(-2 + RANDOM%5)]
 }
 
-type 'eval `fnm env`'
+type 'eval "$(fnm env)"'
 eval `fnm env`
 
 type 'fnm --version'

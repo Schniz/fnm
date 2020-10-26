@@ -1,4 +1,47 @@
-## 1.22.0 (2020-10-07)
+## 1.22.2 (2020-10-25)
+
+#### Bugfix 🐛
+
+- [#284](https://github.com/Schniz/fnm/pull/284) Fix npm not working because of wrong file copying ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#271](https://github.com/Schniz/fnm/pull/271) Update README for Windows instructions ([@Schniz](https://github.com/Schniz))
+- [#281](https://github.com/Schniz/fnm/pull/281) docs: removed mentions of --multi from README ([@folke](https://github.com/folke))
+
+#### Committers: 2
+
+- Folke Lemaitre ([@folke](https://github.com/folke))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.22.1 (2020-10-25)
+
+#### Internal 🛠
+
+- [#279](https://github.com/Schniz/fnm/pull/279) Remove UPX binary compression for now ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.22.0 (2020-10-25)
+
+#### Bugfix 🐛
+
+- [#275](https://github.com/Schniz/fnm/pull/275) Fix moving a node installation across mounting points ([@jaythomas](https://github.com/jaythomas))
+
+#### Internal 🛠
+
+- [#274](https://github.com/Schniz/fnm/pull/274) Add ARM arch support in downloads ([@jaythomas](https://github.com/jaythomas))
+- [#266](https://github.com/Schniz/fnm/pull/266) Use separate config file for fish config ([@wesbaker](https://github.com/wesbaker))
+
+#### Committers: 3
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Jay Thomas ([@jaythomas](https://github.com/jaythomas))
+- Wes Baker ([@wesbaker](https://github.com/wesbaker))
+
+## v1.22.0-beta-1 (2020-10-07)
 
 #### New Feature 🎉
 

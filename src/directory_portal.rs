@@ -1,17 +1,23 @@
-use dircpy::copy_dir;
 use log::*;
 use std::path::Path;
-use tempfile::{tempdir, TempDir};
+use tempfile::TempDir;
 
+/// A "work-in-progress" directory, which will "teleport" into the path
+/// given in `target` only on successful, guarding from invalid state in the file system.
+///
+/// Underneath, it uses `fs::rename`, so make sure to make the `temp_dir` inside the same
+/// mount as `target`. This is why we have the `new_in` constructor.
 pub struct DirectoryPortal<P: AsRef<Path>> {
     temp_dir: TempDir,
     target: P,
 }
 
 impl<P: AsRef<Path>> DirectoryPortal<P> {
+    /// Create a new portal which will keep the temp files in
+    /// a subdirectory of `parent_dir` until teleporting to `target`.
     #[must_use]
-    pub fn new(target: P) -> Self {
-        let temp_dir = tempdir().expect("Can't generate a temp directory");
+    pub fn new_in(parent_dir: impl AsRef<Path>, target: P) -> Self {
+        let temp_dir = TempDir::new_in(parent_dir).expect("Can't generate a temp directory");
         debug!("Created a temp directory in {:?}", temp_dir.path());
         Self { target, temp_dir }
     }
@@ -22,8 +28,7 @@ impl<P: AsRef<Path>> DirectoryPortal<P> {
             self.temp_dir.path(),
             self.target.as_ref()
         );
-        copy_dir(&self.temp_dir, &self.target)?;
-        std::fs::remove_dir_all(&self.temp_dir)?;
+        std::fs::rename(&self.temp_dir, &self.target)?;
         Ok(self.target)
     }
 }
@@ -45,11 +50,12 @@ impl<P: AsRef<Path>> AsRef<Path> for DirectoryPortal<P> {
 mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
+    use tempfile::tempdir;
 
-    #[test]
+    #[test_env_log::test]
     fn test_portal() {
         let tempdir = tempdir().expect("Can't generate a temp directory");
-        let portal = DirectoryPortal::new(tempdir.path().join("subdir"));
+        let portal = DirectoryPortal::new_in(std::env::temp_dir(), tempdir.path().join("subdir"));
         let new_file_path = portal.to_path_buf().join("README.md");
         std::fs::write(&new_file_path, "Hello world!").expect("Can't write file");
         let target = portal.teleport().expect("Can't close directory portal");

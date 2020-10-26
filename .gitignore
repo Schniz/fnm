@@ -4,3 +4,5 @@ docs/screen_recording
 **/*.rs.bk
 feature_tests/.tmp
 *.log
+/site/public
+.vercel

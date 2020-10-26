@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "Gal Schlezinger",
   "license": "MIT",
+  "scripts": {
+    "build": "rm -rf public; mkdir public; cp ../.ci/install.sh ./public/install.txt"
+  },
   "devDependencies": {
     "@vercel/node": "1.8.4",
     "typescript": "4.0.3",
