@@ -28,6 +28,8 @@ pub enum SubCommand {
     Current(commands::current::Current),
     #[structopt(name = "exec", about = "Run a command with in fnm context")]
     Exec(commands::exec::Exec),
+    #[structopt(name = "uninstall", about = "Uninstall a Node.js version")]
+    Uninstall(commands::uninstall::Uninstall),
 }
 
 impl SubCommand {
@@ -43,6 +45,7 @@ impl SubCommand {
             Self::Default(cmd) => cmd.call(config),
             Self::Current(cmd) => cmd.call(config),
             Self::Exec(cmd) => cmd.call(config),
+            Self::Uninstall(cmd) => cmd.call(config),
         }
     }
 }

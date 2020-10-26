@@ -48,7 +48,7 @@ impl Command for Use {
             outln!(config#Info, "Using Node for alias {}", alias_name.cyan());
             alias_path
         } else {
-            let current_version = requested_version.to_version(&all_versions);
+            let current_version = requested_version.to_version(&all_versions, &config);
             match current_version {
                 Some(version) => {
                     outln!(config#Info, "Using Node {}", version.to_string().cyan());
@@ -125,9 +125,7 @@ pub enum Error {
     #[snafu(display("{}", source))]
     InstallError { source: <Install as Command>::Error },
     #[snafu(display("Can't get locally installed versions: {}", source))]
-    VersionListingError {
-        source: crate::installed_versions::Error,
-    },
+    VersionListingError { source: installed_versions::Error },
     #[snafu(display("Requested version {} is not currently installed", version))]
     CantFindVersion { version: UserVersion },
     #[snafu(display(

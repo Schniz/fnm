@@ -50,7 +50,7 @@ pub fn choose_version_for_user_input<'a>(
             version: Version::Alias(alias_name),
         })
     } else {
-        let current_version = requested_version.to_version(&all_versions);
+        let current_version = requested_version.to_version(&all_versions, &config);
         current_version.map(|version| {
             info!("Using Node {}", version.to_string().cyan());
             let path = config

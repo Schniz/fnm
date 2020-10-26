@@ -82,7 +82,7 @@ impl super::command::Command for Install {
                     .collect();
 
                 current_version
-                    .to_version(&available_versions)
+                    .to_version(&available_versions, &config)
                     .context(CantFindNodeVersion {
                         requested_version: current_version,
                     })?
