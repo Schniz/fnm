@@ -6,6 +6,9 @@ pub trait Shell: Debug {
     fn set_env_var(&self, name: &str, value: &str) -> String;
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String;
     fn into_structopt_shell(&self) -> structopt::clap::Shell;
+    fn echo_found(&self, _file_name: &str, _config: &crate::config::FnmConfig) -> Option<String> {
+        None
+    }
 }
 
 #[cfg(windows)]

@@ -1,4 +1,5 @@
 use super::shell::Shell;
+use crate::log_level::LogLevel;
 use indoc::indoc;
 use std::path::PathBuf;
 
@@ -18,21 +19,34 @@ impl Shell for Fish {
         format!("set -gx {name} {value:?};", name = name, value = value)
     }
 
-    fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
-        indoc!(
-            r#"
-                function _fnm_autoload_hook --on-variable PWD --description 'Change Node version on directory change'
-                    status --is-command-substitution; and return
-                    if test -f .node-version
-                        echo "fnm: Found .node-version"
-                        fnm use
-                    else if test -f .nvmrc
-                        echo "fnm: Found .nvmrc"
-                        fnm use
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
+        format!(
+            indoc!(
+                "
+                    function _fnm_autoload_hook --on-variable PWD --description 'Change Node version on directory change'
+                        status --is-command-substitution; and return
+                        if test -f .node-version
+                            {}
+                            fnm use
+                        else if test -f .nvmrc
+                            {}
+                            fnm use
+                        end
                     end
-                end
-            "#
+                ",
+            ),
+            self.echo_found(".node-version", config)
+                .unwrap_or_else(|| "".into()),
+            self.echo_found(".nvmrc", config)
+                .unwrap_or_else(|| "".into()),
         )
         .into()
+    }
+
+    fn echo_found(&self, file_name: &str, config: &crate::config::FnmConfig) -> Option<String> {
+        match config.log_level() {
+            LogLevel::Info => Some(format!(r#"echo "fnm: {}""#, file_name).into()),
+            _ => None,
+        }
     }
 }
