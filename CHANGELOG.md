@@ -1,4 +1,29 @@
-## 1.22.2 (2020-10-25)
+## 1.22.3 (2020-10-26)
+
+#### New Feature 🎉
+
+- [#292](https://github.com/Schniz/fnm/pull/292) Add uninstall command ([@Schniz](https://github.com/Schniz))
+- [#276](https://github.com/Schniz/fnm/pull/276) Add pre-built binaries for ARM32 and ARM64 ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#290](https://github.com/Schniz/fnm/pull/290) Fix shell inference in VSCode ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#287](https://github.com/Schniz/fnm/pull/287) Remove `--multi` from install script ([@jameschensmith](https://github.com/jameschensmith))
+
+#### Documentation 📝
+
+- [#295](https://github.com/Schniz/fnm/pull/295) Add a warning if MULTISHELL env var is not in PATH ([@Schniz](https://github.com/Schniz))
+- [#293](https://github.com/Schniz/fnm/pull/293) Add detailed error instead of panic regarding `fnm env` ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- James Chen-Smith ([@jameschensmith](https://github.com/jameschensmith))
+
+## v1.22.2 (2020-10-25)
 
 #### Bugfix 🐛
 
@@ -6,6 +31,7 @@
 
 #### Documentation 📝
 
+- [#282](https://github.com/Schniz/fnm/pull/282) site: proxy the installation script ([@Schniz](https://github.com/Schniz))
 - [#271](https://github.com/Schniz/fnm/pull/271) Update README for Windows instructions ([@Schniz](https://github.com/Schniz))
 - [#281](https://github.com/Schniz/fnm/pull/281) docs: removed mentions of --multi from README ([@folke](https://github.com/folke))
 

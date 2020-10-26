@@ -503,7 +503,7 @@ dependencies = [
 
 [[package]]
 name = "fnm"
-version = "1.22.2"
+version = "1.22.3"
 dependencies = [
  "atty",
  "chrono",
