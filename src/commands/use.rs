@@ -25,6 +25,7 @@ impl Command for Use {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let multishell_path = config.multishell_path().context(FnmEnvWasNotSourced)?;
+        warn_if_multishell_path_not_in_path_env_var(&multishell_path, &config);
 
         let all_versions =
             installed_versions::list(config.installations_dir()).context(VersionListingError)?;
@@ -114,6 +115,32 @@ fn should_install_interactively(requested_version: &UserVersion) -> bool {
     s.trim().to_lowercase() == "y"
 }
 
+fn warn_if_multishell_path_not_in_path_env_var(
+    multishell_path: &std::path::Path,
+    config: &FnmConfig,
+) {
+    let bin_path = if cfg!(unix) {
+        multishell_path.join("bin")
+    } else {
+        multishell_path.to_path_buf()
+    };
+
+    for path in std::env::split_paths(&std::env::var("PATH").unwrap_or(String::new())) {
+        if bin_path == path {
+            return;
+        }
+    }
+
+    outln!(
+        config#Error,
+        "{} {}\n{}\n{}",
+        "warning:".yellow().bold(),
+        "The current Node.js path is not on your PATH environment variable.".yellow(),
+        "Have you set up your shell profile to evaluate `fnm env`?".yellow(),
+        "Check out our documentation for more information: https://fnm.vercel.app".yellow()
+    );
+}
+
 #[derive(Debug, Snafu)]
 pub enum Error {
     #[snafu(display("Can't create the symlink: {}", source))]
@@ -133,7 +160,7 @@ pub enum Error {
     #[snafu(display(
         "{}\n{}\n{}",
         "We can't find the necessary environment variables to replace the Node version.",
-        "  Have you set up your shell profile to evaluate `fnm env`?",
+        "Have you set up your shell profile to evaluate `fnm env`?",
         "Check out our documentation for more information: https://fnm.vercel.app"
     ))]
     FnmEnvWasNotSourced,
