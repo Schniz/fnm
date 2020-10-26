@@ -1,6 +1,7 @@
 #![cfg(unix)]
 
 use super::super::{Bash, Fish, PowerShell, Shell, Zsh};
+use log::debug;
 use std::io::{Error, ErrorKind};
 
 #[derive(Debug)]
@@ -17,13 +18,19 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
 
     while pid != None && visited < MAX_ITERATIONS {
         let process_info = get_process_info(pid.unwrap()).ok()?;
+        let binary = process_info
+            .command
+            .trim_start_matches('-')
+            .split('/')
+            .last()
+            .expect("Can't read file name of process tree");
 
-        match process_info.command.as_str().trim_start_matches('-') {
+        match binary {
             "sh" | "bash" => return Some(Box::from(Bash)),
             "zsh" => return Some(Box::from(Zsh)),
             "fish" => return Some(Box::from(Fish)),
             "pwsh" => return Some(Box::from(PowerShell)),
-            _ => (),
+            cmd_name => debug!("binary is not a supported shell: {:?}", cmd_name),
         };
 
         pid = process_info.parent_pid;
@@ -63,7 +70,7 @@ fn get_process_info(pid: u32) -> std::io::Result<ProcessInfo> {
         .expect("Can't read the ppid from ps, should be the first item in the table");
     let command = parts
         .next()
-        .expect("Can't read the command from ps, should be the first item in the table");
+        .expect("Can't read the command from ps, should be the second item in the table");
 
     Ok(ProcessInfo {
         parent_pid: u32::from_str_radix(ppid, 10).ok(),
