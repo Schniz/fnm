@@ -28,6 +28,8 @@ jobs:
           docker run --rm -v $(pwd):$(pwd) -e "RUST_LOG=fnm=debug" --workdir $(pwd) ${{matrix.docker_image}} bash -c '
             set -e
 
+            apt update && apt install -y unzip curl
+
             bash ./.ci/install.sh
 
             echo "fnm --version"
