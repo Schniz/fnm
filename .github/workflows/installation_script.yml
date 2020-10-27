@@ -30,6 +30,9 @@ jobs:
 
             apt update && apt install -y unzip curl
 
+            echo "-------------------------------------"
+            echo "Installing for CPU arch: $(uname -m)"
+
             bash ./.ci/install.sh
 
             echo "fnm --version"
