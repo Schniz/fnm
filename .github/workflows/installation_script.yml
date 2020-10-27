@@ -36,7 +36,7 @@ jobs:
             ~/.fnm/fnm --version
 
             echo "eval fnm env"
-            eval "$(fnm env)"
+            eval "$(~/.fnm/fnm env)"
 
             echo "fnm install"
             ~/.fnm/fnm install 12
