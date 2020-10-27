@@ -1,4 +1,5 @@
 use crate::version::Version;
+use std::str::FromStr;
 
 #[derive(Clone, Debug)]
 pub enum UserVersion {
@@ -52,7 +53,7 @@ impl UserVersion {
     }
 }
 
-fn next_of<'a, T: std::str::FromStr, It: Iterator<Item = &'a str>>(i: &mut It) -> Option<T> {
+fn next_of<'a, T: FromStr, It: Iterator<Item = &'a str>>(i: &mut It) -> Option<T> {
     let x = i.next()?;
     T::from_str(x).ok()
 }
@@ -67,13 +68,21 @@ impl std::fmt::Display for UserVersion {
     }
 }
 
-impl std::str::FromStr for UserVersion {
+fn skip_first_v(str: &str) -> &str {
+    if str.starts_with('v') {
+        &str[1..]
+    } else {
+        str
+    }
+}
+
+impl FromStr for UserVersion {
     type Err = semver::SemVerError;
     fn from_str(s: &str) -> Result<UserVersion, Self::Err> {
         match Version::parse(s) {
             Ok(v) => Ok(Self::Full(v)),
             Err(e) => {
-                let mut parts = s.trim().split('.');
+                let mut parts = skip_first_v(s.trim()).split('.');
                 match (next_of::<u64, _>(&mut parts), next_of::<u64, _>(&mut parts)) {
                     (Some(major), None) => Ok(Self::OnlyMajor(major)),
                     (Some(major), Some(minor)) => Ok(Self::MajorMinor(major, minor)),
@@ -85,8 +94,40 @@ impl std::str::FromStr for UserVersion {
 }
 
 #[cfg(test)]
+impl PartialEq for UserVersion {
+    fn eq(&self, other: &Self) -> bool {
+        use UserVersion::*;
+
+        match (self, other) {
+            (OnlyMajor(a), OnlyMajor(b)) if a == b => true,
+            (MajorMinor(a1, a2), MajorMinor(b1, b2)) if (a1, a2) == (b1, b2) => true,
+            (Full(v1), Full(v2)) if v1 == v2 => true,
+            (_, _) => false,
+        }
+    }
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_parsing_only_major() {
+        let version = UserVersion::from_str("10").ok();
+        assert_eq!(version, Some(UserVersion::OnlyMajor(10)));
+    }
+
+    #[test]
+    fn test_parsing_major_minor() {
+        let version = UserVersion::from_str("10.20").ok();
+        assert_eq!(version, Some(UserVersion::MajorMinor(10, 20)));
+    }
+
+    #[test]
+    fn test_parsing_only_major_with_v() {
+        let version = UserVersion::from_str("v10").ok();
+        assert_eq!(version, Some(UserVersion::OnlyMajor(10)));
+    }
 
     #[test]
     fn test_major_to_version() {
