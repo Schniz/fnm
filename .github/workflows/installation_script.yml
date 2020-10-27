@@ -10,6 +10,44 @@ on:
       - .ci/install.sh
 
 jobs:
+  test_against_latest_release_arm:
+    strategy:
+      matrix:
+        docker_image:
+          - arm64v8/ubuntu
+          - arm32v7/ubuntu
+    name: Test against latest release (ARM)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+      - uses: actions/checkout@v2
+      - name: Run installation script in Docker
+        run: |
+          docker run --rm -v $(pwd):$(pwd) -e "RUST_LOG=fnm=debug" --workdir $(pwd) ${{matrix.docker_image}} bash -c '
+            set -e
+
+            apt update && apt install -y unzip curl libatomic1
+
+            echo "-------------------------------------"
+            echo "Installing for CPU arch: $(uname -m)"
+
+            bash ./.ci/install.sh
+
+            echo "fnm --version"
+            ~/.fnm/fnm --version
+
+            echo "eval fnm env"
+            eval "$(~/.fnm/fnm env)"
+
+            echo "fnm install"
+            ~/.fnm/fnm install 12
+
+            echo "node -v"
+            ~/.fnm/fnm exec --using=12 -- node -v
+          '
+
   test_against_latest_release:
     name: Test against latest release
     strategy:
