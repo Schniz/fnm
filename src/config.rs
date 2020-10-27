@@ -66,6 +66,12 @@ impl FnmConfig {
     pub fn aliases_dir(&self) -> std::path::PathBuf {
         ensure_exists_silently(self.base_dir_with_default().join("aliases"))
     }
+
+    #[cfg(test)]
+    pub fn with_base_dir(mut self, base_dir: Option<std::path::PathBuf>) -> Self {
+        self.base_dir = base_dir;
+        self
+    }
 }
 
 fn ensure_exists_silently<T: AsRef<std::path::Path>>(path: T) -> T {

@@ -112,6 +112,11 @@ impl super::command::Command for Install {
             create_alias(&config, &alias_name, &version).context(IoError)?;
         }
 
+        if !config.default_version_dir().exists() {
+            debug!("Tagging {} as the default version", version.v_str().cyan());
+            create_alias(&config, "default", &version).context(IoError)?;
+        }
+
         Ok(())
     }
 }
@@ -150,4 +155,37 @@ pub enum Error {
     },
     #[snafu(display("Too many versions provided. Please don't use --lts with a version string."))]
     TooManyVersionsProvided,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::super::command::Command;
+    use super::*;
+    use pretty_assertions::assert_eq;
+    use std::str::FromStr;
+
+    #[test]
+    fn test_set_default_on_new_installation() {
+        let base_dir = tempfile::tempdir().unwrap();
+        let config = FnmConfig::default().with_base_dir(Some(base_dir.path().to_path_buf()));
+        assert!(!config.default_version_dir().exists());
+
+        Install {
+            version: UserVersion::from_str("12.0.0").ok(),
+            lts: false,
+        }
+        .apply(&config)
+        .expect("Can't install");
+
+        assert!(config.default_version_dir().exists());
+        assert_eq!(
+            config.default_version_dir().canonicalize().ok(),
+            config
+                .installations_dir()
+                .join("v12.0.0")
+                .join("installation")
+                .canonicalize()
+                .ok()
+        );
+    }
 }
