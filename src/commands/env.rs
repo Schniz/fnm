@@ -4,6 +4,7 @@ use crate::fs::symlink_dir;
 use crate::outln;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
+use snafu::{OptionExt, Snafu};
 use std::fmt::Debug;
 use structopt::StructOpt;
 
@@ -50,7 +51,7 @@ impl Command for Env {
             outln!(config#Error, "{} {} is deprecated. This is now the default.", "warning:".yellow().bold(), "--multi".italic());
         }
 
-        let shell: Box<dyn Shell> = self.shell.unwrap_or_else(&infer_shell);
+        let shell: Box<dyn Shell> = self.shell.or_else(&infer_shell).context(CantInferShell)?;
         let multishell_path = make_symlink(&config);
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
@@ -81,8 +82,25 @@ impl Command for Env {
     }
 }
 
-#[derive(Debug, snafu::Snafu)]
-pub enum Error {}
+#[derive(Debug, Snafu)]
+pub enum Error {
+    #[snafu(display(
+        "{}\n{}\n{}\n{}",
+        "Can't infer shell!",
+        "fnm can't infer your shell based on the process tree.",
+        "Maybe it is unsupported? we support the following shells:",
+        shells_as_string()
+    ))]
+    CantInferShell,
+}
+
+fn shells_as_string() -> String {
+    AVAILABLE_SHELLS
+        .iter()
+        .map(|x| format!("* {}", x))
+        .collect::<Vec<_>>()
+        .join("\n")
+}
 
 #[cfg(test)]
 mod tests {
