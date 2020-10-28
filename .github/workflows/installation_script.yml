@@ -66,8 +66,8 @@ jobs:
       - run: "sudo apt-get install -y ${{ matrix.shell }}"
         name: Install ${{matrix.shell}} using apt-get
         if: matrix.setup.os == 'ubuntu'
-      - run: "brew install ${{ matrix.shell }}"
-        name: Install ${{matrix.shell}} using Homebrew
+      - run: "brew update && brew install ${{ matrix.shell }}"
+        name: Update formulae and install ${{matrix.shell}} using Homebrew
         if: matrix.setup.os == 'macos'
       - run: |
           if [ -f ~/.bashrc ]; then
