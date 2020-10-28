@@ -86,8 +86,12 @@ impl Command for Use {
             }
         };
 
-        fs::remove_symlink_dir(&multishell_path).context(SymlinkingDeletionIssue)?;
-        fs::symlink_dir(version_path, &multishell_path).context(SymlinkingCreationIssue)?;
+        let symlink_deletion_result = fs::remove_symlink_dir(&multishell_path);
+        let symlink_result = fs::symlink_dir(version_path, &multishell_path);
+
+        symlink_result
+            .or(symlink_deletion_result)
+            .context(SymlinkingCreationIssue)?;
 
         Ok(())
     }
@@ -145,8 +149,6 @@ fn warn_if_multishell_path_not_in_path_env_var(
 pub enum Error {
     #[snafu(display("Can't create the symlink: {}", source))]
     SymlinkingCreationIssue { source: std::io::Error },
-    #[snafu(display("Can't delete the symlink: {}", source))]
-    SymlinkingDeletionIssue { source: std::io::Error },
     #[snafu(display("{}", source))]
     InstallError { source: <Install as Command>::Error },
     #[snafu(display("Can't get locally installed versions: {}", source))]
