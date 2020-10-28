@@ -15,7 +15,7 @@ pub struct Env {
     #[structopt(possible_values = AVAILABLE_SHELLS)]
     shell: Option<Box<dyn Shell>>,
     /// Deprecated. This is the default now.
-    #[structopt(long)]
+    #[structopt(long, hidden = true)]
     multi: bool,
     /// Print the script to change Node versions every directory change
     #[structopt(long)]
