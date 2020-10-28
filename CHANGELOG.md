@@ -1,4 +1,28 @@
-## 1.22.3 (2020-10-26)
+## 1.22.4 (2020-10-28)
+
+#### New Feature 🎉
+
+- [#304](https://github.com/Schniz/fnm/pull/304) Make the first installed version the default one ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#308](https://github.com/Schniz/fnm/pull/308) Allow unsuccessful symlink deletion in `fnm use` ([@Schniz](https://github.com/Schniz))
+- [#303](https://github.com/Schniz/fnm/pull/303) Add ARM handling to installation script ([@Schniz](https://github.com/Schniz))
+- [#289](https://github.com/Schniz/fnm/pull/289) Remove logs from automatic version switching in `--use-on-cd` ([@maxjacobson](https://github.com/maxjacobson))
+- [#301](https://github.com/Schniz/fnm/pull/301) UserVersion: Fix different parsing for leading `v` ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#306](https://github.com/Schniz/fnm/pull/306) Throw an error instead of panicking when can't infer shell ([@Schniz](https://github.com/Schniz))
+- [#297](https://github.com/Schniz/fnm/pull/297) Update CI badge ([@jameschensmith](https://github.com/jameschensmith))
+
+#### Committers: 3
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- James Chen-Smith ([@jameschensmith](https://github.com/jameschensmith))
+- Max Jacobson ([@maxjacobson](https://github.com/maxjacobson))
+
+## v1.22.3 (2020-10-26)
 
 #### New Feature 🎉
 
