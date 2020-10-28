@@ -86,14 +86,23 @@ impl Command for Use {
             }
         };
 
-        let symlink_deletion_result = fs::remove_symlink_dir(&multishell_path);
-        let symlink_result = fs::symlink_dir(version_path, &multishell_path);
-
-        symlink_result
-            .or(symlink_deletion_result)
-            .context(SymlinkingCreationIssue)?;
+        replace_symlink(&version_path, &multishell_path).context(SymlinkingCreationIssue)?;
 
         Ok(())
+    }
+}
+
+/// Tries to delete `from`, and then tries to symlink `from` to `to` anyway.
+/// If the symlinking fails, it will return the errors in the following order:
+/// * The deletion error (if exists)
+/// * The creation error
+///
+/// This way, we can create a symlink if it is missing.
+fn replace_symlink(from: &std::path::Path, to: &std::path::Path) -> std::io::Result<()> {
+    let symlink_deletion_result = fs::remove_symlink_dir(&to);
+    match fs::symlink_dir(&from, &to) {
+        ok @ Ok(_) => ok,
+        err @ Err(_) => symlink_deletion_result.and(err),
     }
 }
 
