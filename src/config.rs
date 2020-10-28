@@ -16,8 +16,15 @@ pub struct FnmConfig {
     #[structopt(long = "fnm-dir", env = "FNM_DIR")]
     pub base_dir: Option<std::path::PathBuf>,
 
-    /// Where the current node version link is stored
-    #[structopt(long, env = "FNM_MULTISHELL_PATH")]
+    /// Where the current node version link is stored.
+    /// This value will be populated automatically by evaluating
+    /// `fnm env` in your shell profile. Read more about it using `fnm help env`
+    #[structopt(
+        long,
+        env = "FNM_MULTISHELL_PATH",
+        hide_env_values = true,
+        hidden = true
+    )]
     multishell_path: Option<std::path::PathBuf>,
 
     /// The log level of fnm commands

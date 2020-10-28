@@ -18,7 +18,7 @@ pub struct Install {
     pub version: Option<UserVersion>,
 
     /// Install latest LTS
-    #[structopt(long)]
+    #[structopt(long, conflicts_with = "version")]
     pub lts: bool,
 }
 
