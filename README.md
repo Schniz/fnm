@@ -34,7 +34,7 @@ curl -fsSL https://fnm.vercel.app/install | bash
 
 #### Upgrade
 
-On OSX, it is a simple as `brew upgrade Schniz/tap/fnm`.
+On OSX, it is a simple as `brew upgrade fnm`.
 
 On other operating systems, upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file add `--skip-shell` to install command.
 
@@ -62,10 +62,8 @@ curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --
 
 #### Using Homebrew (OSX)
 
-[This is a custom tap I'm maintaining](https://github.com/Schniz/homebrew-tap), and will be used until fnm will move to the official one.
-
 ```bash
-brew install Schniz/tap/fnm
+brew install fnm
 ```
 
 Then apply the changes the installer prints, to set up your shell profile.
