@@ -1,4 +1,19 @@
-## 1.22.4 (2020-10-28)
+## 1.22.5 (2020-10-29)
+
+#### Bugfix 🐛
+
+- [#310](https://github.com/Schniz/fnm/pull/310) Better error handling in symlink replacement ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#307](https://github.com/Schniz/fnm/pull/307) Refer to homebrew/core formula instead of custom tap ([@jameschensmith](https://github.com/jameschensmith))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- James Chen-Smith ([@jameschensmith](https://github.com/jameschensmith))
+
+## v1.22.4 (2020-10-28)
 
 #### New Feature 🎉
 
