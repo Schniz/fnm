@@ -10,7 +10,7 @@ pub enum SubCommand {
     LsRemote(commands::ls_remote::LsRemote),
 
     /// List all locally installed Node.js versions
-    #[structopt(name = "ls")]
+    #[structopt(name = "ls", aliases = &["list"])]
     LsLocal(commands::ls_local::LsLocal),
 
     /// Install a new Node.js version
