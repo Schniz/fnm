@@ -2,8 +2,10 @@ use super::command::Command as Cmd;
 use crate::choose_version_for_user_input::choose_version_for_user_input;
 use crate::choose_version_for_user_input::Error as UserInputError;
 use crate::config::FnmConfig;
+use crate::outln;
 use crate::user_version::UserVersion;
 use crate::version_files::get_user_version_from_file;
+use colored::Colorize;
 use snafu::{OptionExt, ResultExt, Snafu};
 use std::process::{Command, Stdio};
 use structopt::StructOpt;
@@ -14,12 +16,19 @@ pub struct Exec {
     arguments: Vec<String>,
     #[structopt(long = "using")]
     version: Option<UserVersion>,
+    /// Deprecated. This is the default now.
+    #[structopt(long = "using-file", help = "")]
+    using_file: bool,
 }
 
 impl Cmd for Exec {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
+        if self.using_file {
+            outln!(config#Error, "{} {} is deprecated. This is now the default.", "warning:".yellow().bold(), "--using-file".italic());
+        }
+
         let version = self
             .version
             .or_else(|| {
