@@ -17,7 +17,7 @@ pub struct Exec {
     #[structopt(long = "using")]
     version: Option<UserVersion>,
     /// Deprecated. This is the default now.
-    #[structopt(long = "using-file", help = "")]
+    #[structopt(long = "using-file", hidden = true)]
     using_file: bool,
 }
 
