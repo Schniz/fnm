@@ -1,4 +1,14 @@
-## 1.22.5 (2020-10-29)
+## 1.22.6 (2020-11-04)
+
+#### Bugfix 🐛
+
+- [#317](https://github.com/Schniz/fnm/pull/317) Bring back --using-file flag with a deprecation warning. ([@bjornua](https://github.com/bjornua))
+
+#### Committers: 1
+
+- Bjørn Arnholtz ([@bjornua](https://github.com/bjornua))
+
+## v1.22.5 (2020-10-29)
 
 #### Bugfix 🐛
 
