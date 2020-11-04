@@ -6,7 +6,7 @@ use structopt::StructOpt;
 #[derive(StructOpt, Debug)]
 pub enum SubCommand {
     /// List all remote Node.js versions
-    #[structopt(name = "ls-remote")]
+    #[structopt(name = "ls-remote", aliases = &["list-remote"])]
     LsRemote(commands::ls_remote::LsRemote),
 
     /// List all locally installed Node.js versions
