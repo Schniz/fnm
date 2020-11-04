@@ -152,11 +152,11 @@ Activates `[VERSION]` as the current Node version. If no version provided, it wi
 
 Display currently activated Node version.
 
-### `fnm ls`
+### `fnm list`
 
 Lists the installed Node versions.
 
-### `fnm ls-remote`
+### `fnm list-remote`
 
 Lists the Node versions available to download remotely.
 
