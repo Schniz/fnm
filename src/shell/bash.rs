@@ -21,17 +21,19 @@ impl Shell for Bash {
     fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
         indoc!(
             r#"
-                __fnmcd () {
-                    cd "$@"
-
-                    if [[ -f .node-version && .node-version ]]; then
-                        fnm use
-                    elif [[ -f .nvmrc && .nvmrc ]]; then
+                __fnm_use_if_file_found() {
+                    if [[ -f .node-version || -f .nvmrc ]]; then
                         fnm use
                     fi
                 }
 
+                __fnmcd () {
+                    cd "$@" || return $?
+                    __fnm_use_if_file_found
+                }
+
                 alias cd=__fnmcd
+                __fnm_use_if_file_found
             "#
         )
         .into()

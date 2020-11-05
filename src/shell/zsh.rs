@@ -23,9 +23,7 @@ impl Shell for Zsh {
             r#"
                 autoload -U add-zsh-hook
                 _fnm_autoload_hook () {
-                    if [[ -f .node-version && -r .node-version ]]; then
-                        fnm use
-                    elif [[ -f .nvmrc && -r .nvmrc ]]; then
+                    if [[ -f .node-version || -f .nvmrc ]]; then
                         fnm use
                     fi
                 }
