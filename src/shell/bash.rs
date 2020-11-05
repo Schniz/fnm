@@ -24,7 +24,7 @@ impl Shell for Bash {
                 __fnmcd () {
                     cd "$@"
                     
-                    if [ -s $(pwd)/.node-version ] || [ -s $(pwd)/.nvmrc ]; then
+                    if [ -s .node-version ] || [ -s .nvmrc ]; then
                         fnm use
                     else
                         fnm use default
