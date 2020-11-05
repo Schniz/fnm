@@ -23,11 +23,11 @@ impl Shell for Bash {
             r#"
                 __fnmcd () {
                     cd "$@"
-
-                    if [[ -f .node-version && .node-version ]]; then
+                    
+                    if [ -s $(pwd)/.node-version ] || [ -s $(pwd)/.nvmrc ]; then
                         fnm use
-                    elif [[ -f .nvmrc && .nvmrc ]]; then
-                        fnm use
+                    else
+                        fnm use default
                     fi
                 }
 
