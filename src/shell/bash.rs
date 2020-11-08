@@ -27,8 +27,8 @@ impl Shell for Bash {
                     fi
                 }
 
-                __fnmcd () {
-                    cd "$@" || return $?
+                __fnmcd() {
+                    \cd "$@" || return $?
                     __fnm_use_if_file_found
                 }
 
