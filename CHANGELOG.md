@@ -1,4 +1,21 @@
-## 1.22.6 (2020-11-04)
+## 1.22.7 (2020-11-09)
+
+#### New Feature 🎉
+
+- [#315](https://github.com/Schniz/fnm/pull/315) Add `list` alias for `ls` ([@probablykasper](https://github.com/probablykasper))
+
+#### Bugfix 🐛
+
+- [#326](https://github.com/Schniz/fnm/pull/326) Make config arguments globally available on all commands ([@Schniz](https://github.com/Schniz))
+- [#323](https://github.com/Schniz/fnm/pull/323) Escape `cd` calls in Bash's use-on-cd ([@Schniz](https://github.com/Schniz))
+- [#322](https://github.com/Schniz/fnm/pull/322) Run `fnm use` on shell initialization in Bash ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Kasper ([@probablykasper](https://github.com/probablykasper))
+
+## v1.22.6 (2020-11-04)
 
 #### Bugfix 🐛
 
