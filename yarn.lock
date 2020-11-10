@@ -170,13 +170,14 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
-cmd-ts@0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/cmd-ts/-/cmd-ts-0.6.5.tgz#d8b2513149650bd2930cc8bf34dc67584bc771aa"
-  integrity sha512-13xnCEfiVZFcTIG3R/lJ9628gt2XHODrxyHk3SQqkYrHUZwF6VzX0CVQWn0FrYI0qXT4cltF/XxeDEfUindBEw==
+cmd-ts@0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/cmd-ts/-/cmd-ts-0.6.6.tgz#eef0f2f9212fc9c2c49c04116760080f2c871a5f"
+  integrity sha512-teWSvjA1s82T3sTx28AkdRlkmYraBKrH56eSy2EiNnxOkJFmmW4bPIjuY25vLzeM2BraUBxLRm9EkcXtypK64A==
   dependencies:
     chalk "^3.0.0"
     debug "^4.1.1"
+    didyoumean "^1.2.1"
     strip-ansi "^6.0.0"
 
 color-convert@^1.9.0:
@@ -252,6 +253,11 @@ depd@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
+
+didyoumean@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/didyoumean/-/didyoumean-1.2.1.tgz#e92edfdada6537d484d73c0172fd1eba0c4976ff"
+  integrity sha1-6S7f2tplN9SE1zwBcv0eugxJdv8=
 
 emoji-regex@^7.0.1:
   version "7.0.3"
