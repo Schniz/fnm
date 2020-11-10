@@ -22,14 +22,19 @@
 
 ## Installation
 
-### Using a script (MacOS/Linux)
-
-> :wave: Hey, I'm sorry that the automated way does not support Windows yet. Feel free to contribute it! Maybe [Chocolatey](https://chocolatey.org/) or [Scoop](https://scoop.sh/)?
+### Using a script
+#### MacOS/Linux
 
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
 
 ```bash
 curl -fsSL https://fnm.vercel.app/install | bash
+```
+
+#### Windows
+Scoop:
+```bash
+scoop install fnm
 ```
 
 #### Upgrade
