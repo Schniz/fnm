@@ -1,4 +1,14 @@
-## 1.22.7 (2020-11-09)
+## 1.22.8 (2020-11-10)
+
+#### Documentation 📝
+
+- [#327](https://github.com/Schniz/fnm/pull/327) Make ls and ls-remote aliases visible ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.22.7 (2020-11-09)
 
 #### New Feature 🎉
 
