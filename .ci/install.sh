@@ -43,7 +43,7 @@ set_filename() {
   if [ "$OS" == "Linux" ]; then
     # Based on https://stackoverflow.com/a/45125525
     case "$(uname -m)" in
-      arm | armv7*)
+      arm | armv6* | armv7*)
         FILENAME="fnm-arm32"
         ;;
       aarch* | armv8*)
