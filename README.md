@@ -101,6 +101,12 @@ Then apply the changes the installer prints, to set up your shell profile.
     FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
     ```
 
+#### Using Cargo (Linux/Mac/Windows)
+
+```bash
+cargo install --git https://github.com/Schniz/fnm.git
+```
+
 ## Completions
 
 fnm ships its completions with the binary:
