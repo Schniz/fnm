@@ -4,6 +4,8 @@ version = "1.22.8"
 authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
 edition = "2018"
 build = "build.rs"
+license = "GPLv3"
+description = "Fast and simple Node.js version manager"
 
 [dependencies]
 serde = { version = "1.0.117", features = ["derive"] }
