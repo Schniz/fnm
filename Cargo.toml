@@ -5,6 +5,7 @@ authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
 edition = "2018"
 build = "build.rs"
 license = "GPL-3.0"
+repository = "https://github.com/Schniz/fnm"
 description = "Fast and simple Node.js version manager"
 
 [dependencies]
