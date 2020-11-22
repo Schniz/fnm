@@ -4,7 +4,7 @@ version = "1.22.8"
 authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
 edition = "2018"
 build = "build.rs"
-license = "GPLv3"
+license = "GPL-3.0"
 description = "Fast and simple Node.js version manager"
 
 [dependencies]
