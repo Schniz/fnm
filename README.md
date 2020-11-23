@@ -86,14 +86,11 @@ Then apply the changes the installer prints, to set up your shell profile.
     fnm env | source
     ```
 
-  - For **PowerShell** users, add the following to the end of your profile file::
+  - For **PowerShell** users, add the following to the end of your [$PROFILE](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.1#the-profile-variable) file:
 
     ```powershell
     fnm env --use-on-cd | Out-String | Invoke-Expression
     ```
-
-    - On Windows, the profile is located at `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
-    - For Mac/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
 
   - For **WinCMD**, aka good old **Windows Command Prompt** or **Batch**, fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
 
