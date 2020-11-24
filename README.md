@@ -104,7 +104,7 @@ Then apply the changes the installer prints, to set up your shell profile.
 #### Using Cargo (Linux/Mac/Windows)
 
 ```bash
-cargo install --git https://github.com/Schniz/fnm.git
+cargo install fnm
 ```
 
 ## Completions
