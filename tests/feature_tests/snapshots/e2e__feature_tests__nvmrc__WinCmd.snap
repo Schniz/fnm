@@ -1,0 +1,13 @@
+---
+source: tests/feature_tests/mod.rs
+expression: "&source.trim()"
+---
+FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
+echo v8.11.3 > .nvmrc
+fnm install
+fnm use
+node -v | findstr v8.11.3
+if %errorlevel% neq 0 (
+    echo Node version does not match "v8.11.3"
+    exit 1
+)
