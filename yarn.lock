@@ -125,6 +125,14 @@ chalk@^3.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+chalk@^4.0.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.0.tgz#4e14870a618d9e2edd97dd8345fd9d9dc315646a"
+  integrity sha512-qwx12AxXe2Q5xQ43Ac//I6v5aXTipYrSESdOgzrN+9XjgEpyjpKuvSGaN4qE93f7TQTlerQQ8S+EQ0EyDoVL1A==
+  dependencies:
+    ansi-styles "^4.1.0"
+    supports-color "^7.1.0"
+
 chownr@^1.1.2:
   version "1.1.4"
   resolved "https://registry.npmjs.org/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
@@ -170,12 +178,12 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
-cmd-ts@0.6.6:
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/cmd-ts/-/cmd-ts-0.6.6.tgz#eef0f2f9212fc9c2c49c04116760080f2c871a5f"
-  integrity sha512-teWSvjA1s82T3sTx28AkdRlkmYraBKrH56eSy2EiNnxOkJFmmW4bPIjuY25vLzeM2BraUBxLRm9EkcXtypK64A==
+cmd-ts@0.6.7:
+  version "0.6.7"
+  resolved "https://registry.yarnpkg.com/cmd-ts/-/cmd-ts-0.6.7.tgz#96b5dd66ee7406664d0cd5021cc3d8e2e540ee21"
+  integrity sha512-Y+4lTlcbfhwju9jIeNEKOf7C7reo1hWnWshG7UfiLFOIMzHWDTFW32jubzr1US/RE2rCGs/8Cnzpd007UjfuYg==
   dependencies:
-    chalk "^3.0.0"
+    chalk "^4.0.0"
     debug "^4.1.1"
     didyoumean "^1.2.1"
     strip-ansi "^6.0.0"
@@ -767,10 +775,10 @@ path-key@^2.0.0, path-key@^2.0.1:
   resolved "https://registry.npmjs.org/path-key/-/path-key-2.0.1.tgz#411cadb574c5a140d3a4b1910d40d80cc9f40b40"
   integrity sha1-QRyttXTFoUDTpLGRDUDYDMn0C0A=
 
-prettier@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.1.2.tgz#3050700dae2e4c8b67c4c3f666cdb8af405e1ce5"
-  integrity sha512-16c7K+x4qVlJg9rEbXl7HEGmQyZlG4R9AgP+oHKRMsMsuk8s+ATStlf1NpDqyBI1HpVyfjLOeMhH2LvuNvV5Vg==
+prettier@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.2.0.tgz#8a03c7777883b29b37fb2c4348c66a78e980418b"
+  integrity sha512-yYerpkvseM4iKD/BXLYUkQV5aKt4tQPqaGW6EsZjzyu0r7sVZZNPJW4Y8MyKmicp6t42XUPcBVA+H6sB3gqndw==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
