@@ -56,7 +56,7 @@ Example:
 curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --skip-shell
 ```
 
-### Manually (OSX/Linux/Windows)
+### Manually
 
 #### Using Homebrew (OSX)
 
@@ -64,52 +64,29 @@ curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --
 brew install fnm
 ```
 
+Then, [set up your shell for fnm](#shell-setup)
+
 #### Using Scoop (Windows)
 
 ```bash
 scoop install fnm
 ```
 
-Then apply the changes the installer prints, to set up your shell profile.
-
-#### Using a release binary (Linux/Mac/Windows)
-
-- Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
-- Make it available globally on `PATH` environment variable
-- Configure your shell profile:
-
-  - For **Bash** or **Zsh** users, add the following to your `.bashrc`/`.zshrc` respectively:
-
-    ```bash
-    eval "$(fnm env)"
-    ```
-
-  - For [**Fish Shell**](https://fishshell.com/) users, create `~/.config/fish/conf.d/fnm.fish` add this line to it:
-
-    ```fish
-    fnm env | source
-    ```
-
-  - For **PowerShell** users, add the following to the end of your profile file::
-
-    ```powershell
-    fnm env --use-on-cd | Out-String | Invoke-Expression
-    ```
-
-    - On Windows, the profile is located at `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
-    - For Mac/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
-
-  - For **WinCMD**, aka good old **Windows Command Prompt** or **Batch**, fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
-
-    ```
-    FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
-    ```
+Then, [set up your shell for fnm](#shell-setup)
 
 #### Using Cargo (Linux/Mac/Windows)
 
 ```bash
 cargo install fnm
 ```
+
+Then, [set up your shell for fnm](#shell-setup)
+
+#### Using a release binary (Linux/Mac/Windows)
+
+- Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
+- Make it available globally on `PATH` environment variable
+- Configure your shell profile:
 
 ## Completions
 
@@ -127,6 +104,54 @@ Where `<SHELL>` can be one of the supported shells:
 - `powershell`
 
 Please follow your shell instructions to install them.
+
+### Shell Setup
+
+fnm needs to run some shell commands before you can start using it.
+This is done by evaluating the output of `fnm env`. Check out the following guides for the shell you use:
+
+#### Bash
+
+add the following to your `.bashrc` profile:
+
+```bash
+eval "$(fnm env)"
+```
+
+#### Zsh
+
+add the following to your `.zshrc` profile:
+
+```zsh
+eval "$(fnm env)"
+```
+
+#### Fish shell
+
+create `~/.config/fish/conf.d/fnm.fish` add this line to it:
+
+```fish
+fnm env | source
+```
+
+#### PowerShell
+
+add the following to the end of your profile file::
+
+```powershell
+fnm env --use-on-cd | Out-String | Invoke-Expression
+```
+
+- On Windows, the profile is located at `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+- For Mac/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
+
+#### Windows Command Prompt aka Batch aka WinCMD
+
+fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
+
+```
+FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
+```
 
 ## Usage
 
