@@ -1,6 +1,0 @@
----
-source: tests/e2e.rs
-expression: "&source.trim()"
----
-FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
-fnm ls
