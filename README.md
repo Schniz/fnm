@@ -24,8 +24,6 @@
 
 ### Using a script (MacOS/Linux)
 
-> :wave: Hey, I'm sorry that the automated way does not support Windows yet. Feel free to contribute it! Maybe [Chocolatey](https://chocolatey.org/) or [Scoop](https://scoop.sh/)?
-
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
 
 ```bash
@@ -64,6 +62,12 @@ curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --
 
 ```bash
 brew install fnm
+```
+
+#### Using Scoop (Windows)
+
+```bash
+scoop install fnm
 ```
 
 Then apply the changes the installer prints, to set up your shell profile.
