@@ -21,7 +21,7 @@
   "devDependencies": {
     "cmd-ts": "0.6.7",
     "lerna-changelog": "1.0.1",
-    "prettier": "2.2.0",
+    "prettier": "2.2.1",
     "toml": "3.0.0"
   }
 }
