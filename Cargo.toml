@@ -9,21 +9,21 @@ repository = "https://github.com/Schniz/fnm"
 description = "Fast and simple Node.js version manager"
 
 [dependencies]
-serde = { version = "1.0.117", features = ["derive"] }
+serde = { version = "1.0.118", features = ["derive"] }
 clap = "2.33.3"
 structopt = "0.3.21"
-reqwest = { version = "0.10.9", features = ["blocking", "json", "rustls-tls", "brotli"], default-features = false }
-serde_json = "1.0.59"
+reqwest = { version = "0.10.10", features = ["blocking", "json", "rustls-tls", "brotli"], default-features = false }
+serde_json = "1.0.60"
 chrono = { version = "0.4.19", features = ["serde"] }
 tar = "0.4.30"
 xz2 = "0.1.6"
 semver = "0.11.0"
 dirs = "3.0.1"
 colored = "2.0.0"
-zip = "0.5.8"
+zip = "0.5.9"
 tempfile = "3.1.0"
 indoc = "1.0.3"
-snafu = { version = "0.6.9", features = ["backtrace"] }
+snafu = { version = "0.6.10", features = ["backtrace"] }
 log = "0.4.11"
 env_logger = "0.8.2"
 atty = "0.2.14"
@@ -38,7 +38,7 @@ insta = { version = "1.3.0", features = ["backtrace"] }
 serial_test = "0.5.1"
 
 [build-dependencies]
-embed-resource = "1.3.4"
+embed-resource = "1.4.1"
 
 [target.'cfg(windows)'.dependencies]
 csv = "1.1.5"
