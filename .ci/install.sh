@@ -148,7 +148,7 @@ setup_shell() {
   CURRENT_SHELL="$(basename "$SHELL")"
 
   if [ "$CURRENT_SHELL" == "zsh" ]; then
-    CONF_FILE=$HOME/.zshrc
+    CONF_FILE=${ZDOTDIR:-$HOME}/.zshrc
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
     echo ""
