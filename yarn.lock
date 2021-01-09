@@ -178,10 +178,10 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
-cmd-ts@0.6.7:
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/cmd-ts/-/cmd-ts-0.6.7.tgz#96b5dd66ee7406664d0cd5021cc3d8e2e540ee21"
-  integrity sha512-Y+4lTlcbfhwju9jIeNEKOf7C7reo1hWnWshG7UfiLFOIMzHWDTFW32jubzr1US/RE2rCGs/8Cnzpd007UjfuYg==
+cmd-ts@0.6.8:
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/cmd-ts/-/cmd-ts-0.6.8.tgz#6d25d68c138a13c62096c9e824b08667850a2d3a"
+  integrity sha512-cRnKzfuXTUOlEaWwEx4Ky7DV3UIQeLY1u6QSaXYbJggNirhaoLd1S/HhKcMFoLAZ94/xZ3KqNfqBW30wJCCXrQ==
   dependencies:
     chalk "^4.0.0"
     debug "^4.1.1"
