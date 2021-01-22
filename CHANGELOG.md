@@ -1,4 +1,25 @@
-## 1.22.8 (2020-11-10)
+## 1.22.9 (2021-01-21)
+
+#### Bugfix 🐛
+
+- [#368](https://github.com/Schniz/fnm/pull/368) Update 'ring' to '0.16.17' ([@gucheen](https://github.com/gucheen))
+- [#347](https://github.com/Schniz/fnm/pull/347) Check if \$ZDOTDIR exists to find correct path to .zshrc ([@thales-maciel](https://github.com/thales-maciel))
+
+#### Documentation 📝
+
+- [#341](https://github.com/Schniz/fnm/pull/341) Update installation instructions ([@Schniz](https://github.com/Schniz))
+- [#329](https://github.com/Schniz/fnm/pull/329) Add scoop support ([@Armaldio](https://github.com/Armaldio))
+- [#334](https://github.com/Schniz/fnm/pull/334) Add installation instructions from cargo ([@zhmushan](https://github.com/zhmushan))
+
+#### Committers: 5
+
+- Cheng Gu ([@gucheen](https://github.com/gucheen))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Quentin Goinaud ([@Armaldio](https://github.com/Armaldio))
+- Thales Maciel ([@thales-maciel](https://github.com/thales-maciel))
+- 木杉 ([@zhmushan](https://github.com/zhmushan))
+
+## v1.22.8 (2020-11-10)
 
 #### Documentation 📝
 
