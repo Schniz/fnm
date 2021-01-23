@@ -1,6 +1,6 @@
 name: Rust
 
-on: 
+on:
   pull_request:
   push:
     branches:
@@ -68,7 +68,7 @@ jobs:
 
   build_macos_release:
     runs-on: macOS-latest
-    name: "Release build for MacOS"
+    name: "Release build for macOS"
     steps:
     - uses: hecrj/setup-rust-action@v1
       with:

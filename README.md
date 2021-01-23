@@ -12,7 +12,7 @@
 
 ## Features
 
-:earth_americas: Cross-platform support (Mac, Windows, Linux)
+:earth_americas: Cross-platform support (macOS, Windows, Linux)
 
 :sparkles: Single file, easy installation, instant startup
 
@@ -22,7 +22,7 @@
 
 ## Installation
 
-### Using a script (MacOS/Linux)
+### Using a script (macOS/Linux)
 
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
 
@@ -32,7 +32,7 @@ curl -fsSL https://fnm.vercel.app/install | bash
 
 #### Upgrade
 
-On OSX, it is a simple as `brew upgrade fnm`.
+On macOS, it is as simple as `brew upgrade fnm`.
 
 On other operating systems, upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file add `--skip-shell` to install command.
 
@@ -48,7 +48,7 @@ Skip appending shell specific loader to shell config file, based on the current 
 
 `--force-install`
 
-MacOS installations using the installation script are deprecated in favor of the Homebrew formula, but this forces the script to install using it anyway.
+macOS installations using the installation script are deprecated in favor of the Homebrew formula, but this forces the script to install using it anyway.
 
 Example:
 
@@ -58,7 +58,7 @@ curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --
 
 ### Manually
 
-#### Using Homebrew (OSX)
+#### Using Homebrew (macOS)
 
 ```bash
 brew install fnm
@@ -74,7 +74,7 @@ scoop install fnm
 
 Then, [set up your shell for fnm](#shell-setup)
 
-#### Using Cargo (Linux/Mac/Windows)
+#### Using Cargo (Linux/macOS/Windows)
 
 ```bash
 cargo install fnm
@@ -82,7 +82,7 @@ cargo install fnm
 
 Then, [set up your shell for fnm](#shell-setup)
 
-#### Using a release binary (Linux/Mac/Windows)
+#### Using a release binary (Linux/macOS/Windows)
 
 - Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
 - Make it available globally on `PATH` environment variable
@@ -143,7 +143,7 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
 ```
 
 - On Windows, the profile is located at `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
-- For Mac/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
+- For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
