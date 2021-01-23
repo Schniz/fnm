@@ -26,7 +26,7 @@
 
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
 
-```bash
+```sh
 curl -fsSL https://fnm.vercel.app/install | bash
 ```
 
@@ -52,7 +52,7 @@ macOS installations using the installation script are deprecated in favor of the
 
 Example:
 
-```bash
+```sh
 curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --skip-shell
 ```
 
@@ -60,7 +60,7 @@ curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --
 
 #### Using Homebrew (macOS)
 
-```bash
+```sh
 brew install fnm
 ```
 
@@ -68,7 +68,7 @@ Then, [set up your shell for fnm](#shell-setup)
 
 #### Using Scoop (Windows)
 
-```bash
+```sh
 scoop install fnm
 ```
 
@@ -76,7 +76,7 @@ Then, [set up your shell for fnm](#shell-setup)
 
 #### Using Cargo (Linux/macOS/Windows)
 
-```bash
+```sh
 cargo install fnm
 ```
 
@@ -92,7 +92,7 @@ Then, [set up your shell for fnm](#shell-setup)
 
 fnm ships its completions with the binary:
 
-```
+```sh
 fnm completions --shell <SHELL>
 ```
 
@@ -149,7 +149,7 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
 
 fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
 
-```
+```batch
 FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 ```
 
@@ -157,7 +157,7 @@ FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 
 ### Global Options
 
-```
+```sh
 fnm [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--fnm-dir=DIR] [--log-level=quiet|error|info] <command>
 ```
 
@@ -221,7 +221,7 @@ PRs welcome :tada:
 
 ### Developing:
 
-```
+```sh
 # Install Rust
 git clone https://github.com/Schniz/fnm.git
 cd fnm/
@@ -230,12 +230,12 @@ cargo build
 
 ### Running Binary:
 
-```
+```sh
 cargo run -- --help # Will behave like `fnm --help`
 ```
 
 ### Running Tests:
 
-```
+```sh
 cargo test
 ```
