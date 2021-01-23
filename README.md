@@ -58,7 +58,7 @@ curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --
 
 ### Manually
 
-#### Using Homebrew (macOS)
+#### Using Homebrew (macOS/Linux)
 
 ```sh
 brew install fnm
