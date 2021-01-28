@@ -24,7 +24,7 @@ zip = "0.5.9"
 tempfile = "3.2.0"
 indoc = "1.0.3"
 snafu = { version = "0.6.10", features = ["backtrace"] }
-log = "0.4.13"
+log = "0.4.14"
 env_logger = "0.8.2"
 atty = "0.2.14"
 encoding_rs_io = "0.1.7"
@@ -38,7 +38,7 @@ insta = { version = "1.5.3", features = ["backtrace"] }
 serial_test = "0.5.1"
 
 [build-dependencies]
-embed-resource = "1.4.1"
+embed-resource = "1.5.0"
 
 [target.'cfg(windows)'.dependencies]
 csv = "1.1.5"
