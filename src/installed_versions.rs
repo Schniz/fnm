@@ -6,7 +6,12 @@ pub fn list<P: AsRef<Path>>(installations_dir: P) -> Result<Vec<Version>, Error>
     let mut vec = vec![];
     for result_entry in installations_dir.as_ref().read_dir().context(IoError)? {
         let entry = result_entry.context(IoError)?;
-        if entry.file_name() == ".downloads" {
+        if entry
+            .file_name()
+            .to_str()
+            .map(|s| s.starts_with("."))
+            .unwrap_or(false)
+        {
             continue;
         }
 
