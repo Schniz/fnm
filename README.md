@@ -136,13 +136,22 @@ fnm env | source
 
 #### PowerShell
 
-add the following to the end of your profile file::
+Before adding any configuration to your shell, you'd need to enable symlink support for a standard accounts (non-administrator).
+
+You can do it by enabling [Developer Mode](https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development), or [updating the Local Security Policy](#local-security-policy).
+
+##### Local Security Policy
+Open `Local Security Policy` (`secpol.msc`) and go to `Local Policies` -> `User Rights Assignment`, select `Create symbolic links`, add your user to the list and **reboot**.
+
+> Use `whoami` if you are not sure what's your user name.
+
+Add the following to the end of your profile file:
 
 ```powershell
 fnm env --use-on-cd | Out-String | Invoke-Expression
 ```
 
-- On Windows, the profile is located at `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+- On Windows, the profile is located at `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` or `$PROFILE`
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
 
 #### Windows Command Prompt aka Batch aka WinCMD
