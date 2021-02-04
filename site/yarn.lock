@@ -24,10 +24,10 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-14.11.2.tgz#2de1ed6670439387da1c9f549a2ade2b0a799256"
   integrity sha512-jiE3QIxJ8JLNcb1Ps6rDbysDhN4xa8DJJvuC9prr6w+1tIh+QAbYyNF3tyiZNLDBIuBCf4KEcV2UvQm/V60xfA==
 
-"@vercel/build-utils@2.8.1-canary.0":
-  version "2.8.1-canary.0"
-  resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-2.8.1-canary.0.tgz#9b3cbf405809ab9ac80c5e8f725f0dbba04eb490"
-  integrity sha512-xNC9bsXYkhjkXQ4RMTSUyYh4JPCJIFy7Sr1Gx8mCv9nRc6yu7TqEOeu16oJUO6IeBFS3XyfoKAwCDk7ElVhJfg==
+"@vercel/build-utils@2.9.0":
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-2.9.0.tgz#2bb5def3df7080a892d86e25c7bb1af35f2b8964"
+  integrity sha512-cuLqv7dI1v8TqIJYu3nR4S9FAJZoGPu3ZfV+y498gVUDpwtcAQ5sdWkiqS7jPIHG03APy6rR2cEO7sYm6Ydudw==
 
 "@vercel/go@1.1.8":
   version "1.1.8"
@@ -641,12 +641,12 @@ url-parse-lax@^3.0.0:
   dependencies:
     prepend-http "^2.0.0"
 
-vercel@21.2.2:
-  version "21.2.2"
-  resolved "https://registry.yarnpkg.com/vercel/-/vercel-21.2.2.tgz#dbaa974ec114aa711ccd06167a2ce81adde5aae5"
-  integrity sha512-bLg1yY9lsO8JS8QP8i/J/sbsC9oL0RsU/K6Z/OseOScBBlBdVkY3iesEPAZ0ODXcpP6Fw6Jojw73E6K4RWj96A==
+vercel@21.2.3:
+  version "21.2.3"
+  resolved "https://registry.yarnpkg.com/vercel/-/vercel-21.2.3.tgz#385dd704f1905a77d6e0b6c63bfd7aa6dcdee710"
+  integrity sha512-PmADUVtkmxli8/KXjteMYH1SpgiGwC1+q4B2vqhyHvKVwO6pInEVwBubnLE6cobxgj5x005cbKW33vSvcDfvaQ==
   dependencies:
-    "@vercel/build-utils" "2.8.1-canary.0"
+    "@vercel/build-utils" "2.9.0"
     "@vercel/go" "1.1.8"
     "@vercel/node" "1.9.1-canary.0"
     "@vercel/python" "1.2.5-canary.1"
