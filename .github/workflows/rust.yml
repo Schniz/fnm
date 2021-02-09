@@ -96,12 +96,12 @@ jobs:
       run: |
         sudo chown -R 1000:1000 .
         docker run --rm -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:stable \
-          cargo build --release
+          cargo build --target x86_64-unknown-linux-gnu --release
         sudo chown -R $(whoami):$(whoami) .
     - uses: actions/upload-artifact@v2
       with:
         name: fnm-linux
-        path: target/x86_64-unknown-linux-musl/release/fnm
+        path: target/x86_64-unknown-linux-gnu/release/fnm
 
   build_static_arm_binary:
     name: "Build ARM binary"
