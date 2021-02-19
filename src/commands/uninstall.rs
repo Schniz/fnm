@@ -63,12 +63,12 @@ impl Command for Uninstall {
 
         debug!("Removing Node version from {:?}", root_path);
         std::fs::remove_dir_all(root_path).context(CantDeleteNodeVersion)?;
-        outln!(config#Info, "Node version {} was removed successfuly", version.v_str().cyan());
+        outln!(config#Info, "Node version {} was removed successfully", version.v_str().cyan());
 
         for alias in matching_aliases {
             debug!("Removing alias from {:?}", alias.path());
             remove_symlink_dir(alias.path()).context(CantDeleteSymlink)?;
-            outln!(config#Info, "Alias {} was removed successfuly", alias.name().cyan());
+            outln!(config#Info, "Alias {} was removed successfully", alias.name().cyan());
         }
 
         Ok(())

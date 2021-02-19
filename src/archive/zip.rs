@@ -26,7 +26,7 @@ impl Extract for Zip {
         debug!("Created a temporary zip file");
         self.response.copy_to(&mut tmp_zip_file)?;
         debug!(
-            "Wrote zipfile successfuly. Now extracting into {}.",
+            "Wrote zipfile successfully. Now extracting into {}.",
             path.display()
         );
 
