@@ -54,7 +54,7 @@ pub enum SubCommand {
     ///
     /// Example:
     /// --------
-    /// fnm exec --using=v12.0.0 -- node --version
+    /// fnm exec --using=v12.0.0 node --version
     /// => v12.0.0
     #[structopt(name = "exec")]
     Exec(commands::exec::Exec),
