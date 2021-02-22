@@ -11,14 +11,15 @@ use std::process::{Command, Stdio};
 use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
+#[structopt(setting = structopt::clap::AppSettings::TrailingVarArg)]
 pub struct Exec {
-    binary: String,
-    arguments: Vec<String>,
     #[structopt(long = "using")]
     version: Option<UserVersion>,
     /// Deprecated. This is the default now.
     #[structopt(long = "using-file", hidden = true)]
     using_file: bool,
+    /// The command to run
+    arguments: Vec<String>,
 }
 
 impl Cmd for Exec {
@@ -28,6 +29,8 @@ impl Cmd for Exec {
         if self.using_file {
             outln!(config#Error, "{} {} is deprecated. This is now the default.", "warning:".yellow().bold(), "--using-file".italic());
         }
+
+        let (binary, arguments) = self.arguments.split_first().context(NoBinaryProvided)?;
 
         let version = self
             .version
@@ -54,8 +57,8 @@ impl Cmd for Exec {
             std::env::join_paths(paths).context(CantAddPathToEnvironment)?
         };
 
-        let exit_status = Command::new(&self.binary)
-            .args(self.arguments)
+        let exit_status = Command::new(&binary)
+            .args(arguments)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
@@ -88,4 +91,6 @@ pub enum Error {
     ApplicableVersionError {
         source: UserInputError,
     },
+    #[snafu(display("command not provided. Please provide a command to run as an argument, like {} or {}.\n{} {}", "node".italic(), "bash".italic(), "example:".yellow().bold(), "fnm exec --using=12 node --version".italic().yellow()))]
+    NoBinaryProvided,
 }
