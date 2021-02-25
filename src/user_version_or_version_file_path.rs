@@ -1,5 +1,5 @@
 use crate::user_version::UserVersion;
-use crate::version_files::{get_user_version_for_file, get_user_version_from_file};
+use crate::version_files::{get_user_version_for_directory, get_user_version_for_file};
 use std::path::PathBuf;
 use std::str::FromStr;
 
@@ -15,7 +15,7 @@ impl UserVersionOrVersionFilePath {
         match self {
             Self::UserVersion(uv) => Some(uv),
             Self::File(pathbuf) => get_user_version_for_file(&pathbuf),
-            Self::Directory(pathbuf) => get_user_version_from_file(&pathbuf),
+            Self::Directory(pathbuf) => get_user_version_for_directory(&pathbuf),
         }
     }
 }

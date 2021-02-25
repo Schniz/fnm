@@ -7,7 +7,7 @@ use crate::outln;
 use crate::system_version;
 use crate::user_version::UserVersion;
 use crate::version::Version;
-use crate::version_files::get_user_version_from_file;
+use crate::version_files::get_user_version_for_directory;
 use colored::Colorize;
 use snafu::{ensure, OptionExt, ResultExt, Snafu};
 use structopt::StructOpt;
@@ -33,7 +33,7 @@ impl Command for Use {
             .version
             .or_else(|| {
                 let current_dir = std::env::current_dir().unwrap();
-                get_user_version_from_file(current_dir)
+                get_user_version_for_directory(current_dir)
             })
             .context(CantInferVersion)?;
 
