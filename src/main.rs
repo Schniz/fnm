@@ -15,6 +15,7 @@ mod shell;
 mod system_info;
 mod system_version;
 mod user_version;
+mod user_version_or_version_file_path;
 mod version;
 mod version_files;
 

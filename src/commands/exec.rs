@@ -4,7 +4,7 @@ use crate::choose_version_for_user_input::Error as UserInputError;
 use crate::config::FnmConfig;
 use crate::outln;
 use crate::user_version::UserVersion;
-use crate::version_files::get_user_version_from_file;
+use crate::user_version_or_version_file_path::UserVersionOrVersionFilePath;
 use colored::Colorize;
 use snafu::{OptionExt, ResultExt, Snafu};
 use std::process::{Command, Stdio};
@@ -13,8 +13,9 @@ use structopt::StructOpt;
 #[derive(Debug, StructOpt)]
 #[structopt(setting = structopt::clap::AppSettings::TrailingVarArg)]
 pub struct Exec {
+    /// Either an explicit version, or a filename with the version written in it
     #[structopt(long = "using")]
-    version: Option<UserVersion>,
+    version: Option<UserVersionOrVersionFilePath>,
     /// Deprecated. This is the default now.
     #[structopt(long = "using-file", hidden = true)]
     using_file: bool,
@@ -34,10 +35,11 @@ impl Cmd for Exec {
 
         let version = self
             .version
-            .or_else(|| {
+            .unwrap_or_else(|| {
                 let current_dir = std::env::current_dir().unwrap();
-                get_user_version_from_file(current_dir)
+                UserVersionOrVersionFilePath::Directory(current_dir)
             })
+            .to_user_version()
             .context(CantInferVersion)?;
 
         let applicable_version = choose_version_for_user_input(&version, &config)
