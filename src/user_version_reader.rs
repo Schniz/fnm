@@ -95,7 +95,9 @@ mod tests {
             UserVersionReader::from_str("/tmp/some_random_text_that_probably_does_not_exist");
         assert!(matches!(
             user_version,
-            Ok(UserVersionReader::Direct(UserVersion::Full(Version::Alias(_))))
+            Ok(UserVersionReader::Direct(UserVersion::Full(
+                Version::Alias(_)
+            )))
         ));
     }
 
