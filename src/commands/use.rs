@@ -1,20 +1,19 @@
 use super::command::Command;
 use super::install::Install;
-use crate::config::FnmConfig;
 use crate::fs;
 use crate::installed_versions;
 use crate::outln;
 use crate::system_version;
 use crate::user_version::UserVersion;
 use crate::version::Version;
-use crate::version_files::get_user_version_for_directory;
+use crate::{config::FnmConfig, user_version_reader::UserVersionReader};
 use colored::Colorize;
 use snafu::{ensure, OptionExt, ResultExt, Snafu};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
 pub struct Use {
-    version: Option<UserVersion>,
+    version: Option<UserVersionReader>,
     /// Install the version if it isn't installed yet
     #[structopt(long)]
     install_if_missing: bool,
@@ -31,10 +30,11 @@ impl Command for Use {
             installed_versions::list(config.installations_dir()).context(VersionListingError)?;
         let requested_version = self
             .version
-            .or_else(|| {
+            .unwrap_or_else(|| {
                 let current_dir = std::env::current_dir().unwrap();
-                get_user_version_for_directory(current_dir)
+                UserVersionReader::Path(current_dir)
             })
+            .to_user_version()
             .context(CantInferVersion)?;
 
         let version_path = if let UserVersion::Full(Version::Bypassed) = requested_version {
@@ -76,7 +76,7 @@ impl Command for Use {
                     .context(InstallError)?;
 
                     Self {
-                        version: Some(requested_version),
+                        version: Some(UserVersionReader::Direct(requested_version)),
                         install_if_missing: self.install_if_missing,
                     }
                     .apply(config)?;
