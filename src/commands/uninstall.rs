@@ -5,7 +5,7 @@ use crate::installed_versions;
 use crate::outln;
 use crate::user_version::UserVersion;
 use crate::version::Version;
-use crate::version_files::get_user_version_from_file;
+use crate::version_files::get_user_version_for_directory;
 use colored::Colorize;
 use log::debug;
 use snafu::{ensure, OptionExt, ResultExt, Snafu};
@@ -26,7 +26,7 @@ impl Command for Uninstall {
             .version
             .or_else(|| {
                 let current_dir = std::env::current_dir().unwrap();
-                get_user_version_from_file(current_dir)
+                get_user_version_for_directory(current_dir)
             })
             .context(CantInferVersion)?;
 

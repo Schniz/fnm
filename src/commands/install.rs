@@ -6,7 +6,7 @@ use crate::outln;
 use crate::remote_node_index;
 use crate::user_version::UserVersion;
 use crate::version::Version;
-use crate::version_files::get_user_version_from_file;
+use crate::version_files::get_user_version_for_directory;
 use colored::Colorize;
 use log::debug;
 use snafu::{ensure, OptionExt, ResultExt, Snafu};
@@ -48,7 +48,7 @@ impl super::command::Command for Install {
         let current_dir = std::env::current_dir().unwrap();
         let current_version = self
             .version()?
-            .or_else(|| get_user_version_from_file(current_dir))
+            .or_else(|| get_user_version_for_directory(current_dir))
             .context(CantInferVersion)?;
 
         let version = match current_version.clone() {
