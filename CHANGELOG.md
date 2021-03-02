@@ -637,7 +637,7 @@
 
 #### Documentation 📝
 
-- [#44](https://github.com/Schniz/fnm/pull/44) Quick fix for the dev enviornment setup ([@AdamGS](https://github.com/AdamGS))
+- [#44](https://github.com/Schniz/fnm/pull/44) Quick fix for the dev environment setup ([@AdamGS](https://github.com/AdamGS))
 
 #### Committers: 3
 

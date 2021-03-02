@@ -56,7 +56,7 @@ set_filename() {
     FILENAME="fnm-macos"
     USE_HOMEBREW="false"
     echo "Downloading the latest fnm binary from GitHub..."
-    echo "  Pro tip: it's eaiser to use Homebrew for managing fnm in macOS."
+    echo "  Pro tip: it's easier to use Homebrew for managing fnm in macOS."
     echo "           Remove the \`--force-no-brew\` so it will be easy to upgrade."
   elif [ "$OS" == "Darwin" ]; then
     USE_HOMEBREW="true"
