@@ -1,4 +1,31 @@
-## 1.22.9 (2021-01-21)
+## 1.23.0 (2021-03-02)
+
+#### New Feature 🎉
+
+- [#403](https://github.com/Schniz/fnm/pull/403) Allow `fnm use` to use a file path ([@Schniz](https://github.com/Schniz))
+- [#401](https://github.com/Schniz/fnm/pull/401) Allow using filenames in --using= ([@Schniz](https://github.com/Schniz))
+
+#### Bugfix 🐛
+
+- [#398](https://github.com/Schniz/fnm/pull/398) `fnm exec`: Don't require double-dash ([@Schniz](https://github.com/Schniz))
+- [#389](https://github.com/Schniz/fnm/pull/389) Chore - Use a tier 1 target for Linux binary ([@kaioduarte](https://github.com/kaioduarte))
+- [#384](https://github.com/Schniz/fnm/pull/384) Do not list hidden directories as installed versions ([@scadu](https://github.com/scadu))
+
+#### Documentation 📝
+
+- [#397](https://github.com/Schniz/fnm/pull/397) Fix minor typos ([@keirog](https://github.com/keirog))
+- [#385](https://github.com/Schniz/fnm/pull/385) README: add symlink support on Windows ([@scadu](https://github.com/scadu))
+- [#377](https://github.com/Schniz/fnm/pull/377) Improvements to the README ([@waldyrious](https://github.com/waldyrious))
+
+#### Committers: 5
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Kaio Duarte ([@kaioduarte](https://github.com/kaioduarte))
+- Leaf Rogers ([@keirog](https://github.com/keirog))
+- Waldir Pimenta ([@waldyrious](https://github.com/waldyrious))
+- Łukasz Jendrysik ([@scadu](https://github.com/scadu))
+
+## v1.22.9 (2021-01-22)
 
 #### Bugfix 🐛
 
