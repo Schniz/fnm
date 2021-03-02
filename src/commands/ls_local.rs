@@ -1,7 +1,6 @@
 use crate::alias::{list_aliases, StoredAlias};
 use crate::config::FnmConfig;
 use crate::current_version::current_version;
-use crate::outln;
 use crate::version::Version;
 use colored::*;
 use snafu::{ResultExt, Snafu};
@@ -39,9 +38,9 @@ impl super::command::Command for LsLocal {
             let version_str = format!("* {}{}", version, version_aliases);
 
             if curr_version == Some(version) {
-                outln!(config#Info, "{}", version_str.cyan());
+                println!("{}", version_str.cyan());
             } else {
-                outln!(config#Info, "{}", version_str);
+                println!("{}", version_str);
             }
         }
         Ok(())
