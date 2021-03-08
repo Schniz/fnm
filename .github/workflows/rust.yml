@@ -148,14 +148,17 @@ jobs:
         env: |
           RUST_LOG: fnm=debug
 
+        dockerRunArgs: |
+            --volume "${PWD}/target/${{matrix.rust_target}}/release:/artifacts"
+
         # Set an output parameter `uname` for use in subsequent steps
         run: |
-          echo "Hello from $(uname -a")
-          $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm --version
+          echo "Hello from $(uname -a)"
+          /artifacts/fnm --version
           echo "fnm install 12.0.0"
-          $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm install 12.0.0
+          /artifacts/fnm install 12.0.0
           echo "fnm exec --using=12 -- node --version"
-          $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm exec --using=12 -- node --version
+          /artifacts/fnm exec --using=12 -- node --version
 
     - uses: actions/upload-artifact@v2
       with:
