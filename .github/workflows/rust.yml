@@ -111,9 +111,11 @@ jobs:
           - arch: arm64
             rust_target: aarch64-unknown-linux-musl
             docker_image: arm64v8/ubuntu
+            docker_platform: linux/arm64
           - arch: arm32
             rust_target: armv7-unknown-linux-gnueabihf
             docker_image: arm32v7/ubuntu
+            docker_platform: linux/arm
     runs-on: ubuntu-latest
     env:
       RUST_TARGET: ${{ matrix.rust_target }}
@@ -135,7 +137,7 @@ jobs:
         upx target/$RUST_TARGET/release/fnm
     - name: "Sanity test"
       run: |
-        docker run --rm -v $(pwd):$(pwd) -e "RUST_LOG=fnm=debug" --workdir $(pwd) ${{matrix.docker_image}} bash -c '
+        docker run --rm --platform ${{matrix.docker_platform}} -v $(pwd):$(pwd) -e "RUST_LOG=fnm=debug" --workdir $(pwd) ${{matrix.docker_image}} bash -c '
           $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm --version
           echo "fnm install 12.0.0"
           $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm install 12.0.0
