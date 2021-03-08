@@ -111,11 +111,11 @@ jobs:
           - arch: arm64
             rust_target: aarch64-unknown-linux-musl
             docker_image: arm64v8/ubuntu
-            docker_platform: linux/arm64
+            docker_platform: aarch64
           - arch: arm32
             rust_target: armv7-unknown-linux-gnueabihf
             docker_image: arm32v7/ubuntu
-            docker_platform: linux/arm
+            docker_platform: armv7
     runs-on: ubuntu-latest
     env:
       RUST_TARGET: ${{ matrix.rust_target }}
@@ -135,15 +135,28 @@ jobs:
       run: |
         sudo apt-get install -y upx
         upx target/$RUST_TARGET/release/fnm
-    - name: "Sanity test"
-      run: |
-        docker run --rm --platform ${{matrix.docker_platform}} -v $(pwd):$(pwd) -e "RUST_LOG=fnm=debug" --workdir $(pwd) ${{matrix.docker_image}} bash -c '
+    - uses: uraimo/run-on-arch-action@v2.0.9
+      name: Sanity test
+      with:
+        arch: ${{matrix.docker_platform}}
+        distro: ubuntu18.04
+
+        # Not required, but speeds up builds by storing container images in
+        # a GitHub package registry.
+        githubToken: ${{ github.token }}
+
+        env: |
+          RUST_LOG: fnm=debug
+
+        # Set an output parameter `uname` for use in subsequent steps
+        run: |
+          echo "Hello from $(uname -a")
           $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm --version
           echo "fnm install 12.0.0"
           $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm install 12.0.0
           echo "fnm exec --using=12 -- node --version"
           $(pwd)/target/${{ env.RUST_TARGET }}/release/fnm exec --using=12 -- node --version
-        '
+
     - uses: actions/upload-artifact@v2
       with:
         name: fnm-${{ matrix.arch }}
