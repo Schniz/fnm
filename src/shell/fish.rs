@@ -27,6 +27,8 @@ impl Shell for Fish {
                         fnm use
                     end
                 end
+
+                _fnm_autoload_hook
             "#
         )
         .into()
