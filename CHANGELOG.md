@@ -1,4 +1,24 @@
-## 1.23.0 (2021-03-02)
+## 1.23.1 (2021-03-21)
+
+#### Bugfix 🐛
+
+- [#411](https://github.com/Schniz/fnm/pull/411) Call the fnm use-on-cd hook on fish initialization ([@Schniz](https://github.com/Schniz))
+- [#404](https://github.com/Schniz/fnm/pull/404) Ignore LogLevel on `fnm ls` ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#408](https://github.com/Schniz/fnm/pull/408) Fix ARM builds CI ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#405](https://github.com/Schniz/fnm/pull/405) Fix a couple typos ([@waldyrious](https://github.com/waldyrious))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Waldir Pimenta ([@waldyrious](https://github.com/waldyrious))
+
+## v1.23.0 (2021-03-02)
 
 #### New Feature 🎉
 
@@ -30,7 +50,7 @@
 #### Bugfix 🐛
 
 - [#368](https://github.com/Schniz/fnm/pull/368) Update 'ring' to '0.16.17' ([@gucheen](https://github.com/gucheen))
-- [#347](https://github.com/Schniz/fnm/pull/347) Check if \$ZDOTDIR exists to find correct path to .zshrc ([@thales-maciel](https://github.com/thales-maciel))
+- [#347](https://github.com/Schniz/fnm/pull/347) Check if $ZDOTDIR exists to find correct path to .zshrc ([@thales-maciel](https://github.com/thales-maciel))
 
 #### Documentation 📝
 
