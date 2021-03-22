@@ -113,7 +113,7 @@ fn should_install_interactively(requested_version: &UserVersion) -> bool {
 
     use std::io::Write;
     let error_message = format!(
-        "Can't find version that matches {}.",
+        "Can't find an installed Node version matching {}.",
         requested_version.to_string().italic()
     );
     eprintln!("{}", error_message.red());
