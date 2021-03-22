@@ -71,7 +71,8 @@ impl Cmd for Exec {
             .wait()
             .expect("Failed to grab exit code");
 
-        std::process::exit(exit_status.code().unwrap());
+        let code = exit_status.code().context(CantReadProcessExitCode)?;
+        std::process::exit(code);
     }
 }
 
@@ -94,6 +95,10 @@ pub enum Error {
     ApplicableVersionError {
         source: UserInputError,
     },
+    #[snafu(display(
+        "Can't read exit code from process.\nMaybe the process was killed using a signal?"
+    ))]
+    CantReadProcessExitCode,
     #[snafu(display("command not provided. Please provide a command to run as an argument, like {} or {}.\n{} {}", "node".italic(), "bash".italic(), "example:".yellow().bold(), "fnm exec --using=12 node --version".italic().yellow()))]
     NoBinaryProvided,
 }
