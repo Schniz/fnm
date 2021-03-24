@@ -1,4 +1,16 @@
-## 1.23.1 (2021-03-21)
+## 1.23.2 (2021-03-24)
+
+#### Bugfix 🐛
+
+- [#413](https://github.com/Schniz/fnm/pull/413) Improve "version not found" error message ([@waldyrious](https://github.com/waldyrious))
+- [#414](https://github.com/Schniz/fnm/pull/414) More meaningful error message when a subprocess is killed ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Waldir Pimenta ([@waldyrious](https://github.com/waldyrious))
+
+## v1.23.1 (2021-03-21)
 
 #### Bugfix 🐛
 
