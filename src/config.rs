@@ -1,5 +1,7 @@
 use crate::log_level::LogLevel;
-use dirs::home_dir;
+use crate::outln;
+use colored::Colorize;
+use dirs::{data_dir, home_dir};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -57,10 +59,31 @@ impl FnmConfig {
     }
 
     pub fn base_dir_with_default(&self) -> std::path::PathBuf {
-        ensure_exists_silently(
-            (self.base_dir.clone())
-                .unwrap_or_else(|| home_dir().expect("Can't get home directory").join(".fnm")),
-        )
+        let user_pref = self.base_dir.clone();
+        if let Some(dir) = user_pref {
+            return dir;
+        }
+
+        let legacy = home_dir()
+            .map(|dir| dir.join(".fnm"))
+            .filter(|dir| dir.exists());
+        if let Some(dir) = legacy {
+            outln!(
+                self#Error,
+                "{} {} is deprecated. {} is now the default.",
+                "warning:".yellow().bold(),
+                "$HOME/.fnm".italic(),
+                "$XDG_DATA_HOME/fnm".italic()
+            );
+
+            return dir;
+        }
+
+        let modern = data_dir()
+            .map(|dir| dir.join("fnm"))
+            .expect("Can't get data directory");
+
+        ensure_exists_silently(modern)
     }
 
     pub fn installations_dir(&self) -> std::path::PathBuf {
