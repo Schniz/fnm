@@ -1,5 +1,4 @@
 use crate::alias::create_alias;
-use crate::arch;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
 use crate::lts::LtsType;
@@ -21,10 +20,6 @@ pub struct Install {
     /// Install latest LTS
     #[structopt(long, conflicts_with = "version")]
     pub lts: bool,
-
-    /// Install specified architecture
-    #[structopt(long)]
-    pub arch: Option<arch::Arch>,
 }
 
 impl Install {
@@ -33,17 +28,14 @@ impl Install {
             Self {
                 version: Some(_),
                 lts: true,
-                arch: _,
             } => Err(Error::TooManyVersionsProvided),
             Self {
                 version: v,
                 lts: false,
-                arch: _,
             } => Ok(v),
             Self {
                 version: None,
                 lts: true,
-                arch: _,
             } => Ok(Some(UserVersion::Full(Version::Lts(LtsType::Latest)))),
         }
     }
@@ -54,11 +46,6 @@ impl super::command::Command for Install {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let current_dir = std::env::current_dir().unwrap();
-
-        let arch = match &self.arch {
-            Some(arch) => arch.clone(),
-            None => arch::get_default(),
-        };
 
         let current_version = self
             .version()?
@@ -109,7 +96,7 @@ impl super::command::Command for Install {
             &version,
             &config.node_dist_mirror,
             config.installations_dir(),
-            &arch,
+            &config.arch,
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config#Error, "{} {}", "warning:".bold().yellow(), err);
@@ -188,7 +175,6 @@ mod tests {
         Install {
             version: UserVersion::from_str("12.0.0").ok(),
             lts: false,
-            arch: Some(arch::get_default()),
         }
         .apply(&config)
         .expect("Can't install");

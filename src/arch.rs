@@ -1,5 +1,3 @@
-use crate::system_info::platform_arch;
-
 #[derive(Clone, Debug)]
 pub enum Arch {
     X86,
@@ -11,13 +9,12 @@ pub enum Arch {
     S390x,
 }
 
-#[derive(Debug)]
-pub struct ArchError {
-    details: String,
+pub fn platform_str() -> &'static str {
+    return crate::system_info::platform_arch();
 }
 
 pub fn get_default() -> Arch {
-    match from_str(platform_arch()) {
+    match from_str(platform_str()) {
         Ok(arch) => arch,
         Err(e) => panic!("{}", e.details),
     }
@@ -35,27 +32,6 @@ fn from_str(s: &str) -> Result<Arch, ArchError> {
         unknown => Err(ArchError::new(&format!("Unknown Arch: {}", unknown))),
     }
 }
-
-impl ArchError {
-    fn new(msg: &str) -> ArchError {
-        ArchError {
-            details: msg.to_string(),
-        }
-    }
-}
-
-impl std::fmt::Display for ArchError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}", self.details)
-    }
-}
-
-impl std::error::Error for ArchError {
-    fn description(&self) -> &str {
-        &self.details
-    }
-}
-
 impl std::str::FromStr for Arch {
     type Err = ArchError;
     fn from_str(s: &str) -> Result<Arch, Self::Err> {
@@ -76,5 +52,30 @@ impl std::fmt::Display for Arch {
         };
 
         write!(f, "{}", arch_str)
+    }
+}
+
+#[derive(Debug)]
+pub struct ArchError {
+    details: String,
+}
+
+impl ArchError {
+    fn new(msg: &str) -> ArchError {
+        ArchError {
+            details: msg.to_string(),
+        }
+    }
+}
+
+impl std::fmt::Display for ArchError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.details)
+    }
+}
+
+impl std::error::Error for ArchError {
+    fn description(&self) -> &str {
+        &self.details
     }
 }
