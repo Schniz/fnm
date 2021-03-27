@@ -1,4 +1,5 @@
 mod alias;
+mod arch;
 mod archive;
 mod choose_version_for_user_input;
 mod cli;

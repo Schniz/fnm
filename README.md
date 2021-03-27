@@ -185,6 +185,11 @@ Installs `[VERSION]`. If no version provided, it will install the version specif
 
 Installs the latest LTS version of Node
 
+#### Flags
+- `--arch ["x64" | "x86" | "arm64" | "armv7l" | "ppc64le" | "ppc64" | "s390x" ]`
+
+Installs binary for the specified processor architecture.
+
 ### `fnm use [VERSION]`
 
 Activates `[VERSION]` as the current Node version. If no version provided, it will activate the version specified in the `.node-version` or `.nvmrc` file located in the current working directory.
