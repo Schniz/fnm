@@ -90,6 +90,7 @@ impl super::command::Command for Install {
                     .clone()
             }
         };
+
         let version_str = format!("Node {}", &version);
         outln!(config#Info, "Installing {}", version_str.cyan());
         match install_node_dist(
