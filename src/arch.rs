@@ -14,7 +14,7 @@ pub enum Arch {
 /// Get a sane default architecture for the platform.
 pub fn default_str() -> &'static str {
     // TODO: Handle (arch, name, version) when Node v15+ supports darwin-arm64
-    match (platform_arch(), platform_name()) {
+    match (platform_name(), platform_arch()) {
         ("darwin", "arm64") => "x64",
         (_, arch) => arch,
     }
