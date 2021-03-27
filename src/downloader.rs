@@ -37,16 +37,16 @@ fn filename_for_version(version: &Version, arch: &Arch) -> String {
         "node-{node_ver}-{platform}-{arch}.tar.xz",
         node_ver = &version,
         platform = crate::system_info::platform_name(),
-        arch = &arch,
+        arch = arch,
     )
 }
 
 #[cfg(windows)]
-fn filename_for_version(version: &Version) -> String {
+fn filename_for_version(version: &Version, arch: &Arch) -> String {
     format!(
         "node-{node_ver}-win-{arch}.zip",
         node_ver = &version,
-        arch = crate::system_info::platform_arch(),
+        arch = arch,
     )
 }
 
