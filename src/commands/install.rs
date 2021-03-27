@@ -188,7 +188,7 @@ mod tests {
         Install {
             version: UserVersion::from_str("12.0.0").ok(),
             lts: false,
-            arch: arch::Arch::X64,
+            arch: Some(arch::Arch::X64),
         }
         .apply(&config)
         .expect("Can't install");
