@@ -1,5 +1,3 @@
-use crate::system_info::{platform_arch, platform_name};
-
 #[derive(Clone, Debug)]
 pub enum Arch {
     X86,
@@ -11,13 +9,22 @@ pub enum Arch {
     S390x,
 }
 
+#[cfg(unix)]
 /// Get a sane default architecture for the platform.
 pub fn default_str() -> &'static str {
+    use crate::system_info::{platform_arch, platform_name};
+
     // TODO: Handle (arch, name, version) when Node v15+ supports darwin-arm64
     match (platform_name(), platform_arch()) {
         ("darwin", "arm64") => "x64",
         (_, arch) => arch,
     }
+}
+
+#[cfg(windows)]
+/// Get a sane default architecture for the platform.
+pub fn default_str() -> &'static str {
+    return crate::system_info::platform_arch();
 }
 
 pub fn get_default() -> Arch {

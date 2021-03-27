@@ -168,14 +168,24 @@ FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 ### Global Options
 
 ```sh
-fnm [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--fnm-dir=DIR] [--log-level=quiet|error|info] <command>
+fnm [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--fnm-dir=DIR] [--log-level=quiet|error|info] [--arch=ARCH] <command>
 ```
 
-- Providing `--shell=fish` will output the Fish-compliant version. Omitting it and `fnm` will try to infer the current shell based on the process tree
+- Providing `--shell=fish` will output the Fish-compliant version. Omit it and `fnm` will try to infer the current shell based on the process tree
 - Providing `--node-dist-mirror="https://npm.taobao.org/dist"` will use the Chinese mirror of Node.js
 - Providing `--fnm-dir="/tmp/fnm"` will install and use versions in `/tmp/fnm` directory
+- Providing `--arch=x64`  will install Node binaries with `x86-64` architecture. Omit it and `fnm` will default to your computer's architecture.
 
 You can always use `fnm --help` to read the docs:
+
+#### Apple Silicon
+Until [upstream support for darwin-arm64](https://github.com/nodejs/node/issues/37309) is complete, `fnm` defaults to installing the `darwin-x64` architecture for your selected version to be run with Rosetta 2.
+
+Enable Rosetta 2 via terminal command:
+```sh
+softwareupdate --install-rosetta
+```
+The `--arch` option overrides this default.
 
 ### `fnm install [VERSION]`
 
@@ -184,11 +194,6 @@ Installs `[VERSION]`. If no version provided, it will install the version specif
 ### `fnm install --lts`
 
 Installs the latest LTS version of Node
-
-#### Flags
-- `--arch ["x64" | "x86" | "arm64" | "armv7l" | "ppc64le" | "ppc64" | "s390x" ]`
-
-Installs binary for the specified processor architecture.
 
 ### `fnm use [VERSION]`
 
