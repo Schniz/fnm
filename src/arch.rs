@@ -19,7 +19,7 @@ pub struct ArchError {
 pub fn get_default() -> Arch {
     match from_str(platform_arch()) {
         Ok(arch) => arch,
-        Err(e) => panic!(e.details),
+        Err(e) => panic!("{}", e.details),
     }
 }
 
