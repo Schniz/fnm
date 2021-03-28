@@ -23,8 +23,15 @@ pub enum Error {
     },
     #[snafu(display("The downloaded archive is empty"))]
     TarIsEmpty,
-    #[snafu(display("Can't find version/arch upstream"))]
-    VersionNotFound,
+    #[snafu(display(
+        "{} for {} not found upstream.\nYou can `fnm ls-remote` to see available versions or try a different `--arch`.",
+        version,
+        arch
+    ))]
+    VersionNotFound {
+        version: Version,
+        arch: Arch,
+    },
     #[snafu(display("Version already installed at {:?}", path))]
     VersionAlreadyInstalled {
         path: PathBuf,
@@ -100,7 +107,10 @@ pub fn install_node_dist<P: AsRef<Path>>(
     let response = reqwest::blocking::get(url).context(HttpError)?;
 
     if response.status() == 404 {
-        return Err(Error::VersionNotFound);
+        return Err(Error::VersionNotFound {
+            version: version.clone(),
+            arch: arch.clone(),
+        });
     }
 
     debug!("Extracting response...");

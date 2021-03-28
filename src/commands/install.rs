@@ -126,7 +126,7 @@ impl super::command::Command for Install {
 
 #[derive(Debug, Snafu)]
 pub enum Error {
-    #[snafu(display("Can't download the requested version: {}", source))]
+    #[snafu(display("Can't download the requested binary: {}", source))]
     DownloadError {
         source: DownloaderError,
     },
