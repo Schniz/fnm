@@ -46,7 +46,7 @@ impl Default for FnmConfig {
             base_dir: None,
             multishell_path: None,
             log_level: LogLevel::Info,
-            arch: arch::get_default(),
+            arch: Default::default(),
         }
     }
 }
