@@ -27,10 +27,12 @@ pub fn default_str() -> &'static str {
     return crate::system_info::platform_arch();
 }
 
-pub fn get_default() -> Arch {
-    match from_str(default_str()) {
-        Ok(arch) => arch,
-        Err(e) => panic!("{}", e.details),
+impl Default for Arch {
+    fn default() -> Arch {
+        match from_str(default_str()) {
+            Ok(arch) => arch,
+            Err(e) => panic!("{}", e.details),
+        }
     }
 }
 
@@ -46,6 +48,7 @@ fn from_str(s: &str) -> Result<Arch, ArchError> {
         unknown => Err(ArchError::new(&format!("Unknown Arch: {}", unknown))),
     }
 }
+
 impl std::str::FromStr for Arch {
     type Err = ArchError;
     fn from_str(s: &str) -> Result<Arch, Self::Err> {
