@@ -29,30 +29,26 @@ pub fn default_str() -> &'static str {
 
 impl Default for Arch {
     fn default() -> Arch {
-        match from_str(default_str()) {
+        match default_str().parse() {
             Ok(arch) => arch,
             Err(e) => panic!("{}", e.details),
         }
     }
 }
 
-fn from_str(s: &str) -> Result<Arch, ArchError> {
-    match s {
-        "x86" => Ok(Arch::X86),
-        "x64" => Ok(Arch::X64),
-        "arm64" => Ok(Arch::Arm64),
-        "armv7l" => Ok(Arch::Armv7l),
-        "ppc64le" => Ok(Arch::Ppc64le),
-        "ppc64" => Ok(Arch::Ppc64),
-        "s390x" => Ok(Arch::S390x),
-        unknown => Err(ArchError::new(&format!("Unknown Arch: {}", unknown))),
-    }
-}
-
 impl std::str::FromStr for Arch {
     type Err = ArchError;
     fn from_str(s: &str) -> Result<Arch, Self::Err> {
-        from_str(s)
+        match s {
+            "x86" => Ok(Arch::X86),
+            "x64" => Ok(Arch::X64),
+            "arm64" => Ok(Arch::Arm64),
+            "armv7l" => Ok(Arch::Armv7l),
+            "ppc64le" => Ok(Arch::Ppc64le),
+            "ppc64" => Ok(Arch::Ppc64),
+            "s390x" => Ok(Arch::S390x),
+            unknown => Err(ArchError::new(&format!("Unknown Arch: {}", unknown))),
+        }
     }
 }
 
