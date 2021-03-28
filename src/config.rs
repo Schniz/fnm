@@ -35,7 +35,7 @@ pub struct FnmConfig {
 
     /// Override the architecture of the installed Node binary.
     /// Defaults to arch of fnm binary.
-    #[structopt(long, env = "FNM_ARCH", global = true)]
+    #[structopt(long, env = "FNM_ARCH", default_value, global = true)]
     pub arch: arch::Arch,
 }
 
