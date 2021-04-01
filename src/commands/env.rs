@@ -2,6 +2,7 @@ use super::command::Command;
 use crate::config::FnmConfig;
 use crate::fs::symlink_dir;
 use crate::outln;
+use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
 use snafu::{OptionExt, Snafu};
@@ -22,21 +23,22 @@ pub struct Env {
     use_on_cd: bool,
 }
 
-fn generate_symlink_path(root: &std::path::Path) -> std::path::PathBuf {
-    let temp_dir_name = format!(
-        "fnm_multishell_{}_{}",
+fn generate_symlink_path() -> String {
+    format!(
+        "{}_{}",
         std::process::id(),
         chrono::Utc::now().timestamp_millis(),
-    );
-    root.join(temp_dir_name)
+    )
 }
 
 fn make_symlink(config: &FnmConfig) -> std::path::PathBuf {
-    let system_temp_dir = std::env::temp_dir();
-    let mut temp_dir = generate_symlink_path(&system_temp_dir);
+    let base_dir = std::env::temp_dir()
+        .join("fnm_multishells")
+        .ensure_exists_silently();
+    let mut temp_dir = base_dir.join(generate_symlink_path());
 
     while temp_dir.exists() {
-        temp_dir = generate_symlink_path(&system_temp_dir);
+        temp_dir = base_dir.join(generate_symlink_path());
     }
 
     symlink_dir(config.default_version_dir(), &temp_dir).expect("Can't create symlink!");

@@ -1,5 +1,6 @@
 use crate::arch;
 use crate::log_level::LogLevel;
+use crate::path_ext::PathExt;
 use dirs::home_dir;
 use structopt::StructOpt;
 
@@ -64,14 +65,16 @@ impl FnmConfig {
     }
 
     pub fn base_dir_with_default(&self) -> std::path::PathBuf {
-        ensure_exists_silently(
-            (self.base_dir.clone())
-                .unwrap_or_else(|| home_dir().expect("Can't get home directory").join(".fnm")),
-        )
+        self.base_dir
+            .clone()
+            .unwrap_or_else(|| home_dir().expect("Can't get home directory").join(".fnm"))
+            .ensure_exists_silently()
     }
 
     pub fn installations_dir(&self) -> std::path::PathBuf {
-        ensure_exists_silently(self.base_dir_with_default().join("node-versions"))
+        self.base_dir_with_default()
+            .join("node-versions")
+            .ensure_exists_silently()
     }
 
     pub fn default_version_dir(&self) -> std::path::PathBuf {
@@ -79,7 +82,9 @@ impl FnmConfig {
     }
 
     pub fn aliases_dir(&self) -> std::path::PathBuf {
-        ensure_exists_silently(self.base_dir_with_default().join("aliases"))
+        self.base_dir_with_default()
+            .join("aliases")
+            .ensure_exists_silently()
     }
 
     #[cfg(test)]
@@ -87,9 +92,10 @@ impl FnmConfig {
         self.base_dir = base_dir;
         self
     }
-}
 
-fn ensure_exists_silently<T: AsRef<std::path::Path>>(path: T) -> T {
-    std::fs::create_dir_all(path.as_ref()).ok();
-    path
+    pub fn multishell_base_dir(&self) -> std::path::PathBuf {
+        std::env::temp_dir()
+            .join("fnm_multishell")
+            .ensure_exists_silently()
+    }
 }

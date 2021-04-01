@@ -11,6 +11,7 @@ mod downloader;
 mod fs;
 mod installed_versions;
 mod lts;
+mod path_ext;
 mod remote_node_index;
 mod shell;
 mod system_info;
