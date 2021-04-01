@@ -1,3 +1,4 @@
+use crate::arch;
 use crate::log_level::LogLevel;
 use dirs::home_dir;
 use structopt::StructOpt;
@@ -31,6 +32,11 @@ pub struct FnmConfig {
     /// The log level of fnm commands
     #[structopt(long, env = "FNM_LOGLEVEL", default_value = "info", global = true)]
     log_level: LogLevel,
+
+    /// Override the architecture of the installed Node binary.
+    /// Defaults to arch of fnm binary.
+    #[structopt(long, env = "FNM_ARCH", default_value, global = true)]
+    pub arch: arch::Arch,
 }
 
 impl Default for FnmConfig {
@@ -40,6 +46,7 @@ impl Default for FnmConfig {
             base_dir: None,
             multishell_path: None,
             log_level: LogLevel::Info,
+            arch: Default::default(),
         }
     }
 }

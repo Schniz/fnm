@@ -46,6 +46,7 @@ impl super::command::Command for Install {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let current_dir = std::env::current_dir().unwrap();
+
         let current_version = self
             .version()?
             .or_else(|| get_user_version_for_directory(current_dir))
@@ -89,12 +90,14 @@ impl super::command::Command for Install {
                     .clone()
             }
         };
+
         let version_str = format!("Node {}", &version);
         outln!(config#Info, "Installing {}", version_str.cyan());
         match install_node_dist(
             &version,
             &config.node_dist_mirror,
             config.installations_dir(),
+            &config.arch,
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config#Error, "{} {}", "warning:".bold().yellow(), err);
@@ -123,7 +126,7 @@ impl super::command::Command for Install {
 
 #[derive(Debug, Snafu)]
 pub enum Error {
-    #[snafu(display("Can't download the requested version: {}", source))]
+    #[snafu(display("Can't download the requested binary: {}", source))]
     DownloadError {
         source: DownloaderError,
     },
