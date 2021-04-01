@@ -75,6 +75,10 @@ impl Command for Env {
             "{}",
             shell.set_env_var("FNM_NODE_DIST_MIRROR", config.node_dist_mirror.as_str())
         );
+        println!(
+            "{}",
+            shell.set_env_var("FNM_ARCH", &config.arch.to_string())
+        );
         if self.use_on_cd {
             println!("{}", shell.use_on_cd(&config));
         }
