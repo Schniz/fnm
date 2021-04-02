@@ -1,4 +1,20 @@
-## 1.23.2 (2021-03-24)
+## 1.24.0 (2021-04-02)
+
+#### New Feature 🎉
+
+- [#421](https://github.com/Schniz/fnm/pull/421) Adding FNM_ARCH as an exported env var from `fnm env` ([@Schniz](https://github.com/Schniz))
+- [#417](https://github.com/Schniz/fnm/pull/417) Support Apple M1 by installing Rosetta Node builds ([@pckilgore](https://github.com/pckilgore))
+
+#### Bugfix 🐛
+
+- [#422](https://github.com/Schniz/fnm/pull/422) Create version symlinks in a nested directory ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Patrick Kilgore ([@pckilgore](https://github.com/pckilgore))
+
+## v1.23.2 (2021-03-24)
 
 #### Bugfix 🐛
 
