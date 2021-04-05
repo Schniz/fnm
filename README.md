@@ -27,7 +27,7 @@
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
 
 ```sh
-curl -fsSL https://fnm.vercel.app/install | bash
+sh -c "$(curl -fsSL https://fnm.vercel.app/install)"
 ```
 
 #### Upgrade
@@ -53,7 +53,7 @@ macOS installations using the installation script are deprecated in favor of the
 Example:
 
 ```sh
-curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --skip-shell
+sh -c "$(curl -fsSL https://fnm.vercel.app/install)" -- --install-dir "./.fnm" --skip-shell
 ```
 
 ### Manually
