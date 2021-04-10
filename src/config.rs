@@ -4,6 +4,8 @@ use colored::Colorize;
 use dirs::{data_dir, home_dir};
 use structopt::StructOpt;
 
+static mut HAS_WARNED_DEPRECATED_BASE_DIR: bool = false;
+
 #[derive(StructOpt, Debug)]
 pub struct FnmConfig {
     /// https://nodejs.org/dist/ mirror
@@ -68,13 +70,19 @@ impl FnmConfig {
             .map(|dir| dir.join(".fnm"))
             .filter(|dir| dir.exists());
         if let Some(dir) = legacy {
-            outln!(
-                self#Error,
-                "{} {} is deprecated. {} is now the default.",
-                "warning:".yellow().bold(),
-                "$HOME/.fnm".italic(),
-                "$XDG_DATA_HOME/fnm".italic()
-            );
+            unsafe {
+                if !HAS_WARNED_DEPRECATED_BASE_DIR {
+                    HAS_WARNED_DEPRECATED_BASE_DIR = true;
+
+                    outln!(
+                        self#Error,
+                        "{} {} is deprecated. {} is now the default.",
+                        "warning:".yellow().bold(),
+                        "$HOME/.fnm".italic(),
+                        "$XDG_DATA_HOME/fnm".italic()
+                    );
+                }
+            }
 
             return dir;
         }
