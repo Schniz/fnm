@@ -186,4 +186,4 @@ jobs:
         run: fnm exec -- yarn
       - name: Generate command markdown
         run: |
-          fnm exec -- yarn generate-command-docs --check
+          fnm exec -- yarn generate-command-docs --check --binary-path=$(which fnm)
