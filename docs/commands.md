@@ -26,8 +26,8 @@ OPTIONS:
             The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
 
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
 
 SUBCOMMANDS:
     alias          Alias a version to a common name
@@ -61,13 +61,11 @@ OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
             [default: x64]
-        --fnm-dir <base-dir>
-            The root directory of fnm installations [env: FNM_DIR]
-
+        --fnm-dir <base-dir>                     The root directory of fnm installations [env: FNM_DIR]
         --log-level <log-level>                  The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
 
 ARGS:
     <to-version>
@@ -91,13 +89,11 @@ OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
             [default: x64]
-        --fnm-dir <base-dir>
-            The root directory of fnm installations [env: FNM_DIR]
-
+        --fnm-dir <base-dir>                     The root directory of fnm installations [env: FNM_DIR]
         --log-level <log-level>                  The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
         --shell <shell>
             The shell syntax to use. Infers when missing [possible values: zsh, bash, fish, powershell, elvish]
 
@@ -120,13 +116,11 @@ OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
             [default: x64]
-        --fnm-dir <base-dir>
-            The root directory of fnm installations [env: FNM_DIR]
-
+        --fnm-dir <base-dir>                     The root directory of fnm installations [env: FNM_DIR]
         --log-level <log-level>                  The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
 ```
 
 # `fnm default`
@@ -159,8 +153,8 @@ OPTIONS:
             The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
 
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
 
 ARGS:
     <version>
@@ -205,8 +199,8 @@ OPTIONS:
             The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
 
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
         --shell <shell>
             The shell syntax to use. Infers when missing [possible values: bash, zsh, fish, powershell]
 
@@ -245,8 +239,8 @@ OPTIONS:
             The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
 
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
         --using <version>
             Either an explicit version, or a filename with the version written in it
 
@@ -281,13 +275,11 @@ OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
             [default: x64]
-        --fnm-dir <base-dir>
-            The root directory of fnm installations [env: FNM_DIR]
-
+        --fnm-dir <base-dir>                     The root directory of fnm installations [env: FNM_DIR]
         --log-level <log-level>                  The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
 
 ARGS:
     <version>    A version string. Can be a partial semver or a LTS version name by the format lts/NAME
@@ -310,13 +302,11 @@ OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
             [default: x64]
-        --fnm-dir <base-dir>
-            The root directory of fnm installations [env: FNM_DIR]
-
+        --fnm-dir <base-dir>                     The root directory of fnm installations [env: FNM_DIR]
         --log-level <log-level>                  The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
 ```
 
 # `fnm list`
@@ -336,13 +326,11 @@ OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
             [default: x64]
-        --fnm-dir <base-dir>
-            The root directory of fnm installations [env: FNM_DIR]
-
+        --fnm-dir <base-dir>                     The root directory of fnm installations [env: FNM_DIR]
         --log-level <log-level>                  The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
 ```
 
 # `fnm uninstall`
@@ -376,8 +364,8 @@ OPTIONS:
             The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
 
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
 
 ARGS:
     <version>
@@ -403,13 +391,11 @@ OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
             [default: x64]
-        --fnm-dir <base-dir>
-            The root directory of fnm installations [env: FNM_DIR]
-
+        --fnm-dir <base-dir>                     The root directory of fnm installations [env: FNM_DIR]
         --log-level <log-level>                  The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
         --node-dist-mirror <node-dist-mirror>
-            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default:
-            https://nodejs.org/dist]
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
 
 ARGS:
     <version>

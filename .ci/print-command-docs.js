@@ -105,7 +105,7 @@ function line(cmd, text) {
 async function getCommandHelp(fnmPath, command) {
   const cmdArg = command ? [command] : [];
   const result = await run(fnmPath, [...cmdArg, "--help"]);
-  const text = removeEnvValuesFromHelpDoc(result.stdout);
+  const text = result.stdout;
   const rows = text.split("\n");
   const headerIndex = rows.findIndex((x) => x.includes("SUBCOMMANDS"));
   /** @type {string[]} */
@@ -119,14 +119,6 @@ async function getCommandHelp(fnmPath, command) {
     subcommands,
     text,
   };
-}
-
-/**
- * @param {string} text
- * @returns {string}
- */
-function removeEnvValuesFromHelpDoc(text) {
-  return text.replace(/(\[env: [^=]+)[^\]]+(\])/g, "$1$2");
 }
 
 /**
