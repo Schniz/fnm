@@ -23,6 +23,7 @@ const command = cmd.command({
     exec("git pull --ff-only");
     const nextVersion = updateCargoToml(versionType);
     exec("cargo build --release");
+    exec("yarn generate-command-docs --binary-path=./target/release/fnm");
     exec("./docs/record_screen.sh");
     exec(`yarn changelog ${nextVersion}`);
   },
@@ -62,7 +63,7 @@ function updateCargoToml(versionType) {
 function exec(command, env) {
   console.log(`$ ${command}`);
   return cp.execSync(command, {
-    cwd: path.join(__dirname, '..'), // root of repo
+    cwd: path.join(__dirname, ".."), // root of repo
     stdio: "inherit",
     env: { ...process.env, ...env },
   });

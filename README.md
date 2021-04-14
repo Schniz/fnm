@@ -163,77 +163,9 @@ fnm is also supported but is not entirely covered. [You can set up a startup scr
 FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 ```
 
-## Usage
+## [Usage](./docs/commands.md)
 
-### Global Options
-
-```sh
-fnm [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--fnm-dir=DIR] [--log-level=quiet|error|info] [--arch=ARCH] <command>
-```
-
-- Providing `--shell=fish` will output the Fish-compliant version. Omit it and `fnm` will try to infer the current shell based on the process tree
-- Providing `--node-dist-mirror="https://npm.taobao.org/dist"` will use the Chinese mirror of Node.js
-- Providing `--fnm-dir="/tmp/fnm"` will install and use versions in `/tmp/fnm` directory
-- Providing `--arch=x64`  will install Node binaries with `x86-64` architecture. Omit it and `fnm` will default to your computer's architecture.
-
-You can always use `fnm --help` to read the docs:
-
-#### Apple Silicon
-Until [upstream support for darwin-arm64](https://github.com/nodejs/node/issues/37309) is complete, `fnm` defaults to installing the `darwin-x64` architecture for your selected version to be run with Rosetta 2.
-
-Enable Rosetta 2 via terminal command:
-```sh
-softwareupdate --install-rosetta
-```
-The `--arch` option overrides this default.
-
-### `fnm install [VERSION]`
-
-Installs `[VERSION]`. If no version provided, it will install the version specified in the `.node-version` or `.nvmrc` files located in the current working directory.
-
-### `fnm install --lts`
-
-Installs the latest LTS version of Node
-
-### `fnm use [VERSION]`
-
-Activates `[VERSION]` as the current Node version. If no version provided, it will activate the version specified in the `.node-version` or `.nvmrc` file located in the current working directory.
-
-#### Flags
-
-- `--install-if-missing` — installs the version if it isn't installed yet
-
-### `fnm current`
-
-Display currently activated Node version.
-
-### `fnm list`
-
-Lists the installed Node versions.
-
-### `fnm list-remote`
-
-Lists the Node versions available to download remotely.
-
-### `fnm uninstall [VERSION]`
-
-Uninstalls the node version specified in `[VERSION]`.
-
-### `fnm alias [VERSION] [NAME]`
-
-Aliases a Node version to a given name.
-
-### `fnm default [VERSION]`
-
-Aliases a Node version as default. Uses `fnm alias` underneath.
-
-### `fnm env`
-
-Prints the required shell commands in order to configure your shell, Bash compliant if can't infer the shell. This command is highly influenced by [the global options](#global-options)
-
-#### Options:
-
-- `--use-on-cd` will also output a script that will automatically change the node version if a `.node-version`/`.nvmrc` file is found
+[See the available commands for an extended usage documentation](./docs/commands.md)
 
 ## Contributing
 
