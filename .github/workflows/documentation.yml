@@ -15,15 +15,8 @@ jobs:
           curl -fsSL https://fnm.vercel.app/install | bash
           sudo install ~/.fnm/fnm /usr/bin/
           fnm install
+      - name: Install Node deps
+        run: fnm exec -- yarn
       - name: Generate command markdown
         run: |
-          fnm exec -- yarn generate-command-docs
-      - name: Check if there are changes
-        id: changes
-        uses: UnicornGlobal/has-changes-action@v1.0.11
-      - name: Process changes
-        if: steps.changes.outputs.changed == 1
-        run:
-          echo 'Changed files exists in the repo!'
-          echo 'Please run `yarn generate-command-docs` to update the documentation'
-          exit 1
+          fnm exec -- yarn generate-command-docs --check
