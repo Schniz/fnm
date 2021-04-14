@@ -38,16 +38,24 @@ const command = cmd.command({
   async handler({ checkForDirty, fnmPath }) {
     const targetFile = path.join(__dirname, "../docs/commands.md");
     await main(targetFile, fnmPath);
-    if (checkForDirty && (await checkGitStatus(targetFile)) === "dirty") {
-      const command = "`yarn generate-command-docs`";
-      throw new Error(`The file has changed. Please re-run ${command}`);
+    if (checkForDirty) {
+      const gitStatus = await checkGitStatus(targetFile);
+      if (gitStatus.state === "dirty") {
+        process.exitCode = 1;
+        console.error(
+          "The file has changed. Please re-run `yarn generate-command-docs`."
+        );
+        console.error(`hint: The following diff was found:`);
+        console.error();
+        console.error(gitStatus.diff);
+      }
     }
   },
 });
 
 cmd.run(cmd.binary(command), process.argv).catch((err) => {
   console.error(err);
-  process.exitCode = 1;
+  process.exitCode = process.exitCode || 1;
 });
 
 /**
@@ -127,13 +135,18 @@ function run(fnmPath, args) {
 
 /**
  * @param {string} targetFile
- * @returns {Promise<"dirty" | "clean">}
+ * @returns {Promise<{ state: "dirty", diff: string } | { state: "clean" }>}
  */
 async function checkGitStatus(targetFile) {
-  try {
-    await execa(`git`, ["diff", "--quiet", targetFile]);
-    return "clean";
-  } catch (e) {
-    return "dirty";
+  const { stdout, exitCode } = await execa(
+    `git`,
+    ["diff", "--exit-code", targetFile],
+    {
+      reject: false,
+    }
+  );
+  if (exitCode === 0) {
+    return { state: "clean" };
   }
+  return { state: "dirty", diff: stdout };
 }
