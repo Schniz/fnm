@@ -56,7 +56,7 @@ pub enum SubCommand {
     /// --------
     /// fnm exec --using=v12.0.0 node --version
     /// => v12.0.0
-    #[structopt(name = "exec")]
+    #[structopt(name = "exec", verbatim_doc_comment)]
     Exec(commands::exec::Exec),
 
     /// Uninstall a Node.js version
