@@ -13,18 +13,18 @@ pub enum Arch {
 
 #[cfg(unix)]
 /// handle common case: Apple Silicon / Node < 16
-pub fn get_safe_arch<'a>(default_arch: &'a Arch, version: &Version) -> &'a Arch {
+pub fn get_safe_arch<'a>(arch: &'a Arch, version: &Version) -> &'a Arch {
     use crate::system_info::{platform_arch, platform_name};
 
     return match (platform_name(), platform_arch(), version) {
         ("darwin", "arm64", Version::Semver(v)) if v.major < 16 => &Arch::X64,
-        _ => &default_arch,
+        _ => &arch,
     };
 }
 
 #[cfg(windows)]
 /// handle common case: Apple Silicon / Node < 16
-pub fn get_safe_arch<'c>(config: &'c FnmConfig, _version: &semver::Version) -> &'c Arch {
+pub fn get_safe_arch<'a>(arch: &'a Arch, _version: &Version) -> &'a Arch {
     return &config.arch;
 }
 
