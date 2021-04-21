@@ -1,4 +1,6 @@
-#[derive(Clone, Debug)]
+use crate::version::Version;
+
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub enum Arch {
     X86,
     X64,
@@ -10,26 +12,25 @@ pub enum Arch {
 }
 
 #[cfg(unix)]
-/// Get a sane default architecture for the platform.
-pub fn default_str() -> &'static str {
+/// handle common case: Apple Silicon / Node < 16
+pub fn get_safe_arch<'a>(default_arch: &'a Arch, version: &Version) -> &'a Arch {
     use crate::system_info::{platform_arch, platform_name};
 
-    // TODO: Handle (arch, name, version) when Node v15+ supports darwin-arm64
-    match (platform_name(), platform_arch()) {
-        ("darwin", "arm64") => "x64",
-        (_, arch) => arch,
-    }
+    return match (platform_name(), platform_arch(), version) {
+        ("darwin", "arm64", Version::Semver(v)) if v.major < 16 => &Arch::X64,
+        _ => &default_arch,
+    };
 }
 
 #[cfg(windows)]
-/// Get a sane default architecture for the platform.
-pub fn default_str() -> &'static str {
-    return crate::system_info::platform_arch();
+/// handle common case: Apple Silicon / Node < 16
+pub fn get_safe_arch<'c>(config: &'c FnmConfig, _version: &semver::Version) -> &'c Arch {
+    return &config.arch;
 }
 
 impl Default for Arch {
     fn default() -> Arch {
-        match default_str().parse() {
+        match crate::system_info::platform_arch().parse() {
             Ok(arch) => arch,
             Err(e) => panic!("{}", e.details),
         }
