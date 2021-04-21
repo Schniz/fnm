@@ -20,7 +20,7 @@
     }
   },
   "devDependencies": {
-    "cmd-ts": "0.6.8",
+    "cmd-ts": "0.6.9",
     "execa": "^5.0.0",
     "lerna-changelog": "1.0.1",
     "prettier": "2.2.1",
