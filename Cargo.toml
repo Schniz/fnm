@@ -38,7 +38,7 @@ insta = { version = "1.7.1", features = ["backtrace"] }
 serial_test = "0.5.1"
 
 [build-dependencies]
-embed-resource = "1.6.1"
+embed-resource = "1.6.2"
 
 [target.'cfg(windows)'.dependencies]
 csv = "1.1.6"
