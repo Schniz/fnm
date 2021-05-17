@@ -1,4 +1,19 @@
-## 1.24.0 (2021-04-02)
+## 1.25.0 (2021-05-17)
+
+#### New Feature 🎉
+
+- [#436](https://github.com/Schniz/fnm/pull/436) feat: use arm for aarch64-darwin-node@16 platforms ([@pckilgore](https://github.com/pckilgore))
+
+#### Documentation 📝
+
+- [#432](https://github.com/Schniz/fnm/pull/432) Auto-generate command documentation markdown ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Patrick Kilgore ([@pckilgore](https://github.com/pckilgore))
+
+## v1.24.0 (2021-04-02)
 
 #### New Feature 🎉
 
@@ -61,7 +76,7 @@
 
 #### Documentation 📝
 
-- [#397](https://github.com/Schniz/fnm/pull/397) Fix minor typos ([@keirog](https://github.com/keirog))
+- [#397](https://github.com/Schniz/fnm/pull/397) Fix minor typos ([@leafrogers](https://github.com/leafrogers))
 - [#385](https://github.com/Schniz/fnm/pull/385) README: add symlink support on Windows ([@scadu](https://github.com/scadu))
 - [#377](https://github.com/Schniz/fnm/pull/377) Improvements to the README ([@waldyrious](https://github.com/waldyrious))
 
@@ -69,7 +84,7 @@
 
 - Gal Schlezinger ([@Schniz](https://github.com/Schniz))
 - Kaio Duarte ([@kaioduarte](https://github.com/kaioduarte))
-- Leaf Rogers ([@keirog](https://github.com/keirog))
+- Leaf Rogers ([@leafrogers](https://github.com/leafrogers))
 - Waldir Pimenta ([@waldyrious](https://github.com/waldyrious))
 - Łukasz Jendrysik ([@scadu](https://github.com/scadu))
 
@@ -547,7 +562,7 @@
 
 #### Bugfix 🐛
 
-- [#83](https://github.com/Schniz/fnm/pull/83) fix: remove unmatched quote written in the fish config file ([@ThomasMarcel](https://github.com/ThomasMarcel))
+- [#83](https://github.com/Schniz/fnm/pull/83) fix: remove unmatched quote written in the fish config file ([@thomasmarcel](https://github.com/thomasmarcel))
 
 #### Internal 🛠
 
@@ -556,7 +571,7 @@
 #### Committers: 2
 
 - Gal Schlezinger ([@Schniz](https://github.com/Schniz))
-- Thomas Alcala Schneider ([@ThomasMarcel](https://github.com/ThomasMarcel))
+- Thomas Alcala Schneider ([@thomasmarcel](https://github.com/thomasmarcel))
 
 ## v1.7.2 (2019-03-07)
 
