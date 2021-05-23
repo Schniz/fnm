@@ -309,6 +309,30 @@ OPTIONS:
 
 ```
 
+# `fnm list-remote`
+
+```
+fnm-list-remote 1.25.0
+List all available Node.js versions that can be installed
+
+USAGE:
+    fnm list-remote [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --arch <arch>
+            Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
+            [default: x64]
+        --fnm-dir <base-dir>                     The root directory of fnm installations [env: FNM_DIR]
+        --log-level <log-level>                  The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
+        --node-dist-mirror <node-dist-mirror>
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
+```
+
 # `fnm uninstall`
 
 ```
