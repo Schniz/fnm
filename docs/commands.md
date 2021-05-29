@@ -309,14 +309,14 @@ OPTIONS:
 
 ```
 
-# `fnm list`
+# `fnm list-remote`
 
 ```
-fnm-list 1.25.0
-List all locally installed Node.js versions
+fnm-list-remote 1.25.0
+List all remote Node.js versions
 
 USAGE:
-    fnm list [OPTIONS]
+    fnm list-remote [OPTIONS]
 
 FLAGS:
     -h, --help       Prints help information
