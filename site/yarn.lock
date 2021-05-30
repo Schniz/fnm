@@ -43,6 +43,15 @@
     ts-node "8.9.1"
     typescript "3.9.3"
 
+"@vercel/node@1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@vercel/node/-/node-1.11.0.tgz#2c34e4cab9dfaf8a796a0b590b20d2f6cf222749"
+  integrity sha512-GmEUuOloy6Pdy5Qj5Zm7HmxcO/5VRLG99WUg15V7GD0fKq3sJtnCnzy4f1+9fpVbQGMefjy+pY1dWUhkB6YEGA==
+  dependencies:
+    "@types/node" "*"
+    ts-node "8.9.1"
+    typescript "3.9.3"
+
 "@vercel/python@2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@vercel/python/-/python-2.0.1.tgz#5a94438762e8e2d39015a2655625779fa3300b5c"
@@ -594,10 +603,10 @@ typescript@3.9.3:
   resolved "https://registry.npmjs.org/typescript/-/typescript-3.9.3.tgz#d3ac8883a97c26139e42df5e93eeece33d610b8a"
   integrity sha512-D/wqnB2xzNFIcoBG9FG8cXRDjiqSTbG2wd8DMZeQyJlP1vfTkIxH4GKveWaEBYySKIg+USu+E+EDIR47SqnaMQ==
 
-typescript@4.2.4:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
-  integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
+typescript@4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.2.tgz#399ab18aac45802d6f2498de5054fcbbe716a805"
+  integrity sha512-zZ4hShnmnoVnAHpVHWpTcxdv7dWP60S2FsydQLV8V5PbS3FifjWFFRiHSWpDJahly88PRyV5teTSLoq4eG7mKw==
 
 unique-string@^2.0.0:
   version "2.0.0"
