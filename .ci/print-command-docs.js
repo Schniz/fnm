@@ -110,10 +110,11 @@ async function getCommandHelp(fnmPath, command) {
   const headerIndex = rows.findIndex((x) => x.includes("SUBCOMMANDS"));
   /** @type {string[]} */
   const subcommands = [];
-  for (const row of rows.slice(headerIndex + 1)) {
-    const matched = row.match(/^\s{4}(\w+)/);
-    if (!matched) break;
-    subcommands.push(matched[1]);
+  if (!command) {
+    for (const row of rows.slice(headerIndex + 1)) {
+      const words = row.split(/\s+/);
+      subcommands.push(words[1]);
+    }
   }
   return {
     subcommands,
