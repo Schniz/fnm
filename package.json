@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "cmd-ts": "0.7.0",
-    "execa": "5.0.0",
+    "execa": "5.1.1",
     "lerna-changelog": "1.0.1",
     "prettier": "2.3.0",
     "toml": "3.0.0"
