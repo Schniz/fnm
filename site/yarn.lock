@@ -43,6 +43,15 @@
     ts-node "8.9.1"
     typescript "3.9.3"
 
+"@vercel/node@1.11.1":
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@vercel/node/-/node-1.11.1.tgz#3500dff4ebb4fa93e7451ffa16dcade8be2bb305"
+  integrity sha512-2OheDtjxr1OkYyvMh7laDkOA4K6KfLL60IBg1D+PksNri2YEFaPK1lzdq7xuByuDRUs+tm9U57sPVAlyzGjlvw==
+  dependencies:
+    "@types/node" "*"
+    ts-node "8.9.1"
+    typescript "3.9.3"
+
 "@vercel/python@2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@vercel/python/-/python-2.0.3.tgz#388a42766c75401a15828a05fc66165c0ffb270e"
