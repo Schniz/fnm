@@ -25,7 +25,7 @@ tempfile = "3.2.0"
 indoc = "1.0.3"
 snafu = { version = "0.6.10", features = ["backtrace"] }
 log = "0.4.14"
-env_logger = "0.8.3"
+env_logger = "0.8.4"
 atty = "0.2.14"
 encoding_rs_io = "0.1.7"
 
