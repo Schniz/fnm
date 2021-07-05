@@ -60,9 +60,7 @@ impl Command for Use {
                         .join("installation")
                 }
                 None => {
-                    let can_install =
-                        self.install_if_missing || should_install_interactively(&requested_version);
-                    install_new_version(requested_version, config, can_install)?;
+                    install_new_version(requested_version, config, self.install_if_missing)?;
                     return Ok(());
                 }
             }
@@ -77,10 +75,10 @@ impl Command for Use {
 fn install_new_version(
     requested_version: UserVersion,
     config: &FnmConfig,
-    can_install: bool,
+    install_if_missing: bool,
 ) -> Result<(), Error> {
     ensure!(
-        can_install,
+        install_if_missing || should_install_interactively(&requested_version),
         CantFindVersion {
             version: requested_version
         }
@@ -95,7 +93,7 @@ fn install_new_version(
 
     Use {
         version: Some(UserVersionReader::Direct(requested_version)),
-        install_if_missing: can_install,
+        install_if_missing: true,
     }
     .apply(config)?;
 
