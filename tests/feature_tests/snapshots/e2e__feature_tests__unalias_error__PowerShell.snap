@@ -1,0 +1,7 @@
+---
+source: tests/feature_tests/mod.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm --log-level='error' env | Out-String | Invoke-Expression
+$($__out__ = $($($_tmp_err_action = $ErrorActionPreference;$ErrorActionPreference = "Continue";fnm unalias lts 2>&1;$ErrorActionPreference = $_tmp_err_action) | Select-String 'Requested alias lts not found'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ })
