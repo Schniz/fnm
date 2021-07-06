@@ -40,6 +40,10 @@ pub enum SubCommand {
     #[structopt(name = "alias")]
     Alias(commands::alias::Alias),
 
+    /// Remove an alias definiton
+    #[structopt(name = "unalias")]
+    Unalias(commands::unalias::Unalias),
+
     /// Set a version as the default version
     ///
     /// This is a shorthand for `fnm alias VERSION default`
@@ -81,6 +85,7 @@ impl SubCommand {
             Self::Current(cmd) => cmd.call(config),
             Self::Exec(cmd) => cmd.call(config),
             Self::Uninstall(cmd) => cmd.call(config),
+            Self::Unalias(cmd) => cmd.call(config),
         }
     }
 }
