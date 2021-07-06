@@ -42,14 +42,13 @@ impl Command for Use {
             system_version::path()
         } else if let Some(alias_name) = requested_version.alias_name() {
             let alias_path = config.aliases_dir().join(&alias_name);
-            ensure!(
-                alias_path.exists(),
-                CantFindVersion {
-                    version: requested_version
-                }
-            );
-            outln!(config#Info, "Using Node for alias {}", alias_name.cyan());
-            alias_path
+            if alias_path.exists() {
+                outln!(config#Info, "Using Node for alias {}", alias_name.cyan());
+                alias_path
+            } else {
+                install_new_version(requested_version, config, self.install_if_missing)?;
+                return Ok(());
+            }
         } else {
             let current_version = requested_version.to_version(&all_versions, &config);
             match current_version {
@@ -61,26 +60,7 @@ impl Command for Use {
                         .join("installation")
                 }
                 None => {
-                    ensure!(
-                        self.install_if_missing || should_install_interactively(&requested_version),
-                        CantFindVersion {
-                            version: requested_version
-                        }
-                    );
-
-                    Install {
-                        version: Some(requested_version.clone()),
-                        ..Default::default()
-                    }
-                    .apply(config)
-                    .context(InstallError)?;
-
-                    Self {
-                        version: Some(UserVersionReader::Direct(requested_version)),
-                        install_if_missing: self.install_if_missing,
-                    }
-                    .apply(config)?;
-
+                    install_new_version(requested_version, config, self.install_if_missing)?;
                     return Ok(());
                 }
             }
@@ -90,6 +70,34 @@ impl Command for Use {
 
         Ok(())
     }
+}
+
+fn install_new_version(
+    requested_version: UserVersion,
+    config: &FnmConfig,
+    install_if_missing: bool,
+) -> Result<(), Error> {
+    ensure!(
+        install_if_missing || should_install_interactively(&requested_version),
+        CantFindVersion {
+            version: requested_version
+        }
+    );
+
+    Install {
+        version: Some(requested_version.clone()),
+        ..Default::default()
+    }
+    .apply(config)
+    .context(InstallError)?;
+
+    Use {
+        version: Some(UserVersionReader::Direct(requested_version)),
+        install_if_missing: true,
+    }
+    .apply(config)?;
+
+    return Ok(());
 }
 
 /// Tries to delete `from`, and then tries to symlink `from` to `to` anyway.

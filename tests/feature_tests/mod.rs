@@ -200,3 +200,21 @@ mod matching_dotfiles {
             .then(test_node_version("v11.10.0"))
     });
 }
+
+mod use_alias_install_if_missing {
+    test_shell!(Bash, Zsh, Fish, PowerShell; {
+        EvalFnmEnv::default()
+            .then(WriteFile::new(".node-version", "lts/*"))
+            .then(Call::new("fnm", vec!["use", "--install-if-missing"]))
+            .then(OutputContains::new(Call::new("fnm", vec!["ls"]), "lts-latest"))
+    });
+}
+
+mod use_alias_not_installed {
+    test_shell!(Bash, Zsh, Fish, PowerShell; {
+        EvalFnmEnv::default()
+          .log_level(Some("error"))
+          .then(WriteFile::new(".node-version", "lts/*"))
+          .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["use"]))),  "Requested version lts-latest is not currently installed"))
+    });
+}
