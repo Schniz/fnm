@@ -1,4 +1,23 @@
-## 1.25.0 (2021-05-17)
+## 1.26.0 (2021-07-15)
+
+#### Bugfix 🐛
+
+- [#484](https://github.com/Schniz/fnm/pull/484) fix: --install-if-missing when using version alias ([@AlexMunoz](https://github.com/AlexMunoz))
+- [#468](https://github.com/Schniz/fnm/pull/468) Include feature for (native) certificates ([@pfiaux](https://github.com/pfiaux))
+
+#### Documentation 📝
+
+- [#467](https://github.com/Schniz/fnm/pull/467) Add instructions for removing fnm ([@binyamin](https://github.com/binyamin))
+- [#461](https://github.com/Schniz/fnm/pull/461) Fix missing list-remote in command doc ([@binhonglee](https://github.com/binhonglee))
+
+#### Committers: 4
+
+- Alex Munoz ([@AlexMunoz](https://github.com/AlexMunoz))
+- BinHong Lee ([@binhonglee](https://github.com/binhonglee))
+- Binyamin Aron Green ([@binyamin](https://github.com/binyamin))
+- Patrick Fiaux ([@pfiaux](https://github.com/pfiaux))
+
+## v1.25.0 (2021-05-17)
 
 #### New Feature 🎉
 
@@ -418,7 +437,7 @@
 #### Committers: 2
 
 - Gal Schlezinger ([@Schniz](https://github.com/Schniz))
-- [@thomsj](https://github.com/thomsj)
+- James Thomson ([@thomsj](https://github.com/thomsj))
 
 ## v1.15.0 (2019-09-23)
 
