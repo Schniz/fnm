@@ -11,7 +11,7 @@ description = "Fast and simple Node.js version manager"
 [dependencies]
 serde = { version = "1.0.126", features = ["derive"] }
 clap = "2.33.3"
-structopt = "0.3.21"
+structopt = "0.3.22"
 reqwest = { version = "0.11.4", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
 serde_json = "1.0.64"
 chrono = { version = "0.4.19", features = ["serde"] }
