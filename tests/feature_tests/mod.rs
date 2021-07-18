@@ -213,8 +213,28 @@ mod use_alias_install_if_missing {
 mod use_alias_not_installed {
     test_shell!(Bash, Zsh, Fish, PowerShell; {
         EvalFnmEnv::default()
-          .log_level(Some("error"))
-          .then(WriteFile::new(".node-version", "lts/*"))
-          .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["use"]))),  "Requested version lts-latest is not currently installed"))
+            .log_level(Some("error"))
+            .then(WriteFile::new(".node-version", "lts/*"))
+            .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["use"]))),"Requested version lts-latest is not currently installed"))
+    });
+}
+
+mod unalias {
+    test_shell!(Bash, Zsh, Fish, PowerShell; {
+        EvalFnmEnv::default()
+            .then(Call::new("fnm", vec!["install", "11.10.0"]))
+            .then(Call::new("fnm", vec!["install", "8.11.3"]))
+            .then(Call::new("fnm", vec!["alias", "8.11.3", "v8"]))
+            .then(ExpectCommandOutput::new(OutputContains::new(Call::new("fnm", vec!["ls"]), "v8"), "* v8.11.3 v8", "fnm ls"))
+            .then(Call::new("fnm", vec!["unalias", "v8"]))
+            .then(ExpectCommandOutput::new(OutputContains::new(Call::new("fnm", vec!["ls"]), "v8"), "* v8.11.3", "fnm ls"))
+    });
+}
+
+mod unalias_error {
+    test_shell!(Bash, Zsh, Fish, PowerShell; {
+        EvalFnmEnv::default()
+            .log_level(Some("error"))
+            .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["unalias", "lts"]))),  "Requested alias lts not found"))
     });
 }

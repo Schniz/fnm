@@ -1,0 +1,19 @@
+---
+source: tests/feature_tests/mod.rs
+expression: "&source.trim()"
+---
+$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 v8
+If ("$($($__out__ = $(fnm ls | Select-String 'v8'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ }))" -ne "* v8.11.3 v8") {
+    Write-Output ('Expected fnm ls to be "* v8.11.3 v8", Got: ' + $($($__out__ = $(fnm ls | Select-String 'v8'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ })))
+    exit 1
+}
+
+fnm unalias v8
+If ("$($($__out__ = $(fnm ls | Select-String 'v8'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ }))" -ne "* v8.11.3") {
+    Write-Output ('Expected fnm ls to be "* v8.11.3", Got: ' + $($($__out__ = $(fnm ls | Select-String 'v8'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ })))
+    exit 1
+}

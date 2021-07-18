@@ -1,0 +1,19 @@
+---
+source: tests/feature_tests/mod.rs
+expression: "&source.trim()"
+---
+set -e
+eval "$(fnm env)"
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 v8
+if [ "$(fnm ls | grep v8)" != "* v8.11.3 v8" ]; then
+    echo 'Expected fnm ls to be "* v8.11.3 v8", Got: '"$(fnm ls | grep v8)"
+    exit 1
+fi
+
+fnm unalias v8
+if [ "$(fnm ls | grep v8)" != "* v8.11.3" ]; then
+    echo 'Expected fnm ls to be "* v8.11.3", Got: '"$(fnm ls | grep v8)"
+    exit 1
+fi
