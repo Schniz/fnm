@@ -1,3 +1,5 @@
+use crate::alias;
+use crate::config;
 use crate::lts::LtsType;
 use std::str::FromStr;
 
@@ -14,7 +16,7 @@ fn first_letter_is_number(s: &str) -> bool {
 }
 
 impl Version {
-    pub fn parse<S: AsRef<str>>(version_str: S) -> Result<Self, semver::SemVerError> {
+    pub fn parse<S: AsRef<str>>(version_str: S) -> Result<Self, semver::Error> {
         let lowercased = version_str.as_ref().to_lowercase();
         if lowercased == "system" {
             Ok(Self::Bypassed)
@@ -40,9 +42,9 @@ impl Version {
 
     pub fn find_aliases(
         &self,
-        config: &crate::config::FnmConfig,
-    ) -> std::io::Result<Vec<crate::alias::StoredAlias>> {
-        let aliases = crate::alias::list_aliases(&config)?
+        config: &config::FnmConfig,
+    ) -> std::io::Result<Vec<alias::StoredAlias>> {
+        let aliases = alias::list_aliases(&config)?
             .drain(..)
             .filter(|alias| alias.s_ver() == self.v_str())
             .collect();
@@ -53,10 +55,7 @@ impl Version {
         format!("{}", self)
     }
 
-    pub fn installation_path(
-        &self,
-        config: &crate::config::FnmConfig,
-    ) -> Option<std::path::PathBuf> {
+    pub fn installation_path(&self, config: &config::FnmConfig) -> Option<std::path::PathBuf> {
         match self {
             Self::Bypassed => None,
             v @ Self::Lts(_) | v @ Self::Alias(_) => {
@@ -71,7 +70,7 @@ impl Version {
         }
     }
 
-    pub fn root_path(&self, config: &crate::config::FnmConfig) -> Option<std::path::PathBuf> {
+    pub fn root_path(&self, config: &config::FnmConfig) -> Option<std::path::PathBuf> {
         match self.installation_path(&config) {
             None => None,
             Some(path) => {
@@ -105,7 +104,7 @@ impl std::fmt::Display for Version {
 }
 
 impl FromStr for Version {
-    type Err = semver::SemVerError;
+    type Err = semver::Error;
     fn from_str(s: &str) -> Result<Version, Self::Err> {
         Self::parse(s)
     }
