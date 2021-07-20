@@ -20,7 +20,7 @@ impl UserVersionReader {
 }
 
 impl FromStr for UserVersionReader {
-    type Err = semver::SemVerError;
+    type Err = semver::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let pathbuf = PathBuf::from_str(&s);
