@@ -40,6 +40,7 @@ SUBCOMMANDS:
     install        Install a new Node.js version
     list           List all locally installed Node.js versions [aliases: ls]
     list-remote    List all remote Node.js versions [aliases: ls-remote]
+    unalias        Remove an alias definiton
     uninstall      Uninstall a Node.js version
     use            Change Node.js version
 ```
@@ -331,6 +332,33 @@ OPTIONS:
         --node-dist-mirror <node-dist-mirror>
             https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
 
+```
+
+# `fnm unalias`
+
+```
+fnm-unalias 1.26.0
+Remove an alias definiton
+
+USAGE:
+    fnm unalias [OPTIONS] <requested-alias>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+        --arch <arch>
+            Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
+            [default: x64]
+        --fnm-dir <base-dir>                     The root directory of fnm installations [env: FNM_DIR]
+        --log-level <log-level>                  The log level of fnm commands [env: FNM_LOGLEVEL]  [default: info]
+        --node-dist-mirror <node-dist-mirror>
+            https://nodejs.org/dist/ mirror [env: FNM_NODE_DIST_MIRROR]  [default: https://nodejs.org/dist]
+
+
+ARGS:
+    <requested-alias>
 ```
 
 # `fnm uninstall`
