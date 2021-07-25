@@ -1,0 +1,7 @@
+---
+source: tests/feature_tests/mod.rs
+expression: "&source.trim()"
+---
+set -e
+eval "$(fnm --log-level='error' env)"
+fnm unalias lts 2>&1 | grep 'Requested alias lts not found'
