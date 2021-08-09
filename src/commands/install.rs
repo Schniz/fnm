@@ -15,6 +15,10 @@ use structopt::StructOpt;
 
 #[derive(StructOpt, Debug, Default)]
 pub struct Install {
+    /// Install global packages from an existing version
+    #[structopt(long)]
+    pub reinstall_packages_from: Option<UserVersion>,
+
     /// A version string. Can be a partial semver or a LTS version name by the format lts/NAME
     pub version: Option<UserVersion>,
 
@@ -24,17 +28,20 @@ pub struct Install {
 }
 
 impl Install {
-    fn version(self) -> Result<Option<UserVersion>, Error> {
-        match self {
+    fn version(&self) -> Result<Option<UserVersion>, Error> {
+        match &self {
             Self {
+                reinstall_packages_from: _,
                 version: Some(_),
                 lts: true,
             } => Err(Error::TooManyVersionsProvided),
             Self {
+                reinstall_packages_from: _,
                 version: v,
                 lts: false,
-            } => Ok(v),
+            } => Ok(v.clone()),
             Self {
+                reinstall_packages_from: _,
                 version: None,
                 lts: true,
             } => Ok(Some(UserVersion::Full(Version::Lts(LtsType::Latest)))),
@@ -98,6 +105,38 @@ impl super::command::Command for Install {
         let version_str = format!("Node {}", &version);
         outln!(config#Info, "Installing {} ({})", version_str.cyan(), safe_arch.to_string());
 
+        /*
+        Prepare reinstalling packages.
+         */
+        let install_packages_string_option = (match self.reinstall_packages_from {
+            Some(user_version) => {
+                let output = std::process::Command::new("sh")
+                    .arg("-c")
+                    .arg(format!(
+                        concat!(
+                        "fnm use \"{}\" >/dev/null ",
+                        "&& npm list -g --depth=0 2>/dev/null ",
+                        "| command sed 1,1d ",
+                        "| command sed ",
+                        "-e '/ -> / d' ",
+                        "-e '/\\(empty\\)/ d' ",
+                        "-e 's/^.* \\(.*@[^ ]*\\).*/\\1/' ",
+                        "-e '/^npm@[^ ]*.*$/ d'",
+                        ),
+                        user_version,
+                    ))
+                    .output().expect("Failed to get package list.");
+                if output.status.success() {
+                    Ok(Some(std::string::String::from_utf8(output.stdout).unwrap()))
+                } else {
+                    Err(crate::commands::install::Error::CommandExecutionFailed {
+                        stderr: std::string::String::from_utf8(output.stderr).unwrap(),
+                    })
+                }
+            },
+            None => Ok(None),
+        })?;
+
         match install_node_dist(
             &version,
             &config.node_dist_mirror,
@@ -110,7 +149,7 @@ impl super::command::Command for Install {
             other_err => other_err.context(DownloadError)?,
         };
 
-        if let UserVersion::Full(Version::Lts(lts_type)) = current_version {
+        if let UserVersion::Full(Version::Lts(lts_type)) = current_version.clone() {
             let alias_name = Version::Lts(lts_type).v_str();
             debug!(
                 "Tagging {} as alias for {}",
@@ -124,6 +163,37 @@ impl super::command::Command for Install {
             debug!("Tagging {} as the default version", version.v_str().cyan());
             create_alias(&config, "default", &version).context(IoError)?;
         }
+
+        /*
+        Reinstall packages.
+         */
+        (match install_packages_string_option {
+            Some(packages_string) => {
+                outln!(config#Info, "Installing packages:\n{}", packages_string);
+                let output = std::process::Command::new("sh")
+                    .arg("-c")
+                    .arg(format!(
+                        concat!(
+                        "fnm use \"{new_version}\" >/dev/null ",
+                        "&& echo \"{packages_string}\" ",
+                        "| command xargs npm install -g --quiet",
+                        ),
+                        new_version = current_version,
+                        packages_string = packages_string,
+                    ))
+                    .output()
+                    .expect("Failed to install packages.");
+                if output.status.success() {
+                    outln!(config#Info,"{}", std::str::from_utf8(&output.stdout).unwrap());
+                    Ok(())
+                } else {
+                    Err(crate::commands::install::Error::CommandExecutionFailed {
+                        stderr: std::string::String::from_utf8(output.stderr).unwrap(),
+                    })
+                }
+            }
+            None => Ok(())
+        })?;
 
         Ok(())
     }
@@ -157,6 +227,10 @@ pub enum Error {
     CantFindRelevantLts {
         lts_type: crate::lts::LtsType,
     },
+    #[snafu(display("Execute command failed:\n{}", stderr))]
+    CommandExecutionFailed {
+        stderr: String,
+    },
     #[snafu(display("The requested version is not installable: {}", version.v_str()))]
     UninstallableVersion {
         version: Version,
@@ -179,6 +253,7 @@ mod tests {
         assert!(!config.default_version_dir().exists());
 
         Install {
+            reinstall_packages_from: None,
             version: UserVersion::from_str("12.0.0").ok(),
             lts: false,
         }
