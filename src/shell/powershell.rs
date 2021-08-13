@@ -19,10 +19,12 @@ impl Shell for PowerShell {
 
     fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
         indoc!(r#"
-            function Set-LocationWithFnm { param($path); Set-Location $path; If ((Test-Path .nvmrc) -Or (Test-Path .node-version)) { & fnm use } }
+            function Set-FnmOnLoad { If ((Test-Path .nvmrc) -Or (Test-Path .node-version)) { & fnm use } }
+            function Set-LocationWithFnm { param($path); Set-Location $path; Set-FnmOnLoad }
             Set-Alias cd_with_fnm Set-LocationWithFnm -Force
             Remove-Item alias:\cd
             New-Alias cd Set-LocationWithFnm
+            Set-FnmOnLoad
         "#).into()
     }
     fn into_structopt_shell(&self) -> clap::Shell {
