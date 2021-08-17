@@ -44,7 +44,10 @@ impl std::str::FromStr for LogLevel {
             "quiet" => Ok(Self::Quiet),
             "info" | "all" => Ok(Self::Info),
             "error" => Ok(Self::Error),
-            loglevel => Err(format!("Unrecognized log level {:?}. Supported levels are 'quiet', 'info' and 'error'.", loglevel)),
+            loglevel => Err(format!(
+                "Unrecognized log level {:?}. Supported levels are 'quiet', 'info' and 'error'.",
+                loglevel
+            )),
         }
     }
 }
