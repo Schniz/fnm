@@ -139,16 +139,6 @@ fnm env | source
 
 #### PowerShell
 
-Before adding any configuration to your shell, you'd need to enable symlink support for a standard accounts (non-administrator).
-
-You can do it by enabling [Developer Mode](https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development), or [updating the Local Security Policy](#local-security-policy).
-
-##### Local Security Policy
-
-Open `Local Security Policy` (`secpol.msc`) and go to `Local Policies` -> `User Rights Assignment`, select `Create symbolic links`, add your user to the list and **reboot**.
-
-> Use `whoami` if you are not sure what's your user name.
-
 Add the following to the end of your profile file:
 
 ```powershell
