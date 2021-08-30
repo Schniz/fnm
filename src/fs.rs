@@ -8,7 +8,7 @@ pub fn symlink_dir<P: AsRef<Path>, U: AsRef<Path>>(from: P, to: U) -> std::io::R
 
 #[cfg(windows)]
 pub fn symlink_dir<P: AsRef<Path>, U: AsRef<Path>>(from: P, to: U) -> std::io::Result<()> {
-    std::os::windows::fs::symlink_dir(from, to)?;
+    junction::create(from, to)?;
     Ok(())
 }
 

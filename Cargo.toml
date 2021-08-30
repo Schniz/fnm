@@ -42,3 +42,4 @@ embed-resource = "1.6.3"
 
 [target.'cfg(windows)'.dependencies]
 csv = "1.1.6"
+junction = "0.2.0"
