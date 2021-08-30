@@ -131,6 +131,7 @@ check_dependencies() {
   fi
 
   if [ "$SHOULD_EXIT" = "true" ]; then
+    echo "Not installing fnm due to missing dependencies."
     exit 1
   fi
 }
