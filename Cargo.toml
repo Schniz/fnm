@@ -34,7 +34,7 @@ pretty_assertions = "0.7.2"
 duct = "0.13.5"
 test-env-log = "0.2.7"
 shell-escape = "0.1.5"
-insta = { version = "1.7.1", features = ["backtrace"] }
+insta = { version = "1.7.2", features = ["backtrace"] }
 serial_test = "0.5.1"
 
 [build-dependencies]
