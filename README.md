@@ -74,6 +74,14 @@ scoop install fnm
 
 Then, [set up your shell for fnm](#shell-setup)
 
+#### Using Chocolatey (Windows)
+
+```sh
+choco install fnm
+```
+
+Then, [set up your shell for fnm](#shell-setup)
+
 #### Using Cargo (Linux/macOS/Windows)
 
 ```sh
