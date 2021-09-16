@@ -1,4 +1,35 @@
-## 1.26.0 (2021-07-15)
+## 1.27.0 (2021-09-16)
+
+#### New Feature 🎉
+
+- [#519](https://github.com/Schniz/fnm/pull/519) Windows: Use junctions rather than symlinks ([@davidaurelio](https://github.com/davidaurelio))
+- [#489](https://github.com/Schniz/fnm/pull/489) Add unalias command ([@AlexMunoz](https://github.com/AlexMunoz))
+
+#### Bugfix 🐛
+
+- [#528](https://github.com/Schniz/fnm/pull/528) installation script: Use `=` instead of `==` ([@develoot](https://github.com/develoot))
+- [#512](https://github.com/Schniz/fnm/pull/512) fix(dep): Revert "Include feature for (native) certificates #468" ([@itotallyrock](https://github.com/itotallyrock))
+- [#514](https://github.com/Schniz/fnm/pull/514) Invoke fnm use on startup for PowerShell ([@naoey](https://github.com/naoey))
+
+#### Documentation 📝
+
+- [#529](https://github.com/Schniz/fnm/pull/529) Add Chocolatey installation instructions ([@CMeeg](https://github.com/CMeeg))
+- [#496](https://github.com/Schniz/fnm/pull/496) install.sh: print an exit message for missing deps ([@waldyrious](https://github.com/waldyrious))
+- [#516](https://github.com/Schniz/fnm/pull/516) More informative log level error message ([@waldyrious](https://github.com/waldyrious))
+- [#493](https://github.com/Schniz/fnm/pull/493) Add instructions to setup the file for Cmder ([@Lunchb0ne](https://github.com/Lunchb0ne))
+
+#### Committers: 8
+
+- Abhishek Aryan ([@Lunchb0ne](https://github.com/Lunchb0ne))
+- Alex Munoz ([@AlexMunoz](https://github.com/AlexMunoz))
+- Chris Meagher ([@CMeeg](https://github.com/CMeeg))
+- David Aurelio ([@davidaurelio](https://github.com/davidaurelio))
+- Jeffrey Meyer ([@itotallyrock](https://github.com/itotallyrock))
+- Kitae Kim ([@develoot](https://github.com/develoot))
+- Waldir Pimenta ([@waldyrious](https://github.com/waldyrious))
+- [@naoey](https://github.com/naoey)
+
+## v1.26.0 (2021-07-15)
 
 #### Bugfix 🐛
 
