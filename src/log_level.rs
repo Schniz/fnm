@@ -41,17 +41,14 @@ impl Into<&'static str> for LogLevel {
 }
 
 impl std::str::FromStr for LogLevel {
-    type Err = String;
+    type Err = &'static str;
 
     fn from_str(s: &str) -> Result<LogLevel, Self::Err> {
         match s {
             "quiet" => Ok(Self::Quiet),
             "info" | "all" => Ok(Self::Info),
             "error" => Ok(Self::Error),
-            loglevel => Err(format!(
-                "Unrecognized log level {:?}. Supported levels are 'quiet', 'info' and 'error'.",
-                loglevel
-            )),
+            _ => Err("Unsupported log level"),
         }
     }
 }
