@@ -42,7 +42,8 @@ pub struct FnmConfig {
         env = "FNM_LOGLEVEL",
         default_value = "info",
         global = true,
-        hide_env_values = true
+        hide_env_values = true,
+        possible_values = LogLevel::possible_values()
     )]
     log_level: LogLevel,
 

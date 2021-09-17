@@ -24,6 +24,10 @@ impl LogLevel {
             Box::from(std::io::sink())
         }
     }
+
+    pub fn possible_values() -> &'static [&'static str; 4] {
+        &["quiet", "info", "all", "error"]
+    }
 }
 
 impl Into<&'static str> for LogLevel {
