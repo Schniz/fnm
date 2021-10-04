@@ -30,7 +30,7 @@ atty = "0.2.14"
 encoding_rs_io = "0.1.7"
 
 [dev-dependencies]
-pretty_assertions = "0.7.2"
+pretty_assertions = "1.0.0"
 duct = "0.13.5"
 test-env-log = "0.2.7"
 shell-escape = "0.1.5"
