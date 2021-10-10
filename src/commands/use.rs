@@ -157,7 +157,7 @@ fn warn_if_multishell_path_not_in_path_env_var(
         "{} {}\n{}\n{}",
         "warning:".yellow().bold(),
         "The current Node.js path is not on your PATH environment variable.".yellow(),
-        "Have you set up your shell profile to evaluate `fnm env`?".yellow(),
+        "You should setup your shell profile to evaluate `fnm env`, see https://github.com/Schniz/fnm#shell-setup on how to do this".yellow(),
         "Check out our documentation for more information: https://fnm.vercel.app".yellow()
     );
 }
@@ -179,7 +179,7 @@ pub enum Error {
     #[snafu(display(
         "{}\n{}\n{}",
         "We can't find the necessary environment variables to replace the Node version.",
-        "Have you set up your shell profile to evaluate `fnm env`?",
+        "You should setup your shell profile to evaluate `fnm env`, see https://github.com/Schniz/fnm#shell-setup on how to do this",
         "Check out our documentation for more information: https://fnm.vercel.app"
     ))]
     FnmEnvWasNotSourced,
