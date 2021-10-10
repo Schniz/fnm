@@ -40,7 +40,7 @@ SUBCOMMANDS:
     install        Install a new Node.js version
     list           List all locally installed Node.js versions [aliases: ls]
     list-remote    List all remote Node.js versions [aliases: ls-remote]
-    unalias        Remove an alias definiton
+    unalias        Remove an alias definition
     uninstall      Uninstall a Node.js version
     use            Change Node.js version
 ```
@@ -350,7 +350,7 @@ OPTIONS:
 
 ```
 fnm-unalias 1.27.0
-Remove an alias definiton
+Remove an alias definition
 
 USAGE:
     fnm unalias [OPTIONS] <requested-alias>

@@ -40,7 +40,7 @@ pub enum SubCommand {
     #[structopt(name = "alias")]
     Alias(commands::alias::Alias),
 
-    /// Remove an alias definiton
+    /// Remove an alias definition
     #[structopt(name = "unalias")]
     Unalias(commands::unalias::Unalias),
 
