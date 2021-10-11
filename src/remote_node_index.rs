@@ -1,5 +1,6 @@
 use crate::version::Version;
 use serde::Deserialize;
+use url::Url;
 
 mod lts_status {
     use serde::{Deserialize, Deserializer};
@@ -82,9 +83,9 @@ impl PartialOrd for IndexedNodeVersion {
 /// ```rust
 /// use crate::remote_node_index::list;
 /// ```
-pub fn list(base_url: &reqwest::Url) -> Result<Vec<IndexedNodeVersion>, reqwest::Error> {
+pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, ureq::Error> {
     let index_json_url = format!("{}/index.json", base_url);
-    let mut value: Vec<IndexedNodeVersion> = reqwest::blocking::get(&index_json_url)?.json()?;
+    let mut value: Vec<IndexedNodeVersion> = ureq::get(&index_json_url).call()?.into_json()?;
     value.sort();
     Ok(value)
 }
@@ -96,7 +97,7 @@ mod tests {
 
     #[test]
     fn test_list() {
-        let base_url = reqwest::Url::parse("https://nodejs.org/dist").unwrap();
+        let base_url = Url::parse("https://nodejs.org/dist").unwrap();
         let expected_version = Version::parse("12.0.0").unwrap();
         let mut versions = list(&base_url).expect("Can't get HTTP data");
         assert_eq!(

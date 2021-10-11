@@ -1,19 +1,18 @@
 use super::extract::{Error, Extract};
-use reqwest::blocking::Response;
-use std::path::Path;
+use std::{io::Read, path::Path};
 
-pub struct TarXz {
-    response: Response,
+pub struct TarXz<R: Read> {
+    response: R,
 }
 
-impl TarXz {
+impl<R: Read> TarXz<R> {
     #[allow(dead_code)]
-    pub fn new(response: Response) -> Self {
+    pub fn new(response: R) -> Self {
         Self { response }
     }
 }
 
-impl Extract for TarXz {
+impl<R: Read> Extract for TarXz<R> {
     fn extract_into<P: AsRef<Path>>(self, path: P) -> Result<(), Error> {
         let xz_stream = xz2::read::XzDecoder::new(self.response);
         let mut tar_archive = tar::Archive::new(xz_stream);

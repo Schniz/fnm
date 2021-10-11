@@ -4,15 +4,15 @@ use crate::archive::{Error as ExtractError, Extract};
 use crate::directory_portal::DirectoryPortal;
 use crate::version::Version;
 use log::debug;
-use reqwest::Url;
 use snafu::{ensure, OptionExt, ResultExt, Snafu};
 use std::path::Path;
 use std::path::PathBuf;
+use url::Url;
 
 #[derive(Debug, Snafu)]
 pub enum Error {
     HttpError {
-        source: reqwest::Error,
+        source: ureq::Error,
     },
     IoError {
         source: std::io::Error,
@@ -69,8 +69,9 @@ fn download_url(base_url: &Url, version: &Version, arch: &Arch) -> Url {
 
 pub fn extract_archive_into<P: AsRef<Path>>(
     path: P,
-    response: reqwest::blocking::Response,
+    response: ureq::Response,
 ) -> Result<(), Error> {
+    let response = response.into_reader();
     #[cfg(unix)]
     let extractor = archive::TarXz::new(response);
     #[cfg(windows)]
@@ -104,7 +105,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
 
     let url = download_url(node_dist_mirror, version, arch);
     debug!("Going to call for {}", &url);
-    let response = reqwest::blocking::get(url).context(HttpError)?;
+    let response = ureq::get(url.as_str()).call().context(HttpError)?;
 
     if response.status() == 404 {
         return Err(Error::VersionNotFound {

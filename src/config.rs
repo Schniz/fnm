@@ -3,6 +3,7 @@ use crate::log_level::LogLevel;
 use crate::path_ext::PathExt;
 use dirs::home_dir;
 use structopt::StructOpt;
+use url::Url;
 
 #[derive(StructOpt, Debug)]
 pub struct FnmConfig {
@@ -14,7 +15,7 @@ pub struct FnmConfig {
         global = true,
         hide_env_values = true
     )]
-    pub node_dist_mirror: reqwest::Url,
+    pub node_dist_mirror: Url,
 
     /// The root directory of fnm installations.
     #[structopt(
@@ -62,7 +63,7 @@ pub struct FnmConfig {
 impl Default for FnmConfig {
     fn default() -> Self {
         Self {
-            node_dist_mirror: reqwest::Url::parse("https://nodejs.org/dist/").unwrap(),
+            node_dist_mirror: Url::parse("https://nodejs.org/dist/").unwrap(),
             base_dir: None,
             multishell_path: None,
             log_level: LogLevel::Info,
