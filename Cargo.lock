@@ -27,6 +27,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "alloc-no-stdlib"
+version = "2.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "35ef4730490ad1c4eae5c4325b2a95f521d023e5c885853ff7aca0a6a1631db3"
+
+[[package]]
+name = "alloc-stdlib"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "697ed7edc0f1711de49ce108c541623a0af97c6c60b2f6e2b65229847ac843c2"
+dependencies = [
+ "alloc-no-stdlib",
+]
+
+[[package]]
 name = "ansi_term"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -87,6 +102,16 @@ name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
+
+[[package]]
+name = "brotli-decompressor"
+version = "2.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59ad2d4653bf5ca36ae797b1f4bb4dbddb60ce49ca4aed8a2ce4829f60425b80"
+dependencies = [
+ "alloc-no-stdlib",
+ "alloc-stdlib",
+]
 
 [[package]]
 name = "bstr"
@@ -372,6 +397,7 @@ name = "fnm"
 version = "1.27.0"
 dependencies = [
  "atty",
+ "brotli-decompressor",
  "chrono",
  "clap",
  "colored",

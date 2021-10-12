@@ -29,6 +29,7 @@ atty = "0.2.14"
 encoding_rs_io = "0.1.7"
 ureq = { version = "2.2.0", features = ["json"] }
 url = "2.2.2"
+brotli-decompressor = "2.3.2"
 
 [dev-dependencies]
 pretty_assertions = "1.0.0"
@@ -44,3 +45,5 @@ embed-resource = "1.6.4"
 [target.'cfg(windows)'.dependencies]
 csv = "1.1.6"
 junction = "0.2.0"
+
+[features]
