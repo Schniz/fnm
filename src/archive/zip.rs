@@ -1,30 +1,29 @@
 use super::extract::{Error, Extract};
 use log::debug;
-use reqwest::blocking::Response;
 use std::fs;
-use std::io;
+use std::io::{self, Read};
 use std::path::Path;
 use tempfile::tempfile;
 use zip::read::ZipArchive;
 
-pub struct Zip {
-    response: Response,
+pub struct Zip<R: Read> {
+    response: R,
 }
 
-impl Zip {
+impl<R: Read> Zip<R> {
     #[allow(dead_code)]
-    pub fn new(response: Response) -> Self {
+    pub fn new(response: R) -> Self {
         Self { response }
     }
 }
 
-impl Extract for Zip {
+impl<R: Read> Extract for Zip<R> {
     fn extract_into<P: AsRef<Path>>(mut self, path: P) -> Result<(), Error> {
         let path = path.as_ref();
         let mut tmp_zip_file = tempfile().expect("Can't get a temporary file");
 
         debug!("Created a temporary zip file");
-        self.response.copy_to(&mut tmp_zip_file)?;
+        io::copy(&mut self.response, &mut tmp_zip_file)?;
         debug!(
             "Wrote zipfile successfully. Now extracting into {}.",
             path.display()
@@ -88,9 +87,10 @@ mod tests {
     #[test_env_log::test]
     fn test_zip_extraction() {
         let temp_dir = tempfile::tempdir().expect("Can't create a temp directory");
-        let response =
-            reqwest::blocking::get("https://nodejs.org/dist/v12.0.0/node-v12.0.0-win-x64.zip")
-                .expect("Can't make request to Node v12.0.0 zip file");
+        let response = ureq::get("https://nodejs.org/dist/v12.0.0/node-v12.0.0-win-x64.zip")
+            .call()
+            .expect("Can't make request to Node v12.0.0 zip file")
+            .into_reader();
         Zip::new(response)
             .extract_into(&temp_dir)
             .expect("Can't unzip files");

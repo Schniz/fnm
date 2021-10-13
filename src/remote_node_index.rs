@@ -1,5 +1,9 @@
+use std::io;
+
 use crate::version::Version;
+use brotli_decompressor::Decompressor;
 use serde::Deserialize;
+use url::Url;
 
 mod lts_status {
     use serde::{Deserialize, Deserializer};
@@ -82,9 +86,31 @@ impl PartialOrd for IndexedNodeVersion {
 /// ```rust
 /// use crate::remote_node_index::list;
 /// ```
-pub fn list(base_url: &reqwest::Url) -> Result<Vec<IndexedNodeVersion>, reqwest::Error> {
+pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, ureq::Error> {
     let index_json_url = format!("{}/index.json", base_url);
-    let mut value: Vec<IndexedNodeVersion> = reqwest::blocking::get(&index_json_url)?.json()?;
+    let resp = ureq::get(&index_json_url)
+        .set("Accept-Encoding", "br")
+        .call()?;
+
+    let brotli_encoded = resp
+        .header("Content-Encoding")
+        .map(|enc| enc.eq_ignore_ascii_case("br"))
+        .unwrap_or_default();
+    let reader = resp.into_reader();
+
+    let value = if brotli_encoded {
+        serde_json::from_reader(Decompressor::new(reader, 0))
+    } else {
+        serde_json::from_reader(reader)
+    };
+
+    let mut value: Vec<IndexedNodeVersion> = value.map_err(|e| {
+        io::Error::new(
+            io::ErrorKind::InvalidData,
+            format!("failed decoding index JSON data: {}", e),
+        )
+    })?;
+
     value.sort();
     Ok(value)
 }
@@ -96,7 +122,7 @@ mod tests {
 
     #[test]
     fn test_list() {
-        let base_url = reqwest::Url::parse("https://nodejs.org/dist").unwrap();
+        let base_url = Url::parse("https://nodejs.org/dist").unwrap();
         let expected_version = Version::parse("12.0.0").unwrap();
         let mut versions = list(&base_url).expect("Can't get HTTP data");
         assert_eq!(
