@@ -25,7 +25,7 @@ impl Shell for WindowsCmd {
         let path = config.base_dir_with_default().join("cd.cmd");
         create_cd_file_at(&path).expect("Can't create cd.cmd file for use-on-cd");
         format!(
-            "doskey cd={} $1",
+            "doskey cd={} $*",
             path.to_str().expect("Can't read path to cd.cmd")
         )
     }
