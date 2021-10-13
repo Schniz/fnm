@@ -10,7 +10,7 @@ pub enum UserVersionReader {
 }
 
 impl UserVersionReader {
-    pub fn to_user_version(self) -> Option<UserVersion> {
+    pub fn into_user_version(self) -> Option<UserVersion> {
         match self {
             Self::Direct(uv) => Some(uv),
             Self::Path(pathbuf) if pathbuf.is_file() => get_user_version_for_file(&pathbuf),
@@ -23,8 +23,8 @@ impl FromStr for UserVersionReader {
     type Err = semver::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let pathbuf = PathBuf::from_str(&s);
-        let user_version = UserVersion::from_str(&s);
+        let pathbuf = PathBuf::from_str(s);
+        let user_version = UserVersion::from_str(s);
         match (user_version, pathbuf) {
             (_, Ok(pathbuf)) if pathbuf.exists() => Ok(Self::Path(pathbuf)),
             (Ok(user_version), _) => Ok(Self::Direct(user_version)),
@@ -47,7 +47,7 @@ mod tests {
         write!(file, "14").unwrap();
         let pathbuf = file.path().to_path_buf();
 
-        let user_version = UserVersionReader::Path(pathbuf).to_user_version();
+        let user_version = UserVersionReader::Path(pathbuf).into_user_version();
         assert_eq!(user_version, Some(UserVersion::OnlyMajor(14)));
     }
 
@@ -58,13 +58,14 @@ mod tests {
         std::fs::write(node_version_path, "14").unwrap();
         let pathbuf = directory.path().to_path_buf();
 
-        let user_version = UserVersionReader::Path(pathbuf).to_user_version();
+        let user_version = UserVersionReader::Path(pathbuf).into_user_version();
         assert_eq!(user_version, Some(UserVersion::OnlyMajor(14)));
     }
 
     #[test]
     fn test_direct_to_version() {
-        let user_version = UserVersionReader::Direct(UserVersion::OnlyMajor(14)).to_user_version();
+        let user_version =
+            UserVersionReader::Direct(UserVersion::OnlyMajor(14)).into_user_version();
         assert_eq!(user_version, Some(UserVersion::OnlyMajor(14)));
     }
 

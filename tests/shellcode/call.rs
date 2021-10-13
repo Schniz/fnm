@@ -4,16 +4,13 @@ use std::fmt::Write;
 
 #[derive(Debug)]
 pub(crate) struct Call {
-    binary: Box<&'static str>,
+    binary: &'static str,
     args: Vec<&'static str>,
 }
 
 impl Call {
     pub(crate) fn new(binary: &'static str, args: Vec<&'static str>) -> Self {
-        Self {
-            binary: Box::from(binary),
-            args,
-        }
+        Self { binary, args }
     }
 }
 

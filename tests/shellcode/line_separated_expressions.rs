@@ -38,7 +38,7 @@ impl<S: Shell, A: Expression<S>, B: Expression<S>> Expression<S>
 {
     fn write_shell(&self, writer: &mut impl Write) -> std::fmt::Result {
         self.a.write_shell(writer)?;
-        write!(writer, "\n")?;
+        writeln!(writer)?;
         self.b.write_shell(writer)
     }
 }

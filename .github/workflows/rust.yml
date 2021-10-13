@@ -17,6 +17,16 @@ jobs:
     - name: cargo fmt
       run: cargo fmt -- --check
 
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+    - uses: actions/checkout@v2
+    - name: cargo clippy
+      run: cargo clippy -- -D warnings
+
   unit_tests:
     runs-on: ${{ matrix.os }}
     strategy:

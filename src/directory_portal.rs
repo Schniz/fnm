@@ -1,4 +1,4 @@
-use log::*;
+use log::debug;
 use std::path::Path;
 use tempfile::TempDir;
 
@@ -19,7 +19,7 @@ impl<P: AsRef<Path>> DirectoryPortal<P> {
     pub fn new_in(parent_dir: impl AsRef<Path>, target: P) -> Self {
         let temp_dir = TempDir::new_in(parent_dir).expect("Can't generate a temp directory");
         debug!("Created a temp directory in {:?}", temp_dir.path());
-        Self { target, temp_dir }
+        Self { temp_dir, target }
     }
 
     pub fn teleport(self) -> std::io::Result<P> {

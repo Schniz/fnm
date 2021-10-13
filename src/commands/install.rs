@@ -55,7 +55,7 @@ impl super::command::Command for Install {
 
         let version = match current_version.clone() {
             UserVersion::Full(Version::Semver(actual_version)) => Version::Semver(actual_version),
-            UserVersion::Full(v @ Version::Bypassed) | UserVersion::Full(v @ Version::Alias(_)) => {
+            UserVersion::Full(v @ (Version::Bypassed | Version::Alias(_))) => {
                 ensure!(false, UninstallableVersion { version: v });
                 unreachable!();
             }
@@ -84,7 +84,7 @@ impl super::command::Command for Install {
                     .collect();
 
                 current_version
-                    .to_version(&available_versions, &config)
+                    .to_version(&available_versions, config)
                     .context(CantFindNodeVersion {
                         requested_version: current_version,
                     })?
@@ -117,12 +117,12 @@ impl super::command::Command for Install {
                 alias_name.cyan(),
                 version.v_str().cyan()
             );
-            create_alias(&config, &alias_name, &version).context(IoError)?;
+            create_alias(config, &alias_name, &version).context(IoError)?;
         }
 
         if !config.default_version_dir().exists() {
             debug!("Tagging {} as the default version", version.v_str().cyan());
-            create_alias(&config, "default", &version).context(IoError)?;
+            create_alias(config, "default", &version).context(IoError)?;
         }
 
         Ok(())

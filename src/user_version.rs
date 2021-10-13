@@ -34,17 +34,14 @@ impl UserVersion {
         match (self, version) {
             (Self::Full(a), b) if a == b => true,
             (Self::Full(user_version), maybe_alias) => {
-                match (user_version.alias_name(), maybe_alias.find_aliases(&config)) {
+                match (user_version.alias_name(), maybe_alias.find_aliases(config)) {
                     (None, _) | (_, Err(_)) => false,
-                    (Some(user_alias), Ok(aliases)) => aliases
-                        .iter()
-                        .find(|alias| alias.name() == user_alias)
-                        .is_some(),
+                    (Some(user_alias), Ok(aliases)) => {
+                        aliases.iter().any(|alias| alias.name() == user_alias)
+                    }
                 }
             }
-            (_, Version::Bypassed) => false,
-            (_, Version::Lts(_)) => false,
-            (_, Version::Alias(_)) => false,
+            (_, Version::Bypassed | Version::Lts(_) | Version::Alias(_)) => false,
             (Self::OnlyMajor(major), Version::Semver(other)) => *major == other.major,
             (Self::MajorMinor(major, minor), Version::Semver(other)) => {
                 *major == other.major && *minor == other.minor
@@ -69,11 +66,7 @@ impl std::fmt::Display for UserVersion {
 }
 
 fn skip_first_v(str: &str) -> &str {
-    if str.starts_with('v') {
-        &str[1..]
-    } else {
-        str
-    }
+    str.strip_prefix('v').unwrap_or(str)
 }
 
 impl FromStr for UserVersion {
@@ -96,12 +89,10 @@ impl FromStr for UserVersion {
 #[cfg(test)]
 impl PartialEq for UserVersion {
     fn eq(&self, other: &Self) -> bool {
-        use UserVersion::*;
-
         match (self, other) {
-            (OnlyMajor(a), OnlyMajor(b)) if a == b => true,
-            (MajorMinor(a1, a2), MajorMinor(b1, b2)) if (a1, a2) == (b1, b2) => true,
-            (Full(v1), Full(v2)) if v1 == v2 => true,
+            (Self::OnlyMajor(a), Self::OnlyMajor(b)) if a == b => true,
+            (Self::MajorMinor(a1, a2), Self::MajorMinor(b1, b2)) if (a1, a2) == (b1, b2) => true,
+            (Self::Full(v1), Self::Full(v2)) if v1 == v2 => true,
             (_, _) => false,
         }
     }
@@ -109,6 +100,8 @@ impl PartialEq for UserVersion {
 
 #[cfg(test)]
 mod tests {
+    use crate::config::FnmConfig;
+
     use super::*;
 
     #[test]
@@ -138,7 +131,7 @@ mod tests {
             expected.clone(),
             Version::parse("7.0.1").unwrap(),
         ];
-        let result = UserVersion::OnlyMajor(6).to_version(&versions, &Default::default());
+        let result = UserVersion::OnlyMajor(6).to_version(&versions, &FnmConfig::default());
 
         assert_eq!(result, Some(&expected));
     }
@@ -152,7 +145,7 @@ mod tests {
             expected.clone(),
             Version::parse("7.0.1").unwrap(),
         ];
-        let result = UserVersion::MajorMinor(6, 0).to_version(&versions, &Default::default());
+        let result = UserVersion::MajorMinor(6, 0).to_version(&versions, &FnmConfig::default());
 
         assert_eq!(result, Some(&expected));
     }
@@ -166,7 +159,8 @@ mod tests {
             Version::parse("6.0.1").unwrap(),
             Version::parse("7.0.1").unwrap(),
         ];
-        let result = UserVersion::Full(expected.clone()).to_version(&versions, &Default::default());
+        let result =
+            UserVersion::Full(expected.clone()).to_version(&versions, &FnmConfig::default());
 
         assert_eq!(result, Some(&expected));
     }

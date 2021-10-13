@@ -1,15 +1,15 @@
 use super::shell::Shell;
-use std::path::PathBuf;
+use std::path::Path;
 
 #[derive(Debug)]
 pub struct WindowsCmd;
 
 impl Shell for WindowsCmd {
-    fn into_structopt_shell(&self) -> structopt::clap::Shell {
+    fn to_structopt_shell(&self) -> structopt::clap::Shell {
         panic!("Shell completion is not supported for Windows Command Prompt. Maybe try using PowerShell for a better experience?");
     }
 
-    fn path(&self, path: &PathBuf) -> String {
+    fn path(&self, path: &Path) -> String {
         let current_path = std::env::var_os("path").expect("Can't read PATH env var");
         let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
         split_paths.insert(0, path.to_path_buf());
