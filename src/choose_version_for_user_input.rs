@@ -31,7 +31,10 @@ pub fn choose_version_for_user_input<'a>(
         installed_versions::list(config.installations_dir()).context(VersionListing)?;
 
     let result = if let UserVersion::Full(Version::Bypassed) = requested_version {
-        info!("Bypassing fnm: using {} node", "system".cyan());
+        info!(
+            "Bypassing fnm: using {} node",
+            system_version::display_name().cyan()
+        );
         Some(ApplicableVersion {
             path: system_version::path(),
             version: Version::Bypassed,

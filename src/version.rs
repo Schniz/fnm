@@ -1,6 +1,7 @@
 use crate::alias;
 use crate::config;
 use crate::lts::LtsType;
+use crate::system_version;
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq, PartialOrd, Eq, Ord, Clone)]
@@ -18,7 +19,7 @@ fn first_letter_is_number(s: &str) -> bool {
 impl Version {
     pub fn parse<S: AsRef<str>>(version_str: S) -> Result<Self, semver::Error> {
         let lowercased = version_str.as_ref().to_lowercase();
-        if lowercased == "system" {
+        if lowercased == system_version::display_name() {
             Ok(Self::Bypassed)
         } else if lowercased.starts_with("lts-") || lowercased.starts_with("lts/") {
             let lts_type = LtsType::from(&lowercased[4..]);
@@ -57,7 +58,7 @@ impl Version {
 
     pub fn installation_path(&self, config: &config::FnmConfig) -> Option<std::path::PathBuf> {
         match self {
-            Self::Bypassed => None,
+            Self::Bypassed => Some(system_version::path()),
             v @ Self::Lts(_) | v @ Self::Alias(_) => {
                 Some(config.aliases_dir().join(v.alias_name().unwrap()))
             }
@@ -95,7 +96,7 @@ impl<'de> serde::Deserialize<'de> for Version {
 impl std::fmt::Display for Version {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Bypassed => write!(f, "system"),
+            Self::Bypassed => write!(f, "{}", system_version::display_name()),
             Self::Lts(lts) => write!(f, "lts-{}", lts),
             Self::Semver(semver) => write!(f, "v{}", semver),
             Self::Alias(alias) => write!(f, "{}", alias),
