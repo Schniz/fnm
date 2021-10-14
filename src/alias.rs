@@ -18,10 +18,7 @@ pub fn create_alias(
         .ok_or_else(|| std::io::Error::from(std::io::ErrorKind::NotFound))?;
     let alias_dir = aliases_dir.join(common_name);
 
-    if alias_dir.exists() {
-        remove_symlink_dir(&alias_dir)?;
-    }
-
+    remove_symlink_dir(&alias_dir).ok();
     symlink_dir(&version_dir, &alias_dir)?;
 
     Ok(())

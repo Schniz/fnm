@@ -1,7 +1,9 @@
 use super::command::Command;
-use crate::config::FnmConfig;
 use crate::fs::remove_symlink_dir;
-use snafu::{ensure, ResultExt, Snafu};
+use crate::user_version::UserVersion;
+use crate::version::Version;
+use crate::{choose_version_for_user_input, config::FnmConfig};
+use snafu::{OptionExt, ResultExt, Snafu};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -13,15 +15,16 @@ impl Command for Unalias {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        let alias_path = config.aliases_dir().join(&self.requested_alias);
-        ensure!(
-            alias_path.exists(),
-            AliasNotFound {
-                requested_alias: self.requested_alias
-            }
-        );
+        let requested_version = choose_version_for_user_input::choose_version_for_user_input(
+            &UserVersion::Full(Version::Alias(self.requested_alias.clone())),
+            config,
+        )
+        .context(ApplicableVersionError)?
+        .with_context(|| AliasNotFound {
+            requested_alias: self.requested_alias,
+        })?;
 
-        remove_symlink_dir(&alias_path).context(CantDeleteSymlink)?;
+        remove_symlink_dir(&requested_version.path()).context(CantDeleteSymlink)?;
 
         Ok(())
     }
@@ -33,4 +36,7 @@ pub enum Error {
     CantDeleteSymlink { source: std::io::Error },
     #[snafu(display("Requested alias {} not found", requested_alias))]
     AliasNotFound { requested_alias: String },
+    ApplicableVersionError {
+        source: choose_version_for_user_input::Error,
+    },
 }

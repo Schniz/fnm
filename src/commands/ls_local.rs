@@ -31,11 +31,11 @@ impl super::command::Command for LsLocal {
                         .map(|x| x.name())
                         .collect::<Vec<_>>()
                         .join(", ");
-                    format!(" {}", version_string)
+                    format!(" {}", version_string.dimmed())
                 }
             };
 
-            let version_str = format!("* {}{}", version, version_aliases.white().dimmed());
+            let version_str = format!("* {}{}", version, version_aliases);
 
             if curr_version == Some(version) {
                 println!("{}", version_str.cyan());

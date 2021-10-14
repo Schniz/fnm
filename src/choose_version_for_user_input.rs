@@ -1,4 +1,5 @@
 use crate::config::FnmConfig;
+use crate::fs;
 use crate::installed_versions;
 use crate::system_version;
 use crate::user_version::UserVersion;
@@ -8,6 +9,7 @@ use log::info;
 use snafu::{ensure, ResultExt, Snafu};
 use std::path::{Path, PathBuf};
 
+#[derive(Debug)]
 pub struct ApplicableVersion {
     path: PathBuf,
     version: Version,
@@ -41,17 +43,30 @@ pub fn choose_version_for_user_input<'a>(
         })
     } else if let Some(alias_name) = requested_version.alias_name() {
         let alias_path = config.aliases_dir().join(&alias_name);
-        ensure!(
-            alias_path.exists(),
-            CantFindVersion {
-                requested_version: requested_version.clone()
-            }
-        );
-        info!("Using Node for alias {}", alias_name.cyan());
-        Some(ApplicableVersion {
-            path: alias_path,
-            version: Version::Alias(alias_name),
-        })
+        let system_path = system_version::path();
+        if matches!(fs::shallow_read_symlink(&alias_path), Ok(shallow_path) if shallow_path == system_path)
+        {
+            info!(
+                "Bypassing fnm: using {} node",
+                system_version::display_name().cyan()
+            );
+            Some(ApplicableVersion {
+                path: alias_path,
+                version: Version::Bypassed,
+            })
+        } else {
+            ensure!(
+                alias_path.exists(),
+                CantFindVersion {
+                    requested_version: requested_version.clone()
+                }
+            );
+            info!("Using Node for alias {}", alias_name.cyan());
+            Some(ApplicableVersion {
+                path: alias_path,
+                version: Version::Alias(alias_name),
+            })
+        }
     } else {
         let current_version = requested_version.to_version(&all_versions, &config);
         current_version.map(|version| {
