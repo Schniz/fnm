@@ -14,14 +14,18 @@ pub fn create_alias(
 
     let version_dir = version
         .installation_path(config)
-        .ok_or_else(|| std::io::Error::from(std::io::ErrorKind::NotFound))?;
+        .ok_or_else(|| std::io::Error::from(std::io::ErrorKind::NotFound));
     let alias_dir = aliases_dir.join(common_name);
 
     if alias_dir.exists() {
         remove_symlink_dir(&alias_dir)?;
     }
 
-    symlink_dir(&version_dir, &alias_dir)?;
+    if *version != Version::Bypassed {
+        let version_dir_res = version_dir?;
+        // Symlink only if version should not bypass system node
+        symlink_dir(&version_dir_res, &alias_dir)?;
+    }
 
     Ok(())
 }
