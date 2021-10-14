@@ -19,7 +19,8 @@ impl Command for Unalias {
             &UserVersion::Full(Version::Alias(self.requested_alias.clone())),
             config,
         )
-        .context(ApplicableVersionError)?
+        .ok()
+        .flatten()
         .with_context(|| AliasNotFound {
             requested_alias: self.requested_alias,
         })?;
@@ -36,7 +37,4 @@ pub enum Error {
     CantDeleteSymlink { source: std::io::Error },
     #[snafu(display("Requested alias {} not found", requested_alias))]
     AliasNotFound { requested_alias: String },
-    ApplicableVersionError {
-        source: choose_version_for_user_input::Error,
-    },
 }
