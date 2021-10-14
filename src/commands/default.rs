@@ -11,6 +11,7 @@ pub struct Default {
 
 impl Command for Default {
     type Error = super::alias::Error;
+
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         Alias {
             name: "default".into(),
@@ -18,7 +19,8 @@ impl Command for Default {
         }
         .apply(config)
     }
+
     fn handle_error(err: Self::Error, config: &FnmConfig) {
-        Alias::handle_error(err, config)
+        Alias::handle_error(err, config);
     }
 }

@@ -1,11 +1,12 @@
 use super::Shell;
 use indoc::indoc;
+use std::path::Path;
 
 #[derive(Debug)]
 pub struct PowerShell;
 
 impl Shell for PowerShell {
-    fn path(&self, path: &std::path::PathBuf) -> String {
+    fn path(&self, path: &Path) -> String {
         let current_path = std::env::var_os("PATH").expect("Can't read PATH env var");
         let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
         split_paths.insert(0, path.to_path_buf());
@@ -27,7 +28,7 @@ impl Shell for PowerShell {
             Set-FnmOnLoad
         "#).into()
     }
-    fn into_structopt_shell(&self) -> clap::Shell {
+    fn to_structopt_shell(&self) -> clap::Shell {
         clap::Shell::PowerShell
     }
 }

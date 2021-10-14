@@ -15,11 +15,11 @@ mod lts_status {
         Yes(String),
     }
 
-    impl Into<Option<String>> for LtsStatus {
-        fn into(self) -> Option<String> {
-            match self {
-                Self::Nope(_) => None,
-                Self::Yes(x) => Some(x),
+    impl From<LtsStatus> for Option<String> {
+        fn from(status: LtsStatus) -> Self {
+            match status {
+                LtsStatus::Nope(_) => None,
+                LtsStatus::Yes(x) => Some(x),
             }
         }
     }
@@ -60,25 +60,13 @@ mod lts_status {
     }
 }
 
-#[derive(Deserialize, Debug, Eq, Ord)]
+#[derive(Deserialize, Debug)]
 pub struct IndexedNodeVersion {
     pub version: Version,
     #[serde(with = "lts_status")]
     pub lts: Option<String>,
     pub date: chrono::NaiveDate,
     pub files: Vec<String>,
-}
-
-impl PartialEq for IndexedNodeVersion {
-    fn eq(&self, other: &Self) -> bool {
-        self.version.eq(&other.version)
-    }
-}
-
-impl PartialOrd for IndexedNodeVersion {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.version.partial_cmp(&other.version)
-    }
 }
 
 /// Prints
@@ -111,7 +99,7 @@ pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, ureq::Error> {
         )
     })?;
 
-    value.sort();
+    value.sort_by(|a, b| a.version.cmp(&b.version));
     Ok(value)
 }
 

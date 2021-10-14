@@ -33,7 +33,7 @@ impl<R: Read> Extract for Zip<R> {
 
         for i in 0..archive.len() {
             let mut file = archive.by_index(i)?;
-            let outpath = path.join(file.sanitized_name());
+            let outpath = path.join(file.mangled_name());
 
             {
                 let comment = file.comment();

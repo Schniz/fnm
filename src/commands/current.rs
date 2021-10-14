@@ -10,7 +10,7 @@ impl Command for Current {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        let version_string = match current_version(&config)? {
+        let version_string = match current_version(config)? {
             Some(ver) => ver.v_str(),
             None => "none".into(),
         };

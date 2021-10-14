@@ -24,7 +24,7 @@ impl Command for Use {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let multishell_path = config.multishell_path().context(FnmEnvWasNotSourced)?;
-        warn_if_multishell_path_not_in_path_env_var(&multishell_path, &config);
+        warn_if_multishell_path_not_in_path_env_var(multishell_path, config);
 
         let all_versions =
             installed_versions::list(config.installations_dir()).context(VersionListingError)?;
@@ -34,7 +34,7 @@ impl Command for Use {
                 let current_dir = std::env::current_dir().unwrap();
                 UserVersionReader::Path(current_dir)
             })
-            .to_user_version()
+            .into_user_version()
             .context(CantInferVersion)?;
 
         let version_path = if let UserVersion::Full(Version::Bypassed) = requested_version {
@@ -50,23 +50,20 @@ impl Command for Use {
                 return Ok(());
             }
         } else {
-            let current_version = requested_version.to_version(&all_versions, &config);
-            match current_version {
-                Some(version) => {
-                    outln!(config#Info, "Using Node {}", version.to_string().cyan());
-                    config
-                        .installations_dir()
-                        .join(version.to_string())
-                        .join("installation")
-                }
-                None => {
-                    install_new_version(requested_version, config, self.install_if_missing)?;
-                    return Ok(());
-                }
+            let current_version = requested_version.to_version(&all_versions, config);
+            if let Some(version) = current_version {
+                outln!(config#Info, "Using Node {}", version.to_string().cyan());
+                config
+                    .installations_dir()
+                    .join(version.to_string())
+                    .join("installation")
+            } else {
+                install_new_version(requested_version, config, self.install_if_missing)?;
+                return Ok(());
             }
         };
 
-        replace_symlink(&version_path, &multishell_path).context(SymlinkingCreationIssue)?;
+        replace_symlink(&version_path, multishell_path).context(SymlinkingCreationIssue)?;
 
         Ok(())
     }
@@ -86,7 +83,7 @@ fn install_new_version(
 
     Install {
         version: Some(requested_version.clone()),
-        ..Default::default()
+        ..Install::default()
     }
     .apply(config)
     .context(InstallError)?;
@@ -97,7 +94,7 @@ fn install_new_version(
     }
     .apply(config)?;
 
-    return Ok(());
+    Ok(())
 }
 
 /// Tries to delete `from`, and then tries to symlink `from` to `to` anyway.
@@ -115,11 +112,12 @@ fn replace_symlink(from: &std::path::Path, to: &std::path::Path) -> std::io::Res
 }
 
 fn should_install_interactively(requested_version: &UserVersion) -> bool {
+    use std::io::Write;
+
     if !(atty::is(atty::Stream::Stdout) && atty::is(atty::Stream::Stdin)) {
         return false;
     }
 
-    use std::io::Write;
     let error_message = format!(
         "Can't find an installed Node version matching {}.",
         requested_version.to_string().italic()
@@ -146,7 +144,7 @@ fn warn_if_multishell_path_not_in_path_env_var(
         multishell_path.to_path_buf()
     };
 
-    for path in std::env::split_paths(&std::env::var("PATH").unwrap_or(String::new())) {
+    for path in std::env::split_paths(&std::env::var("PATH").unwrap_or_default()) {
         if bin_path == path {
             return;
         }

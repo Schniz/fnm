@@ -54,7 +54,7 @@ impl Command for Env {
         }
 
         let shell: Box<dyn Shell> = self.shell.or_else(&infer_shell).context(CantInferShell)?;
-        let multishell_path = make_symlink(&config);
+        let multishell_path = make_symlink(config);
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
         } else {
@@ -82,7 +82,7 @@ impl Command for Env {
             shell.set_env_var("FNM_ARCH", &config.arch.to_string())
         );
         if self.use_on_cd {
-            println!("{}", shell.use_on_cd(&config));
+            println!("{}", shell.use_on_cd(config));
         }
         Ok(())
     }

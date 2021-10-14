@@ -1,16 +1,16 @@
 use super::shell::Shell;
 use indoc::indoc;
-use std::path::PathBuf;
+use std::path::Path;
 
 #[derive(Debug)]
 pub struct Zsh;
 
 impl Shell for Zsh {
-    fn into_structopt_shell(&self) -> structopt::clap::Shell {
+    fn to_structopt_shell(&self) -> structopt::clap::Shell {
         structopt::clap::Shell::Zsh
     }
 
-    fn path(&self, path: &PathBuf) -> String {
+    fn path(&self, path: &Path) -> String {
         format!("export PATH={:?}:$PATH", path.to_str().unwrap())
     }
 

@@ -18,7 +18,7 @@ pub fn get_safe_arch<'a>(arch: &'a Arch, version: &Version) -> &'a Arch {
 
     return match (platform_name(), platform_arch(), version) {
         ("darwin", "arm64", Version::Semver(v)) if v.major < 16 => &Arch::X64,
-        _ => &arch,
+        _ => arch,
     };
 }
 
@@ -83,7 +83,7 @@ impl ArchError {
 }
 
 impl std::fmt::Display for ArchError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.details)
     }
 }

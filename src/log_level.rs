@@ -8,10 +8,7 @@ pub enum LogLevel {
 impl LogLevel {
     pub fn is_writable(&self, logging: &Self) -> bool {
         use std::cmp::Ordering;
-        match self.cmp(logging) {
-            Ordering::Greater | Ordering::Equal => true,
-            _ => false,
-        }
+        matches!(self.cmp(logging), Ordering::Greater | Ordering::Equal)
     }
 
     pub fn writer_for(&self, logging: &Self) -> Box<dyn std::io::Write> {
@@ -30,12 +27,12 @@ impl LogLevel {
     }
 }
 
-impl Into<&'static str> for LogLevel {
-    fn into(self) -> &'static str {
-        match self {
-            Self::Quiet => "quiet",
-            Self::Info => "info",
-            Self::Error => "error",
+impl From<LogLevel> for &'static str {
+    fn from(level: LogLevel) -> Self {
+        match level {
+            LogLevel::Quiet => "quiet",
+            LogLevel::Info => "info",
+            LogLevel::Error => "error",
         }
     }
 }

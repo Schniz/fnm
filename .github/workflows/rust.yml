@@ -17,6 +17,16 @@ jobs:
     - name: cargo fmt
       run: cargo fmt -- --check
 
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+    - uses: actions/checkout@v2
+    - name: cargo clippy
+      run: cargo clippy -- -D warnings
+
   unit_tests:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -67,7 +77,7 @@ jobs:
         path: target/release/fnm.exe
 
   build_macos_release:
-    runs-on: macOS-latest
+    runs-on: macos-latest
     name: "Release build for macOS"
     steps:
     - uses: hecrj/setup-rust-action@v1
@@ -91,17 +101,23 @@ jobs:
     name: "Build static Linux binary"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Build static binary
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: stable
+        targets: x86_64-unknown-linux-musl
+    - name: Install musl tools
       run: |
-        sudo chown -R 1000:1000 .
-        docker run --rm -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder:stable \
-          cargo build --target x86_64-unknown-linux-gnu --release
-        sudo chown -R $(whoami):$(whoami) .
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends musl-tools
+    - uses: actions/checkout@v2
+    - name: Build release binary
+      run: cargo build --release --target x86_64-unknown-linux-musl
+    - name: Strip binary from debug symbols
+      run: strip target/x86_64-unknown-linux-musl/release/fnm
     - uses: actions/upload-artifact@v2
       with:
         name: fnm-linux
-        path: target/x86_64-unknown-linux-gnu/release/fnm
+        path: target/x86_64-unknown-linux-musl/release/fnm
 
   build_static_arm_binary:
     name: "Build ARM binary"
