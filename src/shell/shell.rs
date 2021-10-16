@@ -1,14 +1,14 @@
 use std::fmt::Debug;
-use std::path::PathBuf;
+use std::path::Path;
 
 pub trait Shell: Debug {
-    fn path(&self, path: &PathBuf) -> String;
+    fn path(&self, path: &Path) -> String;
     fn set_env_var(&self, name: &str, value: &str) -> String;
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String;
-    fn into_structopt_shell(&self) -> structopt::clap::Shell;
     fn rehash(&self) -> Option<String> {
         None
     }
+    fn to_structopt_shell(&self) -> structopt::clap::Shell;
 }
 
 #[cfg(windows)]
@@ -32,8 +32,8 @@ impl std::str::FromStr for Box<dyn Shell> {
     }
 }
 
-impl Into<structopt::clap::Shell> for Box<dyn Shell> {
-    fn into(self) -> structopt::clap::Shell {
-        self.into_structopt_shell()
+impl From<Box<dyn Shell>> for structopt::clap::Shell {
+    fn from(shell: Box<dyn Shell>) -> Self {
+        shell.to_structopt_shell()
     }
 }

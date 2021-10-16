@@ -1,4 +1,4 @@
-use crate::arch;
+use crate::arch::Arch;
 use crate::log_level::LogLevel;
 use crate::path_ext::PathExt;
 use dirs::home_dir;
@@ -57,7 +57,7 @@ pub struct FnmConfig {
         global = true,
         hide_env_values = true
     )]
-    pub arch: arch::Arch,
+    pub arch: Arch,
 }
 
 impl Default for FnmConfig {
@@ -67,7 +67,7 @@ impl Default for FnmConfig {
             base_dir: None,
             multishell_path: None,
             log_level: LogLevel::Info,
-            arch: Default::default(),
+            arch: Arch::default(),
         }
     }
 }
@@ -111,11 +111,5 @@ impl FnmConfig {
     pub fn with_base_dir(mut self, base_dir: Option<std::path::PathBuf>) -> Self {
         self.base_dir = base_dir;
         self
-    }
-
-    pub fn multishell_base_dir(&self) -> std::path::PathBuf {
-        std::env::temp_dir()
-            .join("fnm_multishell")
-            .ensure_exists_silently()
     }
 }

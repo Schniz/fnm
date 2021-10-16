@@ -13,7 +13,7 @@ pub enum Version {
 }
 
 fn first_letter_is_number(s: &str) -> bool {
-    s.chars().next().map(|x| x.is_digit(10)).unwrap_or(false)
+    s.chars().next().map_or(false, |x| x.is_digit(10))
 }
 
 impl Version {
@@ -26,7 +26,7 @@ impl Version {
             Ok(Self::Lts(lts_type))
         } else if first_letter_is_number(lowercased.trim_start_matches('v')) {
             let version_plain = lowercased.trim_start_matches('v');
-            let sver = semver::Version::parse(&version_plain)?;
+            let sver = semver::Version::parse(version_plain)?;
             Ok(Self::Semver(sver))
         } else {
             Ok(Self::Alias(lowercased))
@@ -35,8 +35,7 @@ impl Version {
 
     pub fn alias_name(&self) -> Option<String> {
         match self {
-            l @ Self::Lts(_) => Some(l.v_str()),
-            l @ Self::Alias(_) => Some(l.v_str()),
+            l @ (Self::Lts(_) | Self::Alias(_)) => Some(l.v_str()),
             _ => None,
         }
     }
@@ -45,7 +44,7 @@ impl Version {
         &self,
         config: &config::FnmConfig,
     ) -> std::io::Result<Vec<alias::StoredAlias>> {
-        let aliases = alias::list_aliases(&config)?
+        let aliases = alias::list_aliases(config)?
             .drain(..)
             .filter(|alias| alias.s_ver() == self.v_str())
             .collect();
@@ -59,7 +58,7 @@ impl Version {
     pub fn installation_path(&self, config: &config::FnmConfig) -> Option<std::path::PathBuf> {
         match self {
             Self::Bypassed => Some(system_version::path()),
-            v @ Self::Lts(_) | v @ Self::Alias(_) => {
+            v @ (Self::Lts(_) | Self::Alias(_)) => {
                 Some(config.aliases_dir().join(v.alias_name().unwrap()))
             }
             v @ Self::Semver(_) => Some(
@@ -72,7 +71,7 @@ impl Version {
     }
 
     pub fn root_path(&self, config: &config::FnmConfig) -> Option<std::path::PathBuf> {
-        match self.installation_path(&config) {
+        match self.installation_path(config) {
             None => None,
             Some(path) => {
                 let mut canon_path = path.canonicalize().ok()?;

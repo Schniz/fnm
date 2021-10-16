@@ -1,16 +1,16 @@
 use super::shell::Shell;
 use indoc::indoc;
-use std::path::PathBuf;
+use std::path::Path;
 
 #[derive(Debug)]
 pub struct Fish;
 
 impl Shell for Fish {
-    fn into_structopt_shell(&self) -> structopt::clap::Shell {
+    fn to_structopt_shell(&self) -> structopt::clap::Shell {
         structopt::clap::Shell::Fish
     }
 
-    fn path(&self, path: &PathBuf) -> String {
+    fn path(&self, path: &Path) -> String {
         format!("set -gx PATH {:?} $PATH;", path.to_str().unwrap())
     }
 

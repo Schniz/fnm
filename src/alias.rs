@@ -26,7 +26,7 @@ pub fn create_alias(
 
 pub fn list_aliases(config: &FnmConfig) -> std::io::Result<Vec<StoredAlias>> {
     let vec: Vec<_> = std::fs::read_dir(&config.aliases_dir())?
-        .filter_map(|item| item.ok())
+        .filter_map(Result::ok)
         .filter_map(|x| TryInto::<StoredAlias>::try_into(x.path().as_path()).ok())
         .collect();
     Ok(vec)
