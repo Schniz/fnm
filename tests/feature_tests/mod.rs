@@ -238,3 +238,17 @@ mod unalias_error {
             .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["unalias", "lts"]))),  "Requested alias lts not found"))
     });
 }
+
+mod alias_system {
+    test_shell!(Bash, Zsh, Fish, PowerShell; {
+        EvalFnmEnv::default()
+            .then(Call::new("fnm", vec!["alias", "system", "my_system"]))
+            .then(OutputContains::new(Call::new("fnm", vec!["ls"]), "my_system"))
+            .then(Call::new("fnm", vec!["alias", "system", "default"]))
+            .then(Call::new("fnm", vec!["alias", "my_system", "my_system2"]))
+            .then(OutputContains::new(Call::new("fnm", vec!["ls"]), "my_system2"))
+            .then(OutputContains::new(Call::new("fnm", vec!["use", "my_system"]), "Bypassing fnm"))
+            .then(Call::new("fnm", vec!["unalias", "my_system"]))
+            .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["use", "my_system"]))),  "Requested version my_system is not currently installed"))
+    });
+}

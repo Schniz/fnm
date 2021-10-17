@@ -84,6 +84,9 @@ impl Command for Env {
         if self.use_on_cd {
             println!("{}", shell.use_on_cd(config));
         }
+        if let Some(v) = shell.rehash() {
+            println!("{}", v);
+        }
         Ok(())
     }
 }

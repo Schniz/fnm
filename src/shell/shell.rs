@@ -5,6 +5,9 @@ pub trait Shell: Debug {
     fn path(&self, path: &Path) -> String;
     fn set_env_var(&self, name: &str, value: &str) -> String;
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String;
+    fn rehash(&self) -> Option<String> {
+        None
+    }
     fn to_structopt_shell(&self) -> structopt::clap::Shell;
 }
 

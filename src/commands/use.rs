@@ -38,11 +38,16 @@ impl Command for Use {
             .context(CantInferVersion)?;
 
         let version_path = if let UserVersion::Full(Version::Bypassed) = requested_version {
-            outln!(config#Info, "Bypassing fnm: using {} node", "system".cyan());
+            outln!(config#Info, "Bypassing fnm: using {} node", system_version::display_name().cyan());
             system_version::path()
         } else if let Some(alias_name) = requested_version.alias_name() {
             let alias_path = config.aliases_dir().join(&alias_name);
-            if alias_path.exists() {
+            let system_path = system_version::path();
+            if matches!(fs::shallow_read_symlink(&alias_path), Ok(shallow_path) if shallow_path == system_path)
+            {
+                outln!(config#Info, "Bypassing fnm: using {} node", system_version::display_name().cyan());
+                system_path
+            } else if alias_path.exists() {
                 outln!(config#Info, "Using Node for alias {}", alias_name.cyan());
                 alias_path
             } else {
@@ -164,6 +169,8 @@ fn warn_if_multishell_path_not_in_path_env_var(
 pub enum Error {
     #[snafu(display("Can't create the symlink: {}", source))]
     SymlinkingCreationIssue { source: std::io::Error },
+    #[snafu(display("Can't read the symlink: {}", source))]
+    SymlinkReadFailed { source: std::io::Error },
     #[snafu(display("{}", source))]
     InstallError { source: <Install as Command>::Error },
     #[snafu(display("Can't get locally installed versions: {}", source))]

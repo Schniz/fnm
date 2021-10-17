@@ -18,6 +18,10 @@ impl Shell for Zsh {
         format!("export {}={:?}", name, value)
     }
 
+    fn rehash(&self) -> Option<String> {
+        Some("rehash".to_string())
+    }
+
     fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
         indoc!(
             r#"

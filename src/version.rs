@@ -1,6 +1,7 @@
 use crate::alias;
 use crate::config;
 use crate::lts::LtsType;
+use crate::system_version;
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq, PartialOrd, Eq, Ord, Clone)]
@@ -18,7 +19,7 @@ fn first_letter_is_number(s: &str) -> bool {
 impl Version {
     pub fn parse<S: AsRef<str>>(version_str: S) -> Result<Self, semver::Error> {
         let lowercased = version_str.as_ref().to_lowercase();
-        if lowercased == "system" {
+        if lowercased == system_version::display_name() {
             Ok(Self::Bypassed)
         } else if lowercased.starts_with("lts-") || lowercased.starts_with("lts/") {
             let lts_type = LtsType::from(&lowercased[4..]);
@@ -54,30 +55,24 @@ impl Version {
         format!("{}", self)
     }
 
-    pub fn installation_path(&self, config: &config::FnmConfig) -> Option<std::path::PathBuf> {
+    pub fn installation_path(&self, config: &config::FnmConfig) -> std::path::PathBuf {
         match self {
-            Self::Bypassed => None,
+            Self::Bypassed => system_version::path(),
             v @ (Self::Lts(_) | Self::Alias(_)) => {
-                Some(config.aliases_dir().join(v.alias_name().unwrap()))
+                config.aliases_dir().join(v.alias_name().unwrap())
             }
-            v @ Self::Semver(_) => Some(
-                config
-                    .installations_dir()
-                    .join(v.v_str())
-                    .join("installation"),
-            ),
+            v @ Self::Semver(_) => config
+                .installations_dir()
+                .join(v.v_str())
+                .join("installation"),
         }
     }
 
     pub fn root_path(&self, config: &config::FnmConfig) -> Option<std::path::PathBuf> {
-        match self.installation_path(config) {
-            None => None,
-            Some(path) => {
-                let mut canon_path = path.canonicalize().ok()?;
-                canon_path.pop();
-                Some(canon_path)
-            }
-        }
+        let path = self.installation_path(config);
+        let mut canon_path = path.canonicalize().ok()?;
+        canon_path.pop();
+        Some(canon_path)
     }
 }
 
@@ -94,7 +89,7 @@ impl<'de> serde::Deserialize<'de> for Version {
 impl std::fmt::Display for Version {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Bypassed => write!(f, "system"),
+            Self::Bypassed => write!(f, "{}", system_version::display_name()),
             Self::Lts(lts) => write!(f, "lts-{}", lts),
             Self::Semver(semver) => write!(f, "v{}", semver),
             Self::Alias(alias) => write!(f, "{}", alias),
