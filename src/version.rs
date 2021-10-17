@@ -55,30 +55,24 @@ impl Version {
         format!("{}", self)
     }
 
-    pub fn installation_path(&self, config: &config::FnmConfig) -> Option<std::path::PathBuf> {
+    pub fn installation_path(&self, config: &config::FnmConfig) -> std::path::PathBuf {
         match self {
-            Self::Bypassed => Some(system_version::path()),
+            Self::Bypassed => system_version::path(),
             v @ (Self::Lts(_) | Self::Alias(_)) => {
-                Some(config.aliases_dir().join(v.alias_name().unwrap()))
+                config.aliases_dir().join(v.alias_name().unwrap())
             }
-            v @ Self::Semver(_) => Some(
-                config
-                    .installations_dir()
-                    .join(v.v_str())
-                    .join("installation"),
-            ),
+            v @ Self::Semver(_) => config
+                .installations_dir()
+                .join(v.v_str())
+                .join("installation"),
         }
     }
 
     pub fn root_path(&self, config: &config::FnmConfig) -> Option<std::path::PathBuf> {
-        match self.installation_path(config) {
-            None => None,
-            Some(path) => {
-                let mut canon_path = path.canonicalize().ok()?;
-                canon_path.pop();
-                Some(canon_path)
-            }
-        }
+        let path = self.installation_path(config);
+        let mut canon_path = path.canonicalize().ok()?;
+        canon_path.pop();
+        Some(canon_path)
     }
 }
 
