@@ -6,11 +6,11 @@ use std::collections::HashMap;
 
 #[derive(Deserialize, Debug)]
 pub struct ProcessInfo {
-    #[serde(rename = "ExecutablePath")]
+    #[serde(rename = "Name")]
     executable_path: Option<std::path::PathBuf>,
-    #[serde(rename = "ParentProcessId")]
+    #[serde(rename = "ParentProcessID")]
     parent_pid: u32,
-    #[serde(rename = "ProcessId")]
+    #[serde(rename = "ProcessID")]
     pid: u32,
 }
 
@@ -53,12 +53,20 @@ pub fn get_process_tree(mut process_map: ProcessMap, pid: u32) -> Vec<ProcessInf
 }
 
 pub fn get_process_map() -> std::io::Result<ProcessMap> {
-    let stdout = std::process::Command::new("wmic")
+    let stdout = std::process::Command::new("powershell")
         .args(&[
-            "process",
-            "get",
-            "processid,parentprocessid,executablepath",
-            "/format:csv",
+            "-NoProfile",
+            "-Command",
+            "Get-CimInstance",
+            "-ClassName",
+            "win32_process",
+            "|",
+            "Select-Object",
+            "-property",
+            "\"ProcessID\",\"ParentProcessID\",\"Name\"",
+            "|",
+            "ConvertTo-CSV",
+            "-NoTypeInformation"
         ])
         .stdout(std::process::Stdio::piped())
         .spawn()?
