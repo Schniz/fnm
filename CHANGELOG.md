@@ -1,4 +1,34 @@
-## 1.27.0 (2021-09-16)
+## 1.28.0 (2021-11-16)
+
+#### New Feature 🎉
+
+- [#556](https://github.com/Schniz/fnm/pull/556) Allow aliasing to the system version ([@Schniz](https://github.com/Schniz))
+- [#547](https://github.com/Schniz/fnm/pull/547) Replace reqwest with ureq for less dependencies and smaller file size ([@dnaka91](https://github.com/dnaka91))
+
+#### Bugfix 🐛
+
+- [#573](https://github.com/Schniz/fnm/pull/573) Infer shell with `sysinfo` crate ([@Schniz](https://github.com/Schniz))
+- [#553](https://github.com/Schniz/fnm/pull/553) Fix Windows CMD `cd` failure on paths with spaces (`use-on-cd`) ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#554](https://github.com/Schniz/fnm/pull/554) Fix clippy & use musl target on Rust compiler for static compilation ([@dnaka91](https://github.com/dnaka91))
+
+#### Documentation 📝
+
+- [#545](https://github.com/Schniz/fnm/pull/545) docs(cli): Fix typo ([@SanchithHegde](https://github.com/SanchithHegde))
+- [#544](https://github.com/Schniz/fnm/pull/544) Replace error message with a more useful one ([@yonifra](https://github.com/yonifra))
+- [#537](https://github.com/Schniz/fnm/pull/537) Show log level options in help and error message ([@lucasweng](https://github.com/lucasweng))
+
+#### Committers: 5
+
+- Dominik Nakamura ([@dnaka91](https://github.com/dnaka91))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Jonathan Fraimorice ([@yonifra](https://github.com/yonifra))
+- Lucas Weng ([@lucasweng](https://github.com/lucasweng))
+- Sanchith Hegde ([@SanchithHegde](https://github.com/SanchithHegde))
+
+## v1.27.0 (2021-09-17)
 
 #### New Feature 🎉
 
