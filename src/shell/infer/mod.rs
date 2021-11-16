@@ -11,11 +11,10 @@ struct ProcessInfo {
 
 pub fn infer_shell() -> Option<Box<dyn Shell>> {
     let system = System::new_all();
-    let hashmap = system.processes();
     let mut current_pid = sysinfo::get_current_pid().ok();
 
     while let Some(pid) = current_pid {
-        if let Some(process) = hashmap.get(&pid) {
+        if let Some(process) = system.process(pid) {
             current_pid = process.parent();
             let process_name = process
                 .exe()
