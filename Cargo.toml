@@ -30,6 +30,7 @@ encoding_rs_io = "0.1.7"
 ureq = { version = "2.3.0", features = ["json"] }
 url = "2.2.2"
 brotli-decompressor = "2.3.2"
+sysinfo = "0.20.5"
 
 [dev-dependencies]
 pretty_assertions = "1.0.0"
