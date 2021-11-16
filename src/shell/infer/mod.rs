@@ -1,5 +1,6 @@
 use super::{Bash, Fish, PowerShell, Shell, WindowsCmd, Zsh};
 use log::debug;
+use std::ffi::OsStr;
 use sysinfo::{ProcessExt, System, SystemExt};
 
 #[derive(Debug)]
@@ -19,8 +20,8 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
             let process_name = process
                 .exe()
                 .file_stem()
-                .and_then(|x| x.to_str())
-                .map(|x| x.to_lowercase());
+                .and_then(OsStr::to_str)
+                .map(str::to_lowercase);
             let sliced = process_name.as_ref().map(|x| &x[..]);
             match sliced {
                 Some("sh" | "bash") => return Some(Box::from(Bash)),
