@@ -1,4 +1,14 @@
-## 1.28.0 (2021-11-16)
+## 1.28.1 (2021-11-17)
+
+#### Bugfix 🐛
+
+- [#576](https://github.com/Schniz/fnm/pull/576) First fix for slowess in fnm env ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.28.0 (2021-11-16)
 
 #### New Feature 🎉
 

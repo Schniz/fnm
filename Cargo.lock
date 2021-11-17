@@ -450,7 +450,7 @@ dependencies = [
 
 [[package]]
 name = "fnm"
-version = "1.28.0"
+version = "1.28.1"
 dependencies = [
  "atty",
  "brotli-decompressor",
