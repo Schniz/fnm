@@ -17,6 +17,7 @@ mod current_version;
 mod directory_portal;
 mod downloader;
 mod fs;
+mod http;
 mod installed_versions;
 mod lts;
 mod path_ext;
