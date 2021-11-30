@@ -144,7 +144,7 @@ pub enum Error {
     CantInferVersion,
     #[snafu(display("Having a hard time listing the remote versions: {}", source))]
     CantListRemoteVersions {
-        source: ureq::Error,
+        source: reqwest::Error,
     },
     #[snafu(display(
         "Can't find a Node version that matches {} in remote",

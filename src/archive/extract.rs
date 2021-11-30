@@ -5,7 +5,7 @@ use std::path::Path;
 pub enum Error {
     IoError(std::io::Error),
     ZipError(zip::result::ZipError),
-    HttpError(ureq::Error),
+    HttpError(reqwest::Error),
 }
 
 impl std::fmt::Display for Error {
@@ -32,8 +32,8 @@ impl From<zip::result::ZipError> for Error {
     }
 }
 
-impl From<ureq::Error> for Error {
-    fn from(err: ureq::Error) -> Self {
+impl From<reqwest::Error> for Error {
+    fn from(err: reqwest::Error) -> Self {
         Self::HttpError(err)
     }
 }

@@ -26,5 +26,5 @@ impl super::command::Command for LsRemote {
 
 #[derive(Debug, Snafu)]
 pub enum Error {
-    HttpError { source: ureq::Error },
+    HttpError { source: reqwest::Error },
 }
