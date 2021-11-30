@@ -35,7 +35,7 @@ sysinfo = "0.21.1"
 [dev-dependencies]
 pretty_assertions = "1.0.0"
 duct = "0.13.5"
-test-env-log = "0.2.7"
+test-env-log = "0.2.8"
 shell-escape = "0.1.5"
 insta = { version = "1.8.0", features = ["backtrace"] }
 serial_test = "0.5.1"
