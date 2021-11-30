@@ -12,7 +12,7 @@ description = "Fast and simple Node.js version manager"
 serde = { version = "1.0.130", features = ["derive"] }
 clap = "2.34.0"
 structopt = "0.3.25"
-serde_json = "1.0.70"
+serde_json = "1.0.72"
 chrono = { version = "0.4.19", features = ["serde"] }
 tar = "0.4.37"
 xz2 = "0.1.6"
