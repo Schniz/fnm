@@ -477,7 +477,6 @@ name = "fnm"
 version = "1.28.1"
 dependencies = [
  "atty",
- "brotli-decompressor",
  "chrono",
  "clap",
  "colored",
