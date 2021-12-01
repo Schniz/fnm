@@ -74,6 +74,14 @@ scoop install fnm
 
 Then, [set up your shell for fnm](#shell-setup)
 
+#### Using Chocolatey (Windows)
+
+```sh
+choco install fnm
+```
+
+Then, [set up your shell for fnm](#shell-setup)
+
 #### Using Cargo (Linux/macOS/Windows)
 
 ```sh
@@ -87,6 +95,9 @@ Then, [set up your shell for fnm](#shell-setup)
 - Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
 - Make it available globally on `PATH` environment variable
 - Configure your shell profile:
+
+### Removing
+To remove fnm (😢), just delete the `.fnm` folder in your home directory. You should also edit your shell configuration to remove any references to fnm (ie. read [Shell Setup](#shell-setup), and do the opposite).
 
 ## Completions
 
@@ -136,16 +147,6 @@ fnm env | source
 
 #### PowerShell
 
-Before adding any configuration to your shell, you'd need to enable symlink support for a standard accounts (non-administrator).
-
-You can do it by enabling [Developer Mode](https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development), or [updating the Local Security Policy](#local-security-policy).
-
-##### Local Security Policy
-
-Open `Local Security Policy` (`secpol.msc`) and go to `Local Policies` -> `User Rights Assignment`, select `Create symbolic links`, add your user to the list and **reboot**.
-
-> Use `whoami` if you are not sure what's your user name.
-
 Add the following to the end of your profile file:
 
 ```powershell
@@ -162,68 +163,29 @@ fnm is also supported but is not entirely covered. [You can set up a startup scr
 ```batch
 FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 ```
+⚠️ If you get the error `i was unexpected at this time`, please make a .cmd file as suggested by the first step in the Usage with Cmder secton add it's path to the `AutoRun` registry key.
 
-## Usage
+#### Usage with Cmder
 
-### Global Options
+Usage is very similar to the normal WinCMD install, apart for a few tweaks to allow being called from the cmder startup script. The example **assumes** that the `CMDER_ROOT` environment variable is **set** to the **root directory** of your Cmder installation.  
+Then you can do something like this:
 
-```sh
-fnm [--shell=fish|bash|zsh] [--node-dist-mirror=URI] [--fnm-dir=DIR] [--log-level=quiet|error|info] <command>
+- Make a .cmd file to invoke it
+```batch
+:: %CMDER_ROOT%\bin\fnm_init.cmd
+@echo off
+FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z
 ```
+- Add it to the startup script
+```batch
+:: %CMDER_ROOT%\config\user_profile.cmd
+call "%CMDER_ROOT%\bin\fnm_init.cmd"
+```
+You can replace `%CMDER_ROOT%` with any other convenient path too.
 
-- Providing `--shell=fish` will output the Fish-compliant version. Omitting it and `fnm` will try to infer the current shell based on the process tree
-- Providing `--node-dist-mirror="https://npm.taobao.org/dist"` will use the Chinese mirror of Node.js
-- Providing `--fnm-dir="/tmp/fnm"` will install and use versions in `/tmp/fnm` directory
+## [Usage](./docs/commands.md)
 
-You can always use `fnm --help` to read the docs:
-
-### `fnm install [VERSION]`
-
-Installs `[VERSION]`. If no version provided, it will install the version specified in the `.node-version` or `.nvmrc` files located in the current working directory.
-
-### `fnm install --lts`
-
-Installs the latest LTS version of Node
-
-### `fnm use [VERSION]`
-
-Activates `[VERSION]` as the current Node version. If no version provided, it will activate the version specified in the `.node-version` or `.nvmrc` file located in the current working directory.
-
-#### Flags
-
-- `--install-if-missing` — installs the version if it isn't installed yet
-
-### `fnm current`
-
-Display currently activated Node version.
-
-### `fnm list`
-
-Lists the installed Node versions.
-
-### `fnm list-remote`
-
-Lists the Node versions available to download remotely.
-
-### `fnm uninstall [VERSION]`
-
-Uninstalls the node version specified in `[VERSION]`.
-
-### `fnm alias [VERSION] [NAME]`
-
-Aliases a Node version to a given name.
-
-### `fnm default [VERSION]`
-
-Aliases a Node version as default. Uses `fnm alias` underneath.
-
-### `fnm env`
-
-Prints the required shell commands in order to configure your shell, Bash compliant if can't infer the shell. This command is highly influenced by [the global options](#global-options)
-
-#### Options:
-
-- `--use-on-cd` will also output a script that will automatically change the node version if a `.node-version`/`.nvmrc` file is found
+[See the available commands for an extended usage documentation](./docs/commands.md)
 
 ## Contributing
 

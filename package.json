@@ -7,7 +7,8 @@
   "license": "GPLv3",
   "scripts": {
     "changelog": "./.ci/generate-changelog.sh",
-    "version:prepare": "./.ci/prepare-version.js"
+    "version:prepare": "./.ci/prepare-version.js",
+    "generate-command-docs": "./.ci/print-command-docs.js"
   },
   "changelog": {
     "repo": "Schniz/fnm",
@@ -19,9 +20,10 @@
     }
   },
   "devDependencies": {
-    "cmd-ts": "0.6.8",
-    "lerna-changelog": "1.0.1",
-    "prettier": "2.2.1",
+    "cmd-ts": "0.8.0",
+    "execa": "5.1.1",
+    "lerna-changelog": "2.2.0",
+    "prettier": "2.5.0",
     "toml": "3.0.0"
   }
 }

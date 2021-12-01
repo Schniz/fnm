@@ -9,3 +9,7 @@ pub fn path() -> PathBuf {
 
     PathBuf::from(path_as_string)
 }
+
+pub fn display_name() -> &'static str {
+    "system"
+}

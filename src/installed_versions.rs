@@ -9,8 +9,7 @@ pub fn list<P: AsRef<Path>>(installations_dir: P) -> Result<Vec<Version>, Error>
         if entry
             .file_name()
             .to_str()
-            .map(|s| s.starts_with("."))
-            .unwrap_or(false)
+            .map_or(false, |s| s.starts_with('.'))
         {
             continue;
         }
@@ -32,5 +31,5 @@ pub fn list<P: AsRef<Path>>(installations_dir: P) -> Result<Vec<Version>, Error>
 #[derive(Debug, Snafu)]
 pub enum Error {
     IoError { source: std::io::Error },
-    SemverError { source: semver::SemVerError },
+    SemverError { source: semver::Error },
 }

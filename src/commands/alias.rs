@@ -25,7 +25,7 @@ impl Command for Alias {
                 version: self.to_version,
             })?;
 
-        create_alias(&config, &self.name, applicable_version.version())
+        create_alias(config, &self.name, applicable_version.version())
             .context(CantCreateSymlink)?;
 
         Ok(())

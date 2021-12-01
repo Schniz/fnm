@@ -81,7 +81,7 @@ macro_rules! test_shell {
         $(
             #[test]
             #[serial_test::serial]
-            #[allow(non_snake_case)]
+            #[allow(non_snake_case, clippy::redundant_closure_call)]
             fn $shell() {
                 use super::*;
                 #[allow(unused)]

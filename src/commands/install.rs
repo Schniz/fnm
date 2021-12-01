@@ -1,4 +1,5 @@
 use crate::alias::create_alias;
+use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
 use crate::lts::LtsType;
@@ -46,6 +47,7 @@ impl super::command::Command for Install {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let current_dir = std::env::current_dir().unwrap();
+
         let current_version = self
             .version()?
             .or_else(|| get_user_version_for_directory(current_dir))
@@ -53,7 +55,7 @@ impl super::command::Command for Install {
 
         let version = match current_version.clone() {
             UserVersion::Full(Version::Semver(actual_version)) => Version::Semver(actual_version),
-            UserVersion::Full(v @ Version::Bypassed) | UserVersion::Full(v @ Version::Alias(_)) => {
+            UserVersion::Full(v @ (Version::Bypassed | Version::Alias(_))) => {
                 ensure!(false, UninstallableVersion { version: v });
                 unreachable!();
             }
@@ -82,19 +84,25 @@ impl super::command::Command for Install {
                     .collect();
 
                 current_version
-                    .to_version(&available_versions, &config)
+                    .to_version(&available_versions, config)
                     .context(CantFindNodeVersion {
                         requested_version: current_version,
                     })?
                     .clone()
             }
         };
+
+        // Automatically swap Apple Silicon to x64 arch for appropriate versions.
+        let safe_arch = get_safe_arch(&config.arch, &version);
+
         let version_str = format!("Node {}", &version);
-        outln!(config#Info, "Installing {}", version_str.cyan());
+        outln!(config#Info, "Installing {} ({})", version_str.cyan(), safe_arch.to_string());
+
         match install_node_dist(
             &version,
             &config.node_dist_mirror,
             config.installations_dir(),
+            safe_arch,
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config#Error, "{} {}", "warning:".bold().yellow(), err);
@@ -109,12 +117,12 @@ impl super::command::Command for Install {
                 alias_name.cyan(),
                 version.v_str().cyan()
             );
-            create_alias(&config, &alias_name, &version).context(IoError)?;
+            create_alias(config, &alias_name, &version).context(IoError)?;
         }
 
         if !config.default_version_dir().exists() {
             debug!("Tagging {} as the default version", version.v_str().cyan());
-            create_alias(&config, "default", &version).context(IoError)?;
+            create_alias(config, "default", &version).context(IoError)?;
         }
 
         Ok(())
@@ -123,7 +131,7 @@ impl super::command::Command for Install {
 
 #[derive(Debug, Snafu)]
 pub enum Error {
-    #[snafu(display("Can't download the requested version: {}", source))]
+    #[snafu(display("Can't download the requested binary: {}", source))]
     DownloadError {
         source: DownloaderError,
     },
@@ -136,7 +144,7 @@ pub enum Error {
     CantInferVersion,
     #[snafu(display("Having a hard time listing the remote versions: {}", source))]
     CantListRemoteVersions {
-        source: reqwest::Error,
+        source: ureq::Error,
     },
     #[snafu(display(
         "Can't find a Node version that matches {} in remote",

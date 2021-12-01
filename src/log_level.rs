@@ -8,10 +8,7 @@ pub enum LogLevel {
 impl LogLevel {
     pub fn is_writable(&self, logging: &Self) -> bool {
         use std::cmp::Ordering;
-        match self.cmp(logging) {
-            Ordering::Greater | Ordering::Equal => true,
-            _ => false,
-        }
+        matches!(self.cmp(logging), Ordering::Greater | Ordering::Equal)
     }
 
     pub fn writer_for(&self, logging: &Self) -> Box<dyn std::io::Write> {
@@ -24,27 +21,31 @@ impl LogLevel {
             Box::from(std::io::sink())
         }
     }
+
+    pub fn possible_values() -> &'static [&'static str; 4] {
+        &["quiet", "info", "all", "error"]
+    }
 }
 
-impl Into<&'static str> for LogLevel {
-    fn into(self) -> &'static str {
-        match self {
-            Self::Quiet => "quiet",
-            Self::Info => "info",
-            Self::Error => "error",
+impl From<LogLevel> for &'static str {
+    fn from(level: LogLevel) -> Self {
+        match level {
+            LogLevel::Quiet => "quiet",
+            LogLevel::Info => "info",
+            LogLevel::Error => "error",
         }
     }
 }
 
 impl std::str::FromStr for LogLevel {
-    type Err = String;
+    type Err = &'static str;
 
     fn from_str(s: &str) -> Result<LogLevel, Self::Err> {
         match s {
             "quiet" => Ok(Self::Quiet),
             "info" | "all" => Ok(Self::Info),
             "error" => Ok(Self::Error),
-            loglevel => Err(format!("I don't know the log level of {:?}", loglevel)),
+            _ => Err("Unsupported log level"),
         }
     }
 }

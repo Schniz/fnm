@@ -1,4 +1,13 @@
+#![warn(rust_2018_idioms, clippy::all, clippy::pedantic)]
+#![allow(
+    clippy::enum_variant_names,
+    clippy::large_enum_variant,
+    clippy::module_name_repetitions,
+    clippy::similar_names
+)]
+
 mod alias;
+mod arch;
 mod archive;
 mod choose_version_for_user_input;
 mod cli;
@@ -10,6 +19,7 @@ mod downloader;
 mod fs;
 mod installed_versions;
 mod lts;
+mod path_ext;
 mod remote_node_index;
 mod shell;
 mod system_info;

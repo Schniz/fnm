@@ -1,11 +1,12 @@
 use super::Shell;
 use indoc::indoc;
+use std::path::Path;
 
 #[derive(Debug)]
 pub struct PowerShell;
 
 impl Shell for PowerShell {
-    fn path(&self, path: &std::path::PathBuf) -> String {
+    fn path(&self, path: &Path) -> String {
         let current_path = std::env::var_os("PATH").expect("Can't read PATH env var");
         let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
         split_paths.insert(0, path.to_path_buf());
@@ -19,13 +20,15 @@ impl Shell for PowerShell {
 
     fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
         indoc!(r#"
-            function Set-LocationWithFnm { param($path); Set-Location $path; If ((Test-Path .nvmrc) -Or (Test-Path .node-version)) { & fnm use } }
+            function Set-FnmOnLoad { If ((Test-Path .nvmrc) -Or (Test-Path .node-version)) { & fnm use } }
+            function Set-LocationWithFnm { param($path); Set-Location $path; Set-FnmOnLoad }
             Set-Alias cd_with_fnm Set-LocationWithFnm -Force
             Remove-Item alias:\cd
             New-Alias cd Set-LocationWithFnm
+            Set-FnmOnLoad
         "#).into()
     }
-    fn into_structopt_shell(&self) -> clap::Shell {
+    fn to_structopt_shell(&self) -> clap::Shell {
         clap::Shell::PowerShell
     }
 }

@@ -37,7 +37,7 @@ impl Command for Uninstall {
 
         let available_versions: Vec<&Version> = all_versions
             .iter()
-            .filter(|v| requested_version.matches(v, &config))
+            .filter(|v| requested_version.matches(v, config))
             .collect();
 
         ensure!(
@@ -51,12 +51,12 @@ impl Command for Uninstall {
         );
 
         let version = requested_version
-            .to_version(&all_versions, &config)
+            .to_version(&all_versions, config)
             .context(CantFindVersion)?;
 
-        let matching_aliases = version.find_aliases(&config).context(IoError)?;
+        let matching_aliases = version.find_aliases(config).context(IoError)?;
         let root_path = version
-            .root_path(&config)
+            .root_path(config)
             .with_context(|| RootPathNotFound {
                 version: version.clone(),
             })?;

@@ -10,7 +10,7 @@ const PATH_PARTS: [&str; 2] = [".nvmrc", ".node-version"];
 pub fn get_user_version_for_directory(path: impl AsRef<Path>) -> Option<UserVersion> {
     let path = path.as_ref();
 
-    for path_part in PATH_PARTS.iter() {
+    for path_part in &PATH_PARTS {
         let new_path = path.join(path_part);
         info!(
             "Looking for version file in {}. exists? {}",

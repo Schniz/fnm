@@ -34,7 +34,7 @@ pub enum Error {
     EnvNotApplied,
     #[snafu(display("Can't read the version as a valid semver"))]
     VersionError {
-        source: semver::SemVerError,
+        source: semver::Error,
         version: String,
     },
 }

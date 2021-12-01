@@ -40,7 +40,7 @@ parse_args() {
 }
 
 set_filename() {
-  if [ "$OS" == "Linux" ]; then
+  if [ "$OS" = "Linux" ]; then
     # Based on https://stackoverflow.com/a/45125525
     case "$(uname -m)" in
       arm | armv7*)
@@ -52,13 +52,13 @@ set_filename() {
       *)
         FILENAME="fnm-linux"
     esac
-  elif [ "$OS" == "Darwin" ] && [ "$FORCE_INSTALL" == "true" ]; then
+  elif [ "$OS" = "Darwin" ] && [ "$FORCE_INSTALL" = "true" ]; then
     FILENAME="fnm-macos"
     USE_HOMEBREW="false"
     echo "Downloading the latest fnm binary from GitHub..."
     echo "  Pro tip: it's easier to use Homebrew for managing fnm in macOS."
     echo "           Remove the \`--force-no-brew\` so it will be easy to upgrade."
-  elif [ "$OS" == "Darwin" ]; then
+  elif [ "$OS" = "Darwin" ]; then
     USE_HOMEBREW="true"
     echo "Downloading fnm using Homebrew..."
   else
@@ -69,10 +69,10 @@ set_filename() {
 }
 
 download_fnm() {
-  if [ "$USE_HOMEBREW" == "true" ]; then
+  if [ "$USE_HOMEBREW" = "true" ]; then
     brew install fnm
   else
-    if [ "$RELEASE" == "latest" ]; then
+    if [ "$RELEASE" = "latest" ]; then
       URL="https://github.com/Schniz/fnm/releases/latest/download/$FILENAME.zip"
     else
       URL="https://github.com/Schniz/fnm/releases/download/$RELEASE/$FILENAME.zip"
@@ -131,6 +131,7 @@ check_dependencies() {
   fi
 
   if [ "$SHOULD_EXIT" = "true" ]; then
+    echo "Not installing fnm due to missing dependencies."
     exit 1
   fi
 }
@@ -147,7 +148,7 @@ ensure_containing_dir_exists() {
 setup_shell() {
   CURRENT_SHELL="$(basename "$SHELL")"
 
-  if [ "$CURRENT_SHELL" == "zsh" ]; then
+  if [ "$CURRENT_SHELL" = "zsh" ]; then
     CONF_FILE=${ZDOTDIR:-$HOME}/.zshrc
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
@@ -161,7 +162,7 @@ setup_shell() {
     echo 'export PATH='$INSTALL_DIR':$PATH' >>$CONF_FILE
     echo 'eval "`fnm env`"' >>$CONF_FILE
 
-  elif [ "$CURRENT_SHELL" == "fish" ]; then
+  elif [ "$CURRENT_SHELL" = "fish" ]; then
     CONF_FILE=$HOME/.config/fish/conf.d/fnm.fish
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
@@ -174,8 +175,8 @@ setup_shell() {
     echo 'set PATH '"$INSTALL_DIR"' $PATH' >>$CONF_FILE
     echo 'fnm env | source' >>$CONF_FILE
 
-  elif [ "$CURRENT_SHELL" == "bash" ]; then
-    if [ "$OS" == "Darwin" ]; then
+  elif [ "$CURRENT_SHELL" = "bash" ]; then
+    if [ "$OS" = "Darwin" ]; then
       CONF_FILE=$HOME/.profile
     else
       CONF_FILE=$HOME/.bashrc

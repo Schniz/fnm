@@ -1,4 +1,125 @@
-## 1.23.2 (2021-03-24)
+## 1.28.1 (2021-11-17)
+
+#### Bugfix 🐛
+
+- [#576](https://github.com/Schniz/fnm/pull/576) First fix for slowess in fnm env ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.28.0 (2021-11-16)
+
+#### New Feature 🎉
+
+- [#556](https://github.com/Schniz/fnm/pull/556) Allow aliasing to the system version ([@Schniz](https://github.com/Schniz))
+- [#547](https://github.com/Schniz/fnm/pull/547) Replace reqwest with ureq for less dependencies and smaller file size ([@dnaka91](https://github.com/dnaka91))
+
+#### Bugfix 🐛
+
+- [#573](https://github.com/Schniz/fnm/pull/573) Infer shell with `sysinfo` crate ([@Schniz](https://github.com/Schniz))
+- [#553](https://github.com/Schniz/fnm/pull/553) Fix Windows CMD `cd` failure on paths with spaces (`use-on-cd`) ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#554](https://github.com/Schniz/fnm/pull/554) Fix clippy & use musl target on Rust compiler for static compilation ([@dnaka91](https://github.com/dnaka91))
+
+#### Documentation 📝
+
+- [#545](https://github.com/Schniz/fnm/pull/545) docs(cli): Fix typo ([@SanchithHegde](https://github.com/SanchithHegde))
+- [#544](https://github.com/Schniz/fnm/pull/544) Replace error message with a more useful one ([@yonifra](https://github.com/yonifra))
+- [#537](https://github.com/Schniz/fnm/pull/537) Show log level options in help and error message ([@lucasweng](https://github.com/lucasweng))
+
+#### Committers: 5
+
+- Dominik Nakamura ([@dnaka91](https://github.com/dnaka91))
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Jonathan Fraimorice ([@yonifra](https://github.com/yonifra))
+- Lucas Weng ([@lucasweng](https://github.com/lucasweng))
+- Sanchith Hegde ([@SanchithHegde](https://github.com/SanchithHegde))
+
+## v1.27.0 (2021-09-17)
+
+#### New Feature 🎉
+
+- [#519](https://github.com/Schniz/fnm/pull/519) Windows: Use junctions rather than symlinks ([@davidaurelio](https://github.com/davidaurelio))
+- [#489](https://github.com/Schniz/fnm/pull/489) Add unalias command ([@AlexMunoz](https://github.com/AlexMunoz))
+
+#### Bugfix 🐛
+
+- [#528](https://github.com/Schniz/fnm/pull/528) installation script: Use `=` instead of `==` ([@develoot](https://github.com/develoot))
+- [#512](https://github.com/Schniz/fnm/pull/512) fix(dep): Revert "Include feature for (native) certificates #468" ([@itotallyrock](https://github.com/itotallyrock))
+- [#514](https://github.com/Schniz/fnm/pull/514) Invoke fnm use on startup for PowerShell ([@naoey](https://github.com/naoey))
+
+#### Documentation 📝
+
+- [#529](https://github.com/Schniz/fnm/pull/529) Add Chocolatey installation instructions ([@CMeeg](https://github.com/CMeeg))
+- [#496](https://github.com/Schniz/fnm/pull/496) install.sh: print an exit message for missing deps ([@waldyrious](https://github.com/waldyrious))
+- [#516](https://github.com/Schniz/fnm/pull/516) More informative log level error message ([@waldyrious](https://github.com/waldyrious))
+- [#493](https://github.com/Schniz/fnm/pull/493) Add instructions to setup the file for Cmder ([@Lunchb0ne](https://github.com/Lunchb0ne))
+
+#### Committers: 8
+
+- Abhishek Aryan ([@Lunchb0ne](https://github.com/Lunchb0ne))
+- Alex Munoz ([@AlexMunoz](https://github.com/AlexMunoz))
+- Chris Meagher ([@CMeeg](https://github.com/CMeeg))
+- David Aurelio ([@davidaurelio](https://github.com/davidaurelio))
+- Jeffrey Meyer ([@itotallyrock](https://github.com/itotallyrock))
+- Kitae Kim ([@develoot](https://github.com/develoot))
+- Waldir Pimenta ([@waldyrious](https://github.com/waldyrious))
+- [@naoey](https://github.com/naoey)
+
+## v1.26.0 (2021-07-15)
+
+#### Bugfix 🐛
+
+- [#484](https://github.com/Schniz/fnm/pull/484) fix: --install-if-missing when using version alias ([@AlexMunoz](https://github.com/AlexMunoz))
+- [#468](https://github.com/Schniz/fnm/pull/468) Include feature for (native) certificates ([@pfiaux](https://github.com/pfiaux))
+
+#### Documentation 📝
+
+- [#467](https://github.com/Schniz/fnm/pull/467) Add instructions for removing fnm ([@binyamin](https://github.com/binyamin))
+- [#461](https://github.com/Schniz/fnm/pull/461) Fix missing list-remote in command doc ([@binhonglee](https://github.com/binhonglee))
+
+#### Committers: 4
+
+- Alex Munoz ([@AlexMunoz](https://github.com/AlexMunoz))
+- BinHong Lee ([@binhonglee](https://github.com/binhonglee))
+- Binyamin Aron Green ([@binyamin](https://github.com/binyamin))
+- Patrick Fiaux ([@pfiaux](https://github.com/pfiaux))
+
+## v1.25.0 (2021-05-17)
+
+#### New Feature 🎉
+
+- [#436](https://github.com/Schniz/fnm/pull/436) feat: use arm for aarch64-darwin-node@16 platforms ([@pckilgore](https://github.com/pckilgore))
+
+#### Documentation 📝
+
+- [#432](https://github.com/Schniz/fnm/pull/432) Auto-generate command documentation markdown ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Patrick Kilgore ([@pckilgore](https://github.com/pckilgore))
+
+## v1.24.0 (2021-04-02)
+
+#### New Feature 🎉
+
+- [#421](https://github.com/Schniz/fnm/pull/421) Adding FNM_ARCH as an exported env var from `fnm env` ([@Schniz](https://github.com/Schniz))
+- [#417](https://github.com/Schniz/fnm/pull/417) Support Apple M1 by installing Rosetta Node builds ([@pckilgore](https://github.com/pckilgore))
+
+#### Bugfix 🐛
+
+- [#422](https://github.com/Schniz/fnm/pull/422) Create version symlinks in a nested directory ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Patrick Kilgore ([@pckilgore](https://github.com/pckilgore))
+
+## v1.23.2 (2021-03-24)
 
 #### Bugfix 🐛
 
@@ -45,7 +166,7 @@
 
 #### Documentation 📝
 
-- [#397](https://github.com/Schniz/fnm/pull/397) Fix minor typos ([@keirog](https://github.com/keirog))
+- [#397](https://github.com/Schniz/fnm/pull/397) Fix minor typos ([@leafrogers](https://github.com/leafrogers))
 - [#385](https://github.com/Schniz/fnm/pull/385) README: add symlink support on Windows ([@scadu](https://github.com/scadu))
 - [#377](https://github.com/Schniz/fnm/pull/377) Improvements to the README ([@waldyrious](https://github.com/waldyrious))
 
@@ -53,7 +174,7 @@
 
 - Gal Schlezinger ([@Schniz](https://github.com/Schniz))
 - Kaio Duarte ([@kaioduarte](https://github.com/kaioduarte))
-- Leaf Rogers ([@keirog](https://github.com/keirog))
+- Leaf Rogers ([@leafrogers](https://github.com/leafrogers))
 - Waldir Pimenta ([@waldyrious](https://github.com/waldyrious))
 - Łukasz Jendrysik ([@scadu](https://github.com/scadu))
 
@@ -387,7 +508,7 @@
 #### Committers: 2
 
 - Gal Schlezinger ([@Schniz](https://github.com/Schniz))
-- [@thomsj](https://github.com/thomsj)
+- James Thomson ([@thomsj](https://github.com/thomsj))
 
 ## v1.15.0 (2019-09-23)
 
@@ -531,7 +652,7 @@
 
 #### Bugfix 🐛
 
-- [#83](https://github.com/Schniz/fnm/pull/83) fix: remove unmatched quote written in the fish config file ([@ThomasMarcel](https://github.com/ThomasMarcel))
+- [#83](https://github.com/Schniz/fnm/pull/83) fix: remove unmatched quote written in the fish config file ([@thomasmarcel](https://github.com/thomasmarcel))
 
 #### Internal 🛠
 
@@ -540,7 +661,7 @@
 #### Committers: 2
 
 - Gal Schlezinger ([@Schniz](https://github.com/Schniz))
-- Thomas Alcala Schneider ([@ThomasMarcel](https://github.com/ThomasMarcel))
+- Thomas Alcala Schneider ([@thomasmarcel](https://github.com/thomasmarcel))
 
 ## v1.7.2 (2019-03-07)
 

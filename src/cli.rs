@@ -40,6 +40,10 @@ pub enum SubCommand {
     #[structopt(name = "alias")]
     Alias(commands::alias::Alias),
 
+    /// Remove an alias definition
+    #[structopt(name = "unalias")]
+    Unalias(commands::unalias::Unalias),
+
     /// Set a version as the default version
     ///
     /// This is a shorthand for `fnm alias VERSION default`
@@ -56,7 +60,7 @@ pub enum SubCommand {
     /// --------
     /// fnm exec --using=v12.0.0 node --version
     /// => v12.0.0
-    #[structopt(name = "exec")]
+    #[structopt(name = "exec", verbatim_doc_comment)]
     Exec(commands::exec::Exec),
 
     /// Uninstall a Node.js version
@@ -81,6 +85,7 @@ impl SubCommand {
             Self::Current(cmd) => cmd.call(config),
             Self::Exec(cmd) => cmd.call(config),
             Self::Uninstall(cmd) => cmd.call(config),
+            Self::Unalias(cmd) => cmd.call(config),
         }
     }
 }

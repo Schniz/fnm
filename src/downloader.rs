@@ -1,17 +1,18 @@
+use crate::arch::Arch;
 use crate::archive;
 use crate::archive::{Error as ExtractError, Extract};
 use crate::directory_portal::DirectoryPortal;
 use crate::version::Version;
 use log::debug;
-use reqwest::Url;
 use snafu::{ensure, OptionExt, ResultExt, Snafu};
 use std::path::Path;
 use std::path::PathBuf;
+use url::Url;
 
 #[derive(Debug, Snafu)]
 pub enum Error {
     HttpError {
-        source: reqwest::Error,
+        source: ureq::Error,
     },
     IoError {
         source: std::io::Error,
@@ -22,8 +23,15 @@ pub enum Error {
     },
     #[snafu(display("The downloaded archive is empty"))]
     TarIsEmpty,
-    #[snafu(display("Can't find version upstream"))]
-    VersionNotFound,
+    #[snafu(display(
+        "{} for {} not found upstream.\nYou can `fnm ls-remote` to see available versions or try a different `--arch`.",
+        version,
+        arch
+    ))]
+    VersionNotFound {
+        version: Version,
+        arch: Arch,
+    },
     #[snafu(display("Version already installed at {:?}", path))]
     VersionAlreadyInstalled {
         path: PathBuf,
@@ -31,39 +39,39 @@ pub enum Error {
 }
 
 #[cfg(unix)]
-fn filename_for_version(version: &Version) -> String {
-    use crate::system_info::{platform_arch, platform_name};
+fn filename_for_version(version: &Version, arch: &Arch) -> String {
     format!(
         "node-{node_ver}-{platform}-{arch}.tar.xz",
         node_ver = &version,
-        platform = platform_name(),
-        arch = platform_arch(),
+        platform = crate::system_info::platform_name(),
+        arch = arch,
     )
 }
 
 #[cfg(windows)]
-fn filename_for_version(version: &Version) -> String {
+fn filename_for_version(version: &Version, arch: &Arch) -> String {
     format!(
         "node-{node_ver}-win-{arch}.zip",
         node_ver = &version,
-        arch = crate::system_info::platform_arch(),
+        arch = arch,
     )
 }
 
-fn download_url(base_url: &Url, version: &Version) -> Url {
+fn download_url(base_url: &Url, version: &Version, arch: &Arch) -> Url {
     Url::parse(&format!(
         "{}/{}/{}",
         base_url.as_str().trim_end_matches('/'),
         version,
-        filename_for_version(version)
+        filename_for_version(version, arch)
     ))
     .unwrap()
 }
 
 pub fn extract_archive_into<P: AsRef<Path>>(
     path: P,
-    response: reqwest::blocking::Response,
+    response: ureq::Response,
 ) -> Result<(), Error> {
+    let response = response.into_reader();
     #[cfg(unix)]
     let extractor = archive::TarXz::new(response);
     #[cfg(windows)]
@@ -77,6 +85,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
     version: &Version,
     node_dist_mirror: &Url,
     installations_dir: P,
+    arch: &Arch,
 ) -> Result<(), Error> {
     let installation_dir = PathBuf::from(installations_dir.as_ref()).join(version.v_str());
 
@@ -94,12 +103,15 @@ pub fn install_node_dist<P: AsRef<Path>>(
 
     let portal = DirectoryPortal::new_in(&temp_installations_dir, installation_dir);
 
-    let url = download_url(node_dist_mirror, version);
+    let url = download_url(node_dist_mirror, version, arch);
     debug!("Going to call for {}", &url);
-    let response = reqwest::blocking::get(url).context(HttpError)?;
+    let response = ureq::get(url.as_str()).call().context(HttpError)?;
 
     if response.status() == 404 {
-        return Err(Error::VersionNotFound);
+        return Err(Error::VersionNotFound {
+            version: version.clone(),
+            arch: arch.clone(),
+        });
     }
 
     debug!("Extracting response...");
@@ -167,8 +179,10 @@ mod tests {
 
     fn install_in(path: &Path) -> PathBuf {
         let version = Version::parse("12.0.0").unwrap();
+        let arch = Arch::X64;
         let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
-        install_node_dist(&version, &node_dist_mirror, &path).expect("Can't install Node 12");
+        install_node_dist(&version, &node_dist_mirror, &path, &arch)
+            .expect("Can't install Node 12");
 
         let mut location_path = path.join(version.v_str()).join("installation");
 

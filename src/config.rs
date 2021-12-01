@@ -1,8 +1,11 @@
+use crate::arch::Arch;
 use crate::log_level::LogLevel;
 use crate::outln;
+use crate::path_ext::PathExt;
 use colored::Colorize;
 use dirs::{data_dir, home_dir};
 use structopt::StructOpt;
+use url::Url;
 
 static mut HAS_WARNED_DEPRECATED_BASE_DIR: bool = false;
 
@@ -13,12 +16,18 @@ pub struct FnmConfig {
         long,
         env = "FNM_NODE_DIST_MIRROR",
         default_value = "https://nodejs.org/dist",
-        global = true
+        global = true,
+        hide_env_values = true
     )]
-    pub node_dist_mirror: reqwest::Url,
+    pub node_dist_mirror: Url,
 
     /// The root directory of fnm installations.
-    #[structopt(long = "fnm-dir", env = "FNM_DIR", global = true)]
+    #[structopt(
+        long = "fnm-dir",
+        env = "FNM_DIR",
+        global = true,
+        hide_env_values = true
+    )]
     pub base_dir: Option<std::path::PathBuf>,
 
     /// Where the current node version link is stored.
@@ -33,17 +42,36 @@ pub struct FnmConfig {
     multishell_path: Option<std::path::PathBuf>,
 
     /// The log level of fnm commands
-    #[structopt(long, env = "FNM_LOGLEVEL", default_value = "info", global = true)]
+    #[structopt(
+        long,
+        env = "FNM_LOGLEVEL",
+        default_value = "info",
+        global = true,
+        hide_env_values = true,
+        possible_values = LogLevel::possible_values()
+    )]
     log_level: LogLevel,
+
+    /// Override the architecture of the installed Node binary.
+    /// Defaults to arch of fnm binary.
+    #[structopt(
+        long,
+        env = "FNM_ARCH",
+        default_value,
+        global = true,
+        hide_env_values = true
+    )]
+    pub arch: Arch,
 }
 
 impl Default for FnmConfig {
     fn default() -> Self {
         Self {
-            node_dist_mirror: reqwest::Url::parse("https://nodejs.org/dist/").unwrap(),
+            node_dist_mirror: Url::parse("https://nodejs.org/dist/").unwrap(),
             base_dir: None,
             multishell_path: None,
             log_level: LogLevel::Info,
+            arch: Arch::default(),
         }
     }
 }
@@ -78,9 +106,9 @@ impl FnmConfig {
                     HAS_WARNED_DEPRECATED_BASE_DIR = true;
 
                     let legacy_str = dir.display().to_string();
-                    let modern_str = modern
-                        .map(|path| path.display().to_string())
-                        .unwrap_or("$XDG_DATA_HOME/fnm".to_string());
+                    let modern_str = modern.map_or("$XDG_DATA_HOME/fnm".to_string(), |path| {
+                        path.display().to_string()
+                    });
 
                     outln!(
                         self#Error,
@@ -96,11 +124,15 @@ impl FnmConfig {
             return dir;
         }
 
-        ensure_exists_silently(modern.expect("Can't get data directory"))
+        modern
+            .expect("Can't get data directory")
+            .ensure_exists_silently()
     }
 
     pub fn installations_dir(&self) -> std::path::PathBuf {
-        ensure_exists_silently(self.base_dir_with_default().join("node-versions"))
+        self.base_dir_with_default()
+            .join("node-versions")
+            .ensure_exists_silently()
     }
 
     pub fn default_version_dir(&self) -> std::path::PathBuf {
@@ -108,7 +140,9 @@ impl FnmConfig {
     }
 
     pub fn aliases_dir(&self) -> std::path::PathBuf {
-        ensure_exists_silently(self.base_dir_with_default().join("aliases"))
+        self.base_dir_with_default()
+            .join("aliases")
+            .ensure_exists_silently()
     }
 
     #[cfg(test)]
@@ -116,9 +150,4 @@ impl FnmConfig {
         self.base_dir = base_dir;
         self
     }
-}
-
-fn ensure_exists_silently<T: AsRef<std::path::Path>>(path: T) -> T {
-    std::fs::create_dir_all(path.as_ref()).ok();
-    path
 }
