@@ -1,7 +1,7 @@
 # `fnm`
 
 ```
-fnm 1.28.1
+fnm 1.28.2
 A fast and simple Node.js manager
 
 USAGE:
@@ -48,7 +48,7 @@ SUBCOMMANDS:
 # `fnm alias`
 
 ```
-fnm-alias 1.28.1
+fnm-alias 1.28.2
 Alias a version to a common name
 
 USAGE:
@@ -78,7 +78,7 @@ ARGS:
 # `fnm completions`
 
 ```
-fnm-completions 1.28.1
+fnm-completions 1.28.2
 Print shell completions to stdout
 
 USAGE:
@@ -107,7 +107,7 @@ OPTIONS:
 # `fnm current`
 
 ```
-fnm-current 1.28.1
+fnm-current 1.28.2
 Print the current Node.js version
 
 USAGE:
@@ -133,7 +133,7 @@ OPTIONS:
 # `fnm default`
 
 ```
-fnm-default 1.28.1
+fnm-default 1.28.2
 Set a version as the default version
 
 This is a shorthand for `fnm alias VERSION default`
@@ -172,7 +172,7 @@ ARGS:
 # `fnm env`
 
 ```
-fnm-env 1.28.1
+fnm-env 1.28.2
 Print and set up required environment variables for fnm
 
 This command generates a series of shell commands that should be evaluated by your shell to create a fnm-ready
@@ -216,7 +216,7 @@ OPTIONS:
 # `fnm exec`
 
 ```
-fnm-exec 1.28.1
+fnm-exec 1.28.2
 Run a command within fnm context
 
 Example:
@@ -267,7 +267,7 @@ ARGS:
 # `fnm install`
 
 ```
-fnm-install 1.28.1
+fnm-install 1.28.2
 Install a new Node.js version
 
 USAGE:
@@ -297,7 +297,7 @@ ARGS:
 # `fnm list`
 
 ```
-fnm-list 1.28.1
+fnm-list 1.28.2
 List all locally installed Node.js versions
 
 USAGE:
@@ -323,7 +323,7 @@ OPTIONS:
 # `fnm list-remote`
 
 ```
-fnm-list-remote 1.28.1
+fnm-list-remote 1.28.2
 List all remote Node.js versions
 
 USAGE:
@@ -349,7 +349,7 @@ OPTIONS:
 # `fnm unalias`
 
 ```
-fnm-unalias 1.28.1
+fnm-unalias 1.28.2
 Remove an alias definition
 
 USAGE:
@@ -378,7 +378,7 @@ ARGS:
 # `fnm uninstall`
 
 ```
-fnm-uninstall 1.28.1
+fnm-uninstall 1.28.2
 Uninstall a Node.js version
 
 > Warning: when providing an alias, it will remove the Node version the alias is pointing to, along with the other
@@ -418,7 +418,7 @@ ARGS:
 # `fnm use`
 
 ```
-fnm-use 1.28.1
+fnm-use 1.28.2
 Change Node.js version
 
 USAGE:

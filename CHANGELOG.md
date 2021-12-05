@@ -1,4 +1,18 @@
-## 1.28.1 (2021-11-17)
+## 1.28.2 (2021-12-05)
+
+#### Bugfix 🐛
+
+- [#586](https://github.com/Schniz/fnm/pull/586) Revert the change to ureq ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#584](https://github.com/Schniz/fnm/pull/584) Add warning to symlink creation ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.28.1 (2021-11-17)
 
 #### Bugfix 🐛
 
