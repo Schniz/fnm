@@ -3,12 +3,6 @@ use log::debug;
 use std::ffi::OsStr;
 use sysinfo::{ProcessExt, System, SystemExt};
 
-#[derive(Debug)]
-struct ProcessInfo {
-    parent_pid: Option<u32>,
-    command: String,
-}
-
 pub fn infer_shell() -> Option<Box<dyn Shell>> {
     let mut system = System::new();
     let mut current_pid = sysinfo::get_current_pid().ok();
