@@ -87,10 +87,8 @@ mod tests {
     #[test_env_log::test]
     fn test_zip_extraction() {
         let temp_dir = tempfile::tempdir().expect("Can't create a temp directory");
-        let response = ureq::get("https://nodejs.org/dist/v12.0.0/node-v12.0.0-win-x64.zip")
-            .call()
-            .expect("Can't make request to Node v12.0.0 zip file")
-            .into_reader();
+        let response = crate::http::get("https://nodejs.org/dist/v12.0.0/node-v12.0.0-win-x64.zip")
+            .expect("Can't make request to Node v12.0.0 zip file");
         Zip::new(response)
             .extract_into(&temp_dir)
             .expect("Can't unzip files");
