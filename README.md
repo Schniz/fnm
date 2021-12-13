@@ -18,7 +18,7 @@
 
 :rocket: Built with speed in mind
 
-:thinking: Works with `.node-version` and `.nvmrc` files
+:white_check_mark: Works with `.node-version` and `.nvmrc` files
 
 ## Installation
 
