@@ -84,7 +84,7 @@ impl<R: Read> Extract for Zip<R> {
 mod tests {
     use super::*;
 
-    #[test_env_log::test]
+    #[test_log::test]
     fn test_zip_extraction() {
         let temp_dir = tempfile::tempdir().expect("Can't create a temp directory");
         let response = crate::http::get("https://nodejs.org/dist/v12.0.0/node-v12.0.0-win-x64.zip")

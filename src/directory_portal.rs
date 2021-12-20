@@ -52,7 +52,7 @@ mod tests {
     use pretty_assertions::assert_eq;
     use tempfile::tempdir;
 
-    #[test_env_log::test]
+    #[test_log::test]
     fn test_portal() {
         let tempdir = tempdir().expect("Can't generate a temp directory");
         let portal = DirectoryPortal::new_in(std::env::temp_dir(), tempdir.path().join("subdir"));

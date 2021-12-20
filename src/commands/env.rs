@@ -50,7 +50,13 @@ impl Command for Env {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         if self.multi {
-            outln!(config#Error, "{} {} is deprecated. This is now the default.", "warning:".yellow().bold(), "--multi".italic());
+            outln!(
+                config,
+                Error,
+                "{} {} is deprecated. This is now the default.",
+                "warning:".yellow().bold(),
+                "--multi".italic()
+            );
         }
 
         let shell: Box<dyn Shell> = self.shell.or_else(&infer_shell).context(CantInferShell)?;
