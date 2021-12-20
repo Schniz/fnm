@@ -1,4 +1,5 @@
 use crate::config::FnmConfig;
+use crate::default_version;
 use crate::user_version::UserVersion;
 use crate::version_file_strategy::VersionFileStrategy;
 use encoding_rs_io::DecodeReaderBytes;
@@ -15,7 +16,11 @@ pub fn get_user_version_for_directory(
 ) -> Option<UserVersion> {
     match config.version_file_strategy() {
         VersionFileStrategy::Local => get_user_version_for_single_directory(path),
-        VersionFileStrategy::Recursive => get_user_version_for_directory_recursive(path),
+        VersionFileStrategy::Recursive => {
+            get_user_version_for_directory_recursive(path).or_else(|| {
+                default_version::find_default_version(&config).map(|v| UserVersion::Full(v))
+            })
+        }
     }
 }
 

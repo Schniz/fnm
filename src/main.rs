@@ -33,6 +33,7 @@ mod version_files;
 
 #[macro_use]
 mod log_level;
+mod default_version;
 
 fn main() {
     env_logger::init();
