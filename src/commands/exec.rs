@@ -46,7 +46,7 @@ impl Cmd for Exec {
                 let current_dir = std::env::current_dir().unwrap();
                 UserVersionReader::Path(current_dir)
             })
-            .into_user_version(&config)
+            .into_user_version(config)
             .context(CantInferVersion)?;
 
         let applicable_version = choose_version_for_user_input(&version, config)

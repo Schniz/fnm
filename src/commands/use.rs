@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use super::command::Command;
 use super::install::Install;
 use crate::current_version::current_version;
@@ -13,6 +11,7 @@ use crate::version_file_strategy::VersionFileStrategy;
 use crate::{config::FnmConfig, user_version_reader::UserVersionReader};
 use colored::Colorize;
 use snafu::{ensure, OptionExt, ResultExt, Snafu};
+use std::path::Path;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -43,7 +42,7 @@ impl Command for Use {
                 let current_dir = std::env::current_dir().unwrap();
                 UserVersionReader::Path(current_dir)
             })
-            .into_user_version(&config)
+            .into_user_version(config)
             .ok_or_else(|| match config.version_file_strategy() {
                 VersionFileStrategy::Local => InferVersionError::Local,
                 VersionFileStrategy::Recursive => InferVersionError::Recursive,
@@ -90,7 +89,7 @@ impl Command for Use {
             }
         };
 
-        if !self.silent_when_unchanged || will_version_change(&version_path, &config) {
+        if !self.silent_when_unchanged || will_version_change(&version_path, config) {
             outln!(config, Info, "{}", message);
         }
 
@@ -100,12 +99,12 @@ impl Command for Use {
     }
 }
 
-fn will_version_change(resolved_path: &PathBuf, config: &FnmConfig) -> bool {
-    let current_version_path = current_version(&config)
+fn will_version_change(resolved_path: &Path, config: &FnmConfig) -> bool {
+    let current_version_path = current_version(config)
         .unwrap_or(None)
-        .map(|v| v.installation_path(&config));
+        .map(|v| v.installation_path(config));
 
-    current_version_path.as_ref() != Some(&resolved_path)
+    current_version_path.as_deref() != Some(resolved_path)
 }
 
 fn install_new_version(

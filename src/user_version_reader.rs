@@ -15,7 +15,7 @@ impl UserVersionReader {
         match self {
             Self::Direct(uv) => Some(uv),
             Self::Path(pathbuf) if pathbuf.is_file() => get_user_version_for_file(&pathbuf),
-            Self::Path(pathbuf) => get_user_version_for_directory(&pathbuf, &config),
+            Self::Path(pathbuf) => get_user_version_for_directory(&pathbuf, config),
         }
     }
 }

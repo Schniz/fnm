@@ -19,7 +19,7 @@ pub fn get_user_version_for_directory(
         VersionFileStrategy::Recursive => {
             get_user_version_for_directory_recursive(path).or_else(|| {
                 info!("Did not find anything recursively. Falling back to default alias.");
-                default_version::find_default_version(&config).map(|v| UserVersion::Full(v))
+                default_version::find_default_version(config).map(UserVersion::Full)
             })
         }
     }
