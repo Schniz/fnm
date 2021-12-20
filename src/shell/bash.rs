@@ -1,5 +1,7 @@
+use crate::version_file_strategy::VersionFileStrategy;
+
 use super::shell::Shell;
-use indoc::indoc;
+use indoc::{formatdoc, indoc};
 use std::path::Path;
 
 #[derive(Debug)]
@@ -18,24 +20,32 @@ impl Shell for Bash {
         format!("export {}={:?}", name, value)
     }
 
-    fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
-        indoc!(
-            r#"
-                __fnm_use_if_file_found() {
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
+        let autoload_hook = match config.version_file_strategy() {
+            VersionFileStrategy::Local => indoc!(
+                r#"
                     if [[ -f .node-version || -f .nvmrc ]]; then
-                        fnm use
+                        fnm use --silent-when-unchanged
                     fi
-                }
+                "#
+            ),
+            VersionFileStrategy::Recursive => r#"fnm use --silent-when-unchanged"#,
+        };
+        formatdoc!(
+            r#"
+                __fnm_use_if_file_found() {{
+                    {autoload_hook}
+                }}
 
-                __fnmcd() {
+                __fnmcd() {{
                     \cd "$@" || return $?
                     __fnm_use_if_file_found
-                }
+                }}
 
                 alias cd=__fnmcd
                 __fnm_use_if_file_found
-            "#
+            "#,
+            autoload_hook = autoload_hook
         )
-        .into()
     }
 }

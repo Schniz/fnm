@@ -67,6 +67,13 @@ impl Command for Env {
         );
         println!(
             "{}",
+            shell.set_env_var(
+                "FNM_VERSION_FILE_STRATEGY",
+                config.version_file_strategy().as_str()
+            )
+        );
+        println!(
+            "{}",
             shell.set_env_var("FNM_DIR", config.base_dir_with_default().to_str().unwrap())
         );
         println!(

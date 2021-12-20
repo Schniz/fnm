@@ -1,5 +1,7 @@
+use crate::version_file_strategy::VersionFileStrategy;
+
 use super::Shell;
-use indoc::indoc;
+use indoc::{formatdoc, indoc};
 use std::path::Path;
 
 #[derive(Debug)]
@@ -18,15 +20,26 @@ impl Shell for PowerShell {
         format!(r#"$env:{} = "{}""#, name, value)
     }
 
-    fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
-        indoc!(r#"
-            function Set-FnmOnLoad { If ((Test-Path .nvmrc) -Or (Test-Path .node-version)) { & fnm use } }
-            function Set-LocationWithFnm { param($path); Set-Location $path; Set-FnmOnLoad }
-            Set-Alias cd_with_fnm Set-LocationWithFnm -Force
-            Remove-Item alias:\cd
-            New-Alias cd Set-LocationWithFnm
-            Set-FnmOnLoad
-        "#).into()
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
+        let autoload_hook = match config.version_file_strategy() {
+            VersionFileStrategy::Local => indoc!(
+                r#"
+                    If ((Test-Path .nvmrc) -Or (Test-Path .node-version)) { & fnm use --silent-when-unchanged }
+                "#
+            ),
+            VersionFileStrategy::Recursive => r#"fnm use --silent-when-unchanged"#,
+        };
+        formatdoc!(
+            r#"
+                function Set-FnmOnLoad {{ {autoload_hook} }}
+                function Set-LocationWithFnm {{ param($path); Set-Location $path; Set-FnmOnLoad }}
+                Set-Alias cd_with_fnm Set-LocationWithFnm -Force
+                Remove-Item alias:\cd
+                New-Alias cd Set-LocationWithFnm
+                Set-FnmOnLoad
+            "#,
+            autoload_hook = autoload_hook
+        )
     }
     fn to_structopt_shell(&self) -> clap::Shell {
         clap::Shell::PowerShell

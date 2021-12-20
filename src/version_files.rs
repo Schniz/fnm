@@ -1,4 +1,6 @@
+use crate::config::FnmConfig;
 use crate::user_version::UserVersion;
+use crate::version_file_strategy::VersionFileStrategy;
 use encoding_rs_io::DecodeReaderBytes;
 use log::info;
 use std::io::Read;
@@ -7,7 +9,31 @@ use std::str::FromStr;
 
 const PATH_PARTS: [&str; 2] = [".nvmrc", ".node-version"];
 
-pub fn get_user_version_for_directory(path: impl AsRef<Path>) -> Option<UserVersion> {
+pub fn get_user_version_for_directory(
+    path: impl AsRef<Path>,
+    config: &FnmConfig,
+) -> Option<UserVersion> {
+    match config.version_file_strategy() {
+        VersionFileStrategy::Local => get_user_version_for_single_directory(path),
+        VersionFileStrategy::Recursive => get_user_version_for_directory_recursive(path),
+    }
+}
+
+fn get_user_version_for_directory_recursive(path: impl AsRef<Path>) -> Option<UserVersion> {
+    let mut current_path = Some(path.as_ref());
+
+    while let Some(child_path) = current_path {
+        if let Some(version) = get_user_version_for_single_directory(child_path) {
+            return Some(version);
+        }
+
+        current_path = child_path.parent();
+    }
+
+    None
+}
+
+pub fn get_user_version_for_single_directory(path: impl AsRef<Path>) -> Option<UserVersion> {
     let path = path.as_ref();
 
     for path_part in &PATH_PARTS {
