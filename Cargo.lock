@@ -493,7 +493,7 @@ dependencies = [
  "sysinfo",
  "tar",
  "tempfile",
- "test-env-log",
+ "test-log",
  "url",
  "xz2",
  "zip",
@@ -1554,10 +1554,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "test-env-log"
+name = "test-log"
 version = "0.2.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "877189d680101869f65ef94168105d6c188b3a143c13a2d42cf8a09c4c704f8a"
+checksum = "eb78caec569a40f42c078c798c0e35b922d9054ec28e166f0d6ac447563d91a4"
 dependencies = [
  "proc-macro2",
  "quote",

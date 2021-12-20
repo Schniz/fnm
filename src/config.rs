@@ -133,7 +133,7 @@ impl FnmConfig {
                 });
 
                 outln!(
-                    self#Error,
+                    self, Error,
                     "{}\n  It looks like you have the {} directory on your disk.\n  fnm is migrating its default storage location for application data to {}.\n  You can read more about it here: {}\n",
                     "warning:".yellow().bold(),
                     legacy_str.italic(),

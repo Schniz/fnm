@@ -29,7 +29,13 @@ impl Cmd for Exec {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         if self.using_file {
-            outln!(config#Error, "{} {} is deprecated. This is now the default.", "warning:".yellow().bold(), "--using-file".italic());
+            outln!(
+                config,
+                Error,
+                "{} {} is deprecated. This is now the default.",
+                "warning:".yellow().bold(),
+                "--using-file".italic()
+            );
         }
 
         let (binary, arguments) = self.arguments.split_first().context(NoBinaryProvided)?;

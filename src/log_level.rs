@@ -52,7 +52,7 @@ impl std::str::FromStr for LogLevel {
 
 #[macro_export]
 macro_rules! outln {
-    ($config:ident#$level:path, $($expr:expr),+) => {{
+    ($config:ident, $level:path, $($expr:expr),+) => {{
         use $crate::log_level::LogLevel::*;
         writeln!($config.log_level().writer_for(&$level), $($expr),+).expect("Can't write output");
     }}
