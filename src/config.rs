@@ -1,9 +1,14 @@
 use crate::arch::Arch;
 use crate::log_level::LogLevel;
+use crate::outln;
 use crate::path_ext::PathExt;
-use dirs::home_dir;
+use colored::Colorize;
+use dirs::{data_dir, home_dir};
+use std::sync::atomic::{AtomicBool, Ordering};
 use structopt::StructOpt;
 use url::Url;
+
+static HAS_WARNED_DEPRECATED_BASE_DIR: AtomicBool = AtomicBool::new(false);
 
 #[derive(StructOpt, Debug)]
 pub struct FnmConfig {
@@ -85,9 +90,41 @@ impl FnmConfig {
     }
 
     pub fn base_dir_with_default(&self) -> std::path::PathBuf {
-        self.base_dir
-            .clone()
-            .unwrap_or_else(|| home_dir().expect("Can't get home directory").join(".fnm"))
+        let user_pref = self.base_dir.clone();
+        if let Some(dir) = user_pref {
+            return dir;
+        }
+
+        let legacy = home_dir()
+            .map(|dir| dir.join(".fnm"))
+            .filter(|dir| dir.exists());
+
+        let modern = data_dir().map(|dir| dir.join("fnm"));
+
+        if let Some(dir) = legacy {
+            if !HAS_WARNED_DEPRECATED_BASE_DIR.load(Ordering::SeqCst) {
+                HAS_WARNED_DEPRECATED_BASE_DIR.store(true, Ordering::SeqCst);
+
+                let legacy_str = dir.display().to_string();
+                let modern_str = modern.map_or("$XDG_DATA_HOME/fnm".to_string(), |path| {
+                    path.display().to_string()
+                });
+
+                outln!(
+                    self#Error,
+                    "{}\n  It looks like you have the {} directory on your disk.\n  fnm is migrating its default storage location for application data to {}.\n  You can read more about it here: {}\n",
+                    "warning:".yellow().bold(),
+                    legacy_str.italic(),
+                    modern_str.italic(),
+                    "https://github.com/schniz/fnm/issues/357".italic()
+                );
+            }
+
+            return dir;
+        }
+
+        modern
+            .expect("Can't get data directory")
             .ensure_exists_silently()
     }
 
