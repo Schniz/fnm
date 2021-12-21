@@ -1,11 +1,11 @@
 use super::command::Command;
 use crate::config::FnmConfig;
 use crate::fs::symlink_dir;
-use crate::outln;
 use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
+use crate::{outln, shims};
 use colored::Colorize;
-use snafu::{OptionExt, Snafu};
+use snafu::{OptionExt, ResultExt, Snafu};
 use std::fmt::Debug;
 use structopt::StructOpt;
 
@@ -21,6 +21,12 @@ pub struct Env {
     /// Print the script to change Node versions every directory change
     #[structopt(long)]
     use_on_cd: bool,
+
+    /// Adds `node` shims to your PATH environment variable
+    /// to allow you to use `node` commands in your shell
+    /// without rehashing.
+    #[structopt(long)]
+    with_shims: bool,
 }
 
 fn generate_symlink_path() -> String {
@@ -61,7 +67,9 @@ impl Command for Env {
 
         let shell: Box<dyn Shell> = self.shell.or_else(&infer_shell).context(CantInferShell)?;
         let multishell_path = make_symlink(config);
-        let binary_path = if cfg!(windows) {
+        let binary_path = if self.with_shims {
+            shims::store_shim(config).context(CantCreateShims)?
+        } else if cfg!(windows) {
             multishell_path.clone()
         } else {
             multishell_path.join("bin")
@@ -107,6 +115,8 @@ pub enum Error {
         shells_as_string()
     ))]
     CantInferShell,
+    #[snafu(display("Can't create Node.js shims: {}", source))]
+    CantCreateShims { source: std::io::Error },
 }
 
 fn shells_as_string() -> String {

@@ -6,6 +6,7 @@ use std::fmt::Write;
 pub(crate) struct EvalFnmEnv {
     use_on_cd: bool,
     log_level: Option<&'static str>,
+    with_shims: bool,
 }
 
 impl EvalFnmEnv {
@@ -15,6 +16,10 @@ impl EvalFnmEnv {
 
     pub(crate) fn log_level(self, log_level: Option<&'static str>) -> Self {
         Self { log_level, ..self }
+    }
+
+    pub(crate) fn with_shims(self, with_shims: bool) -> Self {
+        Self { with_shims, ..self }
     }
 }
 
@@ -27,6 +32,9 @@ impl std::fmt::Display for EvalFnmEnv {
         write!(f, " env")?;
         if self.use_on_cd {
             write!(f, " --use-on-cd")?;
+        }
+        if self.with_shims {
+            write!(f, " --with-shims")?;
         }
         Ok(())
     }

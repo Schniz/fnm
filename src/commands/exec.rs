@@ -3,10 +3,12 @@ use crate::choose_version_for_user_input::{
     choose_version_for_user_input, Error as UserInputError,
 };
 use crate::config::FnmConfig;
+use crate::current_version::{self, current_version};
 use crate::outln;
 use crate::user_version::UserVersion;
 use crate::user_version_reader::UserVersionReader;
 use colored::Colorize;
+use log::debug;
 use snafu::{OptionExt, ResultExt, Snafu};
 use std::process::{Command, Stdio};
 use structopt::StructOpt;
@@ -20,6 +22,8 @@ pub struct Exec {
     /// Deprecated. This is the default now.
     #[structopt(long = "using-file", hidden = true)]
     using_file: bool,
+    #[structopt(long = "using-current", hidden = true, conflicts_with = "using")]
+    using_current: bool,
     /// The command to run
     arguments: Vec<String>,
 }
@@ -40,14 +44,21 @@ impl Cmd for Exec {
 
         let (binary, arguments) = self.arguments.split_first().context(NoBinaryProvided)?;
 
-        let version = self
-            .version
-            .unwrap_or_else(|| {
-                let current_dir = std::env::current_dir().unwrap();
-                UserVersionReader::Path(current_dir)
-            })
-            .into_user_version()
-            .context(CantInferVersion)?;
+        let version = if self.using_current {
+            let version = current_version(config)
+                .context(CantGetCurrentVersion)?
+                .context(NoCurrentVersion)?;
+            UserVersion::Full(version)
+        } else {
+            self.version
+                .unwrap_or_else(|| {
+                    debug!("no version provided, falling back to current directory");
+                    let current_dir = std::env::current_dir().unwrap();
+                    UserVersionReader::Path(current_dir)
+                })
+                .into_user_version()
+                .context(CantInferVersion)?
+        };
 
         let applicable_version = choose_version_for_user_input(&version, config)
             .context(ApplicableVersionError)?
@@ -58,6 +69,8 @@ impl Cmd for Exec {
 
         #[cfg(unix)]
         let bin_path = applicable_version.path().join("bin");
+
+        debug!("Using Node.js from {}", bin_path.display());
 
         let path_env = {
             let paths_env = std::env::var_os("PATH").context(CantReadPathVariable)?;
@@ -105,6 +118,12 @@ pub enum Error {
         "Can't read exit code from process.\nMaybe the process was killed using a signal?"
     ))]
     CantReadProcessExitCode,
+    #[snafu(display("{}", source))]
+    CantGetCurrentVersion {
+        source: current_version::Error,
+    },
+    #[snafu(display("No current version. Please run `fnm use <version>` and retry."))]
+    NoCurrentVersion,
     #[snafu(display("command not provided. Please provide a command to run as an argument, like {} or {}.\n{} {}", "node".italic(), "bash".italic(), "example:".yellow().bold(), "fnm exec --using=12 node --version".italic().yellow()))]
     NoBinaryProvided,
 }

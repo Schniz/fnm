@@ -23,6 +23,7 @@ mod lts;
 mod path_ext;
 mod remote_node_index;
 mod shell;
+mod shims;
 mod system_info;
 mod system_version;
 mod user_version;

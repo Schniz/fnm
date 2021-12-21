@@ -13,6 +13,16 @@ mod basic {
     });
 }
 
+mod basic_with_shims {
+    test_shell!(Zsh, Bash, Fish, PowerShell, WinCmd; {
+        EvalFnmEnv::default()
+            .with_shims(true)
+            .then(Call::new("fnm", vec!["install", "v8.11.3"]))
+            .then(Call::new("fnm", vec!["use", "v8.11.3"]))
+            .then(test_node_version("v8.11.3"))
+    });
+}
+
 mod nvmrc {
     test_shell!(Zsh, Bash, Fish, PowerShell, WinCmd; {
         EvalFnmEnv::default()
