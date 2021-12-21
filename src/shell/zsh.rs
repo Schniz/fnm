@@ -29,11 +29,11 @@ impl Shell for Zsh {
             VersionFileStrategy::Local => indoc!(
                 r#"
                     if [[ -f .node-version || -f .nvmrc ]]; then
-                        fnm use --silent-when-unchanged
+                        fnm use --silent-if-unchanged
                     fi
                 "#
             ),
-            VersionFileStrategy::Recursive => r#"fnm use --silent-when-unchanged"#,
+            VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
         };
         formatdoc!(
             r#"

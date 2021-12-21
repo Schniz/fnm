@@ -24,7 +24,7 @@ pub struct Use {
     /// Don't output a message identifying the version being used
     /// if it will not change due to execution of this command
     #[structopt(long)]
-    silent_when_unchanged: bool,
+    silent_if_unchanged: bool,
 }
 
 impl Command for Use {
@@ -89,7 +89,7 @@ impl Command for Use {
             }
         };
 
-        if !self.silent_when_unchanged || will_version_change(&version_path, config) {
+        if !self.silent_if_unchanged || will_version_change(&version_path, config) {
             outln!(config, Info, "{}", message);
         }
 
@@ -129,7 +129,7 @@ fn install_new_version(
     Use {
         version: Some(UserVersionReader::Direct(requested_version)),
         install_if_missing: true,
-        silent_when_unchanged: false,
+        silent_if_unchanged: false,
     }
     .apply(config)?;
 

@@ -579,7 +579,7 @@ FLAGS:
         --install-if-missing
             Install the version if it isn't installed yet
 
-        --silent-when-unchanged
+        --silent-if-unchanged
             Don't output a message identifying the version being used if it will not change due to execution of this
             command
     -V, --version

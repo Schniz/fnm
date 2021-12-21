@@ -25,11 +25,11 @@ impl Shell for Fish {
             VersionFileStrategy::Local => indoc!(
                 r#"
                     if test -f .node-version -o -f .nvmrc
-                        fnm use
+                        fnm use --silent-if-unchanged
                     end
                 "#
             ),
-            VersionFileStrategy::Recursive => r#"fnm use --silent-when-unchanged"#,
+            VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
         };
         formatdoc!(
             r#"

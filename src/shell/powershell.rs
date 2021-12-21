@@ -24,10 +24,10 @@ impl Shell for PowerShell {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"
-                    If ((Test-Path .nvmrc) -Or (Test-Path .node-version)) { & fnm use --silent-when-unchanged }
+                    If ((Test-Path .nvmrc) -Or (Test-Path .node-version)) { & fnm use --silent-if-unchanged }
                 "#
             ),
-            VersionFileStrategy::Recursive => r#"fnm use --silent-when-unchanged"#,
+            VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
         };
         formatdoc!(
             r#"
