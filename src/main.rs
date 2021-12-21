@@ -33,7 +33,6 @@ mod version_files;
 
 #[macro_use]
 mod log_level;
-mod symlink_path;
 
 fn main() {
     env_logger::init();

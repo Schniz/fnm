@@ -1,12 +1,10 @@
+use crate::config::FnmConfig;
 use crate::system_version;
 use crate::version::Version;
-use crate::{config::FnmConfig, symlink_path::DefaultMultishellPathExt};
-use snafu::{ResultExt, Snafu};
+use snafu::{OptionExt, ResultExt, Snafu};
 
 pub fn current_version(config: &FnmConfig) -> Result<Option<Version>, Error> {
-    let multishell_path = config
-        .multishell_path_or_default()
-        .context(CantCreateMultishellPath)?;
+    let multishell_path = config.multishell_path().context(EnvNotApplied)?;
 
     if multishell_path.read_link().ok() == Some(system_version::path()) {
         return Ok(Some(Version::Bypassed));
@@ -33,7 +31,7 @@ pub enum Error {
     #[snafu(display(
         "`fnm env` was not applied in this context.\nCan't find fnm's environment variables"
     ))]
-    CantCreateMultishellPath { source: Box<dyn std::error::Error> },
+    EnvNotApplied,
     #[snafu(display("Can't read the version as a valid semver"))]
     VersionError {
         source: semver::Error,
