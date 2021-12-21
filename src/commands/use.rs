@@ -3,6 +3,7 @@ use super::install::Install;
 use crate::fs;
 use crate::installed_versions;
 use crate::outln;
+use crate::symlink_path::DefaultMultishellPathExt;
 use crate::system_version;
 use crate::user_version::UserVersion;
 use crate::version::Version;
@@ -23,8 +24,10 @@ impl Command for Use {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        let multishell_path = config.multishell_path().context(FnmEnvWasNotSourced)?;
-        warn_if_multishell_path_not_in_path_env_var(multishell_path, config);
+        let multishell_path = config
+            .multishell_path_or_default()
+            .context(FnmEnvWasNotSourced)?;
+        warn_if_multishell_path_not_in_path_env_var(&multishell_path, config);
 
         let all_versions =
             installed_versions::list(config.installations_dir()).context(VersionListingError)?;
@@ -78,7 +81,7 @@ impl Command for Use {
             }
         };
 
-        replace_symlink(&version_path, multishell_path).context(SymlinkingCreationIssue)?;
+        replace_symlink(&version_path, &multishell_path).context(SymlinkingCreationIssue)?;
 
         Ok(())
     }
@@ -197,5 +200,5 @@ pub enum Error {
         "You should setup your shell profile to evaluate `fnm env`, see https://github.com/Schniz/fnm#shell-setup on how to do this",
         "Check out our documentation for more information: https://fnm.vercel.app"
     ))]
-    FnmEnvWasNotSourced,
+    FnmEnvWasNotSourced { source: Box<dyn std::error::Error> },
 }
