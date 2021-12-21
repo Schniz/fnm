@@ -194,6 +194,9 @@ FLAGS:
     -V, --version
             Prints version information
 
+        --with-shims
+            Adds `node` shims to your PATH environment variable to allow you to use `node` commands in your shell
+            without rehashing
 
 OPTIONS:
         --arch <arch>
