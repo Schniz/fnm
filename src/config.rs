@@ -2,6 +2,7 @@ use crate::arch::Arch;
 use crate::log_level::LogLevel;
 use crate::outln;
 use crate::path_ext::PathExt;
+use crate::version_file_strategy::VersionFileStrategy;
 use colored::Colorize;
 use dirs::{data_dir, home_dir};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -63,6 +64,22 @@ pub struct FnmConfig {
         hide_env_values = true
     )]
     pub arch: Arch,
+
+    /// A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is
+    /// called without a version, or when `--use-on-cd` is configured on evaluation.
+    ///
+    /// * `local`: Use the local version of Node defined within the current directory
+    ///
+    /// * `recursive`: Use the version of Node defined within the current directory and all parent directories
+    #[structopt(
+        long,
+        env = "FNM_VERSION_FILE_STRATEGY",
+        possible_values = VersionFileStrategy::possible_values(),
+        default_value = "local",
+        global = true,
+        hide_env_values = true,
+    )]
+    version_file_strategy: VersionFileStrategy,
 }
 
 impl Default for FnmConfig {
@@ -73,11 +90,16 @@ impl Default for FnmConfig {
             multishell_path: None,
             log_level: LogLevel::Info,
             arch: Arch::default(),
+            version_file_strategy: VersionFileStrategy::default(),
         }
     }
 }
 
 impl FnmConfig {
+    pub fn version_file_strategy(&self) -> &VersionFileStrategy {
+        &self.version_file_strategy
+    }
+
     pub fn multishell_path(&self) -> Option<&std::path::Path> {
         match &self.multishell_path {
             None => None,

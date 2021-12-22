@@ -1,14 +1,17 @@
 use super::command::Command;
 use super::install::Install;
+use crate::current_version::current_version;
 use crate::fs;
 use crate::installed_versions;
 use crate::outln;
 use crate::system_version;
 use crate::user_version::UserVersion;
 use crate::version::Version;
+use crate::version_file_strategy::VersionFileStrategy;
 use crate::{config::FnmConfig, user_version_reader::UserVersionReader};
 use colored::Colorize;
 use snafu::{ensure, OptionExt, ResultExt, Snafu};
+use std::path::Path;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
@@ -17,6 +20,11 @@ pub struct Use {
     /// Install the version if it isn't installed yet
     #[structopt(long)]
     install_if_missing: bool,
+
+    /// Don't output a message identifying the version being used
+    /// if it will not change due to execution of this command
+    #[structopt(long)]
+    silent_if_unchanged: bool,
 }
 
 impl Command for Use {
@@ -34,32 +42,34 @@ impl Command for Use {
                 let current_dir = std::env::current_dir().unwrap();
                 UserVersionReader::Path(current_dir)
             })
-            .into_user_version()
+            .into_user_version(config)
+            .ok_or_else(|| match config.version_file_strategy() {
+                VersionFileStrategy::Local => InferVersionError::Local,
+                VersionFileStrategy::Recursive => InferVersionError::Recursive,
+            })
             .context(CantInferVersion)?;
 
-        let version_path = if let UserVersion::Full(Version::Bypassed) = requested_version {
-            outln!(
-                config,
-                Info,
+        let (message, version_path) = if let UserVersion::Full(Version::Bypassed) =
+            requested_version
+        {
+            let message = format!(
                 "Bypassing fnm: using {} node",
                 system_version::display_name().cyan()
             );
-            system_version::path()
+            (message, system_version::path())
         } else if let Some(alias_name) = requested_version.alias_name() {
             let alias_path = config.aliases_dir().join(&alias_name);
             let system_path = system_version::path();
             if matches!(fs::shallow_read_symlink(&alias_path), Ok(shallow_path) if shallow_path == system_path)
             {
-                outln!(
-                    config,
-                    Info,
+                let message = format!(
                     "Bypassing fnm: using {} node",
                     system_version::display_name().cyan()
                 );
-                system_path
+                (message, system_path)
             } else if alias_path.exists() {
-                outln!(config, Info, "Using Node for alias {}", alias_name.cyan());
-                alias_path
+                let message = format!("Using Node for alias {}", alias_name.cyan());
+                (message, alias_path)
             } else {
                 install_new_version(requested_version, config, self.install_if_missing)?;
                 return Ok(());
@@ -67,21 +77,34 @@ impl Command for Use {
         } else {
             let current_version = requested_version.to_version(&all_versions, config);
             if let Some(version) = current_version {
-                outln!(config, Info, "Using Node {}", version.to_string().cyan());
-                config
+                let version_path = config
                     .installations_dir()
                     .join(version.to_string())
-                    .join("installation")
+                    .join("installation");
+                let message = format!("Using Node {}", version.to_string().cyan());
+                (message, version_path)
             } else {
                 install_new_version(requested_version, config, self.install_if_missing)?;
                 return Ok(());
             }
         };
 
+        if !self.silent_if_unchanged || will_version_change(&version_path, config) {
+            outln!(config, Info, "{}", message);
+        }
+
         replace_symlink(&version_path, multishell_path).context(SymlinkingCreationIssue)?;
 
         Ok(())
     }
+}
+
+fn will_version_change(resolved_path: &Path, config: &FnmConfig) -> bool {
+    let current_version_path = current_version(config)
+        .unwrap_or(None)
+        .map(|v| v.installation_path(config));
+
+    current_version_path.as_deref() != Some(resolved_path)
 }
 
 fn install_new_version(
@@ -106,6 +129,7 @@ fn install_new_version(
     Use {
         version: Some(UserVersionReader::Direct(requested_version)),
         install_if_missing: true,
+        silent_if_unchanged: false,
     }
     .apply(config)?;
 
@@ -187,10 +211,8 @@ pub enum Error {
     VersionListingError { source: installed_versions::Error },
     #[snafu(display("Requested version {} is not currently installed", version))]
     CantFindVersion { version: UserVersion },
-    #[snafu(display(
-        "Can't find version in dotfiles. Please provide a version manually to the command."
-    ))]
-    CantInferVersion,
+    #[snafu(display("{}", source))]
+    CantInferVersion { source: InferVersionError },
     #[snafu(display(
         "{}\n{}\n{}",
         "We can't find the necessary environment variables to replace the Node version.",
@@ -198,4 +220,14 @@ pub enum Error {
         "Check out our documentation for more information: https://fnm.vercel.app"
     ))]
     FnmEnvWasNotSourced,
+}
+
+#[derive(Debug, Snafu)]
+pub enum InferVersionError {
+    #[snafu(display(
+        "Can't find version in dotfiles. Please provide a version manually to the command."
+    ))]
+    Local,
+    #[snafu(display("Could not find any version to use. Maybe you don't have a default version set?\nTry running `fnm default <VERSION>` to set one,\nor create a .node-version file inside your project to declare a Node.js version."))]
+    Recursive,
 }

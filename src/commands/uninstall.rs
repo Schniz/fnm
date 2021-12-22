@@ -26,7 +26,7 @@ impl Command for Uninstall {
             .version
             .or_else(|| {
                 let current_dir = std::env::current_dir().unwrap();
-                get_user_version_for_directory(current_dir)
+                get_user_version_for_directory(current_dir, config)
             })
             .context(CantInferVersion)?;
 
