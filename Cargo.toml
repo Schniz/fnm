@@ -35,7 +35,7 @@ sysinfo = "0.22.3"
 pretty_assertions = "1.0.0"
 duct = "0.13.5"
 shell-escape = "0.1.5"
-insta = { version = "1.8.0", features = ["backtrace"] }
+insta = { version = "1.9.0", features = ["backtrace"] }
 serial_test = "0.5.1"
 test-log = "0.2.8"
 
