@@ -36,16 +36,16 @@ jobs:
             bash ./.ci/install.sh
 
             echo "fnm --version"
-            ~/.fnm/fnm --version
+            ~/.local/share/fnm/fnm --version
 
             echo "eval fnm env"
-            eval "$(~/.fnm/fnm env)"
+            eval "$(~/.local/share/fnm/fnm env)"
 
             echo "fnm install"
-            ~/.fnm/fnm install 12
+            ~/.local/share/fnm/fnm install 12
 
             echo "node -v"
-            ~/.fnm/fnm exec --using=12 -- node -v
+            ~/.local/share/fnm/fnm exec --using=12 -- node -v
           '
 
   test_against_latest_release:

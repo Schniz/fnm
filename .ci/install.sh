@@ -2,7 +2,12 @@
 
 set -e
 
-INSTALL_DIR="$HOME/.fnm"
+if [ -d "$HOME/.fnm" ]; then
+  INSTALL_DIR="$HOME/.fnm"
+else
+  INSTALL_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/fnm"
+fi
+
 RELEASE="latest"
 OS="$(uname -s)"
 
