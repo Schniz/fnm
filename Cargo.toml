@@ -27,7 +27,7 @@ log = "0.4.14"
 env_logger = "0.9.0"
 atty = "0.2.14"
 encoding_rs_io = "0.1.7"
-reqwest = { version = "0.11.7", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
+reqwest = { version = "0.11.8", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
 url = "2.2.2"
 sysinfo = "0.22.3"
 
