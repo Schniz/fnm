@@ -1,11 +1,8 @@
 use crate::arch::Arch;
 use crate::log_level::LogLevel;
-use crate::outln;
 use crate::path_ext::PathExt;
 use crate::version_file_strategy::VersionFileStrategy;
-use colored::Colorize;
 use dirs::{data_dir, home_dir};
-use std::sync::atomic::{AtomicBool, Ordering};
 use structopt::StructOpt;
 use url::Url;
 
