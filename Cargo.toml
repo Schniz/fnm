@@ -2,19 +2,19 @@
 name = "fnm"
 version = "1.28.2"
 authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
-edition = "2018"
+edition = "2021"
 build = "build.rs"
 license = "GPL-3.0"
 repository = "https://github.com/Schniz/fnm"
 description = "Fast and simple Node.js version manager"
 
 [dependencies]
-serde = { version = "1.0.130", features = ["derive"] }
+serde = { version = "1.0.132", features = ["derive"] }
 clap = "2.34.0"
 structopt = "0.3.25"
-serde_json = "1.0.72"
+serde_json = "1.0.73"
 chrono = { version = "0.4.19", features = ["serde"] }
-tar = "0.4.37"
+tar = "0.4.38"
 xz2 = "0.1.6"
 semver = "1.0.4"
 dirs = "4.0.0"
@@ -29,15 +29,15 @@ atty = "0.2.14"
 encoding_rs_io = "0.1.7"
 reqwest = { version = "0.11.7", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
 url = "2.2.2"
-sysinfo = "0.21.1"
+sysinfo = "0.22.3"
 
 [dev-dependencies]
 pretty_assertions = "1.0.0"
 duct = "0.13.5"
-test-env-log = "0.2.8"
 shell-escape = "0.1.5"
 insta = { version = "1.8.0", features = ["backtrace"] }
 serial_test = "0.5.1"
+test-log = "0.2.8"
 
 [build-dependencies]
 embed-resource = "1.6.5"

@@ -1,9 +1,15 @@
 use crate::arch::Arch;
 use crate::log_level::LogLevel;
+use crate::outln;
 use crate::path_ext::PathExt;
-use dirs::home_dir;
+use crate::version_file_strategy::VersionFileStrategy;
+use colored::Colorize;
+use dirs::{data_dir, home_dir};
+use std::sync::atomic::{AtomicBool, Ordering};
 use structopt::StructOpt;
 use url::Url;
+
+static HAS_WARNED_DEPRECATED_BASE_DIR: AtomicBool = AtomicBool::new(false);
 
 #[derive(StructOpt, Debug)]
 pub struct FnmConfig {
@@ -58,6 +64,22 @@ pub struct FnmConfig {
         hide_env_values = true
     )]
     pub arch: Arch,
+
+    /// A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is
+    /// called without a version, or when `--use-on-cd` is configured on evaluation.
+    ///
+    /// * `local`: Use the local version of Node defined within the current directory
+    ///
+    /// * `recursive`: Use the version of Node defined within the current directory and all parent directories
+    #[structopt(
+        long,
+        env = "FNM_VERSION_FILE_STRATEGY",
+        possible_values = VersionFileStrategy::possible_values(),
+        default_value = "local",
+        global = true,
+        hide_env_values = true,
+    )]
+    version_file_strategy: VersionFileStrategy,
 }
 
 impl Default for FnmConfig {
@@ -68,11 +90,16 @@ impl Default for FnmConfig {
             multishell_path: None,
             log_level: LogLevel::Info,
             arch: Arch::default(),
+            version_file_strategy: VersionFileStrategy::default(),
         }
     }
 }
 
 impl FnmConfig {
+    pub fn version_file_strategy(&self) -> &VersionFileStrategy {
+        &self.version_file_strategy
+    }
+
     pub fn multishell_path(&self) -> Option<&std::path::Path> {
         match &self.multishell_path {
             None => None,
@@ -85,9 +112,41 @@ impl FnmConfig {
     }
 
     pub fn base_dir_with_default(&self) -> std::path::PathBuf {
-        self.base_dir
-            .clone()
-            .unwrap_or_else(|| home_dir().expect("Can't get home directory").join(".fnm"))
+        let user_pref = self.base_dir.clone();
+        if let Some(dir) = user_pref {
+            return dir;
+        }
+
+        let legacy = home_dir()
+            .map(|dir| dir.join(".fnm"))
+            .filter(|dir| dir.exists());
+
+        let modern = data_dir().map(|dir| dir.join("fnm"));
+
+        if let Some(dir) = legacy {
+            if !HAS_WARNED_DEPRECATED_BASE_DIR.load(Ordering::SeqCst) {
+                HAS_WARNED_DEPRECATED_BASE_DIR.store(true, Ordering::SeqCst);
+
+                let legacy_str = dir.display().to_string();
+                let modern_str = modern.map_or("$XDG_DATA_HOME/fnm".to_string(), |path| {
+                    path.display().to_string()
+                });
+
+                outln!(
+                    self, Error,
+                    "{}\n  It looks like you have the {} directory on your disk.\n  fnm is migrating its default storage location for application data to {}.\n  You can read more about it here: {}\n",
+                    "warning:".yellow().bold(),
+                    legacy_str.italic(),
+                    modern_str.italic(),
+                    "https://github.com/schniz/fnm/issues/357".italic()
+                );
+            }
+
+            return dir;
+        }
+
+        modern
+            .expect("Can't get data directory")
             .ensure_exists_silently()
     }
 

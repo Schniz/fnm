@@ -50,7 +50,7 @@ impl super::command::Command for Install {
 
         let current_version = self
             .version()?
-            .or_else(|| get_user_version_for_directory(current_dir))
+            .or_else(|| get_user_version_for_directory(current_dir, config))
             .context(CantInferVersion)?;
 
         let version = match current_version.clone() {
@@ -96,7 +96,13 @@ impl super::command::Command for Install {
         let safe_arch = get_safe_arch(&config.arch, &version);
 
         let version_str = format!("Node {}", &version);
-        outln!(config#Info, "Installing {} ({})", version_str.cyan(), safe_arch.to_string());
+        outln!(
+            config,
+            Info,
+            "Installing {} ({})",
+            version_str.cyan(),
+            safe_arch.to_string()
+        );
 
         match install_node_dist(
             &version,
@@ -105,7 +111,7 @@ impl super::command::Command for Install {
             safe_arch,
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
-                outln!(config#Error, "{} {}", "warning:".bold().yellow(), err);
+                outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
             }
             other_err => other_err.context(DownloadError)?,
         };

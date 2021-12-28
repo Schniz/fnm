@@ -140,7 +140,7 @@ mod tests {
     use pretty_assertions::assert_eq;
     use tempfile::tempdir;
 
-    #[test_env_log::test]
+    #[test_log::test]
     fn test_installing_node_12() {
         let installations_dir = tempdir().unwrap();
         let node_path = install_in(installations_dir.path()).join("node");
@@ -156,7 +156,7 @@ mod tests {
         assert_eq!(result.trim(), "v12.0.0");
     }
 
-    #[test_env_log::test]
+    #[test_log::test]
     fn test_installing_npm() {
         let installations_dir = tempdir().unwrap();
         let npm_path = install_in(installations_dir.path()).join(if cfg!(windows) {

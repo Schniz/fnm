@@ -1,5 +1,7 @@
+use crate::version_file_strategy::VersionFileStrategy;
+
 use super::shell::Shell;
-use indoc::indoc;
+use indoc::{formatdoc, indoc};
 use std::path::Path;
 
 #[derive(Debug)]
@@ -22,20 +24,28 @@ impl Shell for Zsh {
         Some("rehash".to_string())
     }
 
-    fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> String {
-        indoc!(
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
+        let autoload_hook = match config.version_file_strategy() {
+            VersionFileStrategy::Local => indoc!(
+                r#"
+                    if [[ -f .node-version || -f .nvmrc ]]; then
+                        fnm use --silent-if-unchanged
+                    fi
+                "#
+            ),
+            VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
+        };
+        formatdoc!(
             r#"
                 autoload -U add-zsh-hook
-                _fnm_autoload_hook () {
-                    if [[ -f .node-version || -f .nvmrc ]]; then
-                        fnm use
-                    fi
-                }
+                _fnm_autoload_hook () {{
+                    {autoload_hook}
+                }}
 
                 add-zsh-hook chpwd _fnm_autoload_hook \
                     && _fnm_autoload_hook
-            "#
+            "#,
+            autoload_hook = autoload_hook
         )
-        .into()
     }
 }

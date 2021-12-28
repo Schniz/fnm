@@ -29,7 +29,13 @@ impl Cmd for Exec {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         if self.using_file {
-            outln!(config#Error, "{} {} is deprecated. This is now the default.", "warning:".yellow().bold(), "--using-file".italic());
+            outln!(
+                config,
+                Error,
+                "{} {} is deprecated. This is now the default.",
+                "warning:".yellow().bold(),
+                "--using-file".italic()
+            );
         }
 
         let (binary, arguments) = self.arguments.split_first().context(NoBinaryProvided)?;
@@ -40,7 +46,7 @@ impl Cmd for Exec {
                 let current_dir = std::env::current_dir().unwrap();
                 UserVersionReader::Path(current_dir)
             })
-            .into_user_version()
+            .into_user_version(config)
             .context(CantInferVersion)?;
 
         let applicable_version = choose_version_for_user_input(&version, config)

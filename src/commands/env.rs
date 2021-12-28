@@ -50,7 +50,13 @@ impl Command for Env {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         if self.multi {
-            outln!(config#Error, "{} {} is deprecated. This is now the default.", "warning:".yellow().bold(), "--multi".italic());
+            outln!(
+                config,
+                Error,
+                "{} {} is deprecated. This is now the default.",
+                "warning:".yellow().bold(),
+                "--multi".italic()
+            );
         }
 
         let shell: Box<dyn Shell> = self.shell.or_else(&infer_shell).context(CantInferShell)?;
@@ -64,6 +70,13 @@ impl Command for Env {
         println!(
             "{}",
             shell.set_env_var("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap())
+        );
+        println!(
+            "{}",
+            shell.set_env_var(
+                "FNM_VERSION_FILE_STRATEGY",
+                config.version_file_strategy().as_str()
+            )
         );
         println!(
             "{}",
