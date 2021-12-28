@@ -1,4 +1,26 @@
-## 1.28.2 (2021-12-05)
+## 1.29.0 (2021-12-28)
+
+#### New Feature 🎉
+
+- [#607](https://github.com/Schniz/fnm/pull/607) Allow recursive version lookups ([@Schniz](https://github.com/Schniz))
+- [#416](https://github.com/Schniz/fnm/pull/416) Respect $XDG_DATA_HOME ([@samhh](https://github.com/samhh))
+
+#### Bugfix 🐛
+
+- [#603](https://github.com/Schniz/fnm/pull/603) (re)Include feature for (native) certificates ([@pfiaux](https://github.com/pfiaux))
+- [#605](https://github.com/Schniz/fnm/pull/605) Add a user-agent header ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#606](https://github.com/Schniz/fnm/pull/606) Migrate to Rust 2021 edition ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 3
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Patrick Fiaux ([@pfiaux](https://github.com/pfiaux))
+- Sam A. Horvath-Hunt ([@samhh](https://github.com/samhh))
+
+## v1.28.2 (2021-12-05)
 
 #### Bugfix 🐛
 

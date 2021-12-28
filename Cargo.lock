@@ -475,7 +475,7 @@ dependencies = [
 
 [[package]]
 name = "fnm"
-version = "1.28.2"
+version = "1.29.0"
 dependencies = [
  "atty",
  "chrono",
