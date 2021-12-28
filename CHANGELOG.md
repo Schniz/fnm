@@ -1,4 +1,14 @@
-## 1.29.0 (2021-12-28)
+## 1.29.1 (2021-12-28)
+
+#### Bugfix 🐛
+
+- [#613](https://github.com/Schniz/fnm/pull/613) Don't warn on `~/.fnm` yet ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.29.0 (2021-12-28)
 
 #### New Feature 🎉
 
