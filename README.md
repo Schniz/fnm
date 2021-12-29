@@ -134,7 +134,7 @@ eval "$(fnm env --use-on-cd)"
 add the following to your `.zshrc` profile:
 
 ```zsh
-eval "$(fnm env)"
+eval "$(fnm env --use-on-cd)"
 ```
 
 #### Fish shell
@@ -142,7 +142,7 @@ eval "$(fnm env)"
 create `~/.config/fish/conf.d/fnm.fish` add this line to it:
 
 ```fish
-fnm env | source
+fnm env --use-on-cd | source
 ```
 
 #### PowerShell
@@ -167,7 +167,7 @@ FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 
 #### Usage with Cmder
 
-Usage is very similar to the normal WinCMD install, apart for a few tweaks to allow being called from the cmder startup script. The example **assumes** that the `CMDER_ROOT` environment variable is **set** to the **root directory** of your Cmder installation.  
+Usage is very similar to the normal WinCMD install, apart for a few tweaks to allow being called from the cmder startup script. The example **assumes** that the `CMDER_ROOT` environment variable is **set** to the **root directory** of your Cmder installation.
 Then you can do something like this:
 
 - Make a .cmd file to invoke it
