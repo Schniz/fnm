@@ -126,7 +126,7 @@ This is done by evaluating the output of `fnm env`. Check out the following guid
 add the following to your `.bashrc` profile:
 
 ```bash
-eval "$(fnm env)"
+eval "$(fnm env --use-on-cd)"
 ```
 
 #### Zsh
