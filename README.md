@@ -118,12 +118,14 @@ Please follow your shell instructions to install them.
 
 ### Shell Setup
 
-fnm needs to run some shell commands before you can start using it.
-This is done by evaluating the output of `fnm env`. Check out the following guides for the shell you use:
+Environment variables need to be setup before you can start using fnm.
+This is done by evaluating the output of `fnm env`.
+To automatically run `fnm use` when a directory contains a `.node-version` or `.nvmrc` file, add the `--use-on-cd` option to your shell setup.
+Check out the following guides for the shell you use:
 
 #### Bash
 
-add the following to your `.bashrc` profile:
+Add the following to your `.bashrc` profile:
 
 ```bash
 eval "$(fnm env --use-on-cd)"
@@ -131,7 +133,7 @@ eval "$(fnm env --use-on-cd)"
 
 #### Zsh
 
-add the following to your `.zshrc` profile:
+Add the following to your `.zshrc` profile:
 
 ```zsh
 eval "$(fnm env --use-on-cd)"
@@ -139,7 +141,7 @@ eval "$(fnm env --use-on-cd)"
 
 #### Fish shell
 
-create `~/.config/fish/conf.d/fnm.fish` add this line to it:
+Create `~/.config/fish/conf.d/fnm.fish` add this line to it:
 
 ```fish
 fnm env --use-on-cd | source
