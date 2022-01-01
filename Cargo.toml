@@ -9,7 +9,7 @@ repository = "https://github.com/Schniz/fnm"
 description = "Fast and simple Node.js version manager"
 
 [dependencies]
-serde = { version = "1.0.132", features = ["derive"] }
+serde = { version = "1.0.133", features = ["derive"] }
 clap = "2.34.0"
 structopt = "0.3.25"
 serde_json = "1.0.73"
