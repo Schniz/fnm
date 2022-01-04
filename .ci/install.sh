@@ -7,7 +7,7 @@ OS="$(uname -s)"
 
 if [ -d "$HOME/.fnm" ]; then
   INSTALL_DIR="$HOME/.fnm"
-elif [ ! -z $XDG_DATA_HOME ]; then
+elif [ -n "$XDG_DATA_HOME" ]; then
   INSTALL_DIR="$XDG_DATA_HOME/fnm"
 elif [ "$OS" = "Darwin" ]; then
   INSTALL_DIR="$HOME/Library/Application\ Support/fnm"
