@@ -7,6 +7,10 @@ function setup_binary() {
   cp ./target/release/fnm "$TEMP_DIR/fnm"
   export PATH=$TEMP_DIR:$PATH
   export FNM_DIR=$TEMP_DIR/.fnm
+
+  # First run of the binary might be slower due to anti-virus software
+  echo "Using $(which fnm)"
+  echo "  with version $(fnm --version)"
 }
 
 setup_binary
