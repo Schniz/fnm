@@ -1,4 +1,21 @@
-## 1.29.1 (2021-12-28)
+## 1.29.2 (2022-01-06)
+
+#### Bugfix 🐛
+
+- [#626](https://github.com/Schniz/fnm/pull/626) Create the multishells directory if it is missing ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#598](https://github.com/Schniz/fnm/pull/598) Update README.md file emoji ([@lorensr](https://github.com/lorensr))
+- [#616](https://github.com/Schniz/fnm/pull/616) Use on cd by default ([@matthieubosquet](https://github.com/matthieubosquet))
+
+#### Committers: 3
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Loren ☺️ ([@lorensr](https://github.com/lorensr))
+- Matthieu Bosquet ([@matthieubosquet](https://github.com/matthieubosquet))
+
+## v1.29.1 (2021-12-28)
 
 #### Bugfix 🐛
 
