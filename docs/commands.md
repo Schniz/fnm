@@ -18,7 +18,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -73,7 +73,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -121,7 +121,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -164,7 +164,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -206,7 +206,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -260,7 +260,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -308,7 +308,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -365,7 +365,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -410,7 +410,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -450,7 +450,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -490,7 +490,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -538,7 +538,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
@@ -589,7 +589,7 @@ FLAGS:
 OPTIONS:
         --arch <arch>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary [env: FNM_ARCH]
-            [default: x64]
+
         --fnm-dir <base-dir>
             The root directory of fnm installations [env: FNM_DIR]
 
