@@ -56,7 +56,8 @@ pub struct FnmConfig {
         env = "FNM_ARCH",
         default_value,
         global = true,
-        hide_env_values = true
+        hide_env_values = true,
+        hide_default_value = true
     )]
     pub arch: Arch,
 
