@@ -93,6 +93,14 @@ impl Command for Use {
             outln!(config, Info, "{}", message);
         }
 
+        if let Some(multishells_path) = multishell_path.parent() {
+            std::fs::create_dir_all(multishells_path).map_err(|_err| {
+                Error::MultishellDirectoryCreationIssue {
+                    path: multishells_path.to_path_buf(),
+                }
+            })?;
+        }
+
         replace_symlink(&version_path, multishell_path).context(SymlinkingCreationIssue)?;
 
         Ok(())
@@ -220,6 +228,8 @@ pub enum Error {
         "Check out our documentation for more information: https://fnm.vercel.app"
     ))]
     FnmEnvWasNotSourced,
+    #[snafu(display("Can't create the multishell directory: {}", path.display()))]
+    MultishellDirectoryCreationIssue { path: std::path::PathBuf },
 }
 
 #[derive(Debug, Snafu)]
