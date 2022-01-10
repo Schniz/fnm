@@ -54,16 +54,16 @@ pub fn choose_version_for_user_input<'a>(
                 path: alias_path,
                 version: Version::Bypassed,
             })
-        } else if !alias_path.exists() {
-            return Err(Error::CantFindVersion {
-                requested_version: requested_version.clone(),
-            });
-        } else {
+        } else if alias_path.exists() {
             info!("Using Node for alias {}", alias_name.cyan());
             Some(ApplicableVersion {
                 path: alias_path,
                 version: Version::Alias(alias_name),
             })
+        } else {
+            return Err(Error::CantFindVersion {
+                requested_version: requested_version.clone(),
+            });
         }
     } else {
         let current_version = requested_version.to_version(&all_versions, config);
