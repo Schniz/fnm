@@ -10,9 +10,9 @@ use crate::version::Version;
 use crate::version_file_strategy::VersionFileStrategy;
 use crate::{config::FnmConfig, user_version_reader::UserVersionReader};
 use colored::Colorize;
-use snafu::{ensure, OptionExt, ResultExt, Snafu};
 use std::path::Path;
 use structopt::StructOpt;
+use thiserror::Error;
 
 #[derive(StructOpt, Debug)]
 pub struct Use {
@@ -31,11 +31,11 @@ impl Command for Use {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        let multishell_path = config.multishell_path().context(FnmEnvWasNotSourced)?;
+        let multishell_path = config.multishell_path().ok_or(Error::FnmEnvWasNotSourced)?;
         warn_if_multishell_path_not_in_path_env_var(multishell_path, config);
 
-        let all_versions =
-            installed_versions::list(config.installations_dir()).context(VersionListingError)?;
+        let all_versions = installed_versions::list(config.installations_dir())
+            .map_err(|source| Error::VersionListingError { source })?;
         let requested_version = self
             .version
             .unwrap_or_else(|| {
@@ -47,7 +47,7 @@ impl Command for Use {
                 VersionFileStrategy::Local => InferVersionError::Local,
                 VersionFileStrategy::Recursive => InferVersionError::Recursive,
             })
-            .context(CantInferVersion)?;
+            .map_err(|source| Error::CantInferVersion { source })?;
 
         let (message, version_path) = if let UserVersion::Full(Version::Bypassed) =
             requested_version
@@ -101,7 +101,8 @@ impl Command for Use {
             })?;
         }
 
-        replace_symlink(&version_path, multishell_path).context(SymlinkingCreationIssue)?;
+        replace_symlink(&version_path, multishell_path)
+            .map_err(|source| Error::SymlinkingCreationIssue { source })?;
 
         Ok(())
     }
@@ -120,19 +121,18 @@ fn install_new_version(
     config: &FnmConfig,
     install_if_missing: bool,
 ) -> Result<(), Error> {
-    ensure!(
-        install_if_missing || should_install_interactively(&requested_version),
-        CantFindVersion {
-            version: requested_version
-        }
-    );
+    if !install_if_missing && !should_install_interactively(&requested_version) {
+        return Err(Error::CantFindVersion {
+            version: requested_version,
+        });
+    }
 
     Install {
         version: Some(requested_version.clone()),
         ..Install::default()
     }
     .apply(config)
-    .context(InstallError)?;
+    .map_err(|source| Error::InstallError { source })?;
 
     Use {
         version: Some(UserVersionReader::Direct(requested_version)),
@@ -207,37 +207,36 @@ fn warn_if_multishell_path_not_in_path_env_var(
     );
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display("Can't create the symlink: {}", source))]
+    #[error("Can't create the symlink: {}", source)]
     SymlinkingCreationIssue { source: std::io::Error },
-    #[snafu(display("Can't read the symlink: {}", source))]
-    SymlinkReadFailed { source: std::io::Error },
-    #[snafu(display("{}", source))]
+    #[error(transparent)]
     InstallError { source: <Install as Command>::Error },
-    #[snafu(display("Can't get locally installed versions: {}", source))]
+    #[error("Can't get locally installed versions: {}", source)]
     VersionListingError { source: installed_versions::Error },
-    #[snafu(display("Requested version {} is not currently installed", version))]
+    #[error("Requested version {} is not currently installed", version)]
     CantFindVersion { version: UserVersion },
-    #[snafu(display("{}", source))]
-    CantInferVersion { source: InferVersionError },
-    #[snafu(display(
+    #[error(transparent)]
+    CantInferVersion {
+        #[from]
+        source: InferVersionError,
+    },
+    #[error(
         "{}\n{}\n{}",
         "We can't find the necessary environment variables to replace the Node version.",
         "You should setup your shell profile to evaluate `fnm env`, see https://github.com/Schniz/fnm#shell-setup on how to do this",
         "Check out our documentation for more information: https://fnm.vercel.app"
-    ))]
+    )]
     FnmEnvWasNotSourced,
-    #[snafu(display("Can't create the multishell directory: {}", path.display()))]
+    #[error("Can't create the multishell directory: {}", path.display())]
     MultishellDirectoryCreationIssue { path: std::path::PathBuf },
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum InferVersionError {
-    #[snafu(display(
-        "Can't find version in dotfiles. Please provide a version manually to the command."
-    ))]
+    #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     Local,
-    #[snafu(display("Could not find any version to use. Maybe you don't have a default version set?\nTry running `fnm default <VERSION>` to set one,\nor create a .node-version file inside your project to declare a Node.js version."))]
+    #[error("Could not find any version to use. Maybe you don't have a default version set?\nTry running `fnm default <VERSION>` to set one,\nor create a .node-version file inside your project to declare a Node.js version.")]
     Recursive,
 }

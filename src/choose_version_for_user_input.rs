@@ -6,8 +6,8 @@ use crate::user_version::UserVersion;
 use crate::version::Version;
 use colored::Colorize;
 use log::info;
-use snafu::{ensure, ResultExt, Snafu};
 use std::path::{Path, PathBuf};
+use thiserror::Error;
 
 #[derive(Debug)]
 pub struct ApplicableVersion {
@@ -29,8 +29,8 @@ pub fn choose_version_for_user_input<'a>(
     requested_version: &'a UserVersion,
     config: &'a FnmConfig,
 ) -> Result<Option<ApplicableVersion>, Error> {
-    let all_versions =
-        installed_versions::list(config.installations_dir()).context(VersionListing)?;
+    let all_versions = installed_versions::list(config.installations_dir())
+        .map_err(|source| Error::VersionListing { source })?;
 
     let result = if let UserVersion::Full(Version::Bypassed) = requested_version {
         info!(
@@ -54,18 +54,16 @@ pub fn choose_version_for_user_input<'a>(
                 path: alias_path,
                 version: Version::Bypassed,
             })
-        } else {
-            ensure!(
-                alias_path.exists(),
-                CantFindVersion {
-                    requested_version: requested_version.clone()
-                }
-            );
+        } else if alias_path.exists() {
             info!("Using Node for alias {}", alias_name.cyan());
             Some(ApplicableVersion {
                 path: alias_path,
                 version: Version::Alias(alias_name),
             })
+        } else {
+            return Err(Error::CantFindVersion {
+                requested_version: requested_version.clone(),
+            });
         }
     } else {
         let current_version = requested_version.to_version(&all_versions, config);
@@ -86,10 +84,10 @@ pub fn choose_version_for_user_input<'a>(
     Ok(result)
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display("Can't find requested version: {}", requested_version))]
+    #[error("Can't find requested version: {}", requested_version)]
     CantFindVersion { requested_version: UserVersion },
-    #[snafu(display("Can't list local installed versions: {}", source))]
+    #[error("Can't list local installed versions: {}", source)]
     VersionListing { source: installed_versions::Error },
 }

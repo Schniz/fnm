@@ -10,8 +10,8 @@ use crate::version::Version;
 use crate::version_files::get_user_version_for_directory;
 use colored::Colorize;
 use log::debug;
-use snafu::{ensure, OptionExt, ResultExt, Snafu};
 use structopt::StructOpt;
+use thiserror::Error;
 
 #[derive(StructOpt, Debug, Default)]
 pub struct Install {
@@ -51,20 +51,19 @@ impl super::command::Command for Install {
         let current_version = self
             .version()?
             .or_else(|| get_user_version_for_directory(current_dir, config))
-            .context(CantInferVersion)?;
+            .ok_or(Error::CantInferVersion)?;
 
         let version = match current_version.clone() {
             UserVersion::Full(Version::Semver(actual_version)) => Version::Semver(actual_version),
             UserVersion::Full(v @ (Version::Bypassed | Version::Alias(_))) => {
-                ensure!(false, UninstallableVersion { version: v });
-                unreachable!();
+                return Err(Error::UninstallableVersion { version: v });
             }
             UserVersion::Full(Version::Lts(lts_type)) => {
                 let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
-                    .context(CantListRemoteVersions)?;
+                    .map_err(|source| Error::CantListRemoteVersions { source })?;
                 let picked_version = lts_type
                     .pick_latest(&available_versions)
-                    .with_context(|| CantFindRelevantLts {
+                    .ok_or_else(|| Error::CantFindRelevantLts {
                         lts_type: lts_type.clone(),
                     })?
                     .version
@@ -78,14 +77,14 @@ impl super::command::Command for Install {
             }
             current_version => {
                 let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
-                    .context(CantListRemoteVersions)?
+                    .map_err(|source| Error::CantListRemoteVersions { source })?
                     .drain(..)
                     .map(|x| x.version)
                     .collect();
 
                 current_version
                     .to_version(&available_versions, config)
-                    .context(CantFindNodeVersion {
+                    .ok_or(Error::CantFindNodeVersion {
                         requested_version: current_version,
                     })?
                     .clone()
@@ -113,7 +112,7 @@ impl super::command::Command for Install {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
             }
-            other_err => other_err.context(DownloadError)?,
+            other_err => other_err.map_err(|source| Error::DownloadError { source })?,
         };
 
         if let UserVersion::Full(Version::Lts(lts_type)) = current_version {
@@ -123,51 +122,41 @@ impl super::command::Command for Install {
                 alias_name.cyan(),
                 version.v_str().cyan()
             );
-            create_alias(config, &alias_name, &version).context(IoError)?;
+            create_alias(config, &alias_name, &version)?;
         }
 
         if !config.default_version_dir().exists() {
             debug!("Tagging {} as the default version", version.v_str().cyan());
-            create_alias(config, "default", &version).context(IoError)?;
+            create_alias(config, "default", &version)?;
         }
 
         Ok(())
     }
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display("Can't download the requested binary: {}", source))]
-    DownloadError {
-        source: DownloaderError,
-    },
+    #[error("Can't download the requested binary: {}", source)]
+    DownloadError { source: DownloaderError },
+    #[error(transparent)]
     IoError {
+        #[from]
         source: std::io::Error,
     },
-    #[snafu(display(
-        "Can't find version in dotfiles. Please provide a version manually to the command."
-    ))]
+    #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,
-    #[snafu(display("Having a hard time listing the remote versions: {}", source))]
-    CantListRemoteVersions {
-        source: crate::http::Error,
-    },
-    #[snafu(display(
+    #[error("Having a hard time listing the remote versions: {}", source)]
+    CantListRemoteVersions { source: crate::http::Error },
+    #[error(
         "Can't find a Node version that matches {} in remote",
         requested_version
-    ))]
-    CantFindNodeVersion {
-        requested_version: UserVersion,
-    },
-    #[snafu(display("Can't find relevant LTS named {}", lts_type))]
-    CantFindRelevantLts {
-        lts_type: crate::lts::LtsType,
-    },
-    #[snafu(display("The requested version is not installable: {}", version.v_str()))]
-    UninstallableVersion {
-        version: Version,
-    },
-    #[snafu(display("Too many versions provided. Please don't use --lts with a version string."))]
+    )]
+    CantFindNodeVersion { requested_version: UserVersion },
+    #[error("Can't find relevant LTS named {}", lts_type)]
+    CantFindRelevantLts { lts_type: crate::lts::LtsType },
+    #[error("The requested version is not installable: {}", version.v_str())]
+    UninstallableVersion { version: Version },
+    #[error("Too many versions provided. Please don't use --lts with a version string.")]
     TooManyVersionsProvided,
 }
 

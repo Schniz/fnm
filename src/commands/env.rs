@@ -5,9 +5,9 @@ use crate::outln;
 use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
-use snafu::{OptionExt, Snafu};
 use std::fmt::Debug;
 use structopt::StructOpt;
+use thiserror::Error;
 
 #[derive(StructOpt, Debug, Default)]
 pub struct Env {
@@ -59,7 +59,10 @@ impl Command for Env {
             );
         }
 
-        let shell: Box<dyn Shell> = self.shell.or_else(&infer_shell).context(CantInferShell)?;
+        let shell: Box<dyn Shell> = self
+            .shell
+            .or_else(&infer_shell)
+            .ok_or(Error::CantInferShell)?;
         let multishell_path = make_symlink(config);
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
@@ -104,15 +107,15 @@ impl Command for Env {
     }
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display(
+    #[error(
         "{}\n{}\n{}\n{}",
         "Can't infer shell!",
         "fnm can't infer your shell based on the process tree.",
         "Maybe it is unsupported? we support the following shells:",
         shells_as_string()
-    ))]
+    )]
     CantInferShell,
 }
 

@@ -4,10 +4,9 @@ use crate::choose_version_for_user_input::{
     choose_version_for_user_input, Error as ApplicableVersionError,
 };
 use crate::config::FnmConfig;
-use crate::installed_versions;
 use crate::user_version::UserVersion;
-use snafu::{OptionExt, ResultExt, Snafu};
 use structopt::StructOpt;
+use thiserror::Error;
 
 #[derive(StructOpt, Debug)]
 pub struct Alias {
@@ -20,26 +19,24 @@ impl Command for Alias {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let applicable_version = choose_version_for_user_input(&self.to_version, config)
-            .context(CantUnderstandVersion)?
-            .context(VersionNotFound {
+            .map_err(|source| Error::CantUnderstandVersion { source })?
+            .ok_or(Error::VersionNotFound {
                 version: self.to_version,
             })?;
 
         create_alias(config, &self.name, applicable_version.version())
-            .context(CantCreateSymlink)?;
+            .map_err(|source| Error::CantCreateSymlink { source })?;
 
         Ok(())
     }
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display("Can't create symlink for alias: {}", source))]
+    #[error("Can't create symlink for alias: {}", source)]
     CantCreateSymlink { source: std::io::Error },
-    #[snafu(display("Can't list local installed versions: {}", source))]
-    VersionListingError { source: installed_versions::Error },
-    #[snafu(display("Version {} not found locally", version))]
+    #[error("Version {} not found locally", version)]
     VersionNotFound { version: UserVersion },
-    #[snafu(display("{}", source))]
+    #[error(transparent)]
     CantUnderstandVersion { source: ApplicableVersionError },
 }

@@ -3,8 +3,8 @@ use crate::fs::remove_symlink_dir;
 use crate::user_version::UserVersion;
 use crate::version::Version;
 use crate::{choose_version_for_user_input, config::FnmConfig};
-use snafu::{OptionExt, ResultExt, Snafu};
 use structopt::StructOpt;
+use thiserror::Error;
 
 #[derive(StructOpt, Debug)]
 pub struct Unalias {
@@ -21,20 +21,21 @@ impl Command for Unalias {
         )
         .ok()
         .flatten()
-        .with_context(|| AliasNotFound {
+        .ok_or(Error::AliasNotFound {
             requested_alias: self.requested_alias,
         })?;
 
-        remove_symlink_dir(&requested_version.path()).context(CantDeleteSymlink)?;
+        remove_symlink_dir(&requested_version.path())
+            .map_err(|source| Error::CantDeleteSymlink { source })?;
 
         Ok(())
     }
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display("Can't delete symlink: {}", source))]
+    #[error("Can't delete symlink: {}", source)]
     CantDeleteSymlink { source: std::io::Error },
-    #[snafu(display("Requested alias {} not found", requested_alias))]
+    #[error("Requested alias {} not found", requested_alias)]
     AliasNotFound { requested_alias: String },
 }
