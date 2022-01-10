@@ -3,9 +3,9 @@ use crate::config::FnmConfig;
 use crate::current_version::current_version;
 use crate::version::Version;
 use colored::Colorize;
-use snafu::{ResultExt, Snafu};
 use std::collections::HashMap;
 use structopt::StructOpt;
+use thiserror::Error;
 
 #[derive(StructOpt, Debug)]
 pub struct LsLocal {}
@@ -15,11 +15,12 @@ impl super::command::Command for LsLocal {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let base_dir = config.installations_dir();
-        let mut versions =
-            crate::installed_versions::list(base_dir).context(CantListLocallyInstalledVersion)?;
+        let mut versions = crate::installed_versions::list(base_dir)
+            .map_err(|source| Error::CantListLocallyInstalledVersion { source })?;
         versions.insert(0, Version::Bypassed);
         versions.sort();
-        let aliases_hash = generate_aliases_hash(config).context(CantReadAliases)?;
+        let aliases_hash =
+            generate_aliases_hash(config).map_err(|source| Error::CantReadAliases { source })?;
         let curr_version = current_version(config).ok().flatten();
 
         for version in versions {
@@ -60,12 +61,12 @@ fn generate_aliases_hash(config: &FnmConfig) -> std::io::Result<HashMap<String, 
     Ok(hashmap)
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display("Can't list locally installed versions: {}", source))]
+    #[error("Can't list locally installed versions: {}", source)]
     CantListLocallyInstalledVersion {
         source: crate::installed_versions::Error,
     },
-    #[snafu(display("Can't read aliases: {}", source))]
+    #[error("Can't read aliases: {}", source)]
     CantReadAliases { source: std::io::Error },
 }
