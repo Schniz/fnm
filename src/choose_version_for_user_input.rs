@@ -29,10 +29,8 @@ pub fn choose_version_for_user_input<'a>(
     requested_version: &'a UserVersion,
     config: &'a FnmConfig,
 ) -> Result<Option<ApplicableVersion>, Error> {
-    use Error::*;
-
     let all_versions = installed_versions::list(config.installations_dir())
-        .map_err(|source| VersionListing { source })?;
+        .map_err(|source| Error::VersionListing { source })?;
 
     let result = if let UserVersion::Full(Version::Bypassed) = requested_version {
         info!(
@@ -56,16 +54,18 @@ pub fn choose_version_for_user_input<'a>(
                 path: alias_path,
                 version: Version::Bypassed,
             })
-        } else if !alias_path.exists() {
-            return Err(CantFindVersion {
-                requested_version: requested_version.clone(),
-            });
         } else {
-            info!("Using Node for alias {}", alias_name.cyan());
-            Some(ApplicableVersion {
-                path: alias_path,
-                version: Version::Alias(alias_name),
-            })
+            if !alias_path.exists() {
+                return Err(Error::CantFindVersion {
+                    requested_version: requested_version.clone(),
+                });
+            } else {
+                info!("Using Node for alias {}", alias_name.cyan());
+                Some(ApplicableVersion {
+                    path: alias_path,
+                    version: Version::Alias(alias_name),
+                })
+            }
         }
     } else {
         let current_version = requested_version.to_version(&all_versions, config);

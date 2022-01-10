@@ -28,8 +28,6 @@ impl Cmd for Exec {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        use Error::*;
-
         if self.using_file {
             outln!(
                 config,
@@ -40,7 +38,10 @@ impl Cmd for Exec {
             );
         }
 
-        let (binary, arguments) = self.arguments.split_first().ok_or(NoBinaryProvided)?;
+        let (binary, arguments) = self
+            .arguments
+            .split_first()
+            .ok_or(Error::NoBinaryProvided)?;
 
         let version = self
             .version
@@ -49,11 +50,11 @@ impl Cmd for Exec {
                 UserVersionReader::Path(current_dir)
             })
             .into_user_version(config)
-            .ok_or(CantInferVersion)?;
+            .ok_or(Error::CantInferVersion)?;
 
         let applicable_version = choose_version_for_user_input(&version, config)
-            .map_err(|source| ApplicableVersionError { source })?
-            .ok_or(VersionNotFound { version })?;
+            .map_err(|source| Error::ApplicableVersionError { source })?
+            .ok_or(Error::VersionNotFound { version })?;
 
         #[cfg(windows)]
         let bin_path = applicable_version.path().to_path_buf();
@@ -62,10 +63,11 @@ impl Cmd for Exec {
         let bin_path = applicable_version.path().join("bin");
 
         let path_env = {
-            let paths_env = std::env::var_os("PATH").ok_or(CantReadPathVariable)?;
+            let paths_env = std::env::var_os("PATH").ok_or(Error::CantReadPathVariable)?;
             let mut paths: Vec<_> = std::env::split_paths(&paths_env).collect();
             paths.insert(0, bin_path);
-            std::env::join_paths(paths).map_err(|source| CantAddPathToEnvironment { source })?
+            std::env::join_paths(paths)
+                .map_err(|source| Error::CantAddPathToEnvironment { source })?
         };
 
         let exit_status = Command::new(&binary)
@@ -79,7 +81,7 @@ impl Cmd for Exec {
             .wait()
             .expect("Failed to grab exit code");
 
-        let code = exit_status.code().ok_or(CantReadProcessExitCode)?;
+        let code = exit_status.code().ok_or(Error::CantReadProcessExitCode)?;
         std::process::exit(code);
     }
 }

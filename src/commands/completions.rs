@@ -17,12 +17,11 @@ impl Command for Completions {
     type Error = Error;
 
     fn apply(self, _config: &FnmConfig) -> Result<(), Self::Error> {
-        use Error::*;
         let mut stdio = std::io::stdout();
         let shell = self
             .shell
             .or_else(|| infer_shell().map(Into::into))
-            .ok_or(CantInferShell)?;
+            .ok_or(Error::CantInferShell)?;
         Cli::clap().gen_completions_to(env!("CARGO_PKG_NAME"), shell, &mut stdio);
         Ok(())
     }

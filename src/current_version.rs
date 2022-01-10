@@ -6,8 +6,7 @@ use crate::version::Version;
 
 pub fn current_version(config: &FnmConfig) -> Result<Option<Version>, Error> {
     let multishell_path = config
-        .multishell_path()
-        .ok_or_else(|| Error::EnvNotApplied)?;
+        .multishell_path().ok_or(Error::EnvNotApplied)?;
 
     if multishell_path.read_link().ok() == Some(system_version::path()) {
         return Ok(Some(Version::Bypassed));

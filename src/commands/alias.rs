@@ -18,16 +18,14 @@ impl Command for Alias {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        use Error::*;
-
         let applicable_version = choose_version_for_user_input(&self.to_version, config)
-            .map_err(|source| CantUnderstandVersion { source })?
-            .ok_or_else(|| VersionNotFound {
+            .map_err(|source| Error::CantUnderstandVersion { source })?
+            .ok_or(Error::VersionNotFound {
                 version: self.to_version,
             })?;
 
         create_alias(config, &self.name, applicable_version.version())
-            .map_err(|source| CantCreateSymlink { source })?;
+            .map_err(|source| Error::CantCreateSymlink { source })?;
 
         Ok(())
     }

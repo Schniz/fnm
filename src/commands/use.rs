@@ -32,8 +32,7 @@ impl Command for Use {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let multishell_path = config
-            .multishell_path()
-            .ok_or_else(|| Error::FnmEnvWasNotSourced)?;
+            .multishell_path().ok_or(Error::FnmEnvWasNotSourced)?;
         warn_if_multishell_path_not_in_path_env_var(multishell_path, config);
 
         let all_versions = installed_versions::list(config.installations_dir())
