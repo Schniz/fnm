@@ -83,7 +83,8 @@ impl super::command::Command for Install {
                     .collect();
 
                 current_version
-                    .to_version(&available_versions, config).ok_or(Error::CantFindNodeVersion {
+                    .to_version(&available_versions, config)
+                    .ok_or(Error::CantFindNodeVersion {
                         requested_version: current_version,
                     })?
                     .clone()

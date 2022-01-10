@@ -20,7 +20,8 @@ impl Command for Unalias {
             config,
         )
         .ok()
-        .flatten().ok_or(Error::AliasNotFound {
+        .flatten()
+        .ok_or(Error::AliasNotFound {
             requested_alias: self.requested_alias,
         })?;
 

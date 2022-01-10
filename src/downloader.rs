@@ -113,7 +113,8 @@ pub fn install_node_dist<P: AsRef<Path>>(
     debug!("Extraction completed");
 
     let installed_directory = std::fs::read_dir(&portal)?
-        .next().ok_or(Error::TarIsEmpty)??;
+        .next()
+        .ok_or(Error::TarIsEmpty)??;
     let installed_directory = installed_directory.path();
 
     let renamed_installation_dir = portal.join("installation");

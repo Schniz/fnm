@@ -41,7 +41,10 @@ impl Command for Uninstall {
 
         if available_versions.len() >= 2 {
             return Err(Error::PleaseBeMoreSpecificToDelete {
-                matched_versions: available_versions.iter().map(std::string::ToString::to_string).collect(),
+                matched_versions: available_versions
+                    .iter()
+                    .map(std::string::ToString::to_string)
+                    .collect(),
             });
         }
 
