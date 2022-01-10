@@ -39,6 +39,6 @@ pub enum Error {
     CantCreateSymlink { source: std::io::Error },
     #[error("Version {} not found locally", version)]
     VersionNotFound { version: UserVersion },
-    #[error("{}", source)]
+    #[error(transparent)]
     CantUnderstandVersion { source: ApplicableVersionError },
 }

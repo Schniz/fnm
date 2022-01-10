@@ -213,13 +213,13 @@ fn warn_if_multishell_path_not_in_path_env_var(
 pub enum Error {
     #[error("Can't create the symlink: {}", source)]
     SymlinkingCreationIssue { source: std::io::Error },
-    #[error("{}", source)]
+    #[error(transparent)]
     InstallError { source: <Install as Command>::Error },
     #[error("Can't get locally installed versions: {}", source)]
     VersionListingError { source: installed_versions::Error },
     #[error("Requested version {} is not currently installed", version)]
     CantFindVersion { version: UserVersion },
-    #[error("{}", source)]
+    #[error(transparent)]
     CantInferVersion {
         #[from]
         source: InferVersionError,
