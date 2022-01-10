@@ -2,14 +2,14 @@ use super::command::Command;
 use crate::cli::Cli;
 use crate::config::FnmConfig;
 use crate::shell::{infer_shell, AVAILABLE_SHELLS};
-use structopt::clap::Shell;
-use structopt::StructOpt;
+use clap::{IntoApp, Parser};
+use clap_complete::{Generator, Shell};
 use thiserror::Error;
 
-#[derive(StructOpt, Debug)]
+#[derive(Parser, Debug)]
 pub struct Completions {
     /// The shell syntax to use. Infers when missing.
-    #[structopt(long, possible_values = &Shell::variants())]
+    #[clap(long)]
     shell: Option<Shell>,
 }
 
@@ -22,7 +22,8 @@ impl Command for Completions {
             .shell
             .or_else(|| infer_shell().map(Into::into))
             .ok_or(Error::CantInferShell)?;
-        Cli::clap().gen_completions_to(env!("CARGO_PKG_NAME"), shell, &mut stdio);
+        let app = Cli::into_app();
+        shell.generate(&app, &mut stdio);
         Ok(())
     }
 }

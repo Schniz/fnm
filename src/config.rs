@@ -3,13 +3,12 @@ use crate::log_level::LogLevel;
 use crate::path_ext::PathExt;
 use crate::version_file_strategy::VersionFileStrategy;
 use dirs::{data_dir, home_dir};
-use structopt::StructOpt;
 use url::Url;
 
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub struct FnmConfig {
     /// https://nodejs.org/dist/ mirror
-    #[structopt(
+    #[clap(
         long,
         env = "FNM_NODE_DIST_MIRROR",
         default_value = "https://nodejs.org/dist",
@@ -19,7 +18,7 @@ pub struct FnmConfig {
     pub node_dist_mirror: Url,
 
     /// The root directory of fnm installations.
-    #[structopt(
+    #[clap(
         long = "fnm-dir",
         env = "FNM_DIR",
         global = true,
@@ -30,16 +29,11 @@ pub struct FnmConfig {
     /// Where the current node version link is stored.
     /// This value will be populated automatically by evaluating
     /// `fnm env` in your shell profile. Read more about it using `fnm help env`
-    #[structopt(
-        long,
-        env = "FNM_MULTISHELL_PATH",
-        hide_env_values = true,
-        hidden = true
-    )]
+    #[clap(long, env = "FNM_MULTISHELL_PATH", hide_env_values = true, hide = true)]
     multishell_path: Option<std::path::PathBuf>,
 
     /// The log level of fnm commands
-    #[structopt(
+    #[clap(
         long,
         env = "FNM_LOGLEVEL",
         default_value = "info",
@@ -51,10 +45,10 @@ pub struct FnmConfig {
 
     /// Override the architecture of the installed Node binary.
     /// Defaults to arch of fnm binary.
-    #[structopt(
+    #[clap(
         long,
         env = "FNM_ARCH",
-        default_value,
+        default_value_t,
         global = true,
         hide_env_values = true,
         hide_default_value = true
@@ -67,7 +61,7 @@ pub struct FnmConfig {
     /// * `local`: Use the local version of Node defined within the current directory
     ///
     /// * `recursive`: Use the version of Node defined within the current directory and all parent directories
-    #[structopt(
+    #[clap(
         long,
         env = "FNM_VERSION_FILE_STRATEGY",
         possible_values = VersionFileStrategy::possible_values(),

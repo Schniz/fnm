@@ -11,19 +11,18 @@ use crate::version_file_strategy::VersionFileStrategy;
 use crate::{config::FnmConfig, user_version_reader::UserVersionReader};
 use colored::Colorize;
 use std::path::Path;
-use structopt::StructOpt;
 use thiserror::Error;
 
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub struct Use {
     version: Option<UserVersionReader>,
     /// Install the version if it isn't installed yet
-    #[structopt(long)]
+    #[clap(long)]
     install_if_missing: bool,
 
     /// Don't output a message identifying the version being used
     /// if it will not change due to execution of this command
-    #[structopt(long)]
+    #[clap(long)]
     silent_if_unchanged: bool,
 }
 

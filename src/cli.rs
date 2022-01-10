@@ -1,24 +1,24 @@
 use crate::commands;
 use crate::commands::command::Command;
 use crate::config::FnmConfig;
-use structopt::StructOpt;
+use clap::Parser;
 
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub enum SubCommand {
     /// List all remote Node.js versions
-    #[structopt(name = "list-remote", visible_aliases = &["ls-remote"])]
+    #[clap(name = "list-remote", visible_aliases = &["ls-remote"])]
     LsRemote(commands::ls_remote::LsRemote),
 
     /// List all locally installed Node.js versions
-    #[structopt(name = "list", visible_aliases = &["ls"])]
+    #[clap(name = "list", visible_aliases = &["ls"])]
     LsLocal(commands::ls_local::LsLocal),
 
     /// Install a new Node.js version
-    #[structopt(name = "install")]
+    #[clap(name = "install")]
     Install(commands::install::Install),
 
     /// Change Node.js version
-    #[structopt(name = "use")]
+    #[clap(name = "use")]
     Use(commands::r#use::Use),
 
     /// Print and set up required environment variables for fnm
@@ -29,29 +29,29 @@ pub enum SubCommand {
     /// Each shell has its own syntax of evaluating a dynamic expression.
     /// For example, evaluating fnm on Bash and Zsh would look like `eval "$(fnm env)"`.
     /// In Fish, evaluating would look like `fnm env | source`
-    #[structopt(name = "env")]
+    #[clap(name = "env")]
     Env(commands::env::Env),
 
     /// Print shell completions to stdout
-    #[structopt(name = "completions")]
+    #[clap(name = "completions")]
     Completions(commands::completions::Completions),
 
     /// Alias a version to a common name
-    #[structopt(name = "alias")]
+    #[clap(name = "alias")]
     Alias(commands::alias::Alias),
 
     /// Remove an alias definition
-    #[structopt(name = "unalias")]
+    #[clap(name = "unalias")]
     Unalias(commands::unalias::Unalias),
 
     /// Set a version as the default version
     ///
     /// This is a shorthand for `fnm alias VERSION default`
-    #[structopt(name = "default")]
+    #[clap(name = "default")]
     Default(commands::default::Default),
 
     /// Print the current Node.js version
-    #[structopt(name = "current")]
+    #[clap(name = "current")]
     Current(commands::current::Current),
 
     /// Run a command within fnm context
@@ -60,14 +60,14 @@ pub enum SubCommand {
     /// --------
     /// fnm exec --using=v12.0.0 node --version
     /// => v12.0.0
-    #[structopt(name = "exec", verbatim_doc_comment)]
+    #[clap(name = "exec", verbatim_doc_comment)]
     Exec(commands::exec::Exec),
 
     /// Uninstall a Node.js version
     ///
     /// > Warning: when providing an alias, it will remove the Node version the alias
     /// is pointing to, along with the other aliases that point to the same version.
-    #[structopt(name = "uninstall")]
+    #[clap(name = "uninstall")]
     Uninstall(commands::uninstall::Uninstall),
 }
 
@@ -91,15 +91,15 @@ impl SubCommand {
 }
 
 /// A fast and simple Node.js manager.
-#[derive(StructOpt, Debug)]
-#[structopt(name = "fnm")]
+#[derive(clap::Parser, Debug)]
+#[clap(name = "fnm")]
 pub struct Cli {
-    #[structopt(flatten)]
+    #[clap(flatten)]
     pub config: FnmConfig,
-    #[structopt(subcommand)]
+    #[clap(subcommand)]
     pub subcmd: SubCommand,
 }
 
 pub fn parse() -> Cli {
-    Cli::from_args()
+    Cli::parse()
 }

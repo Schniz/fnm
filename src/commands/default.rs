@@ -2,9 +2,8 @@ use super::alias::Alias;
 use super::command::Command;
 use crate::config::FnmConfig;
 use crate::user_version::UserVersion;
-use structopt::StructOpt;
 
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub struct Default {
     version: UserVersion,
 }

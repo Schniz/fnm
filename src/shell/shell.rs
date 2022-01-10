@@ -8,7 +8,7 @@ pub trait Shell: Debug {
     fn rehash(&self) -> Option<String> {
         None
     }
-    fn to_structopt_shell(&self) -> structopt::clap::Shell;
+    fn to_clap_shell(&self) -> clap_complete::Shell;
 }
 
 #[cfg(windows)]
@@ -32,8 +32,8 @@ impl std::str::FromStr for Box<dyn Shell> {
     }
 }
 
-impl From<Box<dyn Shell>> for structopt::clap::Shell {
+impl From<Box<dyn Shell>> for clap_complete::Shell {
     fn from(shell: Box<dyn Shell>) -> Self {
-        shell.to_structopt_shell()
+        shell.to_clap_shell()
     }
 }

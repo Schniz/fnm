@@ -6,20 +6,19 @@ use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
 use std::fmt::Debug;
-use structopt::StructOpt;
 use thiserror::Error;
 
-#[derive(StructOpt, Debug, Default)]
+#[derive(clap::Parser, Debug, Default)]
 pub struct Env {
     /// The shell syntax to use. Infers when missing.
-    #[structopt(long)]
-    #[structopt(possible_values = AVAILABLE_SHELLS)]
+    #[clap(long)]
+    #[clap(possible_values = AVAILABLE_SHELLS)]
     shell: Option<Box<dyn Shell>>,
     /// Deprecated. This is the default now.
-    #[structopt(long, hidden = true)]
+    #[clap(long, hide = true)]
     multi: bool,
     /// Print the script to change Node versions every directory change
-    #[structopt(long)]
+    #[clap(long)]
     use_on_cd: bool,
 }
 

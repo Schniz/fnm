@@ -8,8 +8,8 @@ use std::path::Path;
 pub struct Fish;
 
 impl Shell for Fish {
-    fn to_structopt_shell(&self) -> structopt::clap::Shell {
-        structopt::clap::Shell::Fish
+    fn to_clap_shell(&self) -> clap_complete::Shell {
+        clap_complete::Shell::Fish
     }
 
     fn path(&self, path: &Path) -> String {
