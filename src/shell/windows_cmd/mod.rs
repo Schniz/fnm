@@ -5,7 +5,8 @@ use std::path::Path;
 pub struct WindowsCmd;
 
 impl Shell for WindowsCmd {
-    fn to_structopt_shell(&self) -> structopt::clap::Shell {
+    fn to_clap_shell(&self) -> clap_complete::Shell {
+        // TODO: move to Option
         panic!("Shell completion is not supported for Windows Command Prompt. Maybe try using PowerShell for a better experience?");
     }
 

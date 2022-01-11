@@ -8,8 +8,8 @@ use std::path::Path;
 pub struct Bash;
 
 impl Shell for Bash {
-    fn to_structopt_shell(&self) -> structopt::clap::Shell {
-        structopt::clap::Shell::Bash
+    fn to_clap_shell(&self) -> clap_complete::Shell {
+        clap_complete::Shell::Bash
     }
 
     fn path(&self, path: &Path) -> String {

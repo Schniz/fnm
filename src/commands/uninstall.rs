@@ -8,10 +8,9 @@ use crate::version::Version;
 use crate::version_files::get_user_version_for_directory;
 use colored::Colorize;
 use log::debug;
-use structopt::StructOpt;
 use thiserror::Error;
 
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub struct Uninstall {
     version: Option<UserVersion>,
 }

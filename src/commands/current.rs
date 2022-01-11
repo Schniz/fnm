@@ -1,9 +1,8 @@
 use super::command::Command;
 use crate::config::FnmConfig;
 use crate::current_version::{current_version, Error};
-use structopt::StructOpt;
 
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub struct Current {}
 
 impl Command for Current {

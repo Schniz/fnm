@@ -8,17 +8,16 @@ use crate::user_version::UserVersion;
 use crate::user_version_reader::UserVersionReader;
 use colored::Colorize;
 use std::process::{Command, Stdio};
-use structopt::StructOpt;
 use thiserror::Error;
 
-#[derive(Debug, StructOpt)]
-#[structopt(setting = structopt::clap::AppSettings::TrailingVarArg)]
+#[derive(Debug, clap::Parser)]
+#[clap(setting = clap::AppSettings::TrailingVarArg)]
 pub struct Exec {
     /// Either an explicit version, or a filename with the version written in it
-    #[structopt(long = "using")]
+    #[clap(long = "using")]
     version: Option<UserVersionReader>,
     /// Deprecated. This is the default now.
-    #[structopt(long = "using-file", hidden = true)]
+    #[clap(long = "using-file", hide = true)]
     using_file: bool,
     /// The command to run
     arguments: Vec<String>,

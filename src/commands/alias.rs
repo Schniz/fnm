@@ -5,10 +5,9 @@ use crate::choose_version_for_user_input::{
 };
 use crate::config::FnmConfig;
 use crate::user_version::UserVersion;
-use structopt::StructOpt;
 use thiserror::Error;
 
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub struct Alias {
     pub(crate) to_version: UserVersion,
     pub(crate) name: String,

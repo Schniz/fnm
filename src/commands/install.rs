@@ -10,16 +10,15 @@ use crate::version::Version;
 use crate::version_files::get_user_version_for_directory;
 use colored::Colorize;
 use log::debug;
-use structopt::StructOpt;
 use thiserror::Error;
 
-#[derive(StructOpt, Debug, Default)]
+#[derive(clap::Parser, Debug, Default)]
 pub struct Install {
     /// A version string. Can be a partial semver or a LTS version name by the format lts/NAME
     pub version: Option<UserVersion>,
 
     /// Install latest LTS
-    #[structopt(long, conflicts_with = "version")]
+    #[clap(long, conflicts_with = "version")]
     pub lts: bool,
 }
 

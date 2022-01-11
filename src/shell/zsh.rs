@@ -8,8 +8,8 @@ use std::path::Path;
 pub struct Zsh;
 
 impl Shell for Zsh {
-    fn to_structopt_shell(&self) -> structopt::clap::Shell {
-        structopt::clap::Shell::Zsh
+    fn to_clap_shell(&self) -> clap_complete::Shell {
+        clap_complete::Shell::Zsh
     }
 
     fn path(&self, path: &Path) -> String {

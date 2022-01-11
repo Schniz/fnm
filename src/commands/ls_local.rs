@@ -4,10 +4,9 @@ use crate::current_version::current_version;
 use crate::version::Version;
 use colored::Colorize;
 use std::collections::HashMap;
-use structopt::StructOpt;
 use thiserror::Error;
 
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub struct LsLocal {}
 
 impl super::command::Command for LsLocal {

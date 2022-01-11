@@ -112,8 +112,10 @@ async function getCommandHelp(fnmPath, command) {
   const subcommands = [];
   if (!command) {
     for (const row of rows.slice(headerIndex + 1)) {
-      const words = row.split(/\s+/);
-      subcommands.push(words[1]);
+      const [, word] = row.split(/\s+/);
+      if (word && word[0].toLowerCase() === word[0]) {
+        subcommands.push(word);
+      }
     }
   }
   return {
