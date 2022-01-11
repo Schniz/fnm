@@ -92,7 +92,7 @@ impl SubCommand {
 
 /// A fast and simple Node.js manager.
 #[derive(clap::Parser, Debug)]
-#[clap(name = "fnm")]
+#[clap(name = "fnm", version = env!("CARGO_PKG_VERSION"))]
 pub struct Cli {
     #[clap(flatten)]
     pub config: FnmConfig,
