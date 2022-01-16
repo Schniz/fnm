@@ -6,6 +6,7 @@ use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
 use std::fmt::Debug;
+use std::path::PathBuf;
 use thiserror::Error;
 
 #[derive(clap::Parser, Debug, Default)]
@@ -30,10 +31,16 @@ fn generate_symlink_path() -> String {
     )
 }
 
+fn symlink_base_dir() -> PathBuf {
+    match dirs::cache_dir() {
+        Some(cache_dir) => cache_dir.join("fnm").join("multishells"),
+        None => std::env::temp_dir().join("fnm_multishells"),
+    }
+    .ensure_exists_silently()
+}
+
 fn make_symlink(config: &FnmConfig) -> std::path::PathBuf {
-    let base_dir = std::env::temp_dir()
-        .join("fnm_multishells")
-        .ensure_exists_silently();
+    let base_dir = symlink_base_dir();
     let mut temp_dir = base_dir.join(generate_symlink_path());
 
     while temp_dir.exists() {
