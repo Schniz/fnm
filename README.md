@@ -121,6 +121,14 @@ Please follow your shell instructions to install them.
 Environment variables need to be setup before you can start using fnm.
 This is done by evaluating the output of `fnm env`.
 To automatically run `fnm use` when a directory contains a `.node-version` or `.nvmrc` file, add the `--use-on-cd` option to your shell setup.
+
+Adding a `.node-version` to your project is as simple as:
+```bash
+$ node --version
+v14.18.3
+$ node --version > .node-version
+```
+
 Check out the following guides for the shell you use:
 
 #### Bash
