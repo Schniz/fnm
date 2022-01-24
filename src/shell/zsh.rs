@@ -13,7 +13,21 @@ impl Shell for Zsh {
     }
 
     fn path(&self, path: &Path) -> String {
-        format!("export PATH={:?}:$PATH", path.to_str().unwrap())
+        let temp_dir = std::env::temp_dir().join("fnm_multishells");
+        formatdoc!(
+            r#"
+                new_path="{path}"
+                for p in ${{(s.:.)PATH}}; do
+                    if ! echo $p | grep -q {temp_dir}; then
+                        new_path="$new_path:$p"
+                    fi
+                done
+                export PATH=$new_path
+                unset new_path
+            "#,
+            temp_dir = temp_dir.display(),
+            path = path.to_str().unwrap()
+        )
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {

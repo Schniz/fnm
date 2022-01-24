@@ -13,7 +13,20 @@ impl Shell for Fish {
     }
 
     fn path(&self, path: &Path) -> String {
-        format!("set -gx PATH {:?} $PATH;", path.to_str().unwrap())
+        let temp_dir = std::env::temp_dir().join("fnm_multishells");
+        formatdoc!(
+            r#"
+                set -l new_path {path}
+                for p in $PATH
+                    if ! echo $p | grep -q "{temp_dir}"
+                        set new_path $new_path $p
+                    end
+                end
+                set -gx PATH $new_path
+            "#,
+            temp_dir = temp_dir.display(),
+            path = path.to_str().unwrap()
+        )
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {

@@ -1,4 +1,5 @@
 use super::shell::Shell;
+use std::collections::HashSet;
 use std::path::Path;
 
 #[derive(Debug)]
@@ -11,11 +12,14 @@ impl Shell for WindowsCmd {
     }
 
     fn path(&self, path: &Path) -> String {
-        let current_path = std::env::var_os("path").expect("Can't read PATH env var");
-        let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
-        split_paths.insert(0, path.to_path_buf());
+        let current_path = std::env::var_os("PATH").expect("Can't read PATH env var");
+        let temp_dir = std::env::temp_dir().join("fnm_multishells");
+        let mut split_paths: HashSet<_> = std::env::split_paths(&current_path)
+            .filter(|p| !p.starts_with(&temp_dir))
+            .collect();
+        split_paths.insert(path.to_path_buf());
         let new_path = std::env::join_paths(split_paths).expect("Can't join paths");
-        format!("SET PATH={}", new_path.to_str().expect("Can't read PATH"))
+        self.set_env_var("PATH", new_path.to_str().expect("Can't read PATH"))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
