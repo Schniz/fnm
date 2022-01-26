@@ -32,11 +32,7 @@ fn generate_symlink_path() -> String {
 }
 
 fn symlink_base_dir() -> PathBuf {
-    match dirs::cache_dir() {
-        Some(cache_dir) => cache_dir.join("fnm").join("multishells"),
-        None => std::env::temp_dir().join("fnm_multishells"),
-    }
-    .ensure_exists_silently()
+    crate::directories::multishell_storage().ensure_exists_silently()
 }
 
 fn make_symlink(config: &FnmConfig) -> std::path::PathBuf {
