@@ -18,10 +18,13 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
                 .file_stem()
                 .and_then(OsStr::to_str)
                 .map(str::to_lowercase);
-            return process_name
+            if let Some(shell) = process_name
                 .as_ref()
                 .map(|x| &x[..])
-                .and_then(super::slice_to_shell);
+                .and_then(super::shell_from_string)
+            {
+                return Some(shell);
+            }
         } else {
             current_pid = None;
         }
