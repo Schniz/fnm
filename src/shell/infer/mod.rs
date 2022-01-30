@@ -8,7 +8,7 @@ pub use self::unix::infer_shell;
 pub use self::windows::infer_shell;
 
 pub(self) fn shell_from_string(shell: &str) -> Option<Box<dyn super::Shell>> {
-    use super::*;
+    use super::{Bash, Fish, PowerShell, WindowsCmd, Zsh};
     match shell {
         "sh" | "bash" => return Some(Box::from(Bash)),
         "zsh" => return Some(Box::from(Zsh)),

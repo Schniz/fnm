@@ -80,7 +80,7 @@ fn get_process_info(pid: u32) -> Result<ProcessInfo, ProcessInfoError> {
     })?;
 
     Ok(ProcessInfo {
-        parent_pid: u32::from_str_radix(ppid, 10).ok(),
+        parent_pid: ppid.parse().ok(),
         command: command.into(),
     })
 }
