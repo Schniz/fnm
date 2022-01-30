@@ -6,21 +6,21 @@ fn xdg_dir(env: &str) -> Option<PathBuf> {
 }
 
 fn state_dir() -> Option<PathBuf> {
-    xdg_dir("XDG_STATE_HOME").or_else(|| dirs::state_dir())
+    xdg_dir("XDG_STATE_HOME").or_else(dirs::state_dir)
 }
 
 fn cache_dir() -> Option<PathBuf> {
-    xdg_dir("XDG_CACHE_HOME").or_else(|| dirs::cache_dir())
+    xdg_dir("XDG_CACHE_HOME").or_else(dirs::cache_dir)
 }
 
 fn runtime_dir() -> Option<PathBuf> {
-    xdg_dir("XDG_RUNTIME_DIR").or_else(|| dirs::runtime_dir())
+    xdg_dir("XDG_RUNTIME_DIR").or_else(dirs::runtime_dir)
 }
 
 pub fn multishell_storage() -> PathBuf {
     runtime_dir()
         .or_else(state_dir)
         .or_else(cache_dir)
-        .unwrap_or_else(|| std::env::temp_dir())
+        .unwrap_or_else(std::env::temp_dir)
         .join("fnm_multishells")
 }
