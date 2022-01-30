@@ -1,4 +1,14 @@
-## 1.30.0 (2022-01-30)
+## 1.30.1 (2022-01-30)
+
+#### Bugfix 🐛
+
+- [#652](https://github.com/Schniz/fnm/pull/652) Fix `fnm completions` ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.30.0 (2022-01-30)
 
 #### Bugfix 🐛
 
