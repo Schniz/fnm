@@ -1,6 +1,6 @@
 #![cfg(not(unix))]
 
-use super::{Bash, Fish, PowerShell, Shell, WindowsCmd, Zsh};
+use crate::shell::Shell;
 use log::debug;
 use std::ffi::OsStr;
 use sysinfo::{ProcessExt, System, SystemExt};

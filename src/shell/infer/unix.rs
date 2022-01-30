@@ -1,6 +1,6 @@
 #![cfg(unix)]
 
-use super::super::Shell;
+use crate::shell::Shell;
 use log::debug;
 use std::io::{Error, ErrorKind};
 use thiserror::Error;
