@@ -1,7 +1,7 @@
 # `fnm`
 
 ```
-fnm 1.29.2
+fnm 1.30.0
 A fast and simple Node.js manager
 
 USAGE:
