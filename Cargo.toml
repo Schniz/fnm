@@ -11,7 +11,7 @@ description = "Fast and simple Node.js version manager"
 [dependencies]
 serde = { version = "1.0.136", features = ["derive"] }
 clap = { version = "3.0.13", features = ["derive", "env"] }
-serde_json = "1.0.75"
+serde_json = "1.0.78"
 chrono = { version = "0.4.19", features = ["serde"] }
 tar = "0.4.38"
 xz2 = "0.1.6"
