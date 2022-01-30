@@ -1,8 +1,9 @@
 #![cfg(unix)]
 
-use super::super::{Bash, Fish, PowerShell, Shell, Zsh};
+use super::super::Shell;
 use log::debug;
 use std::io::{Error, ErrorKind};
+use thiserror::Error;
 
 #[derive(Debug)]
 struct ProcessInfo {
@@ -16,22 +17,26 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
     let mut pid = Some(std::process::id());
     let mut visited = 0;
 
-    while pid != None && visited < MAX_ITERATIONS {
-        let process_info = get_process_info(pid.unwrap()).ok()?;
+    while let Some(current_pid) = pid {
+        if visited > MAX_ITERATIONS {
+            return None;
+        }
+
+        let process_info = get_process_info(current_pid)
+            .map_err(|err| {
+                debug!("{}", err);
+                err
+            })
+            .ok()?;
         let binary = process_info
             .command
             .trim_start_matches('-')
             .split('/')
-            .last()
-            .expect("Can't read file name of process tree");
+            .last()?;
 
-        match binary {
-            "sh" | "bash" => return Some(Box::from(Bash)),
-            "zsh" => return Some(Box::from(Zsh)),
-            "fish" => return Some(Box::from(Fish)),
-            "pwsh" => return Some(Box::from(PowerShell)),
-            cmd_name => debug!("binary is not a supported shell: {:?}", cmd_name),
-        };
+        if let Some(shell) = super::shell_from_string(binary) {
+            return Some(shell);
+        }
 
         pid = process_info.parent_pid;
         visited += 1;
@@ -40,7 +45,7 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
     None
 }
 
-fn get_process_info(pid: u32) -> std::io::Result<ProcessInfo> {
+fn get_process_info(pid: u32) -> Result<ProcessInfo, ProcessInfoError> {
     use std::io::{BufRead, BufReader};
     use std::process::Command;
 
@@ -65,17 +70,34 @@ fn get_process_info(pid: u32) -> std::io::Result<ProcessInfo> {
         .ok_or_else(|| Error::from(ErrorKind::NotFound))??;
 
     let mut parts = line.trim().split_whitespace();
-    let ppid = parts
-        .next()
-        .expect("Can't read the ppid from ps, should be the first item in the table");
-    let command = parts
-        .next()
-        .expect("Can't read the command from ps, should be the second item in the table");
+    let ppid = parts.next().ok_or_else(|| ProcessInfoError::Parse {
+        expectation: "Can't read the ppid from ps, should be the first item in the table",
+        got: line.to_string(),
+    })?;
+    let command = parts.next().ok_or_else(|| ProcessInfoError::Parse {
+        expectation: "Can't read the command from ps, should be the second item in the table",
+        got: line.to_string(),
+    })?;
 
     Ok(ProcessInfo {
         parent_pid: u32::from_str_radix(ppid, 10).ok(),
         command: command.into(),
     })
+}
+
+#[derive(Debug, Error)]
+enum ProcessInfoError {
+    #[error("Can't read process info: {source}")]
+    Io {
+        #[source]
+        #[from]
+        source: std::io::Error,
+    },
+    #[error("Can't parse process info output. {expectation}. Got: {got}")]
+    Parse {
+        got: String,
+        expectation: &'static str,
+    },
 }
 
 #[cfg(all(test, unix))]
