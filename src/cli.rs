@@ -6,19 +6,19 @@ use clap::Parser;
 #[derive(clap::Parser, Debug)]
 pub enum SubCommand {
     /// List all remote Node.js versions
-    #[clap(name = "list-remote", visible_aliases = &["ls-remote"])]
+    #[clap(name = "list-remote", bin_name = "list-remote", visible_aliases = &["ls-remote"])]
     LsRemote(commands::ls_remote::LsRemote),
 
     /// List all locally installed Node.js versions
-    #[clap(name = "list", visible_aliases = &["ls"])]
+    #[clap(name = "list", bin_name = "list", visible_aliases = &["ls"])]
     LsLocal(commands::ls_local::LsLocal),
 
     /// Install a new Node.js version
-    #[clap(name = "install")]
+    #[clap(name = "install", bin_name = "install")]
     Install(commands::install::Install),
 
     /// Change Node.js version
-    #[clap(name = "use")]
+    #[clap(name = "use", bin_name = "use")]
     Use(commands::r#use::Use),
 
     /// Print and set up required environment variables for fnm
@@ -29,29 +29,29 @@ pub enum SubCommand {
     /// Each shell has its own syntax of evaluating a dynamic expression.
     /// For example, evaluating fnm on Bash and Zsh would look like `eval "$(fnm env)"`.
     /// In Fish, evaluating would look like `fnm env | source`
-    #[clap(name = "env")]
+    #[clap(name = "env", bin_name = "env")]
     Env(commands::env::Env),
 
     /// Print shell completions to stdout
-    #[clap(name = "completions")]
+    #[clap(name = "completions", bin_name = "completions")]
     Completions(commands::completions::Completions),
 
     /// Alias a version to a common name
-    #[clap(name = "alias")]
+    #[clap(name = "alias", bin_name = "alias")]
     Alias(commands::alias::Alias),
 
     /// Remove an alias definition
-    #[clap(name = "unalias")]
+    #[clap(name = "unalias", bin_name = "unalias")]
     Unalias(commands::unalias::Unalias),
 
     /// Set a version as the default version
     ///
     /// This is a shorthand for `fnm alias VERSION default`
-    #[clap(name = "default")]
+    #[clap(name = "default", bin_name = "default")]
     Default(commands::default::Default),
 
     /// Print the current Node.js version
-    #[clap(name = "current")]
+    #[clap(name = "current", bin_name = "current")]
     Current(commands::current::Current),
 
     /// Run a command within fnm context
@@ -60,14 +60,14 @@ pub enum SubCommand {
     /// --------
     /// fnm exec --using=v12.0.0 node --version
     /// => v12.0.0
-    #[clap(name = "exec", verbatim_doc_comment)]
+    #[clap(name = "exec", bin_name = "exec", verbatim_doc_comment)]
     Exec(commands::exec::Exec),
 
     /// Uninstall a Node.js version
     ///
     /// > Warning: when providing an alias, it will remove the Node version the alias
     /// is pointing to, along with the other aliases that point to the same version.
-    #[clap(name = "uninstall")]
+    #[clap(name = "uninstall", bin_name = "uninstall")]
     Uninstall(commands::uninstall::Uninstall),
 }
 
@@ -92,7 +92,7 @@ impl SubCommand {
 
 /// A fast and simple Node.js manager.
 #[derive(clap::Parser, Debug)]
-#[clap(name = "fnm", version = env!("CARGO_PKG_VERSION"))]
+#[clap(name = "fnm", version = env!("CARGO_PKG_VERSION"), bin_name = "fnm")]
 pub struct Cli {
     #[clap(flatten)]
     pub config: FnmConfig,
