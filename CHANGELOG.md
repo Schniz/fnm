@@ -1,4 +1,35 @@
-## 1.29.2 (2022-01-06)
+## 1.30.1 (2022-01-30)
+
+#### Bugfix 🐛
+
+- [#652](https://github.com/Schniz/fnm/pull/652) Fix `fnm completions` ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.30.0 (2022-01-30)
+
+#### Bugfix 🐛
+
+- [#625](https://github.com/Schniz/fnm/pull/625) Revert from using sysinfo, but only on Unix machines ([@Schniz](https://github.com/Schniz))
+- [#638](https://github.com/Schniz/fnm/pull/638) Use local cache directory instead of temp directory for symlinks ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#617](https://github.com/Schniz/fnm/pull/617) fix(deps): update rust crate clap to v3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#630](https://github.com/Schniz/fnm/pull/630) Replace `snafu` with `thiserror` ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#637](https://github.com/Schniz/fnm/pull/637) [Documentation] Adds Additional info regarding .node-version ([@uchihamalolan](https://github.com/uchihamalolan))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Malolan B ([@uchihamalolan](https://github.com/uchihamalolan))
+
+## v1.29.2 (2022-01-06)
 
 #### Bugfix 🐛
 
