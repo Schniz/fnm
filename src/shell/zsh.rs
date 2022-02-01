@@ -13,19 +13,19 @@ impl Shell for Zsh {
     }
 
     fn path(&self, path: &Path) -> String {
-        let temp_dir = std::env::temp_dir().join("fnm_multishells");
+        let cache_dir = crate::directories::multishell_storage();
         formatdoc!(
             r#"
                 new_path="{path}"
                 for p in ${{(s.:.)PATH}}; do
-                    if ! echo $p | grep -q {temp_dir}; then
+                    if ! echo $p | grep -q {cache_dir}; then
                         new_path="$new_path:$p"
                     fi
                 done
                 export PATH=$new_path
                 unset new_path
             "#,
-            temp_dir = temp_dir.display(),
+            cache_dir = cache_dir.display(),
             path = path.to_str().unwrap()
         )
     }

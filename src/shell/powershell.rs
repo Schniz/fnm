@@ -11,9 +11,9 @@ pub struct PowerShell;
 impl Shell for PowerShell {
     fn path(&self, path: &Path) -> String {
         let current_path = std::env::var_os("PATH").expect("Can't read PATH env var");
-        let temp_dir = std::env::temp_dir().join("fnm_multishells");
+        let cache_dir = crate::directories::multishell_storage();
         let mut split_paths: HashSet<_> = std::env::split_paths(&current_path)
-            .filter(|p| !p.starts_with(&temp_dir))
+            .filter(|p| !p.starts_with(&cache_dir))
             .collect();
         split_paths.insert(path.to_path_buf());
         let new_path = std::env::join_paths(split_paths).expect("Can't join paths");

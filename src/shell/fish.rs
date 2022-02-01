@@ -13,18 +13,18 @@ impl Shell for Fish {
     }
 
     fn path(&self, path: &Path) -> String {
-        let temp_dir = std::env::temp_dir().join("fnm_multishells");
+        let cache_dir = crate::directories::multishell_storage();
         formatdoc!(
             r#"
                 set -l new_path {path}
                 for p in $PATH
-                    if ! echo $p | grep -q "{temp_dir}"
+                    if ! echo $p | grep -q "{cache_dir}"
                         set new_path $new_path $p
                     end
                 end
                 set -gx PATH $new_path
             "#,
-            temp_dir = temp_dir.display(),
+            cache_dir = cache_dir.display(),
             path = path.to_str().unwrap()
         )
     }
