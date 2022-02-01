@@ -193,6 +193,10 @@ call "%CMDER_ROOT%\bin\fnm_init.cmd"
 ```
 You can replace `%CMDER_ROOT%` with any other convenient path too.
 
+### Recommendation for `WSL2` user
+
+To avoid fnm misconfiguration from a variety of filesystems between Linux Distributions and Windows, we recommend that `WSL2` users use the Linux version of fnm instead of the Windows executable.
+
 ## [Usage](./docs/commands.md)
 
 [See the available commands for an extended usage documentation](./docs/commands.md)
