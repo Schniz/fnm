@@ -107,15 +107,15 @@ mod tests {
     use std::process::{Command, Stdio};
 
     #[test]
-    fn test_get_process_info() {
+    fn test_get_process_info() -> anyhow::Result<()> {
         let subprocess = Command::new("bash")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
-            .spawn()
-            .expect("Can't execute command");
+            .spawn()?;
         let process_info = get_process_info(subprocess.id());
         let parent_pid = process_info.ok().and_then(|x| x.parent_pid);
         assert_eq!(parent_pid, Some(std::process::id()));
+        Ok(())
     }
 }

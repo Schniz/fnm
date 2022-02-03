@@ -2,9 +2,9 @@ use std::fmt::Debug;
 use std::path::Path;
 
 pub trait Shell: Debug {
-    fn path(&self, path: &Path) -> String;
+    fn path(&self, path: &Path) -> anyhow::Result<String>;
     fn set_env_var(&self, name: &str, value: &str) -> String;
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String;
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String>;
     fn rehash(&self) -> Option<String> {
         None
     }
