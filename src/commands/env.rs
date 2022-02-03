@@ -1,12 +1,12 @@
 use super::command::Command;
 use crate::config::FnmConfig;
+use crate::directories;
 use crate::fs::symlink_dir;
 use crate::outln;
 use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
 use std::fmt::Debug;
-use std::path::PathBuf;
 use thiserror::Error;
 
 #[derive(clap::Parser, Debug, Default)]
@@ -31,20 +31,18 @@ fn generate_symlink_path() -> String {
     )
 }
 
-fn symlink_base_dir() -> PathBuf {
-    crate::directories::multishell_storage().ensure_exists_silently()
-}
-
-fn make_symlink(config: &FnmConfig) -> std::path::PathBuf {
-    let base_dir = symlink_base_dir();
+fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
+    let base_dir = directories::multishell_storage().ensure_exists_silently();
     let mut temp_dir = base_dir.join(generate_symlink_path());
 
     while temp_dir.exists() {
         temp_dir = base_dir.join(generate_symlink_path());
     }
 
-    symlink_dir(config.default_version_dir(), &temp_dir).expect("Can't create symlink!");
-    temp_dir
+    match symlink_dir(config.default_version_dir(), &temp_dir) {
+        Ok(_) => Ok(temp_dir),
+        Err(source) => Err(Error::CantCreateSymlink { source, temp_dir }),
+    }
 }
 
 impl Command for Env {
@@ -65,7 +63,7 @@ impl Command for Env {
             .shell
             .or_else(&infer_shell)
             .ok_or(Error::CantInferShell)?;
-        let multishell_path = make_symlink(config);
+        let multishell_path = make_symlink(config)?;
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
         } else {
@@ -119,6 +117,12 @@ pub enum Error {
         shells_as_string()
     )]
     CantInferShell,
+    #[error("Can't create the symlink for multishells at {temp_dir:?}. Maybe there are some issues with permissions for the directory? {source}")]
+    CantCreateSymlink {
+        #[source]
+        source: std::io::Error,
+        temp_dir: std::path::PathBuf,
+    },
 }
 
 fn shells_as_string() -> String {
