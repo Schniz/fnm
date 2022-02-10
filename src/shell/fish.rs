@@ -12,15 +12,18 @@ impl Shell for Fish {
         clap_complete::Shell::Fish
     }
 
-    fn path(&self, path: &Path) -> String {
-        format!("set -gx PATH {:?} $PATH;", path.to_str().unwrap())
+    fn path(&self, path: &Path) -> anyhow::Result<String> {
+        let path = path
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
+        Ok(format!("set -gx PATH {:?} $PATH;", path))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("set -gx {name} {value:?};", name = name, value = value)
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"
@@ -31,7 +34,7 @@ impl Shell for Fish {
             ),
             VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
         };
-        formatdoc!(
+        Ok(formatdoc!(
             r#"
                 function _fnm_autoload_hook --on-variable PWD --description 'Change Node version on directory change'
                     status --is-command-substitution; and return
@@ -41,6 +44,6 @@ impl Shell for Fish {
                 _fnm_autoload_hook
             "#,
             autoload_hook = autoload_hook
-        )
+        ))
     }
 }

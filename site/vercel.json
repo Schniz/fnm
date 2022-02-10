@@ -1,17 +1,19 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "github": {
+    "silent": true
+  },
   "redirects": [
     { "source": "/", "destination": "https://github.com/Schniz/fnm" }
   ],
-  "rewrites": [
-    { "source": "/install", "destination": "/install.txt" }
-  ],
+  "rewrites": [{ "source": "/install", "destination": "/install.txt" }],
   "headers": [
     {
       "source": "/install",
-      "headers" : [
+      "headers": [
         {
-          "key" : "Cache-Control",
-          "value" : "public, max-age=3600"
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
         }
       ]
     }

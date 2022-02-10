@@ -8,19 +8,24 @@ use std::path::Path;
 pub struct PowerShell;
 
 impl Shell for PowerShell {
-    fn path(&self, path: &Path) -> String {
-        let current_path = std::env::var_os("PATH").expect("Can't read PATH env var");
+    fn path(&self, path: &Path) -> anyhow::Result<String> {
+        let current_path =
+            std::env::var_os("PATH").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;
         let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
         split_paths.insert(0, path.to_path_buf());
-        let new_path = std::env::join_paths(split_paths).expect("Can't join paths");
-        self.set_env_var("PATH", new_path.to_str().expect("Can't read PATH"))
+        let new_path = std::env::join_paths(split_paths)
+            .map_err(|source| anyhow::anyhow!("Can't join paths: {}", source))?;
+        let new_path = new_path
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("Can't read PATH"))?;
+        Ok(self.set_env_var("PATH", new_path))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!(r#"$env:{} = "{}""#, name, value)
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"
@@ -29,7 +34,7 @@ impl Shell for PowerShell {
             ),
             VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
         };
-        formatdoc!(
+        Ok(formatdoc!(
             r#"
                 function Set-FnmOnLoad {{ {autoload_hook} }}
                 function Set-LocationWithFnm {{ param($path); Set-Location $path; Set-FnmOnLoad }}
@@ -39,7 +44,7 @@ impl Shell for PowerShell {
                 Set-FnmOnLoad
             "#,
             autoload_hook = autoload_hook
-        )
+        ))
     }
     fn to_clap_shell(&self) -> clap_complete::Shell {
         clap_complete::Shell::PowerShell

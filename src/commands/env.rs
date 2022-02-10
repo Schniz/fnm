@@ -69,7 +69,7 @@ impl Command for Env {
         } else {
             multishell_path.join("bin")
         };
-        println!("{}", shell.path(&binary_path));
+        println!("{}", shell.path(&binary_path)?);
         println!(
             "{}",
             shell.set_env_var("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap())
@@ -98,7 +98,7 @@ impl Command for Env {
             shell.set_env_var("FNM_ARCH", &config.arch.to_string())
         );
         if self.use_on_cd {
-            println!("{}", shell.use_on_cd(config));
+            println!("{}", shell.use_on_cd(config)?);
         }
         if let Some(v) = shell.rehash() {
             println!("{}", v);
@@ -122,6 +122,11 @@ pub enum Error {
         #[source]
         source: std::io::Error,
         temp_dir: std::path::PathBuf,
+    },
+    #[error(transparent)]
+    ShellError {
+        #[from]
+        source: anyhow::Error,
     },
 }
 

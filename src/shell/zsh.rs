@@ -12,8 +12,11 @@ impl Shell for Zsh {
         clap_complete::Shell::Zsh
     }
 
-    fn path(&self, path: &Path) -> String {
-        format!("export PATH={:?}:$PATH", path.to_str().unwrap())
+    fn path(&self, path: &Path) -> anyhow::Result<String> {
+        let path = path
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("Path is not valid UTF-8"))?;
+        Ok(format!("export PATH={:?}:$PATH", path))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -24,7 +27,7 @@ impl Shell for Zsh {
         Some("rehash".to_string())
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"
@@ -35,7 +38,7 @@ impl Shell for Zsh {
             ),
             VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
         };
-        formatdoc!(
+        Ok(formatdoc!(
             r#"
                 autoload -U add-zsh-hook
                 _fnm_autoload_hook () {{
@@ -46,6 +49,6 @@ impl Shell for Zsh {
                     && _fnm_autoload_hook
             "#,
             autoload_hook = autoload_hook
-        )
+        ))
     }
 }
