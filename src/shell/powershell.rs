@@ -36,11 +36,10 @@ impl Shell for PowerShell {
         };
         Ok(formatdoc!(
             r#"
-                function Set-FnmOnLoad {{ {autoload_hook} }}
-                function Set-LocationWithFnm {{ param($path); Set-Location $path; Set-FnmOnLoad }}
-                Set-Alias cd_with_fnm Set-LocationWithFnm -Force
-                Remove-Item alias:\cd
-                New-Alias cd Set-LocationWithFnm
+                function global:Set-FnmOnLoad {{ {autoload_hook} }}
+                function global:Set-LocationWithFnm {{ param($path); if ($path -eq $null) {{Set-Location}} else {{Set-Location $path}}; Set-FnmOnLoad }}
+                Set-Alias -Scope global cd_with_fnm Set-LocationWithFnm
+                Set-Alias -Option AllScope -Scope global cd Set-LocationWithFnm
                 Set-FnmOnLoad
             "#,
             autoload_hook = autoload_hook
