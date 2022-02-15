@@ -1167,8 +1167,7 @@ dependencies = [
 [[package]]
 name = "reqwest"
 version = "0.11.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87f242f1488a539a79bac6dbe7c8609ae43b7914b7736210f239a37cccb32525"
+source = "git+https://github.com/seanmonstar/reqwest.git?rev=d92d2aa3ce4667faa38454c8dae4fa9f72b91b71#d92d2aa3ce4667faa38454c8dae4fa9f72b91b71"
 dependencies = [
  "async-compression",
  "base64",
