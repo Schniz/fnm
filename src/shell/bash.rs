@@ -19,11 +19,11 @@ impl Shell for Bash {
         let multishell_storage = crate::directories::multishell_storage();
         Ok(formatdoc!(
             r#"
-                new_path={path}
+                new_path="{path}"
                 IFS=":"
                 for p in $PATH; do
                     if ! echo $p | grep -q {multishell_storage}; then
-                        new_path=$new_path:$p
+                        new_path="$new_path:$p"
                     fi
                 done
                 unset IFS
