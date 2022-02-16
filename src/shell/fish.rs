@@ -16,7 +16,20 @@ impl Shell for Fish {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("set -gx PATH {:?} $PATH;", path))
+        let multishell_storage = crate::directories::multishell_storage();
+        Ok(formatdoc!(
+            r#"
+                set -l new_path {path}
+                for p in $PATH
+                    if ! echo $p | grep -q "{multishell_storage}"
+                        set new_path $new_path $p
+                    end
+                end
+                set -gx PATH $new_path
+            "#,
+            multishell_storage = multishell_storage.display(),
+            path = path
+        ))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {

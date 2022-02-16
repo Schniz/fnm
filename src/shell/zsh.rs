@@ -16,7 +16,21 @@ impl Shell for Zsh {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Path is not valid UTF-8"))?;
-        Ok(format!("export PATH={:?}:$PATH", path))
+        let multishell_storage = crate::directories::multishell_storage();
+        Ok(formatdoc!(
+            r#"
+                new_path="{path}"
+                for p in ${{(s.:.)PATH}}; do
+                    if ! echo $p | grep -q {multishell_storage}; then
+                        new_path="$new_path:$p"
+                    fi
+                done
+                export PATH=$new_path
+                unset new_path
+            "#,
+            multishell_storage = multishell_storage.display(),
+            path = path
+        ))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {

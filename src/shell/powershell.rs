@@ -2,7 +2,6 @@ use crate::version_file_strategy::VersionFileStrategy;
 
 use super::Shell;
 use indoc::{formatdoc, indoc};
-use std::collections::HashSet;
 use std::path::Path;
 
 #[derive(Debug)]
@@ -12,7 +11,10 @@ impl Shell for PowerShell {
     fn path(&self, path: &Path) -> anyhow::Result<String> {
         let current_path =
             std::env::var_os("PATH").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;
-        let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
+        let multishell_storage = crate::directories::multishell_storage();
+        let mut split_paths: Vec<_> = std::env::split_paths(&current_path)
+            .filter(|p| !p.starts_with(&multishell_storage))
+            .collect();
         split_paths.insert(0, path.to_path_buf());
         let new_path = std::env::join_paths(split_paths)
             .map_err(|source| anyhow::anyhow!("Can't join paths: {}", source))?;
