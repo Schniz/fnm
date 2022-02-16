@@ -1,4 +1,16 @@
-## 1.30.1 (2022-01-30)
+## 1.31.0 (2022-02-16)
+
+#### Bugfix 🐛
+
+- [#671](https://github.com/Schniz/fnm/pull/671) fix native-creds errors (using the unpublished version of reqwest) ([@Schniz](https://github.com/Schniz))
+- [#663](https://github.com/Schniz/fnm/pull/663) remove .unwrap() and .expect() in shell code ([@Schniz](https://github.com/Schniz))
+- [#656](https://github.com/Schniz/fnm/pull/656) Remove unwrap in fnm env, make error more readable ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.30.1 (2022-01-30)
 
 #### Bugfix 🐛
 
