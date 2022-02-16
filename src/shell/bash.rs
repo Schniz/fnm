@@ -12,31 +12,18 @@ impl Shell for Bash {
         clap_complete::Shell::Bash
     }
 
-    fn path(&self, path: &Path) -> String {
-        let cache_dir = crate::directories::multishell_storage();
-        formatdoc!(
-            r#"
-                new_path={path}
-                IFS=":"
-                for p in $PATH; do
-                    if ! echo $p | grep -q {cache_dir}; then
-                        new_path=$new_path:$p
-                    fi
-                done
-                unset IFS
-                export PATH=$new_path
-                unset new_path
-            "#,
-            cache_dir = cache_dir.display(),
-            path = path.to_str().unwrap()
-        )
+    fn path(&self, path: &Path) -> anyhow::Result<String> {
+        let path = path
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
+        Ok(format!("export PATH={:?}:$PATH", path))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("export {}={:?}", name, value)
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"
@@ -47,7 +34,7 @@ impl Shell for Bash {
             ),
             VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
         };
-        formatdoc!(
+        Ok(formatdoc!(
             r#"
                 __fnm_use_if_file_found() {{
                     {autoload_hook}
@@ -62,6 +49,6 @@ impl Shell for Bash {
                 __fnm_use_if_file_found
             "#,
             autoload_hook = autoload_hook
-        )
+        ))
     }
 }
