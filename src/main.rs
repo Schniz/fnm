@@ -33,6 +33,7 @@ mod version_files;
 
 #[macro_use]
 mod log_level;
+mod compile_node;
 mod default_version;
 mod directories;
 

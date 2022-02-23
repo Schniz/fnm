@@ -76,6 +76,10 @@ impl Command for Env {
         );
         println!(
             "{}",
+            shell.set_env_var("FNM_FORCE_ARCH", &config.force_arch.to_string())
+        );
+        println!(
+            "{}",
             shell.set_env_var(
                 "FNM_VERSION_FILE_STRATEGY",
                 config.version_file_strategy().as_str()

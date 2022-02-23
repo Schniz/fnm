@@ -55,6 +55,17 @@ pub struct FnmConfig {
     )]
     pub arch: Arch,
 
+    /// Build the Node.js using `node-build` if missing arch is detected.
+    /// This is relevant for M1 MacOS builds for Node.js versions < 16.
+    #[clap(
+        long,
+        env = "FNM_FORCE_ARCH",
+        global = true,
+        hide_env_values = true,
+        hide = true
+    )]
+    pub force_arch: bool,
+
     /// A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is
     /// called without a version, or when `--use-on-cd` is configured on evaluation.
     ///
@@ -81,6 +92,7 @@ impl Default for FnmConfig {
             log_level: LogLevel::Info,
             arch: Arch::default(),
             version_file_strategy: VersionFileStrategy::default(),
+            force_arch: false,
         }
     }
 }

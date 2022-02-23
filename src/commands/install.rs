@@ -1,5 +1,6 @@
 use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
+use crate::compile_node::compile_node_with_node_build;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
 use crate::lts::LtsType;
@@ -28,14 +29,17 @@ impl Install {
             Self {
                 version: Some(_),
                 lts: true,
+                ..
             } => Err(Error::TooManyVersionsProvided),
             Self {
                 version: v,
                 lts: false,
+                ..
             } => Ok(v),
             Self {
                 version: None,
                 lts: true,
+                ..
             } => Ok(Some(UserVersion::Full(Version::Lts(LtsType::Latest)))),
         }
     }
@@ -90,8 +94,12 @@ impl super::command::Command for Install {
             }
         };
 
-        // Automatically swap Apple Silicon to x64 arch for appropriate versions.
-        let safe_arch = get_safe_arch(&config.arch, &version);
+        let safe_arch = if config.force_arch {
+            &config.arch
+        } else {
+            // Automatically swap Apple Silicon to x64 arch for appropriate versions.
+            get_safe_arch(&config.arch, &version)
+        };
 
         let version_str = format!("Node {}", &version);
         outln!(
@@ -110,6 +118,16 @@ impl super::command::Command for Install {
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
+            }
+            Err(DownloaderError::VersionNotFound { version, arch }) if config.force_arch => {
+                outln!(
+                    config,
+                    Info,
+                    "Version {} not found upstream for {}. Compiling locally.",
+                    version.v_str().cyan(),
+                    arch.to_string().cyan()
+                );
+                compile_node_with_node_build(config, &version)?;
             }
             other_err => other_err.map_err(|source| Error::DownloadError { source })?,
         };
@@ -157,6 +175,11 @@ pub enum Error {
     UninstallableVersion { version: Version },
     #[error("Too many versions provided. Please don't use --lts with a version string.")]
     TooManyVersionsProvided,
+    #[error(transparent)]
+    CompilationError {
+        #[from]
+        source: crate::compile_node::Error,
+    },
 }
 
 #[cfg(test)]
