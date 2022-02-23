@@ -40,7 +40,7 @@ pub fn compile_node_with_node_build(config: &FnmConfig, version: &Version) -> Re
 
     let portal_path_fixed = installation_path.to_str().unwrap().replace(' ', "\\ ");
     let version_str = version.v_str();
-    let version_str = version_str.strip_prefix("v").unwrap();
+    let version_str = version_str.strip_prefix('v').unwrap();
 
     log::debug!(
         "Going to run `node-build` to compile node {} in {}",
@@ -82,22 +82,22 @@ pub fn compile_node_with_node_build(config: &FnmConfig, version: &Version) -> Re
 
     if !exit_status.success() {
         return Err(Error::ExecutingNodeBuild {
-            stdout: stdout_reader.unwrap_or("[error reading]".to_string()),
-            stderr: stderr_reader.unwrap_or("[error reading]".to_string()),
+            stdout: stdout_reader.unwrap_or_else(|_| "[error reading]".to_string()),
+            stderr: stderr_reader.unwrap_or_else(|_| "[error reading]".to_string()),
         });
     }
 
     portal
         .teleport()
         .map_err(|source| Error::MovingBuiltVersion {
-            target: path.to_path_buf(),
+            target: path.clone(),
             source,
         })?;
 
     Ok(())
 }
 
-fn read_output<'a, Reader: 'static + std::io::Read + Sync + Send>(
+fn read_output<Reader: 'static + std::io::Read + Sync + Send>(
     tag: &'static str,
     stream: Reader,
 ) -> std::thread::JoinHandle<String> {
@@ -107,7 +107,7 @@ fn read_output<'a, Reader: 'static + std::io::Read + Sync + Send>(
         for line in bufread.lines().flatten() {
             log::info!("[{}] {}", tag, line);
             buffer.push_str(&line);
-            buffer.push_str("\n");
+            buffer.push('\n');
         }
         buffer
     })
