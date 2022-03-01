@@ -22,7 +22,7 @@ impl Command for Completions {
             .shell
             .or_else(|| infer_shell().map(Into::into))
             .ok_or(Error::CantInferShell)?;
-        let app = Cli::into_app();
+        let app = Cli::command();
         shell.generate(&app, &mut stdio);
         Ok(())
     }

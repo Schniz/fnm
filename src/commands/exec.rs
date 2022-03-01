@@ -11,7 +11,7 @@ use std::process::{Command, Stdio};
 use thiserror::Error;
 
 #[derive(Debug, clap::Parser)]
-#[clap(setting = clap::AppSettings::TrailingVarArg)]
+#[clap(trailing_var_arg = true)]
 pub struct Exec {
     /// Either an explicit version, or a filename with the version written in it
     #[clap(long = "using")]
