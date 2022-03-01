@@ -10,6 +10,6 @@
   "devDependencies": {
     "@vercel/node": "1.13.0",
     "typescript": "4.6.2",
-    "vercel": "23.1.2"
+    "vercel": "24.0.0"
   }
 }
