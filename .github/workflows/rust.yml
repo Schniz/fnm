@@ -188,7 +188,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Download a single artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: fnm-linux
       - name: Make the binary runnable
