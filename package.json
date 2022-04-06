@@ -23,7 +23,7 @@
     "cmd-ts": "0.10.0",
     "execa": "5.1.1",
     "lerna-changelog": "2.2.0",
-    "prettier": "2.5.1",
+    "prettier": "2.6.2",
     "toml": "3.0.0"
   }
 }
