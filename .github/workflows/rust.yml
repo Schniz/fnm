@@ -71,7 +71,7 @@ jobs:
       run: cargo build --release
       env:
         RUSTFLAGS: "-C target-feature=+crt-static"
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: fnm-windows
         path: target/release/fnm.exe
@@ -92,7 +92,7 @@ jobs:
       run: strip target/release/fnm
     - name: List dynamically linked libraries
       run: otool -L target/release/fnm
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: fnm-macos
         path: target/release/fnm
@@ -114,7 +114,7 @@ jobs:
       run: cargo build --release --target x86_64-unknown-linux-musl
     - name: Strip binary from debug symbols
       run: strip target/x86_64-unknown-linux-musl/release/fnm
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: fnm-linux
         path: target/x86_64-unknown-linux-musl/release/fnm
@@ -176,7 +176,7 @@ jobs:
           echo "fnm exec --using=12 -- node --version"
           /artifacts/fnm exec --using=12 -- node --version
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: fnm-${{ matrix.arch }}
         path: target/${{ env.RUST_TARGET }}/release/fnm
