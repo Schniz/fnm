@@ -151,7 +151,7 @@ jobs:
       run: |
         sudo apt-get install -y upx
         upx target/$RUST_TARGET/release/fnm
-    - uses: uraimo/run-on-arch-action@v2.1.1
+    - uses: uraimo/run-on-arch-action@v2.1.2
       name: Sanity test
       with:
         arch: ${{matrix.docker_platform}}
