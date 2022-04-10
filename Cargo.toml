@@ -38,7 +38,7 @@ duct = "0.13.5"
 shell-escape = "0.1.5"
 insta = { version = "1.14.0", features = ["backtrace"] }
 serial_test = "0.6.0"
-test-log = "0.2.8"
+test-log = "0.2.10"
 
 [build-dependencies]
 embed-resource = "1.7.2"
