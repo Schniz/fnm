@@ -24,29 +24,20 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-14.11.2.tgz#2de1ed6670439387da1c9f549a2ade2b0a799256"
   integrity sha512-jiE3QIxJ8JLNcb1Ps6rDbysDhN4xa8DJJvuC9prr6w+1tIh+QAbYyNF3tyiZNLDBIuBCf4KEcV2UvQm/V60xfA==
 
-"@vercel/build-utils@2.14.0":
-  version "2.14.0"
-  resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-2.14.0.tgz#b3c5b1db1a9c4969ec9b424b972f8c2ce9107929"
-  integrity sha512-Jdl0FkEJbAdB5oqpolIK4m/FO9GtFK86gKpFJt5jdnd5tMLWdPf2vr8uZkxvfs8wW5KdYXt660OSoWHpfdYu5w==
+"@vercel/build-utils@2.15.0":
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-2.15.0.tgz#8409486251aff33d6fae85452e0d75f07a0eff28"
+  integrity sha512-0SwM19Mn//v5RuLG5gjuZVOnn1iYqJDMA+N0qm8cK7bTBEWMiTKqF+VmdXkvg6Y6X6rKviAJnOBUUUP6va6Xaw==
 
-"@vercel/go@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@vercel/go/-/go-1.3.0.tgz#daa322b0fe48790c21190088916d9d13b0c6bef4"
-  integrity sha512-eMt4xPq658dFEpmkpXLoj+PX6k15ovwvXX0FlCAcMiQW8JkQcHVXnROnWpngsyMOfTFocYciMAsebtavYwQ6gw==
+"@vercel/go@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@vercel/go/-/go-1.3.1.tgz#baab12fc99852ef261578dbdfd5208103722cce2"
+  integrity sha512-mNo0DWfc49trswz53Gf0Km7KKdOW1zvlBEP6ZWhEhnEjRcNMHZaLg3dq3jWfttLaQ7ihJ+VOyDImd0NX23C42A==
 
 "@vercel/node-bridge@2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@vercel/node-bridge/-/node-bridge-2.2.0.tgz#9f77e68733d782bb6edd1e86c2d2eae8e4ca7a3c"
   integrity sha512-ydYlZyIQfsuriF6qTt/F4vaAt+nb4ZKhLEl2o5AQFa5ED7LoPS5w01Xbujy+25pqS1ODu8/bsqOCUSX8y/+tSQ==
-
-"@vercel/node@1.13.0":
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/@vercel/node/-/node-1.13.0.tgz#619595e1c90afeb1ad68ea6fa3652f7b3f682245"
-  integrity sha512-AqdUuJC0+r3q1lcL+Knjb+dHsSDSCRfwFPJ7odRkHO7sfoAkhJI4RussIDFTF7Yvt0e+GmWuYGFAgwSiv4FWEg==
-  dependencies:
-    "@types/node" "*"
-    ts-node "8.9.1"
-    typescript "4.3.4"
 
 "@vercel/node@1.14.0":
   version "1.14.0"
@@ -58,15 +49,15 @@
     ts-node "8.9.1"
     typescript "4.3.4"
 
-"@vercel/python@2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@vercel/python/-/python-2.2.0.tgz#87b63e606698d4880b32f1a76f0ebbc43115a4da"
-  integrity sha512-6DQxYZtB5IOkpeVSmjjKkTOLQcUmslVWwI+7GRNabairY0qqdoW7gfWctMQDNrJ3hy8vVdc9jOMBeRKWTyrDYQ==
+"@vercel/python@2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@vercel/python/-/python-2.2.1.tgz#e2daa02319bdee982987b14ab293b7eac012ae75"
+  integrity sha512-UxftYfkXX+e+5aQK8D3j+N0zb8ob4KFjdbLCnWLCMlxg0lJwD432zArgYgc0BSMrZrHqdiWMvPxIgKkad2takA==
 
-"@vercel/ruby@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@vercel/ruby/-/ruby-1.3.0.tgz#dc0f4fd945bdb87c1b8d8f82503ca67a90bbe662"
-  integrity sha512-98PTOukChScYXekWbDxPQEUCoX66W4188yx4Q4qiLTJgYRHsvQ5oWtNL5N0sz80mmYCk6aJglwnPE1d7tvgAmQ==
+"@vercel/ruby@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@vercel/ruby/-/ruby-1.3.1.tgz#45292f37aa09ee1b70c72be918c87192ec96b7e7"
+  integrity sha512-stdlKpBUgQT/AxLz+xFpIy2m8xYr7nOA+hjq+MprktWu4RsyIeltSYX49Ju7DNPXdHxyAWxW6tnVENNvh1SOxA==
 
 ansi-align@^3.0.0:
   version "3.0.0"
@@ -647,16 +638,16 @@ url-parse-lax@^3.0.0:
   dependencies:
     prepend-http "^2.0.0"
 
-vercel@24.0.0:
-  version "24.0.0"
-  resolved "https://registry.yarnpkg.com/vercel/-/vercel-24.0.0.tgz#efc8df16c5e8fbe88f19acd42403b5a9093c2522"
-  integrity sha512-RMIfXipcbyONxWCUgzh6yaDEFlzMFLV+3ug+mGeQg45F9JmUfwXHiiLUDEWDnt9598CEN0V0P0DcKUCOQNNX6w==
+vercel@24.0.1:
+  version "24.0.1"
+  resolved "https://registry.yarnpkg.com/vercel/-/vercel-24.0.1.tgz#30feae9e9d80c679f4d2c77a43b0d297405e5bfb"
+  integrity sha512-LmWW65KyWJV/GTxlcVwcifGp1yywUSNP3fcMNZQLdd6fVC3CHJUyHz5t4GD8O1VM56NqvnnYgqNbGYBQXLN5gQ==
   dependencies:
-    "@vercel/build-utils" "2.14.0"
-    "@vercel/go" "1.3.0"
-    "@vercel/node" "1.13.0"
-    "@vercel/python" "2.2.0"
-    "@vercel/ruby" "1.3.0"
+    "@vercel/build-utils" "2.15.0"
+    "@vercel/go" "1.3.1"
+    "@vercel/node" "1.14.0"
+    "@vercel/python" "2.2.1"
+    "@vercel/ruby" "1.3.1"
     update-notifier "4.1.0"
 
 widest-line@^3.1.0:
