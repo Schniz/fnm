@@ -1,5 +1,6 @@
 use super::shell::Shell;
 use std::path::Path;
+use crate::pathutils::format_path;
 
 #[derive(Debug)]
 pub struct WindowsCmd;
@@ -20,7 +21,7 @@ impl Shell for WindowsCmd {
         let new_path = new_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("SET PATH={}", new_path))
+        Ok(format!("SET PATH={}", &format_path(new_path, "cmd")))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -40,6 +41,10 @@ impl Shell for WindowsCmd {
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read path to cd.cmd"))?;
         Ok(format!("doskey cd={} $*", path,))
+    }
+
+    fn to_string(&self) -> String {
+        String::from("cmd")
     }
 }
 

@@ -3,6 +3,7 @@ use crate::version_file_strategy::VersionFileStrategy;
 use super::shell::Shell;
 use indoc::{formatdoc, indoc};
 use std::path::Path;
+use crate::pathutils::format_path;
 
 #[derive(Debug)]
 pub struct Bash;
@@ -16,7 +17,7 @@ impl Shell for Bash {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("export PATH={:?}:$PATH", path))
+        Ok(format!("export PATH={:?}:$PATH", &format_path(path, "bash")))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -50,5 +51,9 @@ impl Shell for Bash {
             "#,
             autoload_hook = autoload_hook
         ))
+    }
+
+    fn to_string(&self) -> String {
+        String::from("bash")
     }
 }

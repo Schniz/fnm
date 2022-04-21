@@ -21,6 +21,7 @@ mod http;
 mod installed_versions;
 mod lts;
 mod path_ext;
+mod pathutils;
 mod remote_node_index;
 mod shell;
 mod system_info;
@@ -35,6 +36,7 @@ mod version_files;
 mod log_level;
 mod default_version;
 mod directories;
+
 
 fn main() {
     env_logger::init();

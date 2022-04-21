@@ -9,6 +9,7 @@ pub trait Shell: Debug {
         None
     }
     fn to_clap_shell(&self) -> clap_complete::Shell;
+    fn to_string(&self) -> String;
 }
 
 #[cfg(windows)]

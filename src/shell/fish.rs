@@ -3,6 +3,7 @@ use crate::version_file_strategy::VersionFileStrategy;
 use super::shell::Shell;
 use indoc::{formatdoc, indoc};
 use std::path::Path;
+use crate::pathutils::format_path;
 
 #[derive(Debug)]
 pub struct Fish;
@@ -16,7 +17,7 @@ impl Shell for Fish {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("set -gx PATH {:?} $PATH;", path))
+        Ok(format!("set -gx PATH {:?} $PATH;", &format_path(path, "fish")))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -45,5 +46,9 @@ impl Shell for Fish {
             "#,
             autoload_hook = autoload_hook
         ))
+    }
+
+    fn to_string(&self) -> String {
+        String::from("fish")
     }
 }

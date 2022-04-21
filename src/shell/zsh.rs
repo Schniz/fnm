@@ -3,8 +3,9 @@ use crate::version_file_strategy::VersionFileStrategy;
 use super::shell::Shell;
 use indoc::{formatdoc, indoc};
 use std::path::Path;
+use crate::pathutils::format_path;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Zsh;
 
 impl Shell for Zsh {
@@ -16,7 +17,7 @@ impl Shell for Zsh {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Path is not valid UTF-8"))?;
-        Ok(format!("export PATH={:?}:$PATH", path))
+        Ok(format!("export PATH={:?}:$PATH", &format_path(path, "zsh")))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -50,5 +51,9 @@ impl Shell for Zsh {
             "#,
             autoload_hook = autoload_hook
         ))
+    }
+
+    fn to_string(&self) -> String {
+        String::from("zsh")
     }
 }
