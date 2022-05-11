@@ -1,7 +1,6 @@
 #![cfg(not(unix))]
 
 use crate::shell::Shell;
-use log::debug;
 use std::ffi::OsStr;
 use sysinfo::{ProcessExt, System, SystemExt};
 
