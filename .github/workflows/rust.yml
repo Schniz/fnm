@@ -138,7 +138,7 @@ jobs:
     steps:
     - name: Set up QEMU
       id: qemu
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
