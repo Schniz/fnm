@@ -8,8 +8,8 @@
     "build": "rm -rf public; mkdir public; cp ../.ci/install.sh ./public/install.txt"
   },
   "devDependencies": {
-    "@vercel/node": "1.14.0",
-    "typescript": "4.6.3",
-    "vercel": "24.0.1"
+    "@vercel/node": "1.15.1",
+    "typescript": "4.6.4",
+    "vercel": "24.2.1"
   }
 }

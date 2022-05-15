@@ -138,7 +138,7 @@ jobs:
     steps:
     - name: Set up QEMU
       id: qemu
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
@@ -151,7 +151,7 @@ jobs:
       run: |
         sudo apt-get install -y upx
         upx target/$RUST_TARGET/release/fnm
-    - uses: uraimo/run-on-arch-action@v2.1.2
+    - uses: uraimo/run-on-arch-action@v2.2.0
       name: Sanity test
       with:
         arch: ${{matrix.docker_platform}}
