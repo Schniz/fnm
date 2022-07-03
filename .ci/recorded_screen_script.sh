@@ -1,16 +1,19 @@
-#!/bin/zsh
+#!/bin/bash
 
 set -e
 
-GAL_PROMPT_PREFIX='\e[34m✡ \e[0m'
+export PATH=$PATH_ADDITION:$PATH
+
+GAL_PROMPT_PREFIX="\e[34m✡\e[m  "
 
 function type() {
   printf $GAL_PROMPT_PREFIX
-  echo $* | pv -qL $[10+(-2 + RANDOM%5)]
+  echo -n " "
+  echo $* | node .ci/type-letters.js
 }
 
 type 'eval "$(fnm env)"'
-eval `fnm env`
+eval "$(fnm env)"
 
 type 'fnm --version'
 fnm --version
