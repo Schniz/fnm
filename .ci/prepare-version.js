@@ -7,25 +7,19 @@ const cp = require("child_process");
 const path = require("path");
 const cmd = require("cmd-ts");
 const toml = require("toml");
+const assert = require("assert");
 
 const CARGO_TOML_PATH = path.join(__dirname, "../Cargo.toml");
 
 const command = cmd.command({
   name: "prepare-version",
   description: "Prepare a new fnm version",
-  args: {
-    versionType: cmd.positional({
-      displayName: "version type",
-      type: cmd.oneOf(["patch", "minor", "major"]),
-    }),
-  },
-  async handler({ versionType }) {
-    exec("git pull --ff-only");
-    const nextVersion = updateCargoToml(versionType);
+  args: {},
+  async handler({}) {
+    updateCargoToml(await getPackageVersion());
     exec("cargo build --release");
     exec("yarn generate-command-docs --binary-path=./target/release/fnm");
-    exec("./docs/record_screen.sh");
-    exec(`yarn changelog ${nextVersion}`);
+    exec("./.ci/record_screen.sh");
   },
 });
 
@@ -35,14 +29,23 @@ cmd.run(cmd.binary(command), process.argv);
 // Helper functions //
 //////////////////////
 
-function updateCargoToml(versionType) {
+/**
+ * @returns {Promise<string>}
+ */
+async function getPackageVersion() {
+  const pkgJson = await fs.promises.readFile(
+    path.join(__dirname, "../package.json"),
+    "utf8"
+  );
+  const version = JSON.parse(pkgJson).version;
+  assert(version, "package.json version is not set");
+  return version;
+}
+
+function updateCargoToml(nextVersion) {
   const cargoToml = fs.readFileSync(CARGO_TOML_PATH, "utf8");
   const cargoTomlContents = toml.parse(cargoToml);
   const currentVersion = cargoTomlContents.package.version;
-  const nextVersion = changeVersion(
-    versionType,
-    cargoTomlContents.package.version
-  );
 
   const newToml = cargoToml.replace(
     `version = "${currentVersion}"`,
