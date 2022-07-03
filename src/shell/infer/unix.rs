@@ -69,7 +69,7 @@ fn get_process_info(pid: u32) -> Result<ProcessInfo, ProcessInfoError> {
         .next()
         .ok_or_else(|| Error::from(ErrorKind::NotFound))??;
 
-    let mut parts = line.trim().split_whitespace();
+    let mut parts = line.split_whitespace();
     let ppid = parts.next().ok_or_else(|| ProcessInfoError::Parse {
         expectation: "Can't read the ppid from ps, should be the first item in the table",
         got: line.to_string(),
