@@ -30,7 +30,7 @@ url = "2.2.2"
 sysinfo = "0.24.5"
 thiserror = "1.0.31"
 clap_complete = "3.2.3"
-anyhow = "1.0.57"
+anyhow = "1.0.58"
 
 [dev-dependencies]
 pretty_assertions = "1.2.1"
