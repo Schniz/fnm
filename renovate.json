@@ -7,9 +7,12 @@
         "groupName": "all non-major dependencies",
         "groupSlug": "all-minor-patch"
       }
+    },
+    {
+      "matchPackagePatterns": ["uraimo/run-on-arch-action"],
+      "matchManagers": ["github-actions"],
+      "allowedVersions": "2.1.2"
     }
   ],
-  "extends": [
-    "config:base"
-  ]
+  "extends": ["config:base"]
 }
