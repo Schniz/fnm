@@ -152,13 +152,11 @@ mod tests {
     #[test_log::test]
     fn test_installing_npm() {
         let installations_dir = tempdir().unwrap();
-        let npm_path = install_in(installations_dir.path()).join(if cfg!(windows) {
-            "npm.cmd"
-        } else {
-            "npm"
-        });
+        let bin_dir = install_in(installations_dir.path());
+        let npm_path = bin_dir.join(if cfg!(windows) { "npm.cmd" } else { "npm" });
 
         let stdout = duct::cmd(npm_path.to_str().unwrap(), vec!["--version"])
+            .env("PATH", bin_dir)
             .stdout_capture()
             .run()
             .expect("Can't run npm")
