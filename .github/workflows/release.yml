@@ -21,7 +21,7 @@ jobs:
 
     - uses: Swatinem/rust-cache@v1
 
-    - uses: pnpm/action-setup@v2.2.1
+    - uses: pnpm/action-setup@v2.2.2
       with:
         run_install: false
 
