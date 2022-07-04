@@ -1,5 +1,11 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.31.1
+
+### Patch Changes
+
+- 6e6bdd8: Add changesets
+
 #### Bugfix 🐛
 
 - [#671](https://github.com/Schniz/fnm/pull/671) fix native-creds errors (using the unpublished version of reqwest) ([@Schniz](https://github.com/Schniz))
@@ -73,7 +79,7 @@
 #### New Feature 🎉
 
 - [#607](https://github.com/Schniz/fnm/pull/607) Allow recursive version lookups ([@Schniz](https://github.com/Schniz))
-- [#416](https://github.com/Schniz/fnm/pull/416) Respect $XDG_DATA_HOME ([@samhh](https://github.com/samhh))
+- [#416](https://github.com/Schniz/fnm/pull/416) Respect \$XDG_DATA_HOME ([@samhh](https://github.com/samhh))
 
 #### Bugfix 🐛
 
@@ -289,7 +295,7 @@
 #### Bugfix 🐛
 
 - [#368](https://github.com/Schniz/fnm/pull/368) Update 'ring' to '0.16.17' ([@gucheen](https://github.com/gucheen))
-- [#347](https://github.com/Schniz/fnm/pull/347) Check if $ZDOTDIR exists to find correct path to .zshrc ([@thales-maciel](https://github.com/thales-maciel))
+- [#347](https://github.com/Schniz/fnm/pull/347) Check if \$ZDOTDIR exists to find correct path to .zshrc ([@thales-maciel](https://github.com/thales-maciel))
 
 #### Documentation 📝
 
