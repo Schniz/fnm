@@ -4,7 +4,7 @@ use super::shell::Shell;
 use anyhow::{Context, Result};
 use indoc::{formatdoc, indoc};
 use std::path::Path;
-use crate::cygpath::cygpath;
+use crate::unixpath::to_unix_path;
 
 #[derive(Debug)]
 pub struct Fish;
@@ -50,10 +50,6 @@ impl Shell for Fish {
     }
 
     fn format_path(&self, path: &str) -> Result<String> {
-        if cfg!(windows) {
-            cygpath(path).context("Failed to convert Windows path to Unix")
-        } else {
-            Ok(path.to_string())
-        }
+        to_unix_path(path).context("Failed to convert Windows path to Unix")
     }
 }
