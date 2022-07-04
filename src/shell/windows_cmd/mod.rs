@@ -1,6 +1,6 @@
 use super::shell::Shell;
+use anyhow::Result;
 use std::path::Path;
-use crate::pathutils::format_path;
 
 #[derive(Debug)]
 pub struct WindowsCmd;
@@ -11,7 +11,7 @@ impl Shell for WindowsCmd {
         panic!("Shell completion is not supported for Windows Command Prompt. Maybe try using PowerShell for a better experience?");
     }
 
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
+    fn path(&self, path: &Path) -> Result<String> {
         let current_path =
             std::env::var_os("path").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;
         let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
@@ -21,14 +21,14 @@ impl Shell for WindowsCmd {
         let new_path = new_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("SET PATH={}", &format_path(new_path, "cmd")))
+        Ok(format!("SET PATH={}", &self.format_path(new_path)?))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("SET {}={}", name, value)
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> Result<String> {
         let path = config.base_dir_with_default().join("cd.cmd");
         create_cd_file_at(&path).map_err(|source| {
             anyhow::anyhow!(
@@ -43,8 +43,8 @@ impl Shell for WindowsCmd {
         Ok(format!("doskey cd={} $*", path,))
     }
 
-    fn to_string(&self) -> String {
-        String::from("cmd")
+    fn format_path(&self, path: &str) -> Result<String> {
+        Ok(path.to_string())
     }
 }
 

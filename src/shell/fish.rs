@@ -1,9 +1,10 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
 use super::shell::Shell;
+use anyhow::{Context, Result};
 use indoc::{formatdoc, indoc};
 use std::path::Path;
-use crate::pathutils::format_path;
+use crate::cygpath::cygpath;
 
 #[derive(Debug)]
 pub struct Fish;
@@ -17,7 +18,7 @@ impl Shell for Fish {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("set -gx PATH {:?} $PATH;", &format_path(path, "fish")))
+        Ok(format!("set -gx PATH {} $PATH;", &self.format_path(path)?))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -48,7 +49,11 @@ impl Shell for Fish {
         ))
     }
 
-    fn to_string(&self) -> String {
-        String::from("fish")
+    fn format_path(&self, path: &str) -> Result<String> {
+        if cfg!(windows) {
+            cygpath(path).context("Failed to convert Windows path to Unix")
+        } else {
+            Ok(path.to_string())
+        }
     }
 }

@@ -3,9 +3,10 @@ use crate::version_file_strategy::VersionFileStrategy;
 use super::shell::Shell;
 use indoc::{formatdoc, indoc};
 use std::path::Path;
-use crate::pathutils::format_path;
+use anyhow::{Context, Result};
+use crate::cygpath::cygpath;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Zsh;
 
 impl Shell for Zsh {
@@ -13,11 +14,11 @@ impl Shell for Zsh {
         clap_complete::Shell::Zsh
     }
 
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
+    fn path(&self, path: &Path) -> Result<String> {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Path is not valid UTF-8"))?;
-        Ok(format!("export PATH={:?}:$PATH", &format_path(path, "zsh")))
+        Ok(format!("export PATH={}:$PATH", &self.format_path(path)?))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -53,7 +54,11 @@ impl Shell for Zsh {
         ))
     }
 
-    fn to_string(&self) -> String {
-        String::from("zsh")
+    fn format_path(&self, path: &str) -> Result<String> {
+        if cfg!(windows) {
+            cygpath(path).context("Failed to convert Windows path to Unix")
+        } else {
+            Ok(path.to_string())
+        }
     }
 }

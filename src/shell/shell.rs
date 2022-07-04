@@ -1,15 +1,16 @@
 use std::fmt::Debug;
 use std::path::Path;
+use anyhow::Result;
 
 pub trait Shell: Debug {
-    fn path(&self, path: &Path) -> anyhow::Result<String>;
+    fn path(&self, path: &Path) -> Result<String>;
     fn set_env_var(&self, name: &str, value: &str) -> String;
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String>;
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> Result<String>;
     fn rehash(&self) -> Option<String> {
         None
     }
     fn to_clap_shell(&self) -> clap_complete::Shell;
-    fn to_string(&self) -> String;
+    fn format_path(&self, path: &str) -> Result<String>;
 }
 
 #[cfg(windows)]

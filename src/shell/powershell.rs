@@ -1,9 +1,9 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
 use super::Shell;
+use anyhow::{Result};
 use indoc::{formatdoc, indoc};
 use std::path::Path;
-use crate::pathutils::format_path;
 
 #[derive(Debug)]
 pub struct PowerShell;
@@ -19,7 +19,7 @@ impl Shell for PowerShell {
         let new_path = new_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read PATH"))?;
-        Ok(self.set_env_var("PATH", &format_path(new_path, "pwsh")))
+        Ok(self.set_env_var("PATH", &self.format_path(new_path)?))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -50,7 +50,7 @@ impl Shell for PowerShell {
         clap_complete::Shell::PowerShell
     }
 
-    fn to_string(&self) -> String {
-        String::from("pwsh")
+    fn format_path(&self, path: &str) -> Result<String> {
+        Ok(path.to_string())
     }
 }

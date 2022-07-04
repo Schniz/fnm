@@ -21,7 +21,7 @@ mod http;
 mod installed_versions;
 mod lts;
 mod path_ext;
-mod pathutils;
+mod cygpath;
 mod remote_node_index;
 mod shell;
 mod system_info;

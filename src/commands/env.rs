@@ -7,9 +7,7 @@ use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
 use std::fmt::Debug;
-use std::process::Command as SystemCommand;
 use thiserror::Error;
-use crate::pathutils::format_path;
 
 #[derive(clap::Parser, Debug, Default)]
 pub struct Env {
@@ -74,7 +72,7 @@ impl Command for Env {
         println!("{}", shell.path(&binary_path)?);
         println!(
             "{}",
-            shell.set_env_var("FNM_MULTISHELL_PATH", &format_path(multishell_path.to_str().unwrap(), &shell.to_string()))
+            shell.set_env_var("FNM_MULTISHELL_PATH", &shell.format_path(multishell_path.to_str().unwrap())?)
         );
         println!(
             "{}",
@@ -85,7 +83,7 @@ impl Command for Env {
         );
         println!(
             "{}",
-            shell.set_env_var("FNM_DIR", &format_path(config.base_dir_with_default().to_str().unwrap(), &shell.to_string()))
+            shell.set_env_var("FNM_DIR", &shell.format_path(config.base_dir_with_default().to_str().unwrap())?)
         );
         println!(
             "{}",
