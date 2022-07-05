@@ -92,11 +92,6 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-14.11.2.tgz#2de1ed6670439387da1c9f549a2ade2b0a799256"
   integrity sha512-jiE3QIxJ8JLNcb1Ps6rDbysDhN4xa8DJJvuC9prr6w+1tIh+QAbYyNF3tyiZNLDBIuBCf4KEcV2UvQm/V60xfA==
 
-"@vercel/build-utils@4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-4.2.1.tgz#9476aaacafd5afbd2fe467a4153d1e0b7ec20ec8"
-  integrity sha512-T0w/xzDpDhqrSmguKIVEjpnF7lY5IdcpJnI1UrZoi0r3ft/jaM7X+a+7X9Wk7z/IHuA6e/xqjVgFRnrvS84Gsw==
-
 "@vercel/build-utils@5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-5.0.0.tgz#c80be892316f41ff53eaa879032761f618ac7b7a"
@@ -132,22 +127,6 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@vercel/node-bridge/-/node-bridge-3.0.0.tgz#443655b74713ec65531726fb5a30c5c528c804bf"
   integrity sha512-TNQK6cufwrhd8ASDk5YHHenH8Xhp9sY8xUjOTKnQQI37KLk+Sw2HlHhT5rzUFN23ahosUlkY8InwtYUmSNb9kw==
-
-"@vercel/node@2.3.3":
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/@vercel/node/-/node-2.3.3.tgz#f2d6863ce543f901fff9bc193850b1a040e9f4c0"
-  integrity sha512-lCgiONXiDTK6fbfNnG3c3rZts0SwJFScux0i8u7o6o8TITXlYoojhJWd+WSsQRlaMYBciMXbEDdnNwdd7qbAow==
-  dependencies:
-    "@types/node" "*"
-    "@vercel/build-utils" "4.2.1"
-    "@vercel/node-bridge" "3.0.0"
-    "@vercel/static-config" "2.0.1"
-    edge-runtime "1.0.1"
-    esbuild "0.14.47"
-    exit-hook "2.2.1"
-    node-fetch "2.6.1"
-    ts-node "8.9.1"
-    typescript "4.3.4"
 
 "@vercel/node@2.4.0":
   version "2.4.0"
