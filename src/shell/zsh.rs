@@ -3,7 +3,8 @@ use crate::version_file_strategy::VersionFileStrategy;
 use super::shell::Shell;
 use indoc::{formatdoc, indoc};
 use std::path::Path;
-use anyhow::{Context, Result};
+use anyhow::Result;
+use crate::shell::PathFormatter;
 use crate::unixpath::to_unix_path;
 
 #[derive(Debug)]
@@ -14,11 +15,8 @@ impl Shell for Zsh {
         clap_complete::Shell::Zsh
     }
 
-    fn path(&self, path: &Path) -> Result<String> {
-        let path = path
-            .to_str()
-            .ok_or_else(|| anyhow::anyhow!("Path is not valid UTF-8"))?;
-        Ok(format!("export PATH={}:$PATH", &self.format_path(path)?))
+    fn path(&self, path: &Path, formatter: &PathFormatter) -> Result<String> {
+        Ok(format!("export PATH={}:$PATH", &self.format_path(path, formatter)?))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -54,7 +52,7 @@ impl Shell for Zsh {
         ))
     }
 
-    fn format_path(&self, path: &str) -> Result<String> {
-        to_unix_path(path).context("Failed to convert Windows path to Unix")
+    fn format_path(&self, path: &Path, formatter: &PathFormatter) -> Result<String> {
+        to_unix_path(path, formatter)
     }
 }

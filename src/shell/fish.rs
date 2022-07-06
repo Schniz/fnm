@@ -1,9 +1,10 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
 use super::shell::Shell;
-use anyhow::{Context, Result};
+use anyhow::Result;
 use indoc::{formatdoc, indoc};
 use std::path::Path;
+use crate::shell::PathFormatter;
 use crate::unixpath::to_unix_path;
 
 #[derive(Debug)]
@@ -14,18 +15,15 @@ impl Shell for Fish {
         clap_complete::Shell::Fish
     }
 
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
-        let path = path
-            .to_str()
-            .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("set -gx PATH {} $PATH;", &self.format_path(path)?))
+    fn path(&self, path: &Path, formatter: &PathFormatter) -> Result<String> {
+        Ok(format!("set -gx PATH {} $PATH;", &self.format_path(path, formatter)?))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("set -gx {name} {value:?};", name = name, value = value)
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"
@@ -49,7 +47,7 @@ impl Shell for Fish {
         ))
     }
 
-    fn format_path(&self, path: &str) -> Result<String> {
-        to_unix_path(path).context("Failed to convert Windows path to Unix")
+    fn format_path(&self, path: &Path, formatter: &PathFormatter) -> Result<String> {
+        to_unix_path(path, formatter)
     }
 }

@@ -4,10 +4,11 @@ use crate::directories;
 use crate::fs::symlink_dir;
 use crate::outln;
 use crate::path_ext::PathExt;
-use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
+use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS, PATH_FORMATTERS, PathFormatter};
 use colored::Colorize;
 use std::fmt::Debug;
 use thiserror::Error;
+use crate::unixpath::infer_formatter;
 
 #[derive(clap::Parser, Debug, Default)]
 pub struct Env {
@@ -21,6 +22,10 @@ pub struct Env {
     /// Print the script to change Node versions every directory change
     #[clap(long)]
     use_on_cd: bool,
+    /// Unix path formatter to use, cygwin by default
+    #[clap(long)]
+    #[clap(possible_values = PATH_FORMATTERS)]
+    path_formatter: Option<PathFormatter>,
 }
 
 fn generate_symlink_path() -> String {
@@ -63,16 +68,21 @@ impl Command for Env {
             .shell
             .or_else(&infer_shell)
             .ok_or(Error::CantInferShell)?;
+
+        let path_formatter = self
+            .path_formatter
+            .unwrap_or_else(&infer_formatter);
+
         let multishell_path = make_symlink(config)?;
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
         } else {
             multishell_path.join("bin")
         };
-        println!("{}", shell.path(&binary_path)?);
+        println!("{}", shell.path(&binary_path, &path_formatter)?);
         println!(
             "{}",
-            shell.set_env_var("FNM_MULTISHELL_PATH", &shell.format_path(multishell_path.to_str().unwrap())?)
+            shell.set_env_var("FNM_MULTISHELL_PATH", &shell.format_path(&multishell_path, &path_formatter)?)
         );
         println!(
             "{}",
@@ -83,7 +93,7 @@ impl Command for Env {
         );
         println!(
             "{}",
-            shell.set_env_var("FNM_DIR", &shell.format_path(config.base_dir_with_default().to_str().unwrap())?)
+            shell.set_env_var("FNM_DIR", &shell.format_path(&config.base_dir_with_default(), &path_formatter)?)
         );
         println!(
             "{}",

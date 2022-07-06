@@ -1,31 +1,50 @@
-use anyhow::{Context, Result};
-use std::io::ErrorKind;
-use std::process::Command;
+use crate::shell::PathFormatter;
+use anyhow::Result;
+use std::path::Path;
+use crate::wsl::is_wsl;
 
 #[cfg(windows)]
-pub fn to_unix_path(path: &str) -> Result<String> {
-    // TODO: take parameter to decide between cygpath and wslpath
-    let output = Command::new("cygpath")
-        .arg(path)
-        .output()
-        .or_else(|err| match err.kind() {
-            // try wslpath if cygpath is not found
-            // currently this breaks when WSL is launched from a cygwin-based shell
-            ErrorKind::NotFound => Command::new("wsl")
-                .arg("-e")
-                .arg("wslpath")
-                .arg(path)
-                .output(),
-            _ => Err(err),
-        })
-        .context("Failed to convert Windows path to Unix")?;
+pub fn to_unix_path(path: &Path, formatter: &PathFormatter) -> Result<String> {
+    use anyhow::anyhow;
+    use std::process::Command;
+
+    if let PathFormatter::None = formatter {
+        return Ok(path.to_str().unwrap().to_string());
+    }
+
+    let output = match formatter {
+        PathFormatter::Cygwin => Command::new("cygpath").arg(path).output(),
+        PathFormatter::Wsl => Command::new("wsl")
+            .arg("-e")
+            .arg("wslpath")
+            .arg(path)
+            .output(),
+        _ => unreachable!("formatter cannot be another variant"),
+    }
+    .map_err(|err| anyhow!("Failed to convert Windows path to Unix: {:?}", err))?;
 
     Ok(std::str::from_utf8(output.stdout.as_slice())?
         .trim()
         .to_string())
 }
 
-#[cfg(not(windows))]
-pub fn to_unix_path(path: &str) -> Result<String> {
-    Ok(path.to_string())
+#[cfg(unix)]
+#[allow(clippy::unnecessary_wraps)]
+pub fn to_unix_path(path: &Path, formatter: PathFormatter) -> Result<String> {
+    Ok(path.to_str().unwrap().to_string())
+}
+
+#[cfg(windows)]
+pub fn infer_formatter() -> PathFormatter {
+    if is_wsl() {
+        PathFormatter::Wsl
+    } else {
+        PathFormatter::Cygwin
+    }
+}
+
+#[cfg(unix)]
+pub fn infer_formatter() -> PathFormatter {
+    // already on unix
+    PathFormatter::None
 }

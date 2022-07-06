@@ -36,6 +36,7 @@ mod version_files;
 mod log_level;
 mod default_version;
 mod directories;
+mod wsl;
 
 
 fn main() {

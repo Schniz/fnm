@@ -1,6 +1,7 @@
 use super::shell::Shell;
 use anyhow::Result;
 use std::path::Path;
+use crate::shell::PathFormatter;
 
 #[derive(Debug)]
 pub struct WindowsCmd;
@@ -11,7 +12,7 @@ impl Shell for WindowsCmd {
         panic!("Shell completion is not supported for Windows Command Prompt. Maybe try using PowerShell for a better experience?");
     }
 
-    fn path(&self, path: &Path) -> Result<String> {
+    fn path(&self, path: &Path, _formatter: &PathFormatter) -> Result<String> {
         let current_path =
             std::env::var_os("path").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;
         let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
@@ -21,7 +22,7 @@ impl Shell for WindowsCmd {
         let new_path = new_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("SET PATH={}", &self.format_path(new_path)?))
+        Ok(format!("SET PATH={}", new_path))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -43,12 +44,13 @@ impl Shell for WindowsCmd {
         Ok(format!("doskey cd={} $*", path,))
     }
 
-    fn format_path(&self, path: &str) -> Result<String> {
-        Ok(path.to_string())
+    fn format_path(&self, path: &Path, _formatter: &PathFormatter) -> Result<String> {
+        // cmd only runs on Windows, so we don't need to do path conversion
+        Ok(path.to_str().unwrap().to_string())
     }
 }
 
-fn create_cd_file_at(path: &std::path::Path) -> std::io::Result<()> {
+fn create_cd_file_at(path: &Path) -> std::io::Result<()> {
     use std::io::Write;
     let cmd_contents = include_bytes!("./cd.cmd");
     let mut file = std::fs::File::create(path)?;
