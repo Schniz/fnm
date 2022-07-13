@@ -20,7 +20,7 @@
     }
   },
   "devDependencies": {
-    "@changesets/cli": "2.23.0",
+    "@changesets/cli": "2.23.2",
     "cmd-ts": "0.11.0",
     "execa": "5.1.1",
     "lerna-changelog": "2.2.0",
