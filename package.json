@@ -4,7 +4,7 @@
   "private": true,
   "repository": "git@github.com:Schniz/fnm.git",
   "author": "Gal Schlezinger <gal@spitfire.co.il>",
-  "packageManager": "pnpm@7.5.0",
+  "packageManager": "pnpm@7.5.2",
   "license": "GPLv3",
   "scripts": {
     "version:prepare": "changeset version && ./.ci/prepare-version.js",
