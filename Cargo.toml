@@ -48,3 +48,17 @@ csv = "1.1.6"
 junction = "0.2.0"
 
 [features]
+
+[profile.release]
+lto = "fat"
+strip = "symbols"
+codegen-units = 1
+opt-level = 3
+
+[profile.release.build-override]
+opt-level = 3
+codegen-units = 1
+
+[profile.release.package."*"]
+codegen-units = 1
+opt-level = 3
