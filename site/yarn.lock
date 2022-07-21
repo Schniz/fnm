@@ -97,6 +97,11 @@
   resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-5.0.0.tgz#c80be892316f41ff53eaa879032761f618ac7b7a"
   integrity sha512-RS2NWTit4EqIyzrqD7HqRKBcXn8UVEBJb7lJKmME63LiOWX5lWOO2VHZQUPJ7alWOSKUZnQv0MwkIEtkiPM3+g==
 
+"@vercel/build-utils@5.0.4":
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-5.0.4.tgz#005c8d65a5242ec8152f4416c2a9c1bc4e26ecbf"
+  integrity sha512-M6zNCUZxAFWC+K9ezcXtwSgIrBGjvz545h2UWSP25z2jUEzOBijpAkYJ5Cdek7bIloRcBUeXfWQDsTl8Q7yuwQ==
+
 "@vercel/go@2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@vercel/go/-/go-2.0.4.tgz#4c82cfd57121d64df69697f3052beb55e07468b0"
@@ -141,6 +146,22 @@
     esbuild "0.14.47"
     exit-hook "2.2.1"
     node-fetch "2.6.1"
+    ts-node "8.9.1"
+    typescript "4.3.4"
+
+"@vercel/node@2.4.5":
+  version "2.4.5"
+  resolved "https://registry.yarnpkg.com/@vercel/node/-/node-2.4.5.tgz#766883062d7e263051530a780aa73ff9b089dccc"
+  integrity sha512-quPIJZAc0IujL3AyyiTQ1GvQV/0j7GJ5165uv5U0OsBUHGhmie6YpW+wFtdsMaRSEy/sv7EfylztxwTM6Tsfrw==
+  dependencies:
+    "@types/node" "*"
+    "@vercel/build-utils" "5.0.4"
+    "@vercel/node-bridge" "3.0.0"
+    "@vercel/static-config" "2.0.1"
+    edge-runtime "1.0.1"
+    esbuild "0.14.47"
+    exit-hook "2.2.1"
+    node-fetch "2.6.7"
     ts-node "8.9.1"
     typescript "4.3.4"
 
@@ -1060,7 +1081,7 @@ node-fetch@2.6.1:
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
-node-fetch@^2.6.7:
+node-fetch@2.6.7, node-fetch@^2.6.7:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
