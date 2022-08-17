@@ -6,6 +6,7 @@ use crate::outln;
 use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
+use std::collections::HashMap;
 use std::fmt::Debug;
 use thiserror::Error;
 
@@ -48,17 +49,6 @@ fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
     }
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
-#[allow(non_snake_case)]
-struct EnvVars {
-    FNM_MULTISHELL_PATH: String,
-    FNM_VERSION_FILE_STRATEGY: String,
-    FNM_DIR: String,
-    FNM_LOGLEVEL: String,
-    FNM_NODE_DIST_MIRROR: String,
-    FNM_ARCH: String,
-}
-
 impl Command for Env {
     type Error = Error;
 
@@ -80,14 +70,29 @@ impl Command for Env {
             multishell_path.join("bin")
         };
 
-        let env_vars = EnvVars{
-            FNM_MULTISHELL_PATH: multishell_path.to_str().unwrap().to_owned(),
-            FNM_VERSION_FILE_STRATEGY: config.version_file_strategy().as_str().to_owned(),
-            FNM_DIR: config.base_dir_with_default().to_str().unwrap().to_owned(),
-            FNM_LOGLEVEL: <&'static str>::from(config.log_level().clone()).to_owned(),
-            FNM_NODE_DIST_MIRROR: config.node_dist_mirror.as_str().to_owned(),
-            FNM_ARCH: config.arch.to_string(),
-        };
+        let env_vars = HashMap::from([
+            (
+                "FNM_MULTISHELL_PATH",
+                multishell_path.to_str().unwrap().to_owned(),
+            ),
+            (
+                "FNM_VERSION_FILE_STRATEGY",
+                config.version_file_strategy().as_str().to_owned(),
+            ),
+            (
+                "FNM_DIR",
+                config.base_dir_with_default().to_str().unwrap().to_owned(),
+            ),
+            (
+                "FNM_LOGLEVEL",
+                <&'static str>::from(config.log_level().clone()).to_owned(),
+            ),
+            (
+                "FNM_NODE_DIST_MIRROR",
+                config.node_dist_mirror.as_str().to_owned(),
+            ),
+            ("FNM_ARCH", config.arch.to_string()),
+        ]);
 
         if self.json {
             println!("{}", serde_json::to_string(&env_vars).unwrap());
@@ -96,14 +101,12 @@ impl Command for Env {
                 .shell
                 .or_else(&infer_shell)
                 .ok_or(Error::CantInferShell)?;
+
             println!("{}", shell.path(&binary_path)?);
 
-            println!("{}", shell.set_env_var("FNM_MULTISHELL_PATH", &env_vars.FNM_MULTISHELL_PATH));
-            println!("{}", shell.set_env_var("FNM_VERSION_FILE_STRATEGY", &env_vars.FNM_VERSION_FILE_STRATEGY));
-            println!("{}", shell.set_env_var("FNM_DIR", &env_vars.FNM_DIR));
-            println!("{}", shell.set_env_var("FNM_LOGLEVEL", &env_vars.FNM_LOGLEVEL));
-            println!("{}", shell.set_env_var("FNM_NODE_DIST_MIRROR", &env_vars.FNM_NODE_DIST_MIRROR));
-            println!("{}", shell.set_env_var("FNM_ARCH", &env_vars.FNM_ARCH));
+            for (name, value) in env_vars.iter() {
+                println!("{}", shell.set_env_var(name, value));
+            }
 
             if self.use_on_cd {
                 println!("{}", shell.use_on_cd(config)?);
