@@ -1,4 +1,7 @@
+use crate::version_file_strategy::VersionFileStrategy;
+
 use super::shell::Shell;
+use indoc::formatdoc;
 use std::path::Path;
 
 #[derive(Debug)]
@@ -20,7 +23,31 @@ impl Shell for Nushell {
         format!("let-env {} = {:?}", name, value)
     }
 
-    fn use_on_cd(&self, _config: &crate::config::FnmConfig) -> anyhow::Result<String> {
-        panic!("TODO: sypport use_on_cd for nushell")
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+        Ok(match config.version_file_strategy() {
+            VersionFileStrategy::Local => formatdoc!(
+                r#"
+                    let-env config = ($env.config | upsert hooks.env_change.PWD {{
+                        [
+                            {{
+                                condition: {{|_, after| ($after | path join .node-version | path exists) }}
+                                code: "fnm use --silent-if-unchanged"
+                            }}
+                        ]
+                    }})
+                "#
+            ),
+            VersionFileStrategy::Recursive => formatdoc!(
+                r#"
+                    let-env config = ($env.config | upsert hooks.env_change.PWD {{
+                        [
+                            {{
+                                code: "fnm use --silent-if-unchanged"
+                            }}
+                        ]
+                    }})
+                "#
+            ),
+        })
     }
 }
