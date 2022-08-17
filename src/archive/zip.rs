@@ -42,7 +42,7 @@ impl<R: Read> Extract for Zip<R> {
                 }
             }
 
-            if (&*file.name()).ends_with('/') {
+            if file.name().ends_with('/') {
                 debug!(
                     "File {} extracted to \"{}\"",
                     i,
