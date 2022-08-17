@@ -21,6 +21,10 @@ impl Shell for PowerShell {
         Ok(self.set_env_var("PATH", new_path))
     }
 
+    fn preferred_file_extension(&self) -> &'static str {
+        ".ps1"
+    }
+
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!(r#"$env:{} = "{}""#, name, value)
     }

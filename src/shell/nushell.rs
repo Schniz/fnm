@@ -19,6 +19,10 @@ impl Shell for Nushell {
         Ok(format!("let-env PATH = ($env.PATH | prepend {:?})", path))
     }
 
+    fn preferred_file_extension(&self) -> &'static str {
+        ".nu"
+    }
+
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("let-env {} = {:?}", name, value)
     }

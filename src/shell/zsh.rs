@@ -19,6 +19,10 @@ impl Shell for Zsh {
         Ok(format!("export PATH={:?}:$PATH", path))
     }
 
+    fn preferred_file_extension(&self) -> &'static str {
+        ".zsh"
+    }
+
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("export {}={:?}", name, value)
     }

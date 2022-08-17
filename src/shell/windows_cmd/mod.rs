@@ -23,6 +23,10 @@ impl Shell for WindowsCmd {
         Ok(format!("SET PATH={}", new_path))
     }
 
+    fn preferred_file_extension(&self) -> &'static str {
+        ".cmd"
+    }
+
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("SET {}={}", name, value)
     }

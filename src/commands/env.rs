@@ -7,6 +7,7 @@ use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
 use std::fmt::Debug;
+use std::fs::File;
 use thiserror::Error;
 
 #[derive(clap::Parser, Debug, Default)]
@@ -15,6 +16,9 @@ pub struct Env {
     #[clap(long)]
     #[clap(possible_values = AVAILABLE_SHELLS)]
     shell: Option<Box<dyn Shell>>,
+    #[clap(long)]
+    /// Creates and writes output to temporary file and prints temporary file path
+    file: bool,
     /// Deprecated. This is the default now.
     #[clap(long, hide = true)]
     multi: bool,
@@ -69,40 +73,39 @@ impl Command for Env {
         } else {
             multishell_path.join("bin")
         };
-        println!("{}", shell.path(&binary_path)?);
-        println!(
-            "{}",
-            shell.set_env_var("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap())
-        );
-        println!(
-            "{}",
-            shell.set_env_var(
-                "FNM_VERSION_FILE_STRATEGY",
-                config.version_file_strategy().as_str()
-            )
-        );
-        println!(
-            "{}",
-            shell.set_env_var("FNM_DIR", config.base_dir_with_default().to_str().unwrap())
-        );
-        println!(
-            "{}",
-            shell.set_env_var("FNM_LOGLEVEL", config.log_level().clone().into())
-        );
-        println!(
-            "{}",
-            shell.set_env_var("FNM_NODE_DIST_MIRROR", config.node_dist_mirror.as_str())
-        );
-        println!(
-            "{}",
-            shell.set_env_var("FNM_ARCH", &config.arch.to_string())
-        );
+
+        let mut writer = if self.file {
+            let script_path = config
+                .base_dir_with_default()
+                .to_owned()
+                .join("fnm_env".to_owned() + &shell.preferred_file_extension().to_owned());
+
+            Box::new(File::create(&script_path).unwrap()) as Box<dyn std::io::Write>
+        } else {
+            Box::new(std::io::stdout()) as Box<dyn std::io::Write>
+        };
+
+        let mut writeln = |line: String| {
+            writeln!(writer, "{}", line).unwrap();
+        };
+
+        writeln(shell.path(&binary_path)?);
+        writeln(shell.set_env_var("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap()));
+        writeln(shell.set_env_var(
+            "FNM_VERSION_FILE_STRATEGY",
+            config.version_file_strategy().as_str(),
+        ));
+        writeln(shell.set_env_var("FNM_DIR", config.base_dir_with_default().to_str().unwrap()));
+        writeln(shell.set_env_var("FNM_LOGLEVEL", config.log_level().clone().into()));
+        writeln(shell.set_env_var("FNM_NODE_DIST_MIRROR", config.node_dist_mirror.as_str()));
+        writeln(shell.set_env_var("FNM_ARCH", &config.arch.to_string()));
         if self.use_on_cd {
-            println!("{}", shell.use_on_cd(config)?);
+            writeln(shell.use_on_cd(config)?);
         }
         if let Some(v) = shell.rehash() {
-            println!("{}", v);
+            writeln(v);
         }
+
         Ok(())
     }
 }
