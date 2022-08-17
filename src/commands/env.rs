@@ -17,7 +17,7 @@ pub struct Env {
     #[clap(possible_values = AVAILABLE_SHELLS)]
     shell: Option<Box<dyn Shell>>,
     /// Print JSON instead of shell commands.
-    #[clap(long)]
+    #[clap(long, conflicts_with = "shell")]
     json: bool,
     /// Deprecated. This is the default now.
     #[clap(long, hide = true)]
