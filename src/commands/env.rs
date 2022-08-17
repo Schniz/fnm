@@ -17,7 +17,7 @@ pub struct Env {
     #[clap(possible_values = AVAILABLE_SHELLS)]
     shell: Option<Box<dyn Shell>>,
     #[clap(long)]
-    /// Creates and writes output to temporary file and prints temporary file path
+    /// Creates and writes output to a file instead of stdout
     file: bool,
     /// Deprecated. This is the default now.
     #[clap(long, hide = true)]
