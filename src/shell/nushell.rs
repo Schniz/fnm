@@ -30,7 +30,7 @@ impl Shell for Nushell {
                     let-env config = ($env.config | upsert hooks.env_change.PWD {{
                         [
                             {{
-                                condition: {{|_, after| ($after | path join .node-version | path exists) }}
+                                condition: {{|_, after| (($after | path join .node-version | path exists) || ($after | path join .nvmrc | path exists)) }}
                                 code: "fnm use --silent-if-unchanged"
                             }}
                         ]
