@@ -15,6 +15,9 @@ pub struct Env {
     #[clap(long)]
     #[clap(possible_values = AVAILABLE_SHELLS)]
     shell: Option<Box<dyn Shell>>,
+    /// Print JSON instead of shell commands.
+    #[clap(long)]
+    json: bool,
     /// Deprecated. This is the default now.
     #[clap(long, hide = true)]
     multi: bool,
@@ -45,6 +48,17 @@ fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
     }
 }
 
+#[derive(serde::Serialize, serde::Deserialize)]
+#[allow(non_snake_case)]
+struct EnvVars {
+    FNM_MULTISHELL_PATH: String,
+    FNM_VERSION_FILE_STRATEGY: String,
+    FNM_DIR: String,
+    FNM_LOGLEVEL: String,
+    FNM_NODE_DIST_MIRROR: String,
+    FNM_ARCH: String,
+}
+
 impl Command for Env {
     type Error = Error;
 
@@ -59,50 +73,46 @@ impl Command for Env {
             );
         }
 
-        let shell: Box<dyn Shell> = self
-            .shell
-            .or_else(&infer_shell)
-            .ok_or(Error::CantInferShell)?;
         let multishell_path = make_symlink(config)?;
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
         } else {
             multishell_path.join("bin")
         };
-        println!("{}", shell.path(&binary_path)?);
-        println!(
-            "{}",
-            shell.set_env_var("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap())
-        );
-        println!(
-            "{}",
-            shell.set_env_var(
-                "FNM_VERSION_FILE_STRATEGY",
-                config.version_file_strategy().as_str()
-            )
-        );
-        println!(
-            "{}",
-            shell.set_env_var("FNM_DIR", config.base_dir_with_default().to_str().unwrap())
-        );
-        println!(
-            "{}",
-            shell.set_env_var("FNM_LOGLEVEL", config.log_level().clone().into())
-        );
-        println!(
-            "{}",
-            shell.set_env_var("FNM_NODE_DIST_MIRROR", config.node_dist_mirror.as_str())
-        );
-        println!(
-            "{}",
-            shell.set_env_var("FNM_ARCH", &config.arch.to_string())
-        );
-        if self.use_on_cd {
-            println!("{}", shell.use_on_cd(config)?);
+
+        let env_vars = EnvVars{
+            FNM_MULTISHELL_PATH: multishell_path.to_str().unwrap().to_owned(),
+            FNM_VERSION_FILE_STRATEGY: config.version_file_strategy().as_str().to_owned(),
+            FNM_DIR: config.base_dir_with_default().to_str().unwrap().to_owned(),
+            FNM_LOGLEVEL: <&'static str>::from(config.log_level().clone()).to_owned(),
+            FNM_NODE_DIST_MIRROR: config.node_dist_mirror.as_str().to_owned(),
+            FNM_ARCH: config.arch.to_string(),
+        };
+
+        if self.json {
+            println!("{}", serde_json::to_string(&env_vars).unwrap());
+        } else {
+            let shell: Box<dyn Shell> = self
+                .shell
+                .or_else(&infer_shell)
+                .ok_or(Error::CantInferShell)?;
+            println!("{}", shell.path(&binary_path)?);
+
+            println!("{}", shell.set_env_var("FNM_MULTISHELL_PATH", &env_vars.FNM_MULTISHELL_PATH));
+            println!("{}", shell.set_env_var("FNM_VERSION_FILE_STRATEGY", &env_vars.FNM_VERSION_FILE_STRATEGY));
+            println!("{}", shell.set_env_var("FNM_DIR", &env_vars.FNM_DIR));
+            println!("{}", shell.set_env_var("FNM_LOGLEVEL", &env_vars.FNM_LOGLEVEL));
+            println!("{}", shell.set_env_var("FNM_NODE_DIST_MIRROR", &env_vars.FNM_NODE_DIST_MIRROR));
+            println!("{}", shell.set_env_var("FNM_ARCH", &env_vars.FNM_ARCH));
+
+            if self.use_on_cd {
+                println!("{}", shell.use_on_cd(config)?);
+            }
+            if let Some(v) = shell.rehash() {
+                println!("{}", v);
+            }
         }
-        if let Some(v) = shell.rehash() {
-            println!("{}", v);
-        }
+
         Ok(())
     }
 }
