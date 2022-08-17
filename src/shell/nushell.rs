@@ -6,7 +6,7 @@ pub struct Nushell;
 
 impl Shell for Nushell {
     fn to_clap_shell(&self) -> clap_complete::Shell {
-        panic!("Shell completion is not supported for Nushell (yet.)");
+        panic!("Shell completion is not supported for Nushell (yet.) See https://github.com/clap-rs/clap/issues/2778 for updates.");
     }
 
     fn path(&self, path: &Path) -> anyhow::Result<String> {
