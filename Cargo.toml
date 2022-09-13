@@ -29,7 +29,7 @@ reqwest = { version = "0.11.11", features = ["blocking", "json", "rustls-tls", "
 url = "2.2.2"
 sysinfo = "0.24.5"
 thiserror = "1.0.31"
-clap_complete = "3.2.3"
+clap_complete = "3.2.5"
 anyhow = "1.0.58"
 
 [dev-dependencies]
