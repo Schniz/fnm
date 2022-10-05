@@ -144,6 +144,26 @@ mod use_nvmrc_lts {
     });
 }
 
+mod use_engines_specific {
+    test_shell!(Bash, Zsh, Fish, PowerShell; {
+        EvalFnmEnv::default()
+            .then(WriteFile::new("package.json", "{\"engines\": {\"node\": \"8.11.3\"}}"))
+            .then(Call::new("fnm", vec!["install"]))
+            .then(Call::new("fnm", vec!["use"]))
+            .then(test_node_version("v8.11.3"))
+    });
+}
+
+mod use_engines_range {
+    test_shell!(Bash, Zsh, Fish, PowerShell; {
+        EvalFnmEnv::default()
+            .then(WriteFile::new("package.json", "{\"engines\": {\"node\": \"^6 < 6.17.1\"}}"))
+            .then(Call::new("fnm", vec!["install"]))
+            .then(Call::new("fnm", vec!["use"]))
+            .then(test_node_version("v6.17.0"))
+    });
+}
+
 mod partial_semver {
     test_shell!(Bash, Zsh, Fish, PowerShell, WinCmd; {
         EvalFnmEnv::default()

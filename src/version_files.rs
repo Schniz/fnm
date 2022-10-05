@@ -1,5 +1,6 @@
 use crate::config::FnmConfig;
 use crate::default_version;
+use crate::package_json::PackageJson;
 use crate::user_version::UserVersion;
 use crate::version_file_strategy::VersionFileStrategy;
 use encoding_rs_io::DecodeReaderBytes;
@@ -8,7 +9,7 @@ use std::io::Read;
 use std::path::Path;
 use std::str::FromStr;
 
-const PATH_PARTS: [&str; 2] = [".nvmrc", ".node-version"];
+const PATH_PARTS: [&str; 3] = [".nvmrc", ".node-version", "package.json"];
 
 pub fn get_user_version_for_directory(
     path: impl AsRef<Path>,
@@ -39,7 +40,7 @@ fn get_user_version_for_directory_recursive(path: impl AsRef<Path>) -> Option<Us
     None
 }
 
-pub fn get_user_version_for_single_directory(path: impl AsRef<Path>) -> Option<UserVersion> {
+fn get_user_version_for_single_directory(path: impl AsRef<Path>) -> Option<UserVersion> {
     let path = path.as_ref();
 
     for path_part in &PATH_PARTS {
@@ -58,21 +59,41 @@ pub fn get_user_version_for_single_directory(path: impl AsRef<Path>) -> Option<U
 }
 
 pub fn get_user_version_for_file(path: impl AsRef<Path>) -> Option<UserVersion> {
+    let is_pkg_json = match path.as_ref().file_name() {
+        Some(name) => name == "package.json",
+        None => false,
+    };
     let file = std::fs::File::open(path).ok()?;
-    let version = {
+    let file = {
         let mut reader = DecodeReaderBytes::new(file);
         let mut version = String::new();
         reader.read_to_string(&mut version).map(|_| version)
     };
 
-    match version {
-        Err(err) => {
+    match (file, is_pkg_json) {
+        (Err(err), _) => {
             info!("Can't read file: {}", err);
             None
         }
-        Ok(version) => {
-            info!("Found string {:?}  in version file", version);
+        (Ok(version), false) => {
+            info!("Found string {:?} in version file", version);
             UserVersion::from_str(version.trim()).ok()
+        }
+        (Ok(pkg_json), true) => {
+            let node_range = serde_json::from_str::<PackageJson>(&pkg_json)
+                .unwrap_or_default()
+                .node_range();
+
+            match node_range {
+                Some(range) => {
+                    info!("Found package.json with {:?} in engines.node field", range);
+                    Some(UserVersion::SemverRange(range))
+                }
+                None => {
+                    info!("No engines.node range found in package.json");
+                    None
+                }
+            }
         }
     }
 }

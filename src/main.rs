@@ -20,6 +20,7 @@ mod fs;
 mod http;
 mod installed_versions;
 mod lts;
+mod package_json;
 mod path_ext;
 mod remote_node_index;
 mod shell;
