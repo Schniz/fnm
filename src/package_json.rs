@@ -12,6 +12,6 @@ pub struct PackageJson {
 
 impl PackageJson {
     pub fn node_range(&self) -> Option<node_semver::Range> {
-        self.engines.as_ref()?.node.to_owned()
+        self.engines.as_ref()?.node.clone()
     }
 }

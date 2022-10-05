@@ -84,15 +84,12 @@ pub fn get_user_version_for_file(path: impl AsRef<Path>) -> Option<UserVersion> 
                 .unwrap_or_default()
                 .node_range();
 
-            match node_range {
-                Some(range) => {
-                    info!("Found package.json with {:?} in engines.node field", range);
-                    Some(UserVersion::SemverRange(range))
-                }
-                None => {
-                    info!("No engines.node range found in package.json");
-                    None
-                }
+            if let Some(range) = node_range {
+                info!("Found package.json with {:?} in engines.node field", range);
+                Some(UserVersion::SemverRange(range))
+            } else {
+                info!("No engines.node range found in package.json");
+                None
             }
         }
     }
