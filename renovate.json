@@ -12,7 +12,13 @@
     },
     {
       "matchPackagePatterns": ["serde", "serde_json"],
-      "groupName": "serde"
+      "groupName": "serde",
+      "groupSlug": "serde"
+    },
+    {
+      "matchPackagePatterns": ["clap", "clap_*"],
+      "groupName": "clap-rs",
+      "groupSlug": "clap-rs"
     },
     {
       "matchDepTypes": ["devDependencies", "dev-dependencies"],
