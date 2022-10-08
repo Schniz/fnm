@@ -1,4 +1,6 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
   "labels": ["PR: Dependency Update"],
   "packageRules": [
     {
@@ -9,10 +11,21 @@
       }
     },
     {
+      "matchPackagePatterns": ["serde", "serde_json"],
+      "groupName": "serde"
+    },
+    {
+      "matchDepTypes": ["devDependencies", "dev-dependencies"],
+      "matchPackagePatterns": ["*"],
+      "automerge": true,
+      "groupName": "all dev dependencies",
+      "groupSlug": "all-dev-dependencies"
+    },
+    {
       "matchPackagePatterns": ["uraimo/run-on-arch-action"],
       "matchManagers": ["github-actions"],
       "allowedVersions": "2.1.2"
     }
   ],
-  "extends": ["config:base"]
+  "lockFileMaintenance": { "enabled": true }
 }
