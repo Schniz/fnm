@@ -38,7 +38,7 @@ duct = "0.13.5"
 shell-escape = "0.1.5"
 insta = "1.21.0"
 serial_test = "0.9.0"
-test-log = "0.2.10"
+test-log = "0.2.11"
 
 [build-dependencies]
 embed-resource = "1.7.3"
