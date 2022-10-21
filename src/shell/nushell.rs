@@ -16,7 +16,12 @@ impl Shell for Nushell {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("let-env PATH = ($env.PATH | prepend {:?})", path))
+
+        if std::env::consts::OS == "windows" {
+            Ok(format!("let-env Path = ($env.Path | prepend {:?})", path))
+        } else {
+            Ok(format!("let-env PATH = ($env.PATH | prepend {:?})", path))
+        }
     }
 
     fn preferred_file_extension(&self) -> &'static str {
