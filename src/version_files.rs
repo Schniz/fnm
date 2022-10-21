@@ -80,11 +80,13 @@ pub fn get_user_version_for_file(path: impl AsRef<Path>) -> Option<UserVersion> 
             UserVersion::from_str(version.trim()).ok()
         }
         (Ok(pkg_json), true) => {
-            let node_range = serde_json::from_str::<PackageJson>(&pkg_json)
-                .unwrap_or_default()
-                .node_range();
+            let pkg_json = serde_json::from_str::<PackageJson>(&pkg_json).ok();
+            let range: Option<node_semver::Range> = pkg_json
+                .as_ref()
+                .and_then(|pkg_json| pkg_json.node_range())
+                .map(|range| range.to_owned());
 
-            if let Some(range) = node_range {
+            if let Some(range) = range {
                 info!("Found package.json with {:?} in engines.node field", range);
                 Some(UserVersion::SemverRange(range))
             } else {
