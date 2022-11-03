@@ -13,7 +13,8 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: actions/checkout@v2
+    - uses: Swatinem/rust-cache@v1
+    - uses: actions/checkout@v3
     - name: cargo fmt
       run: cargo fmt -- --check
 
@@ -23,7 +24,8 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: actions/checkout@v2
+    - uses: Swatinem/rust-cache@v1
+    - uses: actions/checkout@v3
     - name: cargo clippy
       run: cargo clippy -- -D warnings
 
@@ -36,7 +38,8 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: actions/checkout@v2
+    - uses: Swatinem/rust-cache@v1
+    - uses: actions/checkout@v3
     - name: Run tests
       run: cargo test -- --skip=feature_tests
 
@@ -55,7 +58,8 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: actions/checkout@v2
+    - uses: Swatinem/rust-cache@v1
+    - uses: actions/checkout@v3
     - name: Run tests
       run: cargo test -- feature_tests
 
@@ -66,12 +70,13 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: actions/checkout@v2
+    - uses: Swatinem/rust-cache@v1
+    - uses: actions/checkout@v3
     - name: Build release binary
       run: cargo build --release
       env:
         RUSTFLAGS: "-C target-feature=+crt-static"
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: fnm-windows
         path: target/release/fnm.exe
@@ -83,7 +88,8 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: actions/checkout@v2
+    - uses: Swatinem/rust-cache@v1
+    - uses: actions/checkout@v3
     - name: Build release binary
       run: cargo build --release
       env:
@@ -92,7 +98,7 @@ jobs:
       run: strip target/release/fnm
     - name: List dynamically linked libraries
       run: otool -L target/release/fnm
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: fnm-macos
         path: target/release/fnm
@@ -105,16 +111,19 @@ jobs:
       with:
         rust-version: stable
         targets: x86_64-unknown-linux-musl
+    - uses: Swatinem/rust-cache@v1
+      with:
+        key: static-linux-binary
     - name: Install musl tools
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends musl-tools
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build release binary
       run: cargo build --release --target x86_64-unknown-linux-musl
     - name: Strip binary from debug symbols
       run: strip target/x86_64-unknown-linux-musl/release/fnm
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: fnm-linux
         path: target/x86_64-unknown-linux-musl/release/fnm
@@ -138,20 +147,23 @@ jobs:
     steps:
     - name: Set up QEMU
       id: qemu
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
+    - uses: Swatinem/rust-cache@v1
+      with:
+        key: arm-binary-${{ matrix.arch }}
     - name: 'Download `cross` crate'
       run: cargo install cross
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: "Build release"
       run: cross build --target $RUST_TARGET --release
     - name: Compress binary using UPX
       run: |
         sudo apt-get install -y upx
         upx target/$RUST_TARGET/release/fnm
-    - uses: uraimo/run-on-arch-action@v2.1.1
+    - uses: uraimo/run-on-arch-action@v2.1.2
       name: Sanity test
       with:
         arch: ${{matrix.docker_platform}}
@@ -176,7 +188,7 @@ jobs:
           echo "fnm exec --using=12 -- node --version"
           /artifacts/fnm exec --using=12 -- node --version
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: fnm-${{ matrix.arch }}
         path: target/${{ env.RUST_TARGET }}/release/fnm
@@ -186,9 +198,9 @@ jobs:
     name: Ensure command docs are up-to-date
     needs: [build_static_linux_binary]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Download a single artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: fnm-linux
       - name: Make the binary runnable

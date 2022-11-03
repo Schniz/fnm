@@ -1,25 +1,25 @@
 use super::command::Command;
 use crate::config::FnmConfig;
+use crate::directories;
 use crate::fs::symlink_dir;
 use crate::outln;
 use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
-use snafu::{OptionExt, Snafu};
 use std::fmt::Debug;
-use structopt::StructOpt;
+use thiserror::Error;
 
-#[derive(StructOpt, Debug, Default)]
+#[derive(clap::Parser, Debug, Default)]
 pub struct Env {
     /// The shell syntax to use. Infers when missing.
-    #[structopt(long)]
-    #[structopt(possible_values = AVAILABLE_SHELLS)]
+    #[clap(long)]
+    #[clap(possible_values = AVAILABLE_SHELLS)]
     shell: Option<Box<dyn Shell>>,
     /// Deprecated. This is the default now.
-    #[structopt(long, hidden = true)]
+    #[clap(long, hide = true)]
     multi: bool,
     /// Print the script to change Node versions every directory change
-    #[structopt(long)]
+    #[clap(long)]
     use_on_cd: bool,
 }
 
@@ -31,18 +31,18 @@ fn generate_symlink_path() -> String {
     )
 }
 
-fn make_symlink(config: &FnmConfig) -> std::path::PathBuf {
-    let base_dir = std::env::temp_dir()
-        .join("fnm_multishells")
-        .ensure_exists_silently();
+fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
+    let base_dir = directories::multishell_storage().ensure_exists_silently();
     let mut temp_dir = base_dir.join(generate_symlink_path());
 
     while temp_dir.exists() {
         temp_dir = base_dir.join(generate_symlink_path());
     }
 
-    symlink_dir(config.default_version_dir(), &temp_dir).expect("Can't create symlink!");
-    temp_dir
+    match symlink_dir(config.default_version_dir(), &temp_dir) {
+        Ok(_) => Ok(temp_dir),
+        Err(source) => Err(Error::CantCreateSymlink { source, temp_dir }),
+    }
 }
 
 impl Command for Env {
@@ -59,14 +59,17 @@ impl Command for Env {
             );
         }
 
-        let shell: Box<dyn Shell> = self.shell.or_else(&infer_shell).context(CantInferShell)?;
-        let multishell_path = make_symlink(config);
+        let shell: Box<dyn Shell> = self
+            .shell
+            .or_else(&infer_shell)
+            .ok_or(Error::CantInferShell)?;
+        let multishell_path = make_symlink(config)?;
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
         } else {
             multishell_path.join("bin")
         };
-        println!("{}", shell.path(&binary_path));
+        println!("{}", shell.path(&binary_path)?);
         println!(
             "{}",
             shell.set_env_var("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap())
@@ -95,7 +98,7 @@ impl Command for Env {
             shell.set_env_var("FNM_ARCH", &config.arch.to_string())
         );
         if self.use_on_cd {
-            println!("{}", shell.use_on_cd(config));
+            println!("{}", shell.use_on_cd(config)?);
         }
         if let Some(v) = shell.rehash() {
             println!("{}", v);
@@ -104,16 +107,27 @@ impl Command for Env {
     }
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display(
+    #[error(
         "{}\n{}\n{}\n{}",
         "Can't infer shell!",
         "fnm can't infer your shell based on the process tree.",
         "Maybe it is unsupported? we support the following shells:",
         shells_as_string()
-    ))]
+    )]
     CantInferShell,
+    #[error("Can't create the symlink for multishells at {temp_dir:?}. Maybe there are some issues with permissions for the directory? {source}")]
+    CantCreateSymlink {
+        #[source]
+        source: std::io::Error,
+        temp_dir: std::path::PathBuf,
+    },
+    #[error(transparent)]
+    ShellError {
+        #[from]
+        source: anyhow::Error,
+    },
 }
 
 fn shells_as_string() -> String {

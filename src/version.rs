@@ -13,7 +13,7 @@ pub enum Version {
 }
 
 fn first_letter_is_number(s: &str) -> bool {
-    s.chars().next().map_or(false, |x| x.is_digit(10))
+    s.chars().next().map_or(false, |x| x.is_ascii_digit())
 }
 
 impl Version {

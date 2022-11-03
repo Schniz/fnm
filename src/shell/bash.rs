@@ -8,19 +8,22 @@ use std::path::Path;
 pub struct Bash;
 
 impl Shell for Bash {
-    fn to_structopt_shell(&self) -> structopt::clap::Shell {
-        structopt::clap::Shell::Bash
+    fn to_clap_shell(&self) -> clap_complete::Shell {
+        clap_complete::Shell::Bash
     }
 
-    fn path(&self, path: &Path) -> String {
-        format!("export PATH={:?}:$PATH", path.to_str().unwrap())
+    fn path(&self, path: &Path) -> anyhow::Result<String> {
+        let path = path
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
+        Ok(format!("export PATH={:?}:$PATH", path))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("export {}={:?}", name, value)
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> String {
+    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"
@@ -31,7 +34,7 @@ impl Shell for Bash {
             ),
             VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
         };
-        formatdoc!(
+        Ok(formatdoc!(
             r#"
                 __fnm_use_if_file_found() {{
                     {autoload_hook}
@@ -46,6 +49,6 @@ impl Shell for Bash {
                 __fnm_use_if_file_found
             "#,
             autoload_hook = autoload_hook
-        )
+        ))
     }
 }

@@ -4,38 +4,34 @@ use crate::archive::{Error as ExtractError, Extract};
 use crate::directory_portal::DirectoryPortal;
 use crate::version::Version;
 use log::debug;
-use snafu::{ensure, OptionExt, ResultExt, Snafu};
 use std::path::Path;
 use std::path::PathBuf;
+use thiserror::Error;
 use url::Url;
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
+    #[error(transparent)]
     HttpError {
+        #[from]
         source: crate::http::Error,
     },
+    #[error(transparent)]
     IoError {
+        #[from]
         source: std::io::Error,
     },
-    #[snafu(display("Can't extract the file: {}", source))]
+    #[error("Can't extract the file: {}", source)]
     CantExtractFile {
+        #[from]
         source: ExtractError,
     },
-    #[snafu(display("The downloaded archive is empty"))]
+    #[error("The downloaded archive is empty")]
     TarIsEmpty,
-    #[snafu(display(
-        "{} for {} not found upstream.\nYou can `fnm ls-remote` to see available versions or try a different `--arch`.",
-        version,
-        arch
-    ))]
-    VersionNotFound {
-        version: Version,
-        arch: Arch,
-    },
-    #[snafu(display("Version already installed at {:?}", path))]
-    VersionAlreadyInstalled {
-        path: PathBuf,
-    },
+    #[error("{} for {} not found upstream.\nYou can `fnm ls-remote` to see available versions or try a different `--arch`.", version, arch)]
+    VersionNotFound { version: Version, arch: Arch },
+    #[error("Version already installed at {:?}", path)]
+    VersionAlreadyInstalled { path: PathBuf },
 }
 
 #[cfg(unix)]
@@ -75,7 +71,7 @@ pub fn extract_archive_into<P: AsRef<Path>>(
     let extractor = archive::TarXz::new(response);
     #[cfg(windows)]
     let extractor = archive::Zip::new(response);
-    extractor.extract_into(path).context(CantExtractFile)?;
+    extractor.extract_into(path)?;
     Ok(())
 }
 
@@ -88,23 +84,22 @@ pub fn install_node_dist<P: AsRef<Path>>(
 ) -> Result<(), Error> {
     let installation_dir = PathBuf::from(installations_dir.as_ref()).join(version.v_str());
 
-    ensure!(
-        !installation_dir.exists(),
-        VersionAlreadyInstalled {
-            path: installation_dir
-        }
-    );
+    if installation_dir.exists() {
+        return Err(Error::VersionAlreadyInstalled {
+            path: installation_dir,
+        });
+    }
 
-    std::fs::create_dir_all(installations_dir.as_ref()).context(IoError)?;
+    std::fs::create_dir_all(installations_dir.as_ref())?;
 
     let temp_installations_dir = installations_dir.as_ref().join(".downloads");
-    std::fs::create_dir_all(&temp_installations_dir).context(IoError)?;
+    std::fs::create_dir_all(&temp_installations_dir)?;
 
     let portal = DirectoryPortal::new_in(&temp_installations_dir, installation_dir);
 
     let url = download_url(node_dist_mirror, version, arch);
     debug!("Going to call for {}", &url);
-    let response = crate::http::get(url.as_str()).context(HttpError)?;
+    let response = crate::http::get(url.as_str())?;
 
     if response.status() == 404 {
         return Err(Error::VersionNotFound {
@@ -117,17 +112,15 @@ pub fn install_node_dist<P: AsRef<Path>>(
     extract_archive_into(&portal, response)?;
     debug!("Extraction completed");
 
-    let installed_directory = std::fs::read_dir(&portal)
-        .context(IoError)?
+    let installed_directory = std::fs::read_dir(&portal)?
         .next()
-        .context(TarIsEmpty)?
-        .context(IoError)?;
+        .ok_or(Error::TarIsEmpty)??;
     let installed_directory = installed_directory.path();
 
     let renamed_installation_dir = portal.join("installation");
-    std::fs::rename(installed_directory, renamed_installation_dir).context(IoError)?;
+    std::fs::rename(installed_directory, renamed_installation_dir)?;
 
-    portal.teleport().context(IoError)?;
+    portal.teleport()?;
 
     Ok(())
 }
@@ -159,13 +152,11 @@ mod tests {
     #[test_log::test]
     fn test_installing_npm() {
         let installations_dir = tempdir().unwrap();
-        let npm_path = install_in(installations_dir.path()).join(if cfg!(windows) {
-            "npm.cmd"
-        } else {
-            "npm"
-        });
+        let bin_dir = install_in(installations_dir.path());
+        let npm_path = bin_dir.join(if cfg!(windows) { "npm.cmd" } else { "npm" });
 
         let stdout = duct::cmd(npm_path.to_str().unwrap(), vec!["--version"])
+            .env("PATH", bin_dir)
             .stdout_capture()
             .run()
             .expect("Can't run npm")

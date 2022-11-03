@@ -1,13 +1,13 @@
 {
   "name": "fnm",
-  "version": "0.0.0",
+  "version": "1.31.1",
   "private": true,
   "repository": "git@github.com:Schniz/fnm.git",
   "author": "Gal Schlezinger <gal@spitfire.co.il>",
+  "packageManager": "pnpm@7.13.2",
   "license": "GPLv3",
   "scripts": {
-    "changelog": "./.ci/generate-changelog.sh",
-    "version:prepare": "./.ci/prepare-version.js",
+    "version:prepare": "changeset version && ./.ci/prepare-version.js",
     "generate-command-docs": "./.ci/print-command-docs.js"
   },
   "changelog": {
@@ -20,10 +20,14 @@
     }
   },
   "devDependencies": {
-    "cmd-ts": "0.9.0",
+    "@changesets/cli": "2.25.0",
+    "@svitejs/changesets-changelog-github-compact": "0.1.1",
+    "cmd-ts": "0.11.0",
     "execa": "5.1.1",
     "lerna-changelog": "2.2.0",
-    "prettier": "2.5.1",
+    "prettier": "2.7.1",
+    "pv": "1.0.1",
+    "svg-term-cli": "2.1.1",
     "toml": "3.0.0"
   }
 }

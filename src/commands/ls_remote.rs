@@ -1,16 +1,15 @@
 use crate::config::FnmConfig;
 use crate::remote_node_index;
-use snafu::{ResultExt, Snafu};
-use structopt::StructOpt;
+use thiserror::Error;
 
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub struct LsRemote {}
 
 impl super::command::Command for LsRemote {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        let all_versions = remote_node_index::list(&config.node_dist_mirror).context(HttpError)?;
+        let all_versions = remote_node_index::list(&config.node_dist_mirror)?;
 
         for version in all_versions {
             print!("{}", version.version);
@@ -24,7 +23,11 @@ impl super::command::Command for LsRemote {
     }
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    HttpError { source: crate::http::Error },
+    #[error(transparent)]
+    HttpError {
+        #[from]
+        source: crate::http::Error,
+    },
 }

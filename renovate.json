@@ -1,4 +1,6 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
   "labels": ["PR: Dependency Update"],
   "packageRules": [
     {
@@ -7,9 +9,29 @@
         "groupName": "all non-major dependencies",
         "groupSlug": "all-minor-patch"
       }
+    },
+    {
+      "matchPackagePatterns": ["serde", "serde_json"],
+      "groupName": "serde",
+      "groupSlug": "serde"
+    },
+    {
+      "matchPackagePatterns": ["clap", "clap_*"],
+      "groupName": "clap-rs",
+      "groupSlug": "clap-rs"
+    },
+    {
+      "matchDepTypes": ["devDependencies", "dev-dependencies"],
+      "matchPackagePatterns": ["*"],
+      "automerge": true,
+      "groupName": "all dev dependencies",
+      "groupSlug": "all-dev-dependencies"
+    },
+    {
+      "matchPackagePatterns": ["uraimo/run-on-arch-action"],
+      "matchManagers": ["github-actions"],
+      "allowedVersions": "2.1.2"
     }
   ],
-  "extends": [
-    "config:base"
-  ]
+  "lockFileMaintenance": { "enabled": true }
 }
