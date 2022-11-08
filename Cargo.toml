@@ -41,7 +41,7 @@ serial_test = "0.9.0"
 test-log = "0.2.11"
 
 [build-dependencies]
-embed-resource = "1.7.3"
+embed-resource = "1.7.4"
 
 [target.'cfg(windows)'.dependencies]
 csv = "1.1.6"
