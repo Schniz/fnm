@@ -7,12 +7,12 @@ export type HasOutputContains = {
 export const cmdHasOutputContains = {
   bash: define<HasOutputContains>({
     scriptOutputContains: (script, substring) => {
-      return `${script} | grep ${substring} || (echo "Expected output to contain ${substring}" && exit 1)`
+      return `(${script}) | grep ${substring} || (echo "Expected output to contain ${substring}" && exit 1)`
     },
   }),
   fish: define<HasOutputContains>({
     scriptOutputContains: (script, substring) => {
-      return `${script} | grep ${substring}; or echo "Expected output to contain ${substring}" && exit 1`
+      return `begin; ${script}; end | grep ${substring}; or echo "Expected output to contain ${substring}" && exit 1`
     },
   }),
   powershell: define<HasOutputContains>({

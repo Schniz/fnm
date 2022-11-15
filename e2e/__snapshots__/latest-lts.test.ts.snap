@@ -4,14 +4,14 @@ exports[`Bash installs latest lts: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
 fnm install --lts
-fnm ls | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)
+(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)
 fnm use 'lts/*'"
 `;
 
 exports[`Fish installs latest lts: Fish 1`] = `
 "fnm env | source
 fnm install --lts
-fnm ls | grep lts-latest; or echo "Expected output to contain lts-latest" && exit 1
+begin; fnm ls; end | grep lts-latest; or echo "Expected output to contain lts-latest" && exit 1
 fnm use 'lts/*'"
 `;
 
@@ -27,6 +27,6 @@ exports[`Zsh installs latest lts: Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
 fnm install --lts
-fnm ls | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)
+(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)
 fnm use 'lts/*'"
 `;

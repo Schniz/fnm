@@ -5,6 +5,7 @@ import { writeFile } from "node:fs/promises"
 import path from "node:path"
 import testCwd from "./shellcode/test-cwd"
 import getStderr from "./shellcode/get-stderr"
+import testNodeVersion from "./shellcode/test-node-version"
 
 for (const shell of [Bash, Zsh, Fish, PowerShell]) {
   describe(shell, () => {
@@ -90,6 +91,37 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
             "'Requested version my_system is not currently installed'"
           )
         )
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
+
+    test(`aliasing versions`, async () => {
+      const installedVersions = shell.call("fnm", ["ls"])
+      await script(shell)
+        .then(shell.env({}))
+        .then(shell.call("fnm", ["install", "6.11.3"]))
+        .then(shell.call("fnm", ["install", "8.11.3"]))
+        .then(shell.call("fnm", ["alias", "8.11", "oldie"]))
+        .then(shell.call("fnm", ["alias", "6", "older"]))
+        .then(shell.call("fnm", ["default", "older"]))
+        .then(
+          shell.scriptOutputContains(
+            shell.scriptOutputContains(installedVersions, "8.11.3"),
+            "oldie"
+          )
+        )
+        .then(
+          shell.scriptOutputContains(
+            shell.scriptOutputContains(installedVersions, "6.11.3"),
+            "older"
+          )
+        )
+        .then(shell.call("fnm", ["use", "older"]))
+        .then(testNodeVersion(shell, "v6.11.3"))
+        .then(shell.call("fnm", ["use", "oldie"]))
+        .then(testNodeVersion(shell, "v8.11.3"))
+        .then(shell.call("fnm", ["use", "default"]))
+        .then(testNodeVersion(shell, "v6.11.3"))
         .takeSnapshot(shell)
         .execute(shell)
     })

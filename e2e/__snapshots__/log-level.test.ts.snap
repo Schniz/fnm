@@ -32,7 +32,7 @@ if [ "$(fnm alias v8.11.3 something)" != "" ]; then
   echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"
   exit 1
 fi
-fnm alias abcd efg 2>&1 | grep "find requested version" || (echo "Expected output to contain "find requested version"" && exit 1)"
+(fnm alias abcd efg 2>&1) | grep "find requested version" || (echo "Expected output to contain "find requested version"" && exit 1)"
 `;
 
 exports[`Fish "quiet" log level: Fish 1`] = `
@@ -71,7 +71,7 @@ if test "$____test____" != ""
   echo "Expected fnm alias to be . Got $____test____"
   exit 1
 end
-fnm alias abcd efg 2>&1 | grep "find requested version"; or echo "Expected output to contain "find requested version"" && exit 1"
+begin; fnm alias abcd efg 2>&1; end | grep "find requested version"; or echo "Expected output to contain "find requested version"" && exit 1"
 `;
 
 exports[`PowerShell "quiet" log level: PowerShell 1`] = `
@@ -123,5 +123,5 @@ if [ "$(fnm alias v8.11.3 something)" != "" ]; then
   echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"
   exit 1
 fi
-fnm alias abcd efg 2>&1 | grep "find requested version" || (echo "Expected output to contain "find requested version"" && exit 1)"
+(fnm alias abcd efg 2>&1) | grep "find requested version" || (echo "Expected output to contain "find requested version"" && exit 1)"
 `;
