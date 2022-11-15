@@ -7,6 +7,19 @@ fnm use --install-if-missing
 fnm ls | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
 `;
 
+exports[`Bash can alias the system node: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm alias system my_system
+fnm ls | grep my_system || (echo "Expected output to contain my_system" && exit 1)
+fnm alias system default
+fnm alias my_system my_system2
+fnm ls | grep my_system2 || (echo "Expected output to contain my_system2" && exit 1)
+fnm use my_system | grep 'Bypasses fnm' || (echo "Expected output to contain 'Bypasses fnm'" && exit 1)
+fnm unalias my_system
+fnm use my_system 2>&1 | grep 'Requested version my_system is not currently installed' || (echo "Expected output to contain 'Requested version my_system is not currently installed'" && exit 1)"
+`;
+
 exports[`Bash errors when alias is not found: Bash 1`] = `
 "set -e
 eval "$(fnm env --log-level=error)"
@@ -36,6 +49,18 @@ fnm use --install-if-missing
 fnm ls | grep lts-latest; or echo "Expected output to contain lts-latest" && exit 1"
 `;
 
+exports[`Fish can alias the system node: Fish 1`] = `
+"fnm env | source
+fnm alias system my_system
+fnm ls | grep my_system; or echo "Expected output to contain my_system" && exit 1
+fnm alias system default
+fnm alias my_system my_system2
+fnm ls | grep my_system2; or echo "Expected output to contain my_system2" && exit 1
+fnm use my_system | grep 'Bypasses fnm'; or echo "Expected output to contain 'Bypasses fnm'" && exit 1
+fnm unalias my_system
+fnm use my_system 2>&1 | grep 'Requested version my_system is not currently installed'; or echo "Expected output to contain 'Requested version my_system is not currently installed'" && exit 1"
+`;
+
 exports[`Fish errors when alias is not found: Fish 1`] = `
 "fnm env --log-level=error | source
 fnm use 2>&1 | grep 'Requested version lts-latest is not'; or echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1"
@@ -61,6 +86,19 @@ exports[`PowerShell allows to install an lts if version missing: PowerShell 1`] 
 fnm env | Out-String | Invoke-Expression
 fnm use --install-if-missing
 $($__out__ = $(fnm ls | Select-String lts-latest); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell can alias the system node: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm alias system my_system
+$($__out__ = $(fnm ls | Select-String my_system); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm alias system default
+fnm alias my_system my_system2
+$($__out__ = $(fnm ls | Select-String my_system2); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+$($__out__ = $(fnm use my_system | Select-String 'Bypasses fnm'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm unalias my_system
+$($__out__ = $(fnm use my_system 2>&1 | Select-String 'Requested version my_system is not currently installed'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
 
 exports[`PowerShell errors when alias is not found: PowerShell 1`] = `
@@ -91,6 +129,19 @@ exports[`Zsh allows to install an lts if version missing: Zsh 1`] = `
 eval "$(fnm env)"
 fnm use --install-if-missing
 fnm ls | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
+`;
+
+exports[`Zsh can alias the system node: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm alias system my_system
+fnm ls | grep my_system || (echo "Expected output to contain my_system" && exit 1)
+fnm alias system default
+fnm alias my_system my_system2
+fnm ls | grep my_system2 || (echo "Expected output to contain my_system2" && exit 1)
+fnm use my_system | grep 'Bypasses fnm' || (echo "Expected output to contain 'Bypasses fnm'" && exit 1)
+fnm unalias my_system
+fnm use my_system 2>&1 | grep 'Requested version my_system is not currently installed' || (echo "Expected output to contain 'Requested version my_system is not currently installed'" && exit 1)"
 `;
 
 exports[`Zsh errors when alias is not found: Zsh 1`] = `

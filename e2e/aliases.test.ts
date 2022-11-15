@@ -64,5 +64,34 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
         .takeSnapshot(shell)
         .execute(shell)
     })
+
+    test(`can alias the system node`, async () => {
+      await script(shell)
+        .then(shell.env({}))
+        .then(shell.call("fnm", ["alias", "system", "my_system"]))
+        .then(
+          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "my_system")
+        )
+        .then(shell.call("fnm", ["alias", "system", "default"]))
+        .then(shell.call("fnm", ["alias", "my_system", "my_system2"]))
+        .then(
+          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "my_system2")
+        )
+        .then(
+          shell.scriptOutputContains(
+            shell.call("fnm", ["use", "my_system"]),
+            "'Bypassing fnm'"
+          )
+        )
+        .then(shell.call("fnm", ["unalias", "my_system"]))
+        .then(
+          shell.scriptOutputContains(
+            getStderr(shell.call("fnm", ["use", "my_system"])),
+            "'Requested version my_system is not currently installed'"
+          )
+        )
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
   })
 }
