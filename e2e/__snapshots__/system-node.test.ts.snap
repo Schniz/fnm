@@ -43,23 +43,6 @@ fnm use system
 if ( "$(node --version)" -ne "custom" ) { echo "Expected node version to be custom. Got $(node --version)"; exit 1 }"
 `;
 
-exports[`Windows Command Prompt switches to system node: Windows Command Prompt 1`] = `
-"FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
-fnm install v10.10.0
-fnm use v10
-node --version | findstr v10.10.0
-if %errorlevel% neq 0 (
-  echo Expected node version to be v10.10.0
-  exit 1
-)
-fnm use system
-node --version | findstr custom
-if %errorlevel% neq 0 (
-  echo Expected node version to be custom
-  exit 1
-)"
-`;
-
 exports[`Zsh switches to system node: Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
