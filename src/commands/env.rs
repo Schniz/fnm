@@ -61,7 +61,7 @@ impl Command for Env {
 
         let shell: Box<dyn Shell> = self
             .shell
-            .or_else(&infer_shell)
+            .or_else(infer_shell)
             .ok_or(Error::CantInferShell)?;
         let multishell_path = make_symlink(config)?;
         let binary_path = if cfg!(windows) {
