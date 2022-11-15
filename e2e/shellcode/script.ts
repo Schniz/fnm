@@ -7,6 +7,7 @@ import testCwd from "./test-cwd"
 import { join } from "node:path"
 import { writeFile } from "node:fs/promises"
 import chalk from "chalk"
+import testBinDir from "./test-bin-dir"
 
 class Script {
   constructor(
@@ -49,6 +50,7 @@ class Script {
       cwd: testCwd(),
       env: {
         ...removeAllFnmEnvVars(process.env),
+        PATH: `${testBinDir()}:${process.env.PATH}`,
         FNM_DIR: this.config.fnmDir,
       },
       extendEnv: false,

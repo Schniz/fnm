@@ -14,31 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod system_node {
-    test_shell!(Bash, Zsh, Fish, PowerShell; |path: &std::path::Path| {
-        use std::io::Write;
-        let custom_node_dir = path.join("bin");
-        std::fs::create_dir(&custom_node_dir).unwrap();
-        std::fs::write(custom_node_dir.join("node.cmd"), b"echo custom node").unwrap();
-        let mut f = std::fs::File::create(custom_node_dir.join("node")).unwrap();
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            let mut permissions = f.metadata().unwrap().permissions();
-            permissions.set_mode(0o766);
-            f.set_permissions(permissions).expect("Can't set file permissions");
-        }
-        writeln!(f, "#!/bin/sh").expect("Can't write file");
-        writeln!(f, r#"echo "custom node""#).expect("Can't write file");
-
-        EvalFnmEnv::default()
-            .then(Call::new("fnm", vec!["install", "10"]))
-            .then(Call::new("fnm", vec!["use", "10"]))
-            .then(Call::new("fnm", vec!["use", "system"]))
-            .then(test_node_version("custom node"))
-    });
-}
-
 mod use_nvmrc_lts {
     test_shell!(Bash, Zsh, Fish, PowerShell; {
         EvalFnmEnv::default()
