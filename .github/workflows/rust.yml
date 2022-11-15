@@ -58,6 +58,8 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
+    - uses: Swatinem/rust-cache@v1
+    - uses: actions/checkout@v3
 
     - uses: pnpm/action-setup@v2.2.2
       with:
@@ -79,8 +81,6 @@ jobs:
           ${{ runner.os }}-pnpm-store-
     - run: pnpm install
 
-    - uses: Swatinem/rust-cache@v1
-    - uses: actions/checkout@v3
     - run: cargo build --release
     - name: Run Node.js tests
       run: PATH=$PWD/target/release $PATH pnpm test
