@@ -14,27 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod use_alias_not_installed {
-    test_shell!(Bash, Zsh, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .log_level(Some("error"))
-            .then(WriteFile::new(".node-version", "lts/*"))
-            .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["use"]))),"Requested version lts-latest is not currently installed"))
-    });
-}
-
-mod unalias {
-    test_shell!(Bash, Zsh, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .then(Call::new("fnm", vec!["install", "11.10.0"]))
-            .then(Call::new("fnm", vec!["install", "8.11.3"]))
-            .then(Call::new("fnm", vec!["alias", "8.11.3", "version8"]))
-            .then(OutputContains::new(Call::new("fnm", vec!["ls"]), "version8"))
-            .then(Call::new("fnm", vec!["unalias", "version8"]))
-            .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["use", "version8"]))),  "Requested version version8 is not currently installed"))
-    });
-}
-
 mod unalias_error {
     test_shell!(Bash, Zsh, Fish, PowerShell; {
         EvalFnmEnv::default()

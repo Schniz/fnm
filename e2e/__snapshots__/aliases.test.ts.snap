@@ -7,10 +7,42 @@ fnm use --install-if-missing
 fnm ls | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
 `;
 
+exports[`Bash errors when alias is not found: Bash 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+fnm use 2>&1 | grep 'Requested version lts-latest is not' || (echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1)"
+`;
+
+exports[`Bash unalias a version: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 version8
+fnm ls | grep version8 || (echo "Expected output to contain version8" && exit 1)
+fnm unalias version8
+fnm use version8 2>&1 | grep 'Requested version version8 is not currently installed' || (echo "Expected output to contain 'Requested version version8 is not currently installed'" && exit 1)"
+`;
+
 exports[`Fish allows to install an lts if version missing: Fish 1`] = `
 "fnm env | source
 fnm use --install-if-missing
 fnm ls | grep lts-latest; or echo "Expected output to contain lts-latest" && exit 1"
+`;
+
+exports[`Fish errors when alias is not found: Fish 1`] = `
+"fnm env --log-level=error | source
+fnm use 2>&1 | grep 'Requested version lts-latest is not'; or echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1"
+`;
+
+exports[`Fish unalias a version: Fish 1`] = `
+"fnm env | source
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 version8
+fnm ls | grep version8; or echo "Expected output to contain version8" && exit 1
+fnm unalias version8
+fnm use version8 2>&1 | grep 'Requested version version8 is not currently installed'; or echo "Expected output to contain 'Requested version version8 is not currently installed'" && exit 1"
 `;
 
 exports[`PowerShell allows to install an lts if version missing: PowerShell 1`] = `
@@ -20,9 +52,43 @@ fnm use --install-if-missing
 $($__out__ = $(fnm ls | Select-String lts-latest); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
 
+exports[`PowerShell errors when alias is not found: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --log-level=error | Out-String | Invoke-Expression
+$($__out__ = $(fnm use 2>&1 | Select-String 'Requested version lts-latest is not'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell unalias a version: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 version8
+$($__out__ = $(fnm ls | Select-String version8); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm unalias version8
+$($__out__ = $(fnm use version8 2>&1 | Select-String 'Requested version version8 is not currently installed'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
 exports[`Zsh allows to install an lts if version missing: Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
 fnm use --install-if-missing
 fnm ls | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
+`;
+
+exports[`Zsh errors when alias is not found: Zsh 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+fnm use 2>&1 | grep 'Requested version lts-latest is not' || (echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1)"
+`;
+
+exports[`Zsh unalias a version: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 version8
+fnm ls | grep version8 || (echo "Expected output to contain version8" && exit 1)
+fnm unalias version8
+fnm use version8 2>&1 | grep 'Requested version version8 is not currently installed' || (echo "Expected output to contain 'Requested version version8 is not currently installed'" && exit 1)"
 `;
