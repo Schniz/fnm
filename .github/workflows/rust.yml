@@ -51,10 +51,10 @@ jobs:
     steps:
     - name: Install Fish and Zsh using brew
       if: "startsWith(matrix.os, 'macOS')"
-      run: brew install fish zsh
+      run: brew install fish zsh bash
     - name: Install Fish and Zsh using apt
       if: "startsWith(matrix.os, 'ubuntu')"
-      run: sudo apt-get install -y fish zsh
+      run: sudo apt-get install -y fish zsh bash
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
