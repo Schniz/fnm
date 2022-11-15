@@ -50,7 +50,9 @@ class Script {
       cwd: testCwd(),
       env: {
         ...removeAllFnmEnvVars(process.env),
-        PATH: `${testBinDir()}:${fnmTargetDir()}:${process.env.PATH}`,
+        PATH: [testBinDir(), fnmTargetDir(), process.env.PATH]
+          .filter(Boolean)
+          .join(path.delimiter),
         FNM_DIR: this.config.fnmDir,
       },
       extendEnv: false,
