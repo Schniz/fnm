@@ -65,6 +65,17 @@ if [ "$(node --version)" != "v12.22.12" ]; then
 fi"
 `;
 
+exports[`Bash when .node-version and .nvmrc are in sync, it throws no error: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v11.10.0" ]; then
+  echo "Expected node version to be v11.10.0. Got $(node --version)"
+  exit 1
+fi"
+`;
+
 exports[`Fish .node-version: Fish 1`] = `
 "fnm env | source
 fnm install
@@ -130,6 +141,17 @@ if test "$____test____" != "v12.22.12"
 end"
 `;
 
+exports[`Fish when .node-version and .nvmrc are in sync, it throws no error: Fish 1`] = `
+"fnm env | source
+fnm install
+fnm use
+set ____test____ (node --version)
+if test "$____test____" != "v11.10.0"
+  echo "Expected node version to be v11.10.0. Got $____test____"
+  exit 1
+end"
+`;
+
 exports[`PowerShell .node-version: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
@@ -175,6 +197,14 @@ fnm install v8.11.3
 fnm install v12.22.12
 cd subdir
 if ( "$(node --version)" -ne "v12.22.12" ) { echo "Expected node version to be v12.22.12. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell when .node-version and .nvmrc are in sync, it throws no error: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v11.10.0" ) { echo "Expected node version to be v11.10.0. Got $(node --version)"; exit 1 }"
 `;
 
 exports[`Windows Command Prompt .node-version: Windows Command Prompt 1`] = `
@@ -242,6 +272,17 @@ if %errorlevel% neq 0 (
 )"
 `;
 
+exports[`Windows Command Prompt when .node-version and .nvmrc are in sync, it throws no error: Windows Command Prompt 1`] = `
+"FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
+fnm install
+fnm use
+node --version | findstr v11.10.0
+if %errorlevel% neq 0 (
+  echo Expected node version to be v11.10.0
+  exit 1
+)"
+`;
+
 exports[`Zsh .node-version: Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
@@ -303,6 +344,17 @@ fnm install v12.22.12
 cd subdir
 if [ "$(node --version)" != "v12.22.12" ]; then
   echo "Expected node version to be v12.22.12. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh when .node-version and .nvmrc are in sync, it throws no error: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v11.10.0" ]; then
+  echo "Expected node version to be v11.10.0. Got $(node --version)"
   exit 1
 fi"
 `;

@@ -76,5 +76,18 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .takeSnapshot(shell)
         .execute(shell)
     })
+
+    test(`when .node-version and .nvmrc are in sync, it throws no error`, async () => {
+      await writeFile(join(testCwd(), ".nvmrc"), "v11.10.0")
+      await writeFile(join(testCwd(), ".node-version"), "v11.10.0")
+
+      await script(shell)
+        .then(shell.env({}))
+        .then(shell.call("fnm", ["install"]))
+        .then(shell.call("fnm", ["use"]))
+        .then(testNodeVersion(shell, "v11.10.0"))
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
   })
 }
