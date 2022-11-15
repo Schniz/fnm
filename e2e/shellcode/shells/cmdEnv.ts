@@ -25,4 +25,8 @@ export const cmdEnv = {
     env: (envConfig) =>
       `${stringify(envConfig)} | Out-String | Invoke-Expression`,
   }),
+  wincmd: define<HasEnv>({
+    env: (envConfig) =>
+      `FOR /f "tokens=*" %i IN ('${stringify(envConfig)}') DO CALL %i`,
+  }),
 }

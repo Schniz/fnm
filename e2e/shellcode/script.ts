@@ -25,8 +25,12 @@ class Script {
   }
 
   async execute(
-    shell: Pick<Shell, "binaryName" | "launchArgs">
+    shell: Pick<Shell, "binaryName" | "launchArgs" | "currentlySupported">
   ): Promise<void> {
+    if (!shell.currentlySupported()) {
+      return
+    }
+
     const filename = join(testTmpDir(), "script")
     await writeFile(filename, [...this.lines, "exit 0"].join("\n"))
 

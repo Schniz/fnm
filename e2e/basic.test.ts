@@ -1,11 +1,11 @@
 import { writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { script } from "./shellcode/script"
-import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells"
+import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells"
 import testCwd from "./shellcode/test-cwd"
 import testNodeVersion from "./shellcode/test-node-version"
 
-for (const shell of [Bash, Zsh, Fish, PowerShell]) {
+for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
   describe(shell.name(), () => {
     test(`basic usage`, async () => {
       await script(shell)

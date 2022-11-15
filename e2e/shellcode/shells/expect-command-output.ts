@@ -33,4 +33,15 @@ export const cmdExpectCommandOutput = {
       `
     },
   }),
+  wincmd: define<HasExpectCommandOutput>({
+    hasCommandOutput(script, output) {
+      return dedent`
+        ${script} | findstr ${output}
+        if %errorlevel% neq 0 (
+          echo Expected to get ${output}
+          exit 1
+        )
+      `
+    },
+  }),
 }

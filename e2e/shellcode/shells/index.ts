@@ -66,3 +66,23 @@ export const PowerShell = {
   ...cmdCall.all,
   ...cmdExpectCommandOutput.powershell,
 }
+
+export const WinCmd = {
+  ...define<Shell>({
+    binaryName: () => "cmd.exe",
+    currentlySupported: () => process.platform === "win32",
+    name: () => "Windows Command Prompt",
+    launchArgs: () => [],
+    escapeText: (str) =>
+      str
+        .replace(/\r/g, "")
+        .replace(/\n/g, "^\n\n")
+        .replace(/\%/g, "%%")
+        .replace(/\|/g, "^|")
+        .replace(/\(/g, "^(")
+        .replace(/\)/g, "^)"),
+  }),
+  ...cmdEnv.wincmd,
+  ...cmdCall.all,
+  ...cmdExpectCommandOutput.wincmd,
+}

@@ -58,6 +58,28 @@ fnm use
 if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
 `;
 
+exports[`Windows Command Prompt basic usage: Windows Command Prompt 1`] = `
+"FOR /f "tokens=*" %i IN ('fnm env --log-level='info'') DO CALL %i
+fnm install v8.11.3
+fnm use v8.11.3
+node --version | findstr v8.11.3
+if %errorlevel% neq 0 (
+  echo Expected to get v8.11.3
+  exit 1
+)"
+`;
+
+exports[`Windows Command Prompt nvmrc: Windows Command Prompt 1`] = `
+"FOR /f "tokens=*" %i IN ('fnm env --log-level='info'') DO CALL %i
+fnm install
+fnm use
+node --version | findstr v8.11.3
+if %errorlevel% neq 0 (
+  echo Expected to get v8.11.3
+  exit 1
+)"
+`;
+
 exports[`Zsh basic usage: Zsh 1`] = `
 "set -e
 eval "$(fnm env --log-level='info')"
