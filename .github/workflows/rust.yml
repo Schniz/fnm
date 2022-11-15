@@ -99,6 +99,8 @@ jobs:
       with:
         name: fnm-macos
         path: target/release
+    - name: mark binary as executable
+      run: chmod +x target/release/fnm
     - uses: pnpm/action-setup@v2.2.2
       with:
         run_install: false
@@ -169,6 +171,8 @@ jobs:
       with:
         name: fnm-linux
         path: target/release
+    - name: mark binary as executable
+      run: chmod +x target/release/fnm
     - uses: pnpm/action-setup@v2.2.2
       with:
         run_install: false
