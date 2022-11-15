@@ -14,14 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod unalias_error {
-    test_shell!(Bash, Zsh, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .log_level(Some("error"))
-            .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["unalias", "lts"]))),  "Requested alias lts not found"))
-    });
-}
-
 mod alias_system {
     test_shell!(Bash, Zsh, Fish, PowerShell; {
         EvalFnmEnv::default()

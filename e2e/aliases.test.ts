@@ -51,5 +51,18 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
         .takeSnapshot(shell)
         .execute(shell)
     })
+
+    test(`unalias errors if alias not found`, async () => {
+      await script(shell)
+        .then(shell.env({ logLevel: "error" }))
+        .then(
+          shell.scriptOutputContains(
+            getStderr(shell.call("fnm", ["unalias", "lts"])),
+            "'Requested alias lts not found'"
+          )
+        )
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
   })
 }

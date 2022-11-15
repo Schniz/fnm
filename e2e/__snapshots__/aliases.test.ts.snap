@@ -24,6 +24,12 @@ fnm unalias version8
 fnm use version8 2>&1 | grep 'Requested version version8 is not currently installed' || (echo "Expected output to contain 'Requested version version8 is not currently installed'" && exit 1)"
 `;
 
+exports[`Bash unalias errors if alias not found: Bash 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+fnm unalias lts 2>&1 | grep 'Requested alias lts not found' || (echo "Expected output to contain 'Requested alias lts not found'" && exit 1)"
+`;
+
 exports[`Fish allows to install an lts if version missing: Fish 1`] = `
 "fnm env | source
 fnm use --install-if-missing
@@ -43,6 +49,11 @@ fnm alias 8.11.3 version8
 fnm ls | grep version8; or echo "Expected output to contain version8" && exit 1
 fnm unalias version8
 fnm use version8 2>&1 | grep 'Requested version version8 is not currently installed'; or echo "Expected output to contain 'Requested version version8 is not currently installed'" && exit 1"
+`;
+
+exports[`Fish unalias errors if alias not found: Fish 1`] = `
+"fnm env --log-level=error | source
+fnm unalias lts 2>&1 | grep 'Requested alias lts not found'; or echo "Expected output to contain 'Requested alias lts not found'" && exit 1"
 `;
 
 exports[`PowerShell allows to install an lts if version missing: PowerShell 1`] = `
@@ -69,6 +80,12 @@ fnm unalias version8
 $($__out__ = $(fnm use version8 2>&1 | Select-String 'Requested version version8 is not currently installed'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
 
+exports[`PowerShell unalias errors if alias not found: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --log-level=error | Out-String | Invoke-Expression
+$($__out__ = $(fnm unalias lts 2>&1 | Select-String 'Requested alias lts not found'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
 exports[`Zsh allows to install an lts if version missing: Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
@@ -91,4 +108,10 @@ fnm alias 8.11.3 version8
 fnm ls | grep version8 || (echo "Expected output to contain version8" && exit 1)
 fnm unalias version8
 fnm use version8 2>&1 | grep 'Requested version version8 is not currently installed' || (echo "Expected output to contain 'Requested version version8 is not currently installed'" && exit 1)"
+`;
+
+exports[`Zsh unalias errors if alias not found: Zsh 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+fnm unalias lts 2>&1 | grep 'Requested alias lts not found' || (echo "Expected output to contain 'Requested alias lts not found'" && exit 1)"
 `;
