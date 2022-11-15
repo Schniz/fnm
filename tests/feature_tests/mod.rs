@@ -14,15 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod latest_lts {
-    test_shell!(Bash, Zsh, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .then(Call::new("fnm", vec!["install", "--lts"]))
-            .then(OutputContains::new(Call::new("fnm", vec!["ls"]), "lts-latest"))
-            .then(Call::new("fnm", vec!["use", "'lts/*'"]))
-    });
-}
-
 mod matching_dotfiles {
     test_shell!(Bash, Zsh, Fish, PowerShell, WinCmd; {
         EvalFnmEnv::default()
