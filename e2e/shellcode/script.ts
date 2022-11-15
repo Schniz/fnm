@@ -4,7 +4,7 @@ import testTmpDir from "./test-tmp-dir"
 import { Writable } from "node:stream"
 import dedent from "ts-dedent"
 import testCwd from "./test-cwd"
-import { join } from "node:path"
+import path, { join } from "node:path"
 import { writeFile } from "node:fs/promises"
 import chalk from "chalk"
 import testBinDir from "./test-bin-dir"
@@ -50,7 +50,7 @@ class Script {
       cwd: testCwd(),
       env: {
         ...removeAllFnmEnvVars(process.env),
-        PATH: `${testBinDir()}:${process.env.PATH}`,
+        PATH: `${testBinDir()}:${fnmTargetDir()}:${process.env.PATH}`,
         FNM_DIR: this.config.fnmDir,
       },
       extendEnv: false,
@@ -158,4 +158,10 @@ function removeAllFnmEnvVars(obj: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
     }
   }
   return result
+}
+
+function fnmTargetDir(): string {
+  return (
+    process.env.FNM_TARGET_DIR ?? path.join(__dirname, "../../target/debug")
+  )
 }
