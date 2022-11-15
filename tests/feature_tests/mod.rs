@@ -14,17 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod log_level_error {
-    test_shell!(Bash, Zsh, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .log_level(Some("error"))
-            .then(ExpectCommandOutput::new(Call::new("fnm", vec!["install", "v8.11.3"]).then(Call::new("echo", vec!["empty"])), "empty", "fnm install"))
-            .then(ExpectCommandOutput::new(Call::new("fnm", vec!["use", "v8.11.3"]).then(Call::new("echo", vec!["empty"])), "empty", "fnm use"))
-            .then(ExpectCommandOutput::new(Call::new("fnm", vec!["alias", "v8.11.3", "something"]).then(Call::new("echo", vec!["empty"])), "empty", "fnm alias"))
-            .then(OutputContains::new(IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["alias", "abcd", "efg"]))), "Can't find requested version"))
-    });
-}
-
 mod list_local_with_nothing_installed {
     test_shell!(Bash, Zsh, Fish, PowerShell, WinCmd; {
         EvalFnmEnv::default()
