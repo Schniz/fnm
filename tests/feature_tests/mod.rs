@@ -14,15 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod partial_semver {
-    test_shell!(Bash, Zsh, Fish, PowerShell, WinCmd; {
-        EvalFnmEnv::default()
-            .then(Call::new("fnm", vec!["install", "6"])) // unsupported version, no new versions should be issued
-            .then(Call::new("fnm", vec!["use", "6"]))
-            .then(test_node_version("v6.17.1"))
-    });
-}
-
 mod log_level_quiet {
     test_shell!(Bash, Zsh, Fish, PowerShell; {
         EvalFnmEnv::default()

@@ -52,5 +52,15 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .takeSnapshot(shell)
         .execute(shell)
     })
+
+    test(`resolves partial semver`, async () => {
+      await script(shell)
+        .then(shell.env({}))
+        .then(shell.call("fnm", ["install", "6"]))
+        .then(shell.call("fnm", ["use", "6"]))
+        .then(testNodeVersion(shell, "v6.17.1"))
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
   })
 }
