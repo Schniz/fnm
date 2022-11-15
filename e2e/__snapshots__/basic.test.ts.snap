@@ -1,21 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Bash basic usage: Bash 1`] = `
+exports[`Bash .node-version: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
-fnm install v8.11.3
-fnm use v8.11.3
+fnm install
+fnm use
 if [ "$(node --version)" != "v8.11.3" ]; then
   echo "Expected to get v8.11.3. Got $(node --version)"
   exit 1
 fi"
 `;
 
-exports[`Bash nvmrc: Bash 1`] = `
+exports[`Bash .nvmrc: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
 fnm install
 fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash basic usage: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v8.11.3
+fnm use v8.11.3
 if [ "$(node --version)" != "v8.11.3" ]; then
   echo "Expected to get v8.11.3. Got $(node --version)"
   exit 1
@@ -34,20 +45,30 @@ if [ "$(node --version)" != "v12.22.12" ]; then
 fi"
 `;
 
-exports[`Fish basic usage: Fish 1`] = `
+exports[`Fish .node-version: Fish 1`] = `
 "fnm env | source
-fnm install v8.11.3
-fnm use v8.11.3
+fnm install
+fnm use
 if test (node --version) != "v8.11.3"
   echo "Expected to get v8.11.3. Got $(node --version)"
   exit 1
 end"
 `;
 
-exports[`Fish nvmrc: Fish 1`] = `
+exports[`Fish .nvmrc: Fish 1`] = `
 "fnm env | source
 fnm install
 fnm use
+if test (node --version) != "v8.11.3"
+  echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+end"
+`;
+
+exports[`Fish basic usage: Fish 1`] = `
+"fnm env | source
+fnm install v8.11.3
+fnm use v8.11.3
 if test (node --version) != "v8.11.3"
   echo "Expected to get v8.11.3. Got $(node --version)"
   exit 1
@@ -65,19 +86,27 @@ if test (node --version) != "v12.22.12"
 end"
 `;
 
+exports[`PowerShell .node-version: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell .nvmrc: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
 exports[`PowerShell basic usage: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
 fnm install v8.11.3
 fnm use v8.11.3
-if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
-`;
-
-exports[`PowerShell nvmrc: PowerShell 1`] = `
-"$ErrorActionPreference = "Stop"
-fnm env | Out-String | Invoke-Expression
-fnm install
-fnm use
 if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
 `;
 
@@ -90,10 +119,10 @@ cd subdir
 if ( "$(node --version)" -ne "v12.22.12" ) { echo "Expected to get v12.22.12. Got $(node --version)"; exit 1 }"
 `;
 
-exports[`Windows Command Prompt basic usage: Windows Command Prompt 1`] = `
+exports[`Windows Command Prompt .node-version: Windows Command Prompt 1`] = `
 "FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
-fnm install v8.11.3
-fnm use v8.11.3
+fnm install
+fnm use
 node --version | findstr v8.11.3
 if %errorlevel% neq 0 (
   echo Expected to get v8.11.3
@@ -101,10 +130,21 @@ if %errorlevel% neq 0 (
 )"
 `;
 
-exports[`Windows Command Prompt nvmrc: Windows Command Prompt 1`] = `
+exports[`Windows Command Prompt .nvmrc: Windows Command Prompt 1`] = `
 "FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
 fnm install
 fnm use
+node --version | findstr v8.11.3
+if %errorlevel% neq 0 (
+  echo Expected to get v8.11.3
+  exit 1
+)"
+`;
+
+exports[`Windows Command Prompt basic usage: Windows Command Prompt 1`] = `
+"FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
+fnm install v8.11.3
+fnm use v8.11.3
 node --version | findstr v8.11.3
 if %errorlevel% neq 0 (
   echo Expected to get v8.11.3
@@ -124,22 +164,33 @@ if %errorlevel% neq 0 (
 )"
 `;
 
-exports[`Zsh basic usage: Zsh 1`] = `
+exports[`Zsh .node-version: Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
-fnm install v8.11.3
-fnm use v8.11.3
+fnm install
+fnm use
 if [ "$(node --version)" != "v8.11.3" ]; then
   echo "Expected to get v8.11.3. Got $(node --version)"
   exit 1
 fi"
 `;
 
-exports[`Zsh nvmrc: Zsh 1`] = `
+exports[`Zsh .nvmrc: Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
 fnm install
 fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh basic usage: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v8.11.3
+fnm use v8.11.3
 if [ "$(node --version)" != "v8.11.3" ]; then
   echo "Expected to get v8.11.3. Got $(node --version)"
   exit 1

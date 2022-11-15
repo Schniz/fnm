@@ -17,8 +17,19 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .execute(shell)
     })
 
-    test(`nvmrc`, async () => {
+    test(`.nvmrc`, async () => {
       await writeFile(join(testCwd(), ".nvmrc"), "v8.11.3")
+      await script(shell)
+        .then(shell.env({}))
+        .then(shell.call("fnm", ["install"]))
+        .then(shell.call("fnm", ["use"]))
+        .then(testNodeVersion(shell, "v8.11.3"))
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
+
+    test(`.node-version`, async () => {
+      await writeFile(join(testCwd(), ".node-version"), "v8.11.3")
       await script(shell)
         .then(shell.env({}))
         .then(shell.call("fnm", ["install"]))

@@ -4,18 +4,6 @@ mod uninstall;
 
 use crate::shellcode::*;
 
-mod use_on_cd_dot_node_version {
-    test_shell!(Zsh, Bash, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .use_on_cd(true)
-            .then(Call::new("mkdir", vec!["inner_path"]))
-            .then(WriteFile::new("inner_path/.node-version", "v8.11.3"))
-            .then(Call::new("fnm", vec!["install", "v8.11.3"]))
-            .then(Call::new("cd", vec!["inner_path"]))
-            .then(test_node_version("v8.11.3"))
-    });
-}
-
 // mod node_dist_mirror {
 // test_shell!(Zsh, Bash, Fish, PowerShell, {
 //     EvalFnmEnv::default()
