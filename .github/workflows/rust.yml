@@ -121,6 +121,7 @@ jobs:
     - run: pnpm test
       env:
         FNM_TARGET_NAME: "release"
+        FORCE_COLOR: "1"
 
   e2e_windows:
     runs-on: windows-latest
@@ -154,6 +155,7 @@ jobs:
     - run: pnpm test
       env:
         FNM_TARGET_NAME: "release"
+        FORCE_COLOR: "1"
 
   e2e_linux:
     runs-on: ubuntu-latest
@@ -189,6 +191,7 @@ jobs:
     - run: pnpm test
       env:
         FNM_TARGET_NAME: "release"
+        FORCE_COLOR: "1"
 
   build_static_linux_binary:
     name: "Build static Linux binary"
