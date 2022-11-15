@@ -4,9 +4,10 @@ import { script } from "./shellcode/script"
 import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells"
 import testCwd from "./shellcode/test-cwd"
 import testNodeVersion from "./shellcode/test-node-version"
+import describe from "./describe"
 
 for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
-  describe(shell.name(), () => {
+  describe(shell, () => {
     test(`basic usage`, async () => {
       await script(shell)
         .then(shell.env({}))

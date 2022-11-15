@@ -1,9 +1,10 @@
 import { script } from "./shellcode/script"
 import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells"
 import testNodeVersion from "./shellcode/test-node-version"
+import describe from "./describe"
 
 for (const shell of [Bash, Zsh, Fish, PowerShell]) {
-  describe(shell.name(), () => {
+  describe(shell, () => {
     test(`multishell changes don't affect parent`, async () => {
       await script(shell)
         .then(shell.env({}))

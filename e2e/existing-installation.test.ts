@@ -1,9 +1,10 @@
 import getStderr from "./shellcode/get-stderr"
 import { script } from "./shellcode/script"
 import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells"
+import describe from "./describe"
 
 for (const shell of [Bash, Zsh, Fish, PowerShell]) {
-  describe(shell.name(), () => {
+  describe(shell, () => {
     test(`warns about an existing installation`, async () => {
       await script(shell)
         .then(shell.env({}))
