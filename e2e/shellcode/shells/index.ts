@@ -52,7 +52,7 @@ export const Fish = {
   ...cmdCall.all,
   ...redirectOutput.bash,
   ...cmdExpectCommandOutput.fish,
-  ...cmdHasOutputContains.bash,
+  ...cmdHasOutputContains.fish,
   ...cmdInSubShell.fish,
 }
 

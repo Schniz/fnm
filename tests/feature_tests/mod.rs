@@ -14,16 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod use_nvmrc_lts {
-    test_shell!(Bash, Zsh, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .then(WriteFile::new(".nvmrc", "lts/dubnium"))
-            .then(Call::new("fnm", vec!["install"]))
-            .then(Call::new("fnm", vec!["use"]))
-            .then(OutputContains::new(Call::new("fnm", vec!["ls"]), "lts-dubnium"))
-    });
-}
-
 mod partial_semver {
     test_shell!(Bash, Zsh, Fish, PowerShell, WinCmd; {
         EvalFnmEnv::default()
