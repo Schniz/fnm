@@ -1,4 +1,4 @@
-import { writeFile } from "node:fs/promises"
+import { writeFile, mkdir } from "node:fs/promises"
 import { join } from "node:path"
 import { script } from "./shellcode/script"
 import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells"
@@ -24,6 +24,19 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .then(shell.call("fnm", ["install"]))
         .then(shell.call("fnm", ["use"]))
         .then(testNodeVersion(shell, "v8.11.3"))
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
+
+    test(`use on cd`, async () => {
+      await mkdir(join(testCwd(), "subdir"), { recursive: true })
+      await writeFile(join(testCwd(), "subdir", ".node-version"), "v12.22.12")
+      await script(shell)
+        .then(shell.env({ useOnCd: true }))
+        .then(shell.call("fnm", ["install", "v8.11.3"]))
+        .then(shell.call("fnm", ["install", "v12.22.12"]))
+        .then(shell.call("cd", ["subdir"]))
+        .then(testNodeVersion(shell, "v12.22.12"))
         .takeSnapshot(shell)
         .execute(shell)
     })

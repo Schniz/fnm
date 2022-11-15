@@ -22,6 +22,18 @@ if [ "$(node --version)" != "v8.11.3" ]; then
 fi"
 `;
 
+exports[`Bash use on cd: Bash 1`] = `
+"set -e
+eval "$(fnm env --use-on-cd --log-level='info')"
+fnm install v8.11.3
+fnm install v12.22.12
+cd subdir
+if [ "$(node --version)" != "v12.22.12" ]; then
+  echo "Expected to get v12.22.12. Got $(node --version)"
+  exit 1
+fi"
+`;
+
 exports[`Fish basic usage: Fish 1`] = `
 "fnm env --log-level='info' | source
 fnm install v8.11.3
@@ -42,6 +54,17 @@ if test (node --version) != "v8.11.3"
 end"
 `;
 
+exports[`Fish use on cd: Fish 1`] = `
+"fnm env --use-on-cd --log-level='info' | source
+fnm install v8.11.3
+fnm install v12.22.12
+cd subdir
+if test (node --version) != "v12.22.12"
+  echo "Expected to get v12.22.12. Got $(node --version)"
+  exit 1
+end"
+`;
+
 exports[`PowerShell basic usage: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env --log-level='info' | Out-String | Invoke-Expression
@@ -56,6 +79,15 @@ fnm env --log-level='info' | Out-String | Invoke-Expression
 fnm install
 fnm use
 if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell use on cd: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --use-on-cd --log-level='info' | Out-String | Invoke-Expression
+fnm install v8.11.3
+fnm install v12.22.12
+cd subdir
+if ( "$(node --version)" -ne "v12.22.12" ) { echo "Expected to get v12.22.12. Got $(node --version)"; exit 1 }"
 `;
 
 exports[`Windows Command Prompt basic usage: Windows Command Prompt 1`] = `
@@ -80,6 +112,18 @@ if %errorlevel% neq 0 (
 )"
 `;
 
+exports[`Windows Command Prompt use on cd: Windows Command Prompt 1`] = `
+"FOR /f "tokens=*" %i IN ('fnm env --use-on-cd --log-level='info'') DO CALL %i
+fnm install v8.11.3
+fnm install v12.22.12
+cd subdir
+node --version | findstr v12.22.12
+if %errorlevel% neq 0 (
+  echo Expected to get v12.22.12
+  exit 1
+)"
+`;
+
 exports[`Zsh basic usage: Zsh 1`] = `
 "set -e
 eval "$(fnm env --log-level='info')"
@@ -98,6 +142,18 @@ fnm install
 fnm use
 if [ "$(node --version)" != "v8.11.3" ]; then
   echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh use on cd: Zsh 1`] = `
+"set -e
+eval "$(fnm env --use-on-cd --log-level='info')"
+fnm install v8.11.3
+fnm install v12.22.12
+cd subdir
+if [ "$(node --version)" != "v12.22.12" ]; then
+  echo "Expected to get v12.22.12. Got $(node --version)"
   exit 1
 fi"
 `;

@@ -5,6 +5,7 @@ export type Shell = {
   name(): string
   launchArgs(): string[]
   dieOnErrors?(): string
+  forceFile?: true
 }
 
 export type ScriptLine = string

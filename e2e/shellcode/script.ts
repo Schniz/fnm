@@ -1,6 +1,7 @@
 import { ScriptLine, Shell } from "./shells/types"
 import execa from "execa"
 import testTmpDir from "./test-tmp-dir"
+import { Writable } from "node:stream"
 import dedent from "ts-dedent"
 import testCwd from "./test-cwd"
 import { join } from "node:path"
@@ -25,17 +26,25 @@ class Script {
   }
 
   async execute(
-    shell: Pick<Shell, "binaryName" | "launchArgs" | "currentlySupported">
+    shell: Pick<
+      Shell,
+      "binaryName" | "launchArgs" | "currentlySupported" | "forceFile"
+    >
   ): Promise<void> {
     if (!shell.currentlySupported()) {
       return
     }
 
-    const filename = join(testTmpDir(), "script")
-    await writeFile(filename, [...this.lines, "exit 0"].join("\n"))
+    const args = [...shell.launchArgs()]
 
-    const child = execa(shell.binaryName(), [...shell.launchArgs(), filename], {
-      stdio: ["ignore", "pipe", "pipe"],
+    if (shell.forceFile) {
+      const filename = join(testTmpDir(), "script")
+      await writeFile(filename, [...this.lines, "exit 0"].join("\n"))
+      args.push(filename)
+    }
+
+    const child = execa(shell.binaryName(), args, {
+      stdio: [shell.forceFile ? "ignore" : "pipe", "pipe", "pipe"],
       cwd: testCwd(),
       env: {
         ...removeAllFnmEnvVars(process.env),
@@ -44,6 +53,16 @@ class Script {
       extendEnv: false,
       reject: false,
     })
+
+    if (child.stdin) {
+      const childStdin = child.stdin
+
+      for (const line of this.lines) {
+        await write(childStdin, `${line}\n`)
+      }
+
+      await write(childStdin, "exit 0\n")
+    }
 
     const finished = await child
 
@@ -74,6 +93,15 @@ function padAllLines(text: string, padding: number): string {
     .split("\n")
     .map((line) => " ".repeat(padding) + line)
     .join("\n")
+}
+
+function write(writable: Writable, text: string): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    writable.write(text, (err) => {
+      if (err) return reject(err)
+      return resolve()
+    })
+  })
 }
 
 export function script(shell: Pick<Shell, "dieOnErrors">): Script {
