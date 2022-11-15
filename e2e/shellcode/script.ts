@@ -6,6 +6,7 @@ import dedent from "ts-dedent"
 import testCwd from "./test-cwd"
 import { join } from "node:path"
 import { writeFile } from "node:fs/promises"
+import chalk from "chalk"
 
 class Script {
   constructor(
@@ -64,6 +65,8 @@ class Script {
       await write(childStdin, "exit 0\n")
     }
 
+    const { stdout, stderr } = streamOutputsAndBuffer(child)
+
     const finished = await child
 
     if (finished.failed) {
@@ -74,10 +77,10 @@ class Script {
             signal ${finished.signal}
 
           stdout:
-          ${padAllLines(finished.stdout, 2)}
+          ${padAllLines(stdout, 2)}
 
           stderr:
-          ${padAllLines(finished.stderr, 2)}
+          ${padAllLines(stderr, 2)}
         `
       )
 
@@ -86,6 +89,42 @@ class Script {
       )
     }
   }
+
+  asLine(): ScriptLine {
+    return this.lines.join("\n")
+  }
+}
+
+function streamOutputsAndBuffer(child: execa.ExecaChildProcess) {
+  const stdout: string[] = []
+  const stderr: string[] = []
+  const testName = expect.getState().currentTestName ?? "unknown"
+  const testPath = expect.getState().testPath ?? "unknown"
+
+  const stdoutPrefix = chalk.yellow.dim(`[stdout] ${testPath}/${testName}: `)
+  const stderrPrefix = chalk.red.dim(`[stderr] ${testPath}/${testName}: `)
+
+  if (child.stdout) {
+    child.stdout.on("data", (data) => {
+      const line = data.toString().trim()
+      if (line) {
+        process.stdout.write(`${stdoutPrefix}${line}\n`)
+      }
+      stdout.push(data.toString())
+    })
+  }
+
+  if (child.stderr) {
+    child.stderr.on("data", (data) => {
+      const line = data.toString().trim()
+      if (line) {
+        process.stdout.write(`${stderrPrefix}${line}\n`)
+      }
+      stderr.push(data.toString())
+    })
+  }
+
+  return { stdout: stdout.join(""), stderr: stderr.join("") }
 }
 
 function padAllLines(text: string, padding: number): string {

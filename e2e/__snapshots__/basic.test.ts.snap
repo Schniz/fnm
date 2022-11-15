@@ -2,7 +2,7 @@
 
 exports[`Bash basic usage: Bash 1`] = `
 "set -e
-eval "$(fnm env --log-level='info')"
+eval "$(fnm env)"
 fnm install v8.11.3
 fnm use v8.11.3
 if [ "$(node --version)" != "v8.11.3" ]; then
@@ -13,7 +13,7 @@ fi"
 
 exports[`Bash nvmrc: Bash 1`] = `
 "set -e
-eval "$(fnm env --log-level='info')"
+eval "$(fnm env)"
 fnm install
 fnm use
 if [ "$(node --version)" != "v8.11.3" ]; then
@@ -24,7 +24,7 @@ fi"
 
 exports[`Bash use on cd: Bash 1`] = `
 "set -e
-eval "$(fnm env --use-on-cd --log-level='info')"
+eval "$(fnm env --use-on-cd)"
 fnm install v8.11.3
 fnm install v12.22.12
 cd subdir
@@ -35,7 +35,7 @@ fi"
 `;
 
 exports[`Fish basic usage: Fish 1`] = `
-"fnm env --log-level='info' | source
+"fnm env | source
 fnm install v8.11.3
 fnm use v8.11.3
 if test (node --version) != "v8.11.3"
@@ -45,7 +45,7 @@ end"
 `;
 
 exports[`Fish nvmrc: Fish 1`] = `
-"fnm env --log-level='info' | source
+"fnm env | source
 fnm install
 fnm use
 if test (node --version) != "v8.11.3"
@@ -55,7 +55,7 @@ end"
 `;
 
 exports[`Fish use on cd: Fish 1`] = `
-"fnm env --use-on-cd --log-level='info' | source
+"fnm env --use-on-cd | source
 fnm install v8.11.3
 fnm install v12.22.12
 cd subdir
@@ -67,7 +67,7 @@ end"
 
 exports[`PowerShell basic usage: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
-fnm env --log-level='info' | Out-String | Invoke-Expression
+fnm env | Out-String | Invoke-Expression
 fnm install v8.11.3
 fnm use v8.11.3
 if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
@@ -75,7 +75,7 @@ if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(
 
 exports[`PowerShell nvmrc: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
-fnm env --log-level='info' | Out-String | Invoke-Expression
+fnm env | Out-String | Invoke-Expression
 fnm install
 fnm use
 if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
@@ -83,7 +83,7 @@ if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(
 
 exports[`PowerShell use on cd: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
-fnm env --use-on-cd --log-level='info' | Out-String | Invoke-Expression
+fnm env --use-on-cd | Out-String | Invoke-Expression
 fnm install v8.11.3
 fnm install v12.22.12
 cd subdir
@@ -91,7 +91,7 @@ if ( "$(node --version)" -ne "v12.22.12" ) { echo "Expected to get v12.22.12. Go
 `;
 
 exports[`Windows Command Prompt basic usage: Windows Command Prompt 1`] = `
-"FOR /f "tokens=*" %i IN ('fnm env --log-level='info'') DO CALL %i
+"FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
 fnm install v8.11.3
 fnm use v8.11.3
 node --version | findstr v8.11.3
@@ -102,7 +102,7 @@ if %errorlevel% neq 0 (
 `;
 
 exports[`Windows Command Prompt nvmrc: Windows Command Prompt 1`] = `
-"FOR /f "tokens=*" %i IN ('fnm env --log-level='info'') DO CALL %i
+"FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
 fnm install
 fnm use
 node --version | findstr v8.11.3
@@ -113,7 +113,7 @@ if %errorlevel% neq 0 (
 `;
 
 exports[`Windows Command Prompt use on cd: Windows Command Prompt 1`] = `
-"FOR /f "tokens=*" %i IN ('fnm env --use-on-cd --log-level='info'') DO CALL %i
+"FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 fnm install v8.11.3
 fnm install v12.22.12
 cd subdir
@@ -126,7 +126,7 @@ if %errorlevel% neq 0 (
 
 exports[`Zsh basic usage: Zsh 1`] = `
 "set -e
-eval "$(fnm env --log-level='info')"
+eval "$(fnm env)"
 fnm install v8.11.3
 fnm use v8.11.3
 if [ "$(node --version)" != "v8.11.3" ]; then
@@ -137,7 +137,7 @@ fi"
 
 exports[`Zsh nvmrc: Zsh 1`] = `
 "set -e
-eval "$(fnm env --log-level='info')"
+eval "$(fnm env)"
 fnm install
 fnm use
 if [ "$(node --version)" != "v8.11.3" ]; then
@@ -148,7 +148,7 @@ fi"
 
 exports[`Zsh use on cd: Zsh 1`] = `
 "set -e
-eval "$(fnm env --use-on-cd --log-level='info')"
+eval "$(fnm env --use-on-cd)"
 fnm install v8.11.3
 fnm install v12.22.12
 cd subdir

@@ -1,7 +1,9 @@
 import { cmdCall } from "./cmdCall"
 import { cmdEnv } from "./cmdEnv"
 import { cmdExpectCommandOutput } from "./expect-command-output"
+import { cmdHasOutputContains } from "./output-contains"
 import { redirectOutput } from "./redirect-output"
+import { cmdInSubShell } from "./sub-shell"
 import { define, Shell } from "./types"
 
 export const Bash = {
@@ -17,6 +19,8 @@ export const Bash = {
   ...cmdCall.all,
   ...redirectOutput.bash,
   ...cmdExpectCommandOutput.bash,
+  ...cmdHasOutputContains.bash,
+  ...cmdInSubShell.bash,
 }
 
 export const Zsh = {
@@ -31,6 +35,8 @@ export const Zsh = {
   ...cmdEnv.bash,
   ...cmdCall.all,
   ...cmdExpectCommandOutput.bash,
+  ...cmdHasOutputContains.bash,
+  ...cmdInSubShell.zsh,
 }
 
 export const Fish = {
@@ -46,6 +52,8 @@ export const Fish = {
   ...cmdCall.all,
   ...redirectOutput.bash,
   ...cmdExpectCommandOutput.fish,
+  ...cmdHasOutputContains.bash,
+  ...cmdInSubShell.fish,
 }
 
 export const PowerShell = {
@@ -57,6 +65,7 @@ export const PowerShell = {
         return "pwsh"
       }
     },
+    forceFile: true,
     currentlySupported: () => true,
     name: () => "PowerShell",
     launchArgs: () => ["-NoProfile"],
@@ -66,6 +75,8 @@ export const PowerShell = {
   ...cmdEnv.powershell,
   ...cmdCall.all,
   ...cmdExpectCommandOutput.powershell,
+  ...cmdHasOutputContains.powershell,
+  ...cmdInSubShell.powershell,
 }
 
 export const WinCmd = {

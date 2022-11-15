@@ -4,53 +4,6 @@ mod uninstall;
 
 use crate::shellcode::*;
 
-mod basic {
-    test_shell!(Zsh, Bash, Fish, PowerShell, WinCmd; {
-        EvalFnmEnv::default()
-            .then(Call::new("fnm", vec!["install", "v8.11.3"]))
-            .then(Call::new("fnm", vec!["use", "v8.11.3"]))
-            .then(test_node_version("v8.11.3"))
-    });
-}
-
-mod nvmrc {
-    test_shell!(Zsh, Bash, Fish, PowerShell, WinCmd; {
-        EvalFnmEnv::default()
-            .then(WriteFile::new(".nvmrc", "v8.11.3"))
-            .then(Call::new("fnm", vec!["install"]))
-            .then(Call::new("fnm", vec!["use"]))
-            .then(test_node_version("v8.11.3"))
-    });
-}
-
-mod multishell {
-    test_shell!(Zsh, Bash, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .then(Call::new("fnm", vec!["install", "v8.11.3"]))
-            .then(Call::new("fnm", vec!["install", "v11.9.0"]))
-            .then(Call::new("fnm", vec!["use", "v8.11.3"]))
-            .then(SubShell::new(
-                DieOnErrors
-                    .then(EvalFnmEnv::default())
-                    .then(Call::new("fnm", vec!["use", "11"]))
-                    .then(test_node_version("v11.9.0")),
-            ))
-            .then(test_node_version("v8.11.3"))
-    });
-}
-
-mod use_on_cd_nvmrc {
-    test_shell!(Zsh, Bash, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .use_on_cd(true)
-            .then(Call::new("mkdir", vec!["inner_path"]))
-            .then(WriteFile::new("inner_path/.nvmrc", "v8.11.3"))
-            .then(Call::new("fnm", vec!["install", "v8.11.3"]))
-            .then(Call::new("cd", vec!["inner_path"]))
-            .then(test_node_version("v8.11.3"))
-    });
-}
-
 mod use_on_cd_dot_node_version {
     test_shell!(Zsh, Bash, Fish, PowerShell; {
         EvalFnmEnv::default()
@@ -94,17 +47,6 @@ mod exec {
                 Call::new("fnm", vec!["exec", "--using=10", "--", "node", "-v"]),
                 "v10.10.0",
                 "exec:6 node -v",
-            ))
-    });
-}
-
-mod existing_installation {
-    test_shell!(Bash, Zsh, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .then(Call::new("fnm", vec!["install", "v8.11.3"]))
-            .then(OutputContains::new(
-                IgnoreErrors::new(GetStderr::new(Call::new("fnm", vec!["install", "v8.11.3"]))),
-                "already installed",
             ))
     });
 }

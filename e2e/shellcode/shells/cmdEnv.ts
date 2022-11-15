@@ -4,11 +4,11 @@ type EnvConfig = { useOnCd: boolean; logLevel: string }
 export type HasEnv = { env(cfg: Partial<EnvConfig>): ScriptLine }
 
 function stringify(envConfig: Partial<EnvConfig> = {}) {
-  const { useOnCd = false, logLevel = "info" } = envConfig
+  const { useOnCd, logLevel } = envConfig
   return [
     `fnm env`,
     useOnCd && "--use-on-cd",
-    logLevel && `--log-level='${logLevel}'`,
+    logLevel && `--log-level=${logLevel}`,
   ]
     .filter(Boolean)
     .join(" ")
