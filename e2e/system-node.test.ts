@@ -10,10 +10,17 @@ for (const shell of [Bash, Fish, PowerShell, WinCmd, Zsh]) {
   describe(shell, () => {
     test(`switches to system node`, async () => {
       const customNode = path.join(testBinDir(), "node")
-      await fs.writeFile(customNode, `#!/bin/bash\n\necho "custom"\n`)
 
-      // set executable
-      await fs.chmod(customNode, 0o766)
+      if (
+        process.platform === "win32" &&
+        [WinCmd, PowerShell].includes(shell)
+      ) {
+        await fs.writeFile(customNode + ".cmd", '@echo "custom node"')
+      } else {
+        await fs.writeFile(customNode, `#!/bin/bash\n\necho "custom"\n`)
+        // set executable
+        await fs.chmod(customNode, 0o766)
+      }
 
       await script(shell)
         .then(shell.env({}))
