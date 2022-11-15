@@ -7,6 +7,7 @@
   "packageManager": "pnpm@7.13.2",
   "license": "GPLv3",
   "scripts": {
+    "test": "jest",
     "version:prepare": "changeset version && ./.ci/prepare-version.js",
     "generate-command-docs": "./.ci/print-command-docs.js"
   },

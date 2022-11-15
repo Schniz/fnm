@@ -58,8 +58,32 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
+
+    - uses: pnpm/action-setup@v2.2.2
+      with:
+        run_install: false
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+        cache: 'pnpm'
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      run: |
+        echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+    - uses: actions/cache@v3
+      name: Setup pnpm cache
+      with:
+        path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+    - run: pnpm install
+
     - uses: Swatinem/rust-cache@v1
     - uses: actions/checkout@v3
+    - run: cargo build --release
+    - name: Run Node.js tests
+      run: PATH=$PWD/target/release $PATH pnpm test
     - name: Run tests
       run: cargo test -- feature_tests
 
