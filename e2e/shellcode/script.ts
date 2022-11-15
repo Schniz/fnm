@@ -161,7 +161,8 @@ function removeAllFnmEnvVars(obj: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
 }
 
 function fnmTargetDir(): string {
-  return (
-    process.env.FNM_TARGET_DIR ?? path.join(__dirname, "../../target/debug")
+  return path.resolve(
+    __dirname,
+    `../../target/${process.env.FNM_TARGET_NAME ?? "debug"}`
   )
 }

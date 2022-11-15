@@ -84,7 +84,9 @@ jobs:
     - run: cargo build --release
 
     - name: Run Node.js tests
-      run: FNM_TARGET_DIR="$PWD/target/release" pnpm test
+      run: pnpm test
+      env:
+        FNM_TARGET_NAME: "release"
 
   build_release:
     runs-on: windows-latest
