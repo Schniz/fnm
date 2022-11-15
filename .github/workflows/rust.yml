@@ -41,7 +41,7 @@ jobs:
     - uses: Swatinem/rust-cache@v1
     - uses: actions/checkout@v3
     - name: Run tests
-      run: cargo test -- --skip=feature_tests
+      run: cargo test
 
   e2e_tests:
     runs-on: ${{ matrix.os }}
@@ -84,8 +84,6 @@ jobs:
     - run: cargo build --release
     - name: Run Node.js tests
       run: PATH=$PWD/target/release $PATH pnpm test
-    - name: Run tests
-      run: cargo test -- feature_tests
 
   build_release:
     runs-on: windows-latest
