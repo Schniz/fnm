@@ -6,5 +6,5 @@ export default function testNodeVersion<
   S extends HasCall & HasExpectCommandOutput
 >(shell: S, version: string): ScriptLine {
   const nodeVersion = shell.call("node", ["--version"])
-  return shell.hasCommandOutput(nodeVersion, version)
+  return shell.hasCommandOutput(nodeVersion, version, "node version")
 }

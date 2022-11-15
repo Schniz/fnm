@@ -77,10 +77,10 @@ class Script {
             signal ${finished.signal}
 
           stdout:
-          ${padAllLines(stdout, 2)}
+          ${padAllLines(stdout.join(""), 2)}
 
           stderr:
-          ${padAllLines(stderr, 2)}
+          ${padAllLines(stderr.join(""), 2)}
         `
       )
 
@@ -124,7 +124,7 @@ function streamOutputsAndBuffer(child: execa.ExecaChildProcess) {
     })
   }
 
-  return { stdout: stdout.join(""), stderr: stderr.join("") }
+  return { stdout, stderr }
 }
 
 function padAllLines(text: string, padding: number): string {

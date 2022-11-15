@@ -14,31 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod exec {
-    test_shell!(Zsh, Bash, Fish, PowerShell, WinCmd; {
-        EvalFnmEnv::default()
-            .then(WriteFile::new(".nvmrc", "v8.10.0"))
-            .then(Call::new("fnm", vec!["install"]))
-            .then(Call::new("fnm", vec!["install", "v6.10.0"]))
-            .then(Call::new("fnm", vec!["install", "v10.10.0"]))
-            .then(ExpectCommandOutput::new(
-                Call::new("fnm", vec!["exec", "--", "node", "-v"]),
-                "v8.10.0",
-                "version file exec",
-            ))
-            .then(ExpectCommandOutput::new(
-                Call::new("fnm", vec!["exec", "--using=6", "--", "node", "-v"]),
-                "v6.10.0",
-                "exec:6 node -v",
-            ))
-            .then(ExpectCommandOutput::new(
-                Call::new("fnm", vec!["exec", "--using=10", "--", "node", "-v"]),
-                "v10.10.0",
-                "exec:6 node -v",
-            ))
-    });
-}
-
 mod system_node {
     test_shell!(Bash, Zsh, Fish, PowerShell; |path: &std::path::Path| {
         use std::io::Write;

@@ -9,11 +9,11 @@ echo 'set -e
 eval "$(fnm env)"
 fnm use v11
 if [ "$(node --version)" != "v11.9.0" ]; then
-  echo "Expected to get v11.9.0. Got $(node --version)"
+  echo "Expected node version to be v11.9.0. Got $(node --version)"
   exit 1
 fi' | bash
 if [ "$(node --version)" != "v8.11.3" ]; then
-  echo "Expected to get v8.11.3. Got $(node --version)"
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
   exit 1
 fi"
 `;
@@ -25,11 +25,11 @@ fnm install v11.9.0
 fish -c 'fnm env | source
 fnm use v11
 if test (node --version) != "v11.9.0"
-  echo "Expected to get v11.9.0. Got $(node --version)"
+  echo "Expected node version to be v11.9.0. Got $(node --version)"
   exit 1
 end'
 if test (node --version) != "v8.11.3"
-  echo "Expected to get v8.11.3. Got $(node --version)"
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
   exit 1
 end"
 `;
@@ -42,8 +42,8 @@ fnm install v11.9.0
 echo '$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
 fnm use v11
-if ( "$(node --version)" -ne "v11.9.0" ) { echo "Expected to get v11.9.0. Got $(node --version)"; exit 1 }' | pwsh -NoProfile
-if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
+if ( "$(node --version)" -ne "v11.9.0" ) { echo "Expected node version to be v11.9.0. Got $(node --version)"; exit 1 }' | pwsh -NoProfile
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
 `;
 
 exports[`Zsh multishell changes don't affect parent: Zsh 1`] = `
@@ -55,11 +55,11 @@ echo 'set -e
 eval "$(fnm env)"
 fnm use v11
 if [ "$(node --version)" != "v11.9.0" ]; then
-  echo "Expected to get v11.9.0. Got $(node --version)"
+  echo "Expected node version to be v11.9.0. Got $(node --version)"
   exit 1
 fi' | zsh
 if [ "$(node --version)" != "v8.11.3" ]; then
-  echo "Expected to get v8.11.3. Got $(node --version)"
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
   exit 1
 fi"
 `;
