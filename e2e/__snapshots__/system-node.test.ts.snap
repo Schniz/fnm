@@ -20,13 +20,15 @@ exports[`Fish switches to system node: Fish 1`] = `
 "fnm env | source
 fnm install v10.10.0
 fnm use v10
-if test (node --version) != "v10.10.0"
-  echo "Expected node version to be v10.10.0. Got $(node --version)"
+set ____test____ (node --version)
+if test "$____test____" != "v10.10.0"
+  echo "Expected node version to be v10.10.0. Got $____test____"
   exit 1
 end
 fnm use system
-if test (node --version) != "custom"
-  echo "Expected node version to be custom. Got $(node --version)"
+set ____test____ (node --version)
+if test "$____test____" != "custom"
+  echo "Expected node version to be custom. Got $____test____"
   exit 1
 end"
 `;

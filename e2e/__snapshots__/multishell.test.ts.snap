@@ -24,12 +24,14 @@ fnm install v8.11.3
 fnm install v11.9.0
 fish -c 'fnm env | source
 fnm use v11
-if test (node --version) != "v11.9.0"
-  echo "Expected node version to be v11.9.0. Got $(node --version)"
+set ____test____ (node --version)
+if test "$____test____" != "v11.9.0"
+  echo "Expected node version to be v11.9.0. Got $____test____"
   exit 1
 end'
-if test (node --version) != "v8.11.3"
-  echo "Expected node version to be v8.11.3. Got $(node --version)"
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
   exit 1
 end"
 `;

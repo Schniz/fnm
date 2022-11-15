@@ -14,16 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod log_level_quiet {
-    test_shell!(Bash, Zsh, Fish, PowerShell; {
-        EvalFnmEnv::default()
-            .log_level(Some("quiet"))
-            .then(ExpectCommandOutput::new(Call::new("fnm", vec!["install", "v8.11.3"]), "", "fnm install"))
-            .then(ExpectCommandOutput::new(Call::new("fnm", vec!["use", "v8.11.3"]), "", "fnm use"))
-            .then(ExpectCommandOutput::new(Call::new("fnm", vec!["alias", "v8.11.3", "something"]), "", "fnm alias"))
-    });
-}
-
 mod log_level_error {
     test_shell!(Bash, Zsh, Fish, PowerShell; {
         EvalFnmEnv::default()

@@ -23,8 +23,9 @@ export const cmdExpectCommandOutput = {
   fish: define<HasExpectCommandOutput>({
     hasCommandOutput(script, output, message) {
       return dedent`
-        if test (${script}) != "${output}"
-          echo "Expected ${message} to be ${output}. Got $(${script})"
+        set ____test____ (${script})
+        if test "$____test____" != "${output}"
+          echo "Expected ${message} to be ${output}. Got $____test____"
           exit 1
         end
       `

@@ -60,8 +60,9 @@ exports[`Fish .node-version: Fish 1`] = `
 "fnm env | source
 fnm install
 fnm use
-if test (node --version) != "v8.11.3"
-  echo "Expected node version to be v8.11.3. Got $(node --version)"
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
   exit 1
 end"
 `;
@@ -70,8 +71,9 @@ exports[`Fish .nvmrc: Fish 1`] = `
 "fnm env | source
 fnm install
 fnm use
-if test (node --version) != "v8.11.3"
-  echo "Expected node version to be v8.11.3. Got $(node --version)"
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
   exit 1
 end"
 `;
@@ -80,8 +82,9 @@ exports[`Fish basic usage: Fish 1`] = `
 "fnm env | source
 fnm install v8.11.3
 fnm use v8.11.3
-if test (node --version) != "v8.11.3"
-  echo "Expected node version to be v8.11.3. Got $(node --version)"
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
   exit 1
 end"
 `;
@@ -90,8 +93,9 @@ exports[`Fish resolves partial semver: Fish 1`] = `
 "fnm env | source
 fnm install 6
 fnm use 6
-if test (node --version) != "v6.17.1"
-  echo "Expected node version to be v6.17.1. Got $(node --version)"
+set ____test____ (node --version)
+if test "$____test____" != "v6.17.1"
+  echo "Expected node version to be v6.17.1. Got $____test____"
   exit 1
 end"
 `;
@@ -101,8 +105,9 @@ exports[`Fish use on cd: Fish 1`] = `
 fnm install v8.11.3
 fnm install v12.22.12
 cd subdir
-if test (node --version) != "v12.22.12"
-  echo "Expected node version to be v12.22.12. Got $(node --version)"
+set ____test____ (node --version)
+if test "$____test____" != "v12.22.12"
+  echo "Expected node version to be v12.22.12. Got $____test____"
   exit 1
 end"
 `;
