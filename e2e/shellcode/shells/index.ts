@@ -26,7 +26,7 @@ export const Bash = {
 export const Zsh = {
   ...define<Shell>({
     binaryName: () => "zsh",
-    currentlySupported: () => true,
+    currentlySupported: () => process.platform !== "win32",
     name: () => "Zsh",
     launchArgs: () => [],
     escapeText: (x) => x,
@@ -42,7 +42,7 @@ export const Zsh = {
 export const Fish = {
   ...define<Shell>({
     binaryName: () => "fish",
-    currentlySupported: () => true,
+    currentlySupported: () => process.platform !== "win32",
     name: () => "Fish",
     launchArgs: () => [],
     escapeText: (x) => x,
