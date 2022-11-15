@@ -62,5 +62,19 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .takeSnapshot(shell)
         .execute(shell)
     })
+
+    test("`fnm ls` with nothing installed", async () => {
+      await script(shell)
+        .then(shell.env({}))
+        .then(
+          shell.hasCommandOutput(
+            shell.call("fnm", ["ls"]),
+            "* system",
+            "fnm ls"
+          )
+        )
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
   })
 }

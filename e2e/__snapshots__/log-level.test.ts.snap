@@ -32,7 +32,7 @@ if [ "$(fnm alias v8.11.3 something)" != "" ]; then
   echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"
   exit 1
 fi
-fnm alias abcd efg 2>&1 | grep "find requested versions" || (echo "Expected output to contain "find requested versions"" && exit 1)"
+fnm alias abcd efg 2>&1 | grep "find requested version" || (echo "Expected output to contain "find requested version"" && exit 1)"
 `;
 
 exports[`Fish "quiet" log level: Fish 1`] = `
@@ -71,7 +71,7 @@ if test "$____test____" != ""
   echo "Expected fnm alias to be . Got $____test____"
   exit 1
 end
-fnm alias abcd efg 2>&1 | grep "find requested versions"; or echo "Expected output to contain "find requested versions"" && exit 1"
+fnm alias abcd efg 2>&1 | grep "find requested version"; or echo "Expected output to contain "find requested version"" && exit 1"
 `;
 
 exports[`PowerShell "quiet" log level: PowerShell 1`] = `
@@ -88,7 +88,7 @@ fnm env --log-level=error | Out-String | Invoke-Expression
 if ( "$(fnm install v8.11.3)" -ne "" ) { echo "Expected fnm install to be . Got $(fnm install v8.11.3)"; exit 1 }
 if ( "$(fnm use v8.11.3)" -ne "" ) { echo "Expected fnm use to be . Got $(fnm use v8.11.3)"; exit 1 }
 if ( "$(fnm alias v8.11.3 something)" -ne "" ) { echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"; exit 1 }
-$($__out__ = $(fnm alias abcd efg 2>&1 | Select-String "find requested versions"); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+$($__out__ = $(fnm alias abcd efg 2>&1 | Select-String "find requested version"); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
 
 exports[`Zsh "quiet" log level: Zsh 1`] = `
@@ -123,5 +123,5 @@ if [ "$(fnm alias v8.11.3 something)" != "" ]; then
   echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"
   exit 1
 fi
-fnm alias abcd efg 2>&1 | grep "find requested versions" || (echo "Expected output to contain "find requested versions"" && exit 1)"
+fnm alias abcd efg 2>&1 | grep "find requested version" || (echo "Expected output to contain "find requested version"" && exit 1)"
 `;

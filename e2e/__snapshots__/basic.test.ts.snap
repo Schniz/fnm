@@ -22,6 +22,15 @@ if [ "$(node --version)" != "v8.11.3" ]; then
 fi"
 `;
 
+exports[`Bash \`fnm ls\` with nothing installed: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+if [ "$(fnm ls)" != "* system" ]; then
+  echo "Expected fnm ls to be * system. Got $(fnm ls)"
+  exit 1
+fi"
+`;
+
 exports[`Bash basic usage: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
@@ -78,6 +87,15 @@ if test "$____test____" != "v8.11.3"
 end"
 `;
 
+exports[`Fish \`fnm ls\` with nothing installed: Fish 1`] = `
+"fnm env | source
+set ____test____ (fnm ls)
+if test "$____test____" != "* system"
+  echo "Expected fnm ls to be * system. Got $____test____"
+  exit 1
+end"
+`;
+
 exports[`Fish basic usage: Fish 1`] = `
 "fnm env | source
 fnm install v8.11.3
@@ -128,6 +146,12 @@ fnm use
 if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
 `;
 
+exports[`PowerShell \`fnm ls\` with nothing installed: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+if ( "$(fnm ls)" -ne "* system" ) { echo "Expected fnm ls to be * system. Got $(fnm ls)"; exit 1 }"
+`;
+
 exports[`PowerShell basic usage: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
@@ -171,6 +195,15 @@ fnm use
 node --version | findstr v8.11.3
 if %errorlevel% neq 0 (
   echo Expected node version to be v8.11.3
+  exit 1
+)"
+`;
+
+exports[`Windows Command Prompt \`fnm ls\` with nothing installed: Windows Command Prompt 1`] = `
+"FOR /f "tokens=*" %i IN ('fnm env') DO CALL %i
+fnm ls | findstr * system
+if %errorlevel% neq 0 (
+  echo Expected fnm ls to be * system
   exit 1
 )"
 `;
@@ -227,6 +260,15 @@ fnm install
 fnm use
 if [ "$(node --version)" != "v8.11.3" ]; then
   echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh \`fnm ls\` with nothing installed: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+if [ "$(fnm ls)" != "* system" ]; then
+  echo "Expected fnm ls to be * system. Got $(fnm ls)"
   exit 1
 fi"
 `;

@@ -14,13 +14,6 @@ use crate::shellcode::*;
 // });
 // }
 
-mod list_local_with_nothing_installed {
-    test_shell!(Bash, Zsh, Fish, PowerShell, WinCmd; {
-        EvalFnmEnv::default()
-            .then(Call::new("fnm", vec!["ls"]))
-    });
-}
-
 mod latest_lts {
     test_shell!(Bash, Zsh, Fish, PowerShell; {
         EvalFnmEnv::default()
