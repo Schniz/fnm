@@ -1,7 +1,0 @@
----
-source: tests/feature_tests/mod.rs
-expression: "&source.trim()"
----
-fnm --log-level='error' env | source
-echo 'lts/*' > .node-version
-fnm use 2>&1 | grep 'Requested version lts-latest is not currently installed'

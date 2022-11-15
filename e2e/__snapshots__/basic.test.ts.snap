@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash basic usage: Bash 1`] = `
+"set -e
+eval "$(fnm env --log-level='info')"
+fnm install v8.11.3
+fnm use v8.11.3
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash nvmrc: Bash 1`] = `
+"set -e
+eval "$(fnm env --log-level='info')"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Fish basic usage: Fish 1`] = `
+"fnm env --log-level='info' | source
+fnm install v8.11.3
+fnm use v8.11.3
+if test (node --version) != "v8.11.3"
+  echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+end"
+`;
+
+exports[`Fish nvmrc: Fish 1`] = `
+"fnm env --log-level='info' | source
+fnm install
+fnm use
+if test (node --version) != "v8.11.3"
+  echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+end"
+`;
+
+exports[`PowerShell basic usage: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --log-level='info' | Out-String | Invoke-Expression
+fnm install v8.11.3
+fnm use v8.11.3
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell nvmrc: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --log-level='info' | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected to get v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`Zsh basic usage: Zsh 1`] = `
+"set -e
+eval "$(fnm env --log-level='info')"
+fnm install v8.11.3
+fnm use v8.11.3
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh nvmrc: Zsh 1`] = `
+"set -e
+eval "$(fnm env --log-level='info')"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected to get v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
