@@ -7,7 +7,6 @@ export type HasRedirectOutput = {
 
 export const redirectOutput = {
   bash: define<HasRedirectOutput>({
-    redirectOutput: (childCommand, opts) =>
-      `(${childCommand}) > ${opts.output}`,
+    redirectOutput: (childCommand, opts) => `${childCommand} > ${opts.output}`,
   }),
 }

@@ -34,6 +34,7 @@ export const Zsh = {
   }),
   ...cmdEnv.bash,
   ...cmdCall.all,
+  ...redirectOutput.bash,
   ...cmdExpectCommandOutput.bash,
   ...cmdHasOutputContains.bash,
   ...cmdInSubShell.zsh,
@@ -74,6 +75,7 @@ export const PowerShell = {
   }),
   ...cmdEnv.powershell,
   ...cmdCall.all,
+  ...redirectOutput.bash,
   ...cmdExpectCommandOutput.powershell,
   ...cmdHasOutputContains.powershell,
   ...cmdInSubShell.powershell,
@@ -97,4 +99,5 @@ export const WinCmd = {
   ...cmdEnv.wincmd,
   ...cmdCall.all,
   ...cmdExpectCommandOutput.wincmd,
+  ...redirectOutput.bash,
 }
