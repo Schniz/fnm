@@ -96,24 +96,25 @@ impl Command for Env {
 
         if self.json {
             println!("{}", serde_json::to_string(&env_vars).unwrap());
-        } else {
-            let shell: Box<dyn Shell> = self
-                .shell
-                .or_else(&infer_shell)
-                .ok_or(Error::CantInferShell)?;
+            return Ok(());
+        }
 
-            println!("{}", shell.path(&binary_path)?);
+        let shell: Box<dyn Shell> = self
+            .shell
+            .or_else(infer_shell)
+            .ok_or(Error::CantInferShell)?;
 
-            for (name, value) in env_vars.iter() {
-                println!("{}", shell.set_env_var(name, value));
-            }
+        println!("{}", shell.path(&binary_path)?);
 
-            if self.use_on_cd {
-                println!("{}", shell.use_on_cd(config)?);
-            }
-            if let Some(v) = shell.rehash() {
-                println!("{}", v);
-            }
+        for (name, value) in &env_vars {
+            println!("{}", shell.set_env_var(name, value));
+        }
+
+        if self.use_on_cd {
+            println!("{}", shell.use_on_cd(config)?);
+        }
+        if let Some(v) = shell.rehash() {
+            println!("{}", v);
         }
 
         Ok(())
