@@ -69,7 +69,7 @@ impl Cmd for Exec {
                 .map_err(|source| Error::CantAddPathToEnvironment { source })?
         };
 
-        let exit_status = Command::new(&binary)
+        let exit_status = Command::new(binary)
             .args(arguments)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())

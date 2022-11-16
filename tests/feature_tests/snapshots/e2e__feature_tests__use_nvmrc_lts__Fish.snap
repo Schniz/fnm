@@ -1,9 +1,0 @@
----
-source: tests/feature_tests/mod.rs
-expression: "&source.trim()"
----
-fnm env | source
-echo lts/dubnium > .nvmrc
-fnm install
-fnm use
-fnm ls | grep lts-dubnium
