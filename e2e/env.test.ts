@@ -19,15 +19,17 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .takeSnapshot(shell)
         .execute(shell)
 
-      const file = await readFile(join(testCwd(), "file.json"), "utf8")
-      expect(JSON.parse(file)).toEqual({
-        FNM_ARCH: expect.any(String),
-        FNM_DIR: expect.any(String),
-        FNM_LOGLEVEL: "info",
-        FNM_MULTISHELL_PATH: expect.any(String),
-        FNM_NODE_DIST_MIRROR: expect.any(String),
-        FNM_VERSION_FILE_STRATEGY: "local",
-      })
+      if (shell.currentlySupported()) {
+        const file = await readFile(join(testCwd(), "file.json"), "utf8")
+        expect(JSON.parse(file)).toEqual({
+          FNM_ARCH: expect.any(String),
+          FNM_DIR: expect.any(String),
+          FNM_LOGLEVEL: "info",
+          FNM_MULTISHELL_PATH: expect.any(String),
+          FNM_NODE_DIST_MIRROR: expect.any(String),
+          FNM_VERSION_FILE_STRATEGY: "local",
+        })
+      }
     })
   })
 }
