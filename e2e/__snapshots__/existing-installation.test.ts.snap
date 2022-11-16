@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash warns about an existing installation: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v8.11.3
+(fnm install v8.11.3 2>&1) | grep 'already installed' || (echo "Expected output to contain 'already installed'" && exit 1)"
+`;
+
+exports[`Fish warns about an existing installation: Fish 1`] = `
+"fnm env | source
+fnm install v8.11.3
+begin; fnm install v8.11.3 2>&1; end | grep 'already installed'; or echo "Expected output to contain 'already installed'" && exit 1"
+`;
+
+exports[`PowerShell warns about an existing installation: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install v8.11.3
+$($__out__ = $(fnm install v8.11.3 2>&1 | Select-String 'already installed'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`Zsh warns about an existing installation: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v8.11.3
+(fnm install v8.11.3 2>&1) | grep 'already installed' || (echo "Expected output to contain 'already installed'" && exit 1)"
+`;

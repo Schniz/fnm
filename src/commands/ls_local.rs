@@ -24,7 +24,7 @@ impl super::command::Command for LsLocal {
 
         for version in versions {
             let version_aliases = match aliases_hash.get(&version.v_str()) {
-                None => "".into(),
+                None => String::new(),
                 Some(versions) => {
                     let version_string = versions
                         .iter()
