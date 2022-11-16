@@ -1,4 +1,4 @@
-import { rm, readFile } from "node:fs/promises"
+import { readFile } from "node:fs/promises"
 import { join } from "node:path"
 import { script } from "./shellcode/script"
 import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells"
@@ -8,19 +8,18 @@ import describe from "./describe"
 for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
   describe(shell, () => {
     test(`outputs json`, async () => {
-      await rm(join(testCwd(), "file.json"), { recursive: true, force: true })
-
+      const filename = `file.json`
       await script(shell)
         .then(
           shell.redirectOutput(shell.call("fnm", ["env", "--json"]), {
-            output: "file.json",
+            output: filename,
           })
         )
         .takeSnapshot(shell)
         .execute(shell)
 
       if (shell.currentlySupported()) {
-        const file = await readFile(join(testCwd(), "file.json"), "utf8")
+        const file = await readFile(join(testCwd(), filename), "utf8")
         expect(JSON.parse(file)).toEqual({
           FNM_ARCH: expect.any(String),
           FNM_DIR: expect.any(String),
