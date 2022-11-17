@@ -26,10 +26,8 @@ pub struct Env {
     /// Print the script to change Node versions every directory change
     #[clap(long)]
     use_on_cd: bool,
-
-    /// Adds `node` shims to your PATH environment variable
-    /// to allow you to use `node` commands in your shell
-    /// without rehashing.
+    /// EXPERIMENTAL: Adds `node` shims to your PATH environment variable to allow you
+    /// to use `node` commands in your shell without rehashing.
     #[structopt(long)]
     with_shims: bool,
 }
