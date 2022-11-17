@@ -159,39 +159,39 @@ jobs:
         FNM_TARGET_NAME: "release"
         FORCE_COLOR: "1"
 
-  e2e_windows_debug:
-    runs-on: windows-latest
-    name: "e2e/windows/debug"
-    environment: Debug
-    needs: [e2e_windows]
-    if: contains(join(needs.*.result, ','), 'failure')
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/download-artifact@v3
-      with:
-        name: fnm-windows
-        path: target/release
-    - uses: pnpm/action-setup@v2.2.2
-      with:
-        run_install: false
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16.x
-        cache: 'pnpm'
-    - name: Get pnpm store directory
-      id: pnpm-cache
-      run: |
-        echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-    - uses: actions/cache@v3
-      name: Setup pnpm cache
-      with:
-        path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-
-    - run: pnpm install
-    - name: 🐛 Debug Build
-      uses: mxschmitt/action-tmate@v3
+  # e2e_windows_debug:
+  #   runs-on: windows-latest
+  #   name: "e2e/windows/debug"
+  #   environment: Debug
+  #   needs: [e2e_windows]
+  #   if: contains(join(needs.*.result, ','), 'failure')
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: actions/download-artifact@v3
+  #     with:
+  #       name: fnm-windows
+  #       path: target/release
+  #   - uses: pnpm/action-setup@v2.2.2
+  #     with:
+  #       run_install: false
+  #   - uses: actions/setup-node@v3
+  #     with:
+  #       node-version: 16.x
+  #       cache: 'pnpm'
+  #   - name: Get pnpm store directory
+  #     id: pnpm-cache
+  #     run: |
+  #       echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+  #   - uses: actions/cache@v3
+  #     name: Setup pnpm cache
+  #     with:
+  #       path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+  #       key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+  #       restore-keys: |
+  #         ${{ runner.os }}-pnpm-store-
+  #   - run: pnpm install
+  #   - name: 🐛 Debug Build
+  #     uses: mxschmitt/action-tmate@v3
 
   e2e_linux:
     runs-on: ubuntu-latest

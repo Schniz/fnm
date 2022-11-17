@@ -18,7 +18,7 @@ for (const shell of [Bash, Fish, PowerShell, WinCmd, Zsh]) {
         process.platform === "win32" &&
         [WinCmd, PowerShell].includes(shell)
       ) {
-        await fs.writeFile(customNode + ".cmd", '@echo "custom node"')
+        await fs.writeFile(customNode + ".cmd", '@echo "custom"')
       } else {
         await fs.writeFile(customNode, `#!/bin/bash\n\necho "custom"\n`)
         // set executable
