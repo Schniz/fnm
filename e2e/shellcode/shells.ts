@@ -1,10 +1,10 @@
-import { cmdCall } from "./cmdCall"
-import { cmdEnv } from "./cmdEnv"
-import { cmdExpectCommandOutput } from "./expect-command-output"
-import { cmdHasOutputContains } from "./output-contains"
-import { redirectOutput } from "./redirect-output"
-import { cmdInSubShell } from "./sub-shell"
-import { define, Shell } from "./types"
+import { cmdCall } from "./shells/cmdCall.js"
+import { cmdEnv } from "./shells/cmdEnv.js"
+import { cmdExpectCommandOutput } from "./shells/expect-command-output.js"
+import { cmdHasOutputContains } from "./shells/output-contains.js"
+import { redirectOutput } from "./shells/redirect-output.js"
+import { cmdInSubShell } from "./shells/sub-shell.js"
+import { define, Shell } from "./shells/types.js"
 
 export const Bash = {
   ...define<Shell>({
@@ -34,6 +34,7 @@ export const Zsh = {
   }),
   ...cmdEnv.bash,
   ...cmdCall.all,
+  ...redirectOutput.bash,
   ...cmdExpectCommandOutput.bash,
   ...cmdHasOutputContains.bash,
   ...cmdInSubShell.zsh,
@@ -58,14 +59,8 @@ export const Fish = {
 
 export const PowerShell = {
   ...define<Shell>({
-    binaryName: () => {
-      if (process.platform === "win32") {
-        return "powershell.exe"
-      } else {
-        return "pwsh"
-      }
-    },
-    forceFile: true,
+    binaryName: () => "pwsh",
+    forceFile: ".ps1",
     currentlySupported: () => true,
     name: () => "PowerShell",
     launchArgs: () => ["-NoProfile"],
@@ -74,6 +69,7 @@ export const PowerShell = {
   }),
   ...cmdEnv.powershell,
   ...cmdCall.all,
+  ...redirectOutput.powershell,
   ...cmdExpectCommandOutput.powershell,
   ...cmdHasOutputContains.powershell,
   ...cmdInSubShell.powershell,
@@ -97,4 +93,5 @@ export const WinCmd = {
   ...cmdEnv.wincmd,
   ...cmdCall.all,
   ...cmdExpectCommandOutput.wincmd,
+  ...redirectOutput.bash,
 }

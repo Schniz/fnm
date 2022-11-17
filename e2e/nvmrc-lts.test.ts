@@ -1,9 +1,9 @@
-import { script } from "./shellcode/script"
-import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells"
+import { script } from "./shellcode/script.js"
+import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells.js"
 import fs from "node:fs/promises"
 import path from "node:path"
-import describe from "./describe"
-import testCwd from "./shellcode/test-cwd"
+import describe from "./describe.js"
+import testCwd from "./shellcode/test-cwd.js"
 
 for (const shell of [Bash, Fish, PowerShell, Zsh]) {
   describe(shell, () => {

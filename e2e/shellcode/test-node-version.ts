@@ -1,6 +1,6 @@
-import { HasCall } from "./shells/cmdCall"
-import { ScriptLine } from "./shells/types"
-import { HasExpectCommandOutput } from "./shells/expect-command-output"
+import { HasCall } from "./shells/cmdCall.js"
+import { ScriptLine } from "./shells/types.js"
+import { HasExpectCommandOutput } from "./shells/expect-command-output.js"
 
 export default function testNodeVersion<
   S extends HasCall & HasExpectCommandOutput

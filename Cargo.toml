@@ -1,6 +1,6 @@
 [package]
 name = "fnm"
-version = "1.31.1"
+version = "1.32.0"
 authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
 edition = "2021"
 build = "build.rs"
@@ -9,39 +9,36 @@ repository = "https://github.com/Schniz/fnm"
 description = "Fast and simple Node.js version manager"
 
 [dependencies]
-serde = { version = "1.0.145", features = ["derive"] }
-clap = { version = "3.2.22", features = ["derive", "env"] }
-serde_json = "1.0.85"
-chrono = { version = "0.4.22", features = ["serde"] }
+serde = { version = "1.0.147", features = ["derive"] }
+clap = { version = "3.2.23", features = ["derive", "env"] }
+serde_json = "1.0.87"
+chrono = { version = "0.4.23", features = ["serde"] }
 tar = "0.4.38"
 xz2 = "0.1.7"
 semver = "1.0.14"
 dirs = "4.0.0"
 colored = "2.0.0"
-zip = "0.6.2"
+zip = "0.6.3"
 tempfile = "3.3.0"
 indoc = "1.0.7"
 log = "0.4.17"
-env_logger = "0.9.1"
+env_logger = "0.9.3"
 atty = "0.2.14"
 encoding_rs_io = "0.1.7"
-reqwest = { version = "0.11.12", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
+reqwest = { version = "0.11.13", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
 url = "2.3.1"
 sysinfo = "0.26.7"
 thiserror = "1.0.37"
 clap_complete = "3.2.5"
-anyhow = "1.0.65"
+anyhow = "1.0.66"
 
 [dev-dependencies]
 pretty_assertions = "1.3.0"
 duct = "0.13.5"
-shell-escape = "0.1.5"
-insta = "1.21.0"
-serial_test = "0.9.0"
 test-log = "0.2.11"
 
 [build-dependencies]
-embed-resource = "1.7.3"
+embed-resource = "1.7.4"
 
 [target.'cfg(windows)'.dependencies]
 csv = "1.1.6"

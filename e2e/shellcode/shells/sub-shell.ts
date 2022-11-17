@@ -1,4 +1,4 @@
-import { ScriptLine, define } from "./types"
+import { ScriptLine, define } from "./types.js"
 import quote from "shell-escape"
 
 type HasInSubShell = { inSubShell: (script: ScriptLine) => ScriptLine }
