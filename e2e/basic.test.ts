@@ -1,10 +1,10 @@
 import { writeFile, mkdir } from "node:fs/promises"
 import { join } from "node:path"
-import { script } from "./shellcode/script"
-import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells"
-import testCwd from "./shellcode/test-cwd"
-import testNodeVersion from "./shellcode/test-node-version"
-import describe from "./describe"
+import { script } from "./shellcode/script.js"
+import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells.js"
+import testCwd from "./shellcode/test-cwd.js"
+import testNodeVersion from "./shellcode/test-node-version.js"
+import describe from "./describe.js"
 
 for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
   describe(shell, () => {

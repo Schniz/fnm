@@ -1,10 +1,10 @@
-import { script } from "./shellcode/script"
-import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells"
+import { script } from "./shellcode/script.js"
+import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells.js"
 import fs from "node:fs/promises"
 import path from "node:path"
-import describe from "./describe"
-import testNodeVersion from "./shellcode/test-node-version"
-import testBinDir from "./shellcode/test-bin-dir"
+import describe from "./describe.js"
+import testNodeVersion from "./shellcode/test-node-version.js"
+import testBinDir from "./shellcode/test-bin-dir.js"
 
 for (const shell of [Bash, Fish, PowerShell, WinCmd, Zsh]) {
   describe(shell, () => {

@@ -4,7 +4,6 @@
 
 import fs from "fs"
 import cp from "child_process"
-import path from "path"
 import cmd from "cmd-ts"
 import toml from "toml"
 import assert from "assert"
@@ -34,7 +33,7 @@ cmd.run(cmd.binary(command), process.argv)
  */
 async function getPackageVersion() {
   const pkgJson = await fs.promises.readFile(
-    path.join(__dirname, "../package.json"),
+    new URL("../package.json", import.meta.url),
     "utf8"
   )
   const version = JSON.parse(pkgJson).version

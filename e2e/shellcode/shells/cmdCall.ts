@@ -1,4 +1,4 @@
-import { define, ScriptLine } from "./types"
+import { define, ScriptLine } from "./types.js"
 
 export type HasCall = {
   call: (binary: string, args: string[]) => ScriptLine

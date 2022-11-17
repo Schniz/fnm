@@ -1,4 +1,4 @@
-import { ScriptLine, define } from "./types"
+import { ScriptLine, define } from "./types.js"
 
 type EnvConfig = { useOnCd: boolean; logLevel: string }
 export type HasEnv = { env(cfg: Partial<EnvConfig>): ScriptLine }

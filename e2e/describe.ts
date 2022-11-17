@@ -1,5 +1,5 @@
-import { WinCmd } from "./shellcode/shells"
-import { Shell } from "./shellcode/shells/types"
+import { WinCmd } from "./shellcode/shells.js"
+import { Shell } from "./shellcode/shells/types.js"
 
 export default function describe(
   shell: Pick<Shell, "name">,
