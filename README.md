@@ -18,13 +18,15 @@
 
 :rocket: Built with speed in mind
 
-:thinking: Works with `.node-version` and `.nvmrc` files
+:open_file_folder: Works with `.node-version` and `.nvmrc` files
 
 ## Installation
 
 ### Using a script (macOS/Linux)
 
-For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
+For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh).
+
+First ensure that `curl` and `unzip` are already installed on you operating system. Then execute:
 
 ```sh
 curl -fsSL https://fnm.vercel.app/install | bash
@@ -118,31 +120,41 @@ Please follow your shell instructions to install them.
 
 ### Shell Setup
 
-fnm needs to run some shell commands before you can start using it.
-This is done by evaluating the output of `fnm env`. Check out the following guides for the shell you use:
+Environment variables need to be setup before you can start using fnm.
+This is done by evaluating the output of `fnm env`.
+To automatically run `fnm use` when a directory contains a `.node-version` or `.nvmrc` file, add the `--use-on-cd` option to your shell setup.
+
+Adding a `.node-version` to your project is as simple as:
+```bash
+$ node --version
+v14.18.3
+$ node --version > .node-version
+```
+
+Check out the following guides for the shell you use:
 
 #### Bash
 
-add the following to your `.bashrc` profile:
+Add the following to your `.bashrc` profile:
 
 ```bash
-eval "$(fnm env)"
+eval "$(fnm env --use-on-cd)"
 ```
 
 #### Zsh
 
-add the following to your `.zshrc` profile:
+Add the following to your `.zshrc` profile:
 
 ```zsh
-eval "$(fnm env)"
+eval "$(fnm env --use-on-cd)"
 ```
 
 #### Fish shell
 
-create `~/.config/fish/conf.d/fnm.fish` add this line to it:
+Create `~/.config/fish/conf.d/fnm.fish` add this line to it:
 
 ```fish
-fnm env | source
+fnm env --use-on-cd | source
 ```
 
 #### PowerShell
@@ -167,7 +179,7 @@ FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 
 #### Usage with Cmder
 
-Usage is very similar to the normal WinCMD install, apart for a few tweaks to allow being called from the cmder startup script. The example **assumes** that the `CMDER_ROOT` environment variable is **set** to the **root directory** of your Cmder installation.  
+Usage is very similar to the normal WinCMD install, apart for a few tweaks to allow being called from the cmder startup script. The example **assumes** that the `CMDER_ROOT` environment variable is **set** to the **root directory** of your Cmder installation.
 Then you can do something like this:
 
 - Make a .cmd file to invoke it

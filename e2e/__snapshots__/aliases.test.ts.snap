@@ -1,0 +1,269 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash aliasing versions: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install 6.11.3
+fnm install 8.11.3
+fnm alias 8.11 oldie
+fnm alias 6 older
+fnm default older
+((fnm ls) | grep 8.11.3 || (echo "Expected output to contain 8.11.3" && exit 1)) | grep oldie || (echo "Expected output to contain oldie" && exit 1)
+((fnm ls) | grep 6.11.3 || (echo "Expected output to contain 6.11.3" && exit 1)) | grep older || (echo "Expected output to contain older" && exit 1)
+fnm use older
+if [ "$(node --version)" != "v6.11.3" ]; then
+  echo "Expected node version to be v6.11.3. Got $(node --version)"
+  exit 1
+fi
+fnm use oldie
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi
+fnm use default
+if [ "$(node --version)" != "v6.11.3" ]; then
+  echo "Expected node version to be v6.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash allows to install an lts if version missing: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm use --install-if-missing
+(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
+`;
+
+exports[`Bash can alias the system node: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm alias system my_system
+(fnm ls) | grep my_system || (echo "Expected output to contain my_system" && exit 1)
+fnm alias system default
+fnm alias my_system my_system2
+(fnm ls) | grep my_system2 || (echo "Expected output to contain my_system2" && exit 1)
+(fnm use my_system) | grep 'Bypassing fnm' || (echo "Expected output to contain 'Bypassing fnm'" && exit 1)
+fnm unalias my_system
+(fnm use my_system 2>&1) | grep 'Requested version my_system is not currently installed' || (echo "Expected output to contain 'Requested version my_system is not currently installed'" && exit 1)"
+`;
+
+exports[`Bash errors when alias is not found: Bash 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+(fnm use 2>&1) | grep 'Requested version lts-latest is not' || (echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1)"
+`;
+
+exports[`Bash unalias a version: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 version8
+(fnm ls) | grep version8 || (echo "Expected output to contain version8" && exit 1)
+fnm unalias version8
+(fnm use version8 2>&1) | grep 'Requested version version8 is not currently installed' || (echo "Expected output to contain 'Requested version version8 is not currently installed'" && exit 1)"
+`;
+
+exports[`Bash unalias errors if alias not found: Bash 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+(fnm unalias lts 2>&1) | grep 'Requested alias lts not found' || (echo "Expected output to contain 'Requested alias lts not found'" && exit 1)"
+`;
+
+exports[`Fish aliasing versions: Fish 1`] = `
+"fnm env | source
+fnm install 6.11.3
+fnm install 8.11.3
+fnm alias 8.11 oldie
+fnm alias 6 older
+fnm default older
+begin; begin; fnm ls; end | grep 8.11.3; or echo "Expected output to contain 8.11.3" && exit 1; end | grep oldie; or echo "Expected output to contain oldie" && exit 1
+begin; begin; fnm ls; end | grep 6.11.3; or echo "Expected output to contain 6.11.3" && exit 1; end | grep older; or echo "Expected output to contain older" && exit 1
+fnm use older
+set ____test____ (node --version)
+if test "$____test____" != "v6.11.3"
+  echo "Expected node version to be v6.11.3. Got $____test____"
+  exit 1
+end
+fnm use oldie
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end
+fnm use default
+set ____test____ (node --version)
+if test "$____test____" != "v6.11.3"
+  echo "Expected node version to be v6.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish allows to install an lts if version missing: Fish 1`] = `
+"fnm env | source
+fnm use --install-if-missing
+begin; fnm ls; end | grep lts-latest; or echo "Expected output to contain lts-latest" && exit 1"
+`;
+
+exports[`Fish can alias the system node: Fish 1`] = `
+"fnm env | source
+fnm alias system my_system
+begin; fnm ls; end | grep my_system; or echo "Expected output to contain my_system" && exit 1
+fnm alias system default
+fnm alias my_system my_system2
+begin; fnm ls; end | grep my_system2; or echo "Expected output to contain my_system2" && exit 1
+begin; fnm use my_system; end | grep 'Bypassing fnm'; or echo "Expected output to contain 'Bypassing fnm'" && exit 1
+fnm unalias my_system
+begin; fnm use my_system 2>&1; end | grep 'Requested version my_system is not currently installed'; or echo "Expected output to contain 'Requested version my_system is not currently installed'" && exit 1"
+`;
+
+exports[`Fish errors when alias is not found: Fish 1`] = `
+"fnm env --log-level=error | source
+begin; fnm use 2>&1; end | grep 'Requested version lts-latest is not'; or echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1"
+`;
+
+exports[`Fish unalias a version: Fish 1`] = `
+"fnm env | source
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 version8
+begin; fnm ls; end | grep version8; or echo "Expected output to contain version8" && exit 1
+fnm unalias version8
+begin; fnm use version8 2>&1; end | grep 'Requested version version8 is not currently installed'; or echo "Expected output to contain 'Requested version version8 is not currently installed'" && exit 1"
+`;
+
+exports[`Fish unalias errors if alias not found: Fish 1`] = `
+"fnm env --log-level=error | source
+begin; fnm unalias lts 2>&1; end | grep 'Requested alias lts not found'; or echo "Expected output to contain 'Requested alias lts not found'" && exit 1"
+`;
+
+exports[`PowerShell aliasing versions: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install 6.11.3
+fnm install 8.11.3
+fnm alias 8.11 oldie
+fnm alias 6 older
+fnm default older
+$($__out__ = $($($__out__ = $(fnm ls | Select-String 8.11.3); if ($__out__ -eq $null) { exit 1 } else { $__out__ }) | Select-String oldie); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+$($__out__ = $($($__out__ = $(fnm ls | Select-String 6.11.3); if ($__out__ -eq $null) { exit 1 } else { $__out__ }) | Select-String older); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm use older
+if ( "$(node --version)" -ne "v6.11.3" ) { echo "Expected node version to be v6.11.3. Got $(node --version)"; exit 1 }
+fnm use oldie
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }
+fnm use default
+if ( "$(node --version)" -ne "v6.11.3" ) { echo "Expected node version to be v6.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell allows to install an lts if version missing: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm use --install-if-missing
+$($__out__ = $(fnm ls | Select-String lts-latest); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell can alias the system node: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm alias system my_system
+$($__out__ = $(fnm ls | Select-String my_system); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm alias system default
+fnm alias my_system my_system2
+$($__out__ = $(fnm ls | Select-String my_system2); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+$($__out__ = $(fnm use my_system | Select-String 'Bypassing fnm'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm unalias my_system
+$($__out__ = $(fnm use my_system 2>&1 | Select-String 'Requested version my_system is not currently installed'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell errors when alias is not found: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --log-level=error | Out-String | Invoke-Expression
+$($__out__ = $(fnm use 2>&1 | Select-String 'Requested version lts-latest is not'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell unalias a version: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 version8
+$($__out__ = $(fnm ls | Select-String version8); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm unalias version8
+$($__out__ = $(fnm use version8 2>&1 | Select-String 'Requested version version8 is not currently installed'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell unalias errors if alias not found: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --log-level=error | Out-String | Invoke-Expression
+$($__out__ = $(fnm unalias lts 2>&1 | Select-String 'Requested alias lts not found'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`Zsh aliasing versions: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install 6.11.3
+fnm install 8.11.3
+fnm alias 8.11 oldie
+fnm alias 6 older
+fnm default older
+((fnm ls) | grep 8.11.3 || (echo "Expected output to contain 8.11.3" && exit 1)) | grep oldie || (echo "Expected output to contain oldie" && exit 1)
+((fnm ls) | grep 6.11.3 || (echo "Expected output to contain 6.11.3" && exit 1)) | grep older || (echo "Expected output to contain older" && exit 1)
+fnm use older
+if [ "$(node --version)" != "v6.11.3" ]; then
+  echo "Expected node version to be v6.11.3. Got $(node --version)"
+  exit 1
+fi
+fnm use oldie
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi
+fnm use default
+if [ "$(node --version)" != "v6.11.3" ]; then
+  echo "Expected node version to be v6.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh allows to install an lts if version missing: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm use --install-if-missing
+(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
+`;
+
+exports[`Zsh can alias the system node: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm alias system my_system
+(fnm ls) | grep my_system || (echo "Expected output to contain my_system" && exit 1)
+fnm alias system default
+fnm alias my_system my_system2
+(fnm ls) | grep my_system2 || (echo "Expected output to contain my_system2" && exit 1)
+(fnm use my_system) | grep 'Bypassing fnm' || (echo "Expected output to contain 'Bypassing fnm'" && exit 1)
+fnm unalias my_system
+(fnm use my_system 2>&1) | grep 'Requested version my_system is not currently installed' || (echo "Expected output to contain 'Requested version my_system is not currently installed'" && exit 1)"
+`;
+
+exports[`Zsh errors when alias is not found: Zsh 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+(fnm use 2>&1) | grep 'Requested version lts-latest is not' || (echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1)"
+`;
+
+exports[`Zsh unalias a version: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install 11.10.0
+fnm install 8.11.3
+fnm alias 8.11.3 version8
+(fnm ls) | grep version8 || (echo "Expected output to contain version8" && exit 1)
+fnm unalias version8
+(fnm use version8 2>&1) | grep 'Requested version version8 is not currently installed' || (echo "Expected output to contain 'Requested version version8 is not currently installed'" && exit 1)"
+`;
+
+exports[`Zsh unalias errors if alias not found: Zsh 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+(fnm unalias lts 2>&1) | grep 'Requested alias lts not found' || (echo "Expected output to contain 'Requested alias lts not found'" && exit 1)"
+`;

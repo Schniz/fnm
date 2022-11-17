@@ -1,19 +1,14 @@
-use crate::arch::Arch;
 use crate::log_level::LogLevel;
-use crate::outln;
 use crate::path_ext::PathExt;
-use colored::Colorize;
+use crate::version_file_strategy::VersionFileStrategy;
+use crate::{arch::Arch, version_switch_strategy::VersionSwitchStrategy};
 use dirs::{data_dir, home_dir};
-use std::sync::atomic::{AtomicBool, Ordering};
-use structopt::StructOpt;
 use url::Url;
 
-static HAS_WARNED_DEPRECATED_BASE_DIR: AtomicBool = AtomicBool::new(false);
-
-#[derive(StructOpt, Debug)]
+#[derive(clap::Parser, Debug)]
 pub struct FnmConfig {
     /// https://nodejs.org/dist/ mirror
-    #[structopt(
+    #[clap(
         long,
         env = "FNM_NODE_DIST_MIRROR",
         default_value = "https://nodejs.org/dist",
@@ -23,7 +18,7 @@ pub struct FnmConfig {
     pub node_dist_mirror: Url,
 
     /// The root directory of fnm installations.
-    #[structopt(
+    #[clap(
         long = "fnm-dir",
         env = "FNM_DIR",
         global = true,
@@ -34,16 +29,11 @@ pub struct FnmConfig {
     /// Where the current node version link is stored.
     /// This value will be populated automatically by evaluating
     /// `fnm env` in your shell profile. Read more about it using `fnm help env`
-    #[structopt(
-        long,
-        env = "FNM_MULTISHELL_PATH",
-        hide_env_values = true,
-        hidden = true
-    )]
+    #[clap(long, env = "FNM_MULTISHELL_PATH", hide_env_values = true, hide = true)]
     multishell_path: Option<std::path::PathBuf>,
 
     /// The log level of fnm commands
-    #[structopt(
+    #[clap(
         long,
         env = "FNM_LOGLEVEL",
         default_value = "info",
@@ -55,14 +45,39 @@ pub struct FnmConfig {
 
     /// Override the architecture of the installed Node binary.
     /// Defaults to arch of fnm binary.
-    #[structopt(
+    #[clap(
         long,
         env = "FNM_ARCH",
-        default_value,
+        default_value_t,
         global = true,
-        hide_env_values = true
+        hide_env_values = true,
+        hide_default_value = true
     )]
     pub arch: Arch,
+
+    /// A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is
+    /// called without a version, or when `--use-on-cd` is configured on evaluation.
+    ///
+    /// * `local`: Use the local version of Node defined within the current directory
+    ///
+    /// * `recursive`: Use the version of Node defined within the current directory and all parent directories
+    #[clap(
+        long,
+        env = "FNM_VERSION_FILE_STRATEGY",
+        possible_values = VersionFileStrategy::possible_values(),
+        default_value = "local",
+        global = true,
+        hide_env_values = true,
+    )]
+    version_file_strategy: VersionFileStrategy,
+
+    #[clap(
+        env = "FNM_VERSION_SWITCH_STRATEGY",
+        hide = true,
+        possible_values = VersionSwitchStrategy::possible_values(),
+        default_value = "path-symlink"
+    )]
+    version_switch_strategy: VersionSwitchStrategy,
 }
 
 impl Default for FnmConfig {
@@ -73,11 +88,17 @@ impl Default for FnmConfig {
             multishell_path: None,
             log_level: LogLevel::Info,
             arch: Arch::default(),
+            version_file_strategy: VersionFileStrategy::default(),
+            version_switch_strategy: VersionSwitchStrategy::default(),
         }
     }
 }
 
 impl FnmConfig {
+    pub fn version_file_strategy(&self) -> &VersionFileStrategy {
+        &self.version_file_strategy
+    }
+
     pub fn multishell_path(&self) -> Option<&std::path::Path> {
         match &self.multishell_path {
             None => None,
@@ -102,24 +123,6 @@ impl FnmConfig {
         let modern = data_dir().map(|dir| dir.join("fnm"));
 
         if let Some(dir) = legacy {
-            if !HAS_WARNED_DEPRECATED_BASE_DIR.load(Ordering::SeqCst) {
-                HAS_WARNED_DEPRECATED_BASE_DIR.store(true, Ordering::SeqCst);
-
-                let legacy_str = dir.display().to_string();
-                let modern_str = modern.map_or("$XDG_DATA_HOME/fnm".to_string(), |path| {
-                    path.display().to_string()
-                });
-
-                outln!(
-                    self, Error,
-                    "{}\n  It looks like you have the {} directory on your disk.\n  fnm is migrating its default storage location for application data to {}.\n  You can read more about it here: {}\n",
-                    "warning:".yellow().bold(),
-                    legacy_str.italic(),
-                    modern_str.italic(),
-                    "https://github.com/schniz/fnm/issues/357".italic()
-                );
-            }
-
             return dir;
         }
 
@@ -142,6 +145,10 @@ impl FnmConfig {
         self.base_dir_with_default()
             .join("aliases")
             .ensure_exists_silently()
+    }
+
+    pub fn version_switch_strategy(&self) -> &VersionSwitchStrategy {
+        &self.version_switch_strategy
     }
 
     #[cfg(test)]

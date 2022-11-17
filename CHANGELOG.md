@@ -1,4 +1,102 @@
-## 1.28.2 (2021-12-05)
+## 1.31.0 (2022-02-16)
+
+## 1.31.1
+
+### Patch Changes
+
+- 6e6bdd8: Add changesets
+
+#### Bugfix 🐛
+
+- [#671](https://github.com/Schniz/fnm/pull/671) fix native-creds errors (using the unpublished version of reqwest) ([@Schniz](https://github.com/Schniz))
+- [#663](https://github.com/Schniz/fnm/pull/663) remove .unwrap() and .expect() in shell code ([@Schniz](https://github.com/Schniz))
+- [#656](https://github.com/Schniz/fnm/pull/656) Remove unwrap in fnm env, make error more readable ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.30.1 (2022-01-30)
+
+#### Bugfix 🐛
+
+- [#652](https://github.com/Schniz/fnm/pull/652) Fix `fnm completions` ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.30.0 (2022-01-30)
+
+#### Bugfix 🐛
+
+- [#625](https://github.com/Schniz/fnm/pull/625) Revert from using sysinfo, but only on Unix machines ([@Schniz](https://github.com/Schniz))
+- [#638](https://github.com/Schniz/fnm/pull/638) Use local cache directory instead of temp directory for symlinks ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#617](https://github.com/Schniz/fnm/pull/617) fix(deps): update rust crate clap to v3 ([@renovate[bot]](https://github.com/apps/renovate))
+- [#630](https://github.com/Schniz/fnm/pull/630) Replace `snafu` with `thiserror` ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#637](https://github.com/Schniz/fnm/pull/637) [Documentation] Adds Additional info regarding .node-version ([@uchihamalolan](https://github.com/uchihamalolan))
+
+#### Committers: 2
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Malolan B ([@uchihamalolan](https://github.com/uchihamalolan))
+
+## v1.29.2 (2022-01-06)
+
+#### Bugfix 🐛
+
+- [#626](https://github.com/Schniz/fnm/pull/626) Create the multishells directory if it is missing ([@Schniz](https://github.com/Schniz))
+
+#### Documentation 📝
+
+- [#598](https://github.com/Schniz/fnm/pull/598) Update README.md file emoji ([@lorensr](https://github.com/lorensr))
+- [#616](https://github.com/Schniz/fnm/pull/616) Use on cd by default ([@matthieubosquet](https://github.com/matthieubosquet))
+
+#### Committers: 3
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Loren ☺️ ([@lorensr](https://github.com/lorensr))
+- Matthieu Bosquet ([@matthieubosquet](https://github.com/matthieubosquet))
+
+## v1.29.1 (2021-12-28)
+
+#### Bugfix 🐛
+
+- [#613](https://github.com/Schniz/fnm/pull/613) Don't warn on `~/.fnm` yet ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 1
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+
+## v1.29.0 (2021-12-28)
+
+#### New Feature 🎉
+
+- [#607](https://github.com/Schniz/fnm/pull/607) Allow recursive version lookups ([@Schniz](https://github.com/Schniz))
+- [#416](https://github.com/Schniz/fnm/pull/416) Respect \$XDG_DATA_HOME ([@samhh](https://github.com/samhh))
+
+#### Bugfix 🐛
+
+- [#603](https://github.com/Schniz/fnm/pull/603) (re)Include feature for (native) certificates ([@pfiaux](https://github.com/pfiaux))
+- [#605](https://github.com/Schniz/fnm/pull/605) Add a user-agent header ([@Schniz](https://github.com/Schniz))
+
+#### Internal 🛠
+
+- [#606](https://github.com/Schniz/fnm/pull/606) Migrate to Rust 2021 edition ([@Schniz](https://github.com/Schniz))
+
+#### Committers: 3
+
+- Gal Schlezinger ([@Schniz](https://github.com/Schniz))
+- Patrick Fiaux ([@pfiaux](https://github.com/pfiaux))
+- Sam A. Horvath-Hunt ([@samhh](https://github.com/samhh))
+
+## v1.28.2 (2021-12-05)
 
 #### Bugfix 🐛
 
@@ -197,7 +295,7 @@
 #### Bugfix 🐛
 
 - [#368](https://github.com/Schniz/fnm/pull/368) Update 'ring' to '0.16.17' ([@gucheen](https://github.com/gucheen))
-- [#347](https://github.com/Schniz/fnm/pull/347) Check if $ZDOTDIR exists to find correct path to .zshrc ([@thales-maciel](https://github.com/thales-maciel))
+- [#347](https://github.com/Schniz/fnm/pull/347) Check if \$ZDOTDIR exists to find correct path to .zshrc ([@thales-maciel](https://github.com/thales-maciel))
 
 #### Documentation 📝
 

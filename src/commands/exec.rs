@@ -9,20 +9,19 @@ use crate::user_version::UserVersion;
 use crate::user_version_reader::UserVersionReader;
 use colored::Colorize;
 use log::debug;
-use snafu::{OptionExt, ResultExt, Snafu};
 use std::process::{Command, Stdio};
-use structopt::StructOpt;
+use thiserror::Error;
 
-#[derive(Debug, StructOpt)]
-#[structopt(setting = structopt::clap::AppSettings::TrailingVarArg)]
+#[derive(Debug, clap::Parser)]
+#[clap(trailing_var_arg = true)]
 pub struct Exec {
     /// Either an explicit version, or a filename with the version written in it
-    #[structopt(long = "using")]
+    #[clap(long = "using")]
     version: Option<UserVersionReader>,
     /// Deprecated. This is the default now.
-    #[structopt(long = "using-file", hidden = true)]
+    #[clap(long = "using-file", hide = true)]
     using_file: bool,
-    #[structopt(long = "using-current", hidden = true, conflicts_with = "using")]
+    #[structopt(long = "using-current", hidden = true, conflicts_with = "version")]
     using_current: bool,
     /// The command to run
     arguments: Vec<String>,
@@ -42,12 +41,15 @@ impl Cmd for Exec {
             );
         }
 
-        let (binary, arguments) = self.arguments.split_first().context(NoBinaryProvided)?;
+        let (binary, arguments) = self
+            .arguments
+            .split_first()
+            .ok_or(Error::NoBinaryProvided)?;
 
         let version = if self.using_current {
             let version = current_version(config)
-                .context(CantGetCurrentVersion)?
-                .context(NoCurrentVersion)?;
+                .map_err(|source| Error::CantGetCurrentVersion { source })?
+                .ok_or(Error::NoCurrentVersion)?;
             UserVersion::Full(version)
         } else {
             self.version
@@ -56,13 +58,13 @@ impl Cmd for Exec {
                     let current_dir = std::env::current_dir().unwrap();
                     UserVersionReader::Path(current_dir)
                 })
-                .into_user_version()
-                .context(CantInferVersion)?
+                .into_user_version(config)
+                .ok_or(Error::CantInferVersion)?
         };
 
         let applicable_version = choose_version_for_user_input(&version, config)
-            .context(ApplicableVersionError)?
-            .context(VersionNotFound { version })?;
+            .map_err(|source| Error::ApplicableVersionError { source })?
+            .ok_or(Error::VersionNotFound { version })?;
 
         #[cfg(windows)]
         let bin_path = applicable_version.path().to_path_buf();
@@ -73,13 +75,14 @@ impl Cmd for Exec {
         debug!("Using Node.js from {}", bin_path.display());
 
         let path_env = {
-            let paths_env = std::env::var_os("PATH").context(CantReadPathVariable)?;
+            let paths_env = std::env::var_os("PATH").ok_or(Error::CantReadPathVariable)?;
             let mut paths: Vec<_> = std::env::split_paths(&paths_env).collect();
             paths.insert(0, bin_path);
-            std::env::join_paths(paths).context(CantAddPathToEnvironment)?
+            std::env::join_paths(paths)
+                .map_err(|source| Error::CantAddPathToEnvironment { source })?
         };
 
-        let exit_status = Command::new(&binary)
+        let exit_status = Command::new(binary)
             .args(arguments)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -90,40 +93,35 @@ impl Cmd for Exec {
             .wait()
             .expect("Failed to grab exit code");
 
-        let code = exit_status.code().context(CantReadProcessExitCode)?;
+        let code = exit_status.code().ok_or(Error::CantReadProcessExitCode)?;
         std::process::exit(code);
     }
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display("Can't read path environment variable"))]
+    #[error("Can't read path environment variable")]
     CantReadPathVariable,
-    #[snafu(display("Can't add path to environment variable: {}", source))]
-    CantAddPathToEnvironment {
-        source: std::env::JoinPathsError,
-    },
-    #[snafu(display(
-        "Can't find version in dotfiles. Please provide a version manually to the command."
-    ))]
+    #[error("Can't add path to environment variable: {}", source)]
+    CantAddPathToEnvironment { source: std::env::JoinPathsError },
+    #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,
-    #[snafu(display("Requested version {} is not currently installed", version))]
-    VersionNotFound {
-        version: UserVersion,
-    },
+    #[error("Requested version {} is not currently installed", version)]
+    VersionNotFound { version: UserVersion },
+    #[error(transparent)]
     ApplicableVersionError {
+        #[from]
         source: UserInputError,
     },
-    #[snafu(display(
-        "Can't read exit code from process.\nMaybe the process was killed using a signal?"
-    ))]
+    #[error("Can't read exit code from process.\nMaybe the process was killed using a signal?")]
     CantReadProcessExitCode,
-    #[snafu(display("{}", source))]
+    #[error("{}", source)]
     CantGetCurrentVersion {
+        #[source]
         source: current_version::Error,
     },
-    #[snafu(display("No current version. Please run `fnm use <version>` and retry."))]
+    #[error("No current version. Please run `fnm use <version>` and retry.")]
     NoCurrentVersion,
-    #[snafu(display("command not provided. Please provide a command to run as an argument, like {} or {}.\n{} {}", "node".italic(), "bash".italic(), "example:".yellow().bold(), "fnm exec --using=12 node --version".italic().yellow()))]
+    #[error("command not provided. Please provide a command to run as an argument, like {} or {}.\n{} {}", "node".italic(), "bash".italic(), "example:".yellow().bold(), "fnm exec --using=12 node --version".italic().yellow())]
     NoBinaryProvided,
 }

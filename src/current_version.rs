@@ -1,10 +1,11 @@
+use thiserror::Error;
+
 use crate::config::FnmConfig;
 use crate::system_version;
 use crate::version::Version;
-use snafu::{OptionExt, ResultExt, Snafu};
 
 pub fn current_version(config: &FnmConfig) -> Result<Option<Version>, Error> {
-    let multishell_path = config.multishell_path().context(EnvNotApplied)?;
+    let multishell_path = config.multishell_path().ok_or(Error::EnvNotApplied)?;
 
     if multishell_path.read_link().ok() == Some(system_version::path()) {
         return Ok(Some(Version::Bypassed));
@@ -19,20 +20,21 @@ pub fn current_version(config: &FnmConfig) -> Result<Option<Version>, Error> {
             .expect("Can't get filename")
             .to_str()
             .expect("Invalid OS string");
-        let version = Version::parse(file_name).context(VersionError { version: file_name })?;
+        let version = Version::parse(file_name).map_err(|source| Error::VersionError {
+            source,
+            version: file_name.to_string(),
+        })?;
         Ok(Some(version))
     } else {
         Ok(None)
     }
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[snafu(display(
-        "`fnm env` was not applied in this context.\nCan't find fnm's environment variables"
-    ))]
+    #[error("`fnm env` was not applied in this context.\nCan't find fnm's environment variables")]
     EnvNotApplied,
-    #[snafu(display("Can't read the version as a valid semver"))]
+    #[error("Can't read the version as a valid semver")]
     VersionError {
         source: semver::Error,
         version: String,

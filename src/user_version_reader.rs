@@ -1,3 +1,4 @@
+use crate::config::FnmConfig;
 use crate::user_version::UserVersion;
 use crate::version_files::{get_user_version_for_directory, get_user_version_for_file};
 use std::path::PathBuf;
@@ -10,11 +11,11 @@ pub enum UserVersionReader {
 }
 
 impl UserVersionReader {
-    pub fn into_user_version(self) -> Option<UserVersion> {
+    pub fn into_user_version(self, config: &FnmConfig) -> Option<UserVersion> {
         match self {
             Self::Direct(uv) => Some(uv),
             Self::Path(pathbuf) if pathbuf.is_file() => get_user_version_for_file(&pathbuf),
-            Self::Path(pathbuf) => get_user_version_for_directory(&pathbuf),
+            Self::Path(pathbuf) => get_user_version_for_directory(&pathbuf, config),
         }
     }
 }
@@ -47,7 +48,8 @@ mod tests {
         write!(file, "14").unwrap();
         let pathbuf = file.path().to_path_buf();
 
-        let user_version = UserVersionReader::Path(pathbuf).into_user_version();
+        let user_version =
+            UserVersionReader::Path(pathbuf).into_user_version(&FnmConfig::default());
         assert_eq!(user_version, Some(UserVersion::OnlyMajor(14)));
     }
 
@@ -58,14 +60,15 @@ mod tests {
         std::fs::write(node_version_path, "14").unwrap();
         let pathbuf = directory.path().to_path_buf();
 
-        let user_version = UserVersionReader::Path(pathbuf).into_user_version();
+        let user_version =
+            UserVersionReader::Path(pathbuf).into_user_version(&FnmConfig::default());
         assert_eq!(user_version, Some(UserVersion::OnlyMajor(14)));
     }
 
     #[test]
     fn test_direct_to_version() {
-        let user_version =
-            UserVersionReader::Direct(UserVersion::OnlyMajor(14)).into_user_version();
+        let user_version = UserVersionReader::Direct(UserVersion::OnlyMajor(14))
+            .into_user_version(&FnmConfig::default());
         assert_eq!(user_version, Some(UserVersion::OnlyMajor(14)));
     }
 

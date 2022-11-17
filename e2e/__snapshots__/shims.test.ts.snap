@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash outputs json: Bash 1`] = `
+"set -e
+fnm env --json --with-shims > file.json"
+`;
+
+exports[`Bash runs Node through a shim: Bash 1`] = `
+"set -e
+eval "$(fnm env --with-shims)"
+fnm install 12.0.0
+fnm use 12.0.0
+if [ "$(node --version)" != "v12.0.0" ]; then
+  echo "Expected node version to be v12.0.0. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Fish outputs json: Fish 1`] = `"fnm env --json --with-shims > file.json"`;
+
+exports[`Fish runs Node through a shim: Fish 1`] = `
+"fnm env --with-shims | source
+fnm install 12.0.0
+fnm use 12.0.0
+set ____test____ (node --version)
+if test "$____test____" != "v12.0.0"
+  echo "Expected node version to be v12.0.0. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`PowerShell outputs json: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --json --with-shims | Out-File file.json -Encoding UTF8"
+`;
+
+exports[`PowerShell runs Node through a shim: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --with-shims | Out-String | Invoke-Expression
+fnm install 12.0.0
+fnm use 12.0.0
+if ( "$(node --version)" -ne "v12.0.0" ) { echo "Expected node version to be v12.0.0. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`Zsh outputs json: Zsh 1`] = `
+"set -e
+fnm env --json --with-shims > file.json"
+`;
+
+exports[`Zsh runs Node through a shim: Zsh 1`] = `
+"set -e
+eval "$(fnm env --with-shims)"
+fnm install 12.0.0
+fnm use 12.0.0
+if [ "$(node --version)" != "v12.0.0" ]; then
+  echo "Expected node version to be v12.0.0. Got $(node --version)"
+  exit 1
+fi"
+`;

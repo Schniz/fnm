@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash \`exec\` usage: Bash 1`] = `
+"set -e
+fnm install
+fnm install v6.10.0
+fnm install v10.10.0
+if [ "$(fnm exec -- node -v)" != "v8.10.0" ]; then
+  echo "Expected version file exec to be v8.10.0. Got $(fnm exec -- node -v)"
+  exit 1
+fi
+if [ "$(fnm exec --using=6 -- node -v)" != "v6.10.0" ]; then
+  echo "Expected exec:6 node -v to be v6.10.0. Got $(fnm exec --using=6 -- node -v)"
+  exit 1
+fi
+if [ "$(fnm exec --using=10 -- node -v)" != "v10.10.0" ]; then
+  echo "Expected exec:6 node -v to be v10.10.0. Got $(fnm exec --using=10 -- node -v)"
+  exit 1
+fi"
+`;
+
+exports[`Fish \`exec\` usage: Fish 1`] = `
+"fnm install
+fnm install v6.10.0
+fnm install v10.10.0
+set ____test____ (fnm exec -- node -v)
+if test "$____test____" != "v8.10.0"
+  echo "Expected version file exec to be v8.10.0. Got $____test____"
+  exit 1
+end
+set ____test____ (fnm exec --using=6 -- node -v)
+if test "$____test____" != "v6.10.0"
+  echo "Expected exec:6 node -v to be v6.10.0. Got $____test____"
+  exit 1
+end
+set ____test____ (fnm exec --using=10 -- node -v)
+if test "$____test____" != "v10.10.0"
+  echo "Expected exec:6 node -v to be v10.10.0. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`PowerShell \`exec\` usage: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm install
+fnm install v6.10.0
+fnm install v10.10.0
+if ( "$(fnm exec -- node -v)" -ne "v8.10.0" ) { echo "Expected version file exec to be v8.10.0. Got $(fnm exec -- node -v)"; exit 1 }
+if ( "$(fnm exec --using=6 -- node -v)" -ne "v6.10.0" ) { echo "Expected exec:6 node -v to be v6.10.0. Got $(fnm exec --using=6 -- node -v)"; exit 1 }
+if ( "$(fnm exec --using=10 -- node -v)" -ne "v10.10.0" ) { echo "Expected exec:6 node -v to be v10.10.0. Got $(fnm exec --using=10 -- node -v)"; exit 1 }"
+`;
+
+exports[`Zsh \`exec\` usage: Zsh 1`] = `
+"set -e
+fnm install
+fnm install v6.10.0
+fnm install v10.10.0
+if [ "$(fnm exec -- node -v)" != "v8.10.0" ]; then
+  echo "Expected version file exec to be v8.10.0. Got $(fnm exec -- node -v)"
+  exit 1
+fi
+if [ "$(fnm exec --using=6 -- node -v)" != "v6.10.0" ]; then
+  echo "Expected exec:6 node -v to be v6.10.0. Got $(fnm exec --using=6 -- node -v)"
+  exit 1
+fi
+if [ "$(fnm exec --using=10 -- node -v)" != "v10.10.0" ]; then
+  echo "Expected exec:6 node -v to be v10.10.0. Got $(fnm exec --using=10 -- node -v)"
+  exit 1
+fi"
+`;
