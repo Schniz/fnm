@@ -18,25 +18,33 @@ pub struct Install {
     pub version: Option<UserVersion>,
 
     /// Install latest LTS
-    #[clap(long, conflicts_with = "version")]
+    #[clap(long, conflicts_with_all = &["version", "latest"])]
     pub lts: bool,
+
+    /// Install latest version
+    #[clap(long, conflicts_with_all = &["version", "lts"])]
+    pub latest: bool,
 }
 
 impl Install {
     fn version(self) -> Result<Option<UserVersion>, Error> {
         match self {
             Self {
-                version: Some(_),
-                lts: true,
-            } => Err(Error::TooManyVersionsProvided),
-            Self {
                 version: v,
                 lts: false,
+                latest: false,
             } => Ok(v),
             Self {
                 version: None,
                 lts: true,
+                latest: false,
             } => Ok(Some(UserVersion::Full(Version::Lts(LtsType::Latest)))),
+            Self {
+                version: None,
+                lts: false,
+                latest: true,
+            } => Ok(Some(UserVersion::Full(Version::Latest))),
+            _ => Err(Error::TooManyVersionsProvided),
         }
     }
 }
@@ -70,6 +78,20 @@ impl super::command::Command for Install {
                 debug!(
                     "Resolved {} into Node version {}",
                     Version::Lts(lts_type).v_str().cyan(),
+                    picked_version.v_str().cyan()
+                );
+                picked_version
+            }
+            UserVersion::Full(Version::Latest) => {
+                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
+                    .map_err(|source| Error::CantListRemoteVersions { source })?;
+                let picked_version = available_versions.last()
+                    .ok_or_else(|| Error::CantFindLatest)?
+                    .version
+                    .clone();
+                debug!(
+                    "Resolved {} into Node version {}",
+                    Version::Latest.v_str().cyan(),
                     picked_version.v_str().cyan()
                 );
                 picked_version
@@ -153,6 +175,8 @@ pub enum Error {
     CantFindNodeVersion { requested_version: UserVersion },
     #[error("Can't find relevant LTS named {}", lts_type)]
     CantFindRelevantLts { lts_type: crate::lts::LtsType },
+    #[error("Can't find latest version")]
+    CantFindLatest,
     #[error("The requested version is not installable: {}", version.v_str())]
     UninstallableVersion { version: Version },
     #[error("Too many versions provided. Please don't use --lts with a version string.")]
@@ -175,6 +199,7 @@ mod tests {
         Install {
             version: UserVersion::from_str("12.0.0").ok(),
             lts: false,
+            latest: false,
         }
         .apply(&config)
         .expect("Can't install");
