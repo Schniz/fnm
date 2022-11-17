@@ -59,13 +59,7 @@ export const Fish = {
 
 export const PowerShell = {
   ...define<Shell>({
-    binaryName: () => {
-      if (process.platform === "win32") {
-        return "powershell.exe"
-      } else {
-        return "pwsh"
-      }
-    },
+    binaryName: () => "pwsh",
     forceFile: ".ps1",
     currentlySupported: () => true,
     name: () => "PowerShell",
