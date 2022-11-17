@@ -163,8 +163,8 @@ jobs:
     runs-on: windows-latest
     name: "e2e/windows/debug"
     environment: Debug
-    needs: [build_release]
-    if: failure()
+    needs: [e2e_windows]
+    if: contains(join(needs.*.result, ','), 'failure')
     steps:
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
