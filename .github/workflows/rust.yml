@@ -7,7 +7,7 @@ on:
       - master
 
 concurrency:
-  group: ${{ github.head_ref }}
+  group: ci-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
