@@ -325,6 +325,9 @@ OPTIONS:
     -h, --help
             Print help information
 
+        --json
+            Print JSON instead of shell commands
+
         --log-level <LOG_LEVEL>
             The log level of fnm commands
 

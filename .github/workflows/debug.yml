@@ -1,0 +1,62 @@
+name: "debug"
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: debug
+  cancel-in-progress: true
+
+jobs:
+  e2e_windows_debug:
+    runs-on: windows-latest
+    name: "e2e/windows/debug"
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.inputs.commit_hash }}
+    - name: Download artifact
+      id: download-artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        workflow: rust.yml
+        workflow_conclusion: ""
+        branch: ${{ env.GITHUB_REF }}
+        name: "fnm-windows"
+        path: "target/release"
+        if_no_artifact_found: ignore
+    - uses: hecrj/setup-rust-action@v1
+      if: steps.download-artifact.outputs.artifact-found == false
+      with:
+        rust-version: stable
+    - uses: Swatinem/rust-cache@v2
+      if: steps.download-artifact.outputs.artifact-found == false
+    - name: Build release binary
+      if: steps.download-artifact.outputs.artifact-found == false
+      run: cargo build --release
+      env:
+        RUSTFLAGS: "-C target-feature=+crt-static"
+    - uses: pnpm/action-setup@v2.2.4
+      with:
+        run_install: false
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+        cache: 'pnpm'
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      run: |
+        echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+    - uses: actions/cache@v3
+      name: Setup pnpm cache
+      with:
+        path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+    - run: pnpm install
+    - name: 🐛 Debug Build
+      if: always()
+      uses: mxschmitt/action-tmate@v3
+      with:
+        limit-access-to-actor: true
