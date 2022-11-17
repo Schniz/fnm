@@ -66,7 +66,7 @@ export const PowerShell = {
         return "pwsh"
       }
     },
-    forceFile: true,
+    forceFile: ".ps1",
     currentlySupported: () => true,
     name: () => "PowerShell",
     launchArgs: () => ["-NoProfile"],
@@ -75,7 +75,7 @@ export const PowerShell = {
   }),
   ...cmdEnv.powershell,
   ...cmdCall.all,
-  ...redirectOutput.bash,
+  ...redirectOutput.powershell,
   ...cmdExpectCommandOutput.powershell,
   ...cmdHasOutputContains.powershell,
   ...cmdInSubShell.powershell,

@@ -40,7 +40,10 @@ class Script {
     const args = [...shell.launchArgs()]
 
     if (shell.forceFile) {
-      const filename = join(testTmpDir(), "script")
+      let filename = join(testTmpDir(), "script")
+      if (typeof shell.forceFile === "string") {
+        filename = filename + shell.forceFile
+      }
       await writeFile(filename, [...this.lines, "exit 0"].join("\n"))
       args.push(filename)
     }
