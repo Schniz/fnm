@@ -353,13 +353,7 @@ OPTIONS:
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
 
-<<<<<<< HEAD
-        --with-shims
-            Adds `node` shims to your PATH environment variable to allow you to use `node` commands in your shell
-            without rehashing
-=======
             * `local`: Use the local version of Node defined within the current directory
->>>>>>> origin/master
 
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
@@ -367,6 +361,10 @@ OPTIONS:
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
+
+        --with-shims
+            Adds `node` shims to your PATH environment variable to allow you to use `node` commands
+            in your shell without rehashing
 ```
 
 # `fnm exec`
