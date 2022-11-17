@@ -1,10 +1,10 @@
-import { cmdCall } from "./cmdCall"
-import { cmdEnv } from "./cmdEnv"
-import { cmdExpectCommandOutput } from "./expect-command-output"
-import { cmdHasOutputContains } from "./output-contains"
-import { redirectOutput } from "./redirect-output"
-import { cmdInSubShell } from "./sub-shell"
-import { define, Shell } from "./types"
+import { cmdCall } from "./cmdCall.js"
+import { cmdEnv } from "./cmdEnv.js"
+import { cmdExpectCommandOutput } from "./expect-command-output.js"
+import { cmdHasOutputContains } from "./output-contains.js"
+import { redirectOutput } from "./redirect-output.js"
+import { cmdInSubShell } from "./sub-shell.js"
+import { define, Shell } from "./types.js"
 
 export const Bash = {
   ...define<Shell>({

@@ -1,5 +1,5 @@
-import dedent from "ts-dedent"
-import { define, ScriptLine } from "./types"
+import { dedent } from "ts-dedent"
+import { define, ScriptLine } from "./types.js"
 
 export type HasExpectCommandOutput = {
   hasCommandOutput(
