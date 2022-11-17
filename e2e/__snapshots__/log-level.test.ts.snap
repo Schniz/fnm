@@ -1,0 +1,127 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash "quiet" log level: Bash 1`] = `
+"set -e
+eval "$(fnm env --log-level=quiet)"
+if [ "$(fnm install v8.11.3)" != "" ]; then
+  echo "Expected fnm install to be . Got $(fnm install v8.11.3)"
+  exit 1
+fi
+if [ "$(fnm use v8.11.3)" != "" ]; then
+  echo "Expected fnm use to be . Got $(fnm use v8.11.3)"
+  exit 1
+fi
+if [ "$(fnm alias v8.11.3 something)" != "" ]; then
+  echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"
+  exit 1
+fi"
+`;
+
+exports[`Bash error log level: Bash 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+if [ "$(fnm install v8.11.3)" != "" ]; then
+  echo "Expected fnm install to be . Got $(fnm install v8.11.3)"
+  exit 1
+fi
+if [ "$(fnm use v8.11.3)" != "" ]; then
+  echo "Expected fnm use to be . Got $(fnm use v8.11.3)"
+  exit 1
+fi
+if [ "$(fnm alias v8.11.3 something)" != "" ]; then
+  echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"
+  exit 1
+fi
+(fnm alias abcd efg 2>&1) | grep "find requested version" || (echo "Expected output to contain "find requested version"" && exit 1)"
+`;
+
+exports[`Fish "quiet" log level: Fish 1`] = `
+"fnm env --log-level=quiet | source
+set ____test____ (fnm install v8.11.3)
+if test "$____test____" != ""
+  echo "Expected fnm install to be . Got $____test____"
+  exit 1
+end
+set ____test____ (fnm use v8.11.3)
+if test "$____test____" != ""
+  echo "Expected fnm use to be . Got $____test____"
+  exit 1
+end
+set ____test____ (fnm alias v8.11.3 something)
+if test "$____test____" != ""
+  echo "Expected fnm alias to be . Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish error log level: Fish 1`] = `
+"fnm env --log-level=error | source
+set ____test____ (fnm install v8.11.3)
+if test "$____test____" != ""
+  echo "Expected fnm install to be . Got $____test____"
+  exit 1
+end
+set ____test____ (fnm use v8.11.3)
+if test "$____test____" != ""
+  echo "Expected fnm use to be . Got $____test____"
+  exit 1
+end
+set ____test____ (fnm alias v8.11.3 something)
+if test "$____test____" != ""
+  echo "Expected fnm alias to be . Got $____test____"
+  exit 1
+end
+begin; fnm alias abcd efg 2>&1; end | grep "find requested version"; or echo "Expected output to contain "find requested version"" && exit 1"
+`;
+
+exports[`PowerShell "quiet" log level: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --log-level=quiet | Out-String | Invoke-Expression
+if ( "$(fnm install v8.11.3)" -ne "" ) { echo "Expected fnm install to be . Got $(fnm install v8.11.3)"; exit 1 }
+if ( "$(fnm use v8.11.3)" -ne "" ) { echo "Expected fnm use to be . Got $(fnm use v8.11.3)"; exit 1 }
+if ( "$(fnm alias v8.11.3 something)" -ne "" ) { echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"; exit 1 }"
+`;
+
+exports[`PowerShell error log level: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --log-level=error | Out-String | Invoke-Expression
+if ( "$(fnm install v8.11.3)" -ne "" ) { echo "Expected fnm install to be . Got $(fnm install v8.11.3)"; exit 1 }
+if ( "$(fnm use v8.11.3)" -ne "" ) { echo "Expected fnm use to be . Got $(fnm use v8.11.3)"; exit 1 }
+if ( "$(fnm alias v8.11.3 something)" -ne "" ) { echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"; exit 1 }
+$($__out__ = $(fnm alias abcd efg 2>&1 | Select-String "find requested version"); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`Zsh "quiet" log level: Zsh 1`] = `
+"set -e
+eval "$(fnm env --log-level=quiet)"
+if [ "$(fnm install v8.11.3)" != "" ]; then
+  echo "Expected fnm install to be . Got $(fnm install v8.11.3)"
+  exit 1
+fi
+if [ "$(fnm use v8.11.3)" != "" ]; then
+  echo "Expected fnm use to be . Got $(fnm use v8.11.3)"
+  exit 1
+fi
+if [ "$(fnm alias v8.11.3 something)" != "" ]; then
+  echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh error log level: Zsh 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+if [ "$(fnm install v8.11.3)" != "" ]; then
+  echo "Expected fnm install to be . Got $(fnm install v8.11.3)"
+  exit 1
+fi
+if [ "$(fnm use v8.11.3)" != "" ]; then
+  echo "Expected fnm use to be . Got $(fnm use v8.11.3)"
+  exit 1
+fi
+if [ "$(fnm alias v8.11.3 something)" != "" ]; then
+  echo "Expected fnm alias to be . Got $(fnm alias v8.11.3 something)"
+  exit 1
+fi
+(fnm alias abcd efg 2>&1) | grep "find requested version" || (echo "Expected output to contain "find requested version"" && exit 1)"
+`;

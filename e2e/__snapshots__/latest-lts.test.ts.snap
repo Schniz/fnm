@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash installs latest lts: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install --lts
+(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)
+fnm use 'lts/*'"
+`;
+
+exports[`Fish installs latest lts: Fish 1`] = `
+"fnm env | source
+fnm install --lts
+begin; fnm ls; end | grep lts-latest; or echo "Expected output to contain lts-latest" && exit 1
+fnm use 'lts/*'"
+`;
+
+exports[`PowerShell installs latest lts: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install --lts
+$($__out__ = $(fnm ls | Select-String lts-latest); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm use 'lts/*'"
+`;
+
+exports[`Zsh installs latest lts: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install --lts
+(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)
+fnm use 'lts/*'"
+`;

@@ -24,7 +24,7 @@ impl Command for Unalias {
             requested_alias: self.requested_alias,
         })?;
 
-        remove_symlink_dir(&requested_version.path())
+        remove_symlink_dir(requested_version.path())
             .map_err(|source| Error::CantDeleteSymlink { source })?;
 
         Ok(())
