@@ -17,7 +17,7 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
     - uses: actions/checkout@v3
     - name: cargo fmt
       run: cargo fmt -- --check
@@ -28,7 +28,7 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
     - uses: actions/checkout@v3
     - name: cargo clippy
       run: cargo clippy -- -D warnings
@@ -42,7 +42,7 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
     - uses: actions/checkout@v3
     - name: Run tests
       run: cargo test
@@ -54,7 +54,7 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
     - uses: actions/checkout@v3
     - name: Build release binary
       run: cargo build --release
@@ -72,7 +72,7 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
     - uses: actions/checkout@v3
     - name: Build release binary
       run: cargo build --release
@@ -239,7 +239,7 @@ jobs:
       with:
         rust-version: stable
         targets: x86_64-unknown-linux-musl
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
       with:
         key: static-linux-binary
     - name: Install musl tools
@@ -279,7 +279,7 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
       with:
         key: arm-binary-${{ matrix.arch }}
     - name: 'Download `cross` crate'
