@@ -4,7 +4,6 @@ import { script } from "./shellcode/script"
 import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells"
 import testCwd from "./shellcode/test-cwd"
 import describe from "./describe"
-import pRetry from "p-retry"
 
 for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
   describe(shell, () => {
@@ -20,17 +19,7 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .execute(shell)
 
       if (shell.currentlySupported()) {
-        const file = await pRetry(
-          () =>
-            readFile(join(testCwd(), filename), "utf8").catch((err) => {
-              throw new Error(`Failed to read file: ${err}`)
-            }),
-          {
-            maxRetryTime: 10000,
-            forever: true,
-            factor: 1,
-          }
-        )
+        const file = await readFile(join(testCwd(), filename), "utf8")
         expect(JSON.parse(file)).toEqual({
           FNM_ARCH: expect.any(String),
           FNM_DIR: expect.any(String),

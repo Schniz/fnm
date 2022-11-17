@@ -158,6 +158,11 @@ jobs:
       env:
         FNM_TARGET_NAME: "release"
         FORCE_COLOR: "1"
+    - name: 🐛 Debug Build
+      uses: mxschmitt/action-tmate@v3
+      if: failure()
+      with:
+        limit-access-to-actor: true
 
   e2e_linux:
     runs-on: ubuntu-latest
