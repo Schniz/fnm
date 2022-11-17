@@ -1,8 +1,0 @@
----
-source: tests/feature_tests/mod.rs
-expression: "&source.trim()"
----
-fnm env | source
-echo 'lts/*' > .node-version
-fnm use --install-if-missing
-fnm ls | grep lts-latest

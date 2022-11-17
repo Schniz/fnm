@@ -2,24 +2,23 @@
 
 /// @ts-check
 
-const execa = require("execa");
-const path = require("path");
-const fs = require("fs");
-const cmd = require("cmd-ts");
-const cmdFs = require("cmd-ts/dist/cjs/batteries/fs");
+import { execa } from "execa"
+import fs from "node:fs"
+import cmd from "cmd-ts"
+import cmdFs from "cmd-ts/dist/cjs/batteries/fs.js"
 
 const FnmBinaryPath = {
   ...cmdFs.ExistingPath,
   defaultValue() {
-    const target = path.join(__dirname, "../target/debug/fnm");
+    const target = new URL("../target/debug/fnm", import.meta.url)
     if (!fs.existsSync(target)) {
       throw new Error(
         "Can't find debug target, please run `cargo build` or provide a specific binary path"
-      );
+      )
     }
-    return target;
+    return target.pathname
   },
-};
+}
 
 const command = cmd.command({
   name: "print-command-docs",
@@ -36,27 +35,27 @@ const command = cmd.command({
     }),
   },
   async handler({ checkForDirty, fnmPath }) {
-    const targetFile = path.join(__dirname, "../docs/commands.md");
-    await main(targetFile, fnmPath);
+    const targetFile = new URL("../docs/commands.md", import.meta.url).pathname
+    await main(targetFile, fnmPath)
     if (checkForDirty) {
-      const gitStatus = await checkGitStatus(targetFile);
+      const gitStatus = await checkGitStatus(targetFile)
       if (gitStatus.state === "dirty") {
-        process.exitCode = 1;
+        process.exitCode = 1
         console.error(
           "The file has changed. Please re-run `yarn generate-command-docs`."
-        );
-        console.error(`hint: The following diff was found:`);
-        console.error();
-        console.error(gitStatus.diff);
+        )
+        console.error(`hint: The following diff was found:`)
+        console.error()
+        console.error(gitStatus.diff)
       }
     }
   },
-});
+})
 
 cmd.run(cmd.binary(command), process.argv).catch((err) => {
-  console.error(err);
-  process.exitCode = process.exitCode || 1;
-});
+  console.error(err)
+  process.exitCode = process.exitCode || 1
+})
 
 /**
  * @param {string} targetFile
@@ -64,20 +63,20 @@ cmd.run(cmd.binary(command), process.argv).catch((err) => {
  * @returns {Promise<void>}
  */
 async function main(targetFile, fnmPath) {
-  const stream = fs.createWriteStream(targetFile);
+  const stream = fs.createWriteStream(targetFile)
 
-  const { subcommands, text: mainText } = await getCommandHelp(fnmPath);
+  const { subcommands, text: mainText } = await getCommandHelp(fnmPath)
 
-  await write(stream, line(`fnm`, mainText));
+  await write(stream, line(`fnm`, mainText))
 
   for (const subcommand of subcommands) {
-    const { text: subcommandText } = await getCommandHelp(fnmPath, subcommand);
-    await write(stream, "\n" + line(`fnm ${subcommand}`, subcommandText));
+    const { text: subcommandText } = await getCommandHelp(fnmPath, subcommand)
+    await write(stream, "\n" + line(`fnm ${subcommand}`, subcommandText))
   }
 
-  stream.close();
+  stream.close()
 
-  await execa(`yarn`, ["prettier", "--write", targetFile]);
+  await execa(`yarn`, ["prettier", "--write", targetFile])
 }
 
 /**
@@ -87,14 +86,14 @@ async function main(targetFile, fnmPath) {
  */
 function write(stream, content) {
   return new Promise((resolve, reject) => {
-    stream.write(content, (err) => (err ? reject(err) : resolve()));
-  });
+    stream.write(content, (err) => (err ? reject(err) : resolve()))
+  })
 }
 
 function line(cmd, text) {
-  const cmdCode = "`" + cmd + "`";
-  const textCode = "```\n" + text + "\n```";
-  return `# ${cmdCode}\n${textCode}`;
+  const cmdCode = "`" + cmd + "`"
+  const textCode = "```\n" + text + "\n```"
+  return `# ${cmdCode}\n${textCode}`
 }
 
 /**
@@ -103,25 +102,25 @@ function line(cmd, text) {
  * @returns {Promise<{ subcommands: string[], text: string }>}
  */
 async function getCommandHelp(fnmPath, command) {
-  const cmdArg = command ? [command] : [];
-  const result = await run(fnmPath, [...cmdArg, "--help"]);
-  const text = result.stdout;
-  const rows = text.split("\n");
-  const headerIndex = rows.findIndex((x) => x.includes("SUBCOMMANDS"));
+  const cmdArg = command ? [command] : []
+  const result = await run(fnmPath, [...cmdArg, "--help"])
+  const text = result.stdout
+  const rows = text.split("\n")
+  const headerIndex = rows.findIndex((x) => x.includes("SUBCOMMANDS"))
   /** @type {string[]} */
-  const subcommands = [];
+  const subcommands = []
   if (!command) {
     for (const row of rows.slice(headerIndex + 1)) {
-      const [, word] = row.split(/\s+/);
+      const [, word] = row.split(/\s+/)
       if (word && word[0].toLowerCase() === word[0]) {
-        subcommands.push(word);
+        subcommands.push(word)
       }
     }
   }
   return {
     subcommands,
     text,
-  };
+  }
 }
 
 /**
@@ -133,7 +132,7 @@ function run(fnmPath, args) {
     reject: false,
     stdout: "pipe",
     stderr: "pipe",
-  });
+  })
 }
 
 /**
@@ -147,9 +146,9 @@ async function checkGitStatus(targetFile) {
     {
       reject: false,
     }
-  );
+  )
   if (exitCode === 0) {
-    return { state: "clean" };
+    return { state: "clean" }
   }
-  return { state: "dirty", diff: stdout };
+  return { state: "dirty", diff: stdout }
 }

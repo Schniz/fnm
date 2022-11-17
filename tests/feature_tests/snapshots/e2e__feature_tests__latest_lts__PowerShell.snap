@@ -1,9 +1,0 @@
----
-source: tests/feature_tests/mod.rs
-expression: "&source.trim()"
----
-$ErrorActionPreference = "Stop"
-fnm env | Out-String | Invoke-Expression
-fnm install --lts
-$($__out__ = $(fnm ls | Select-String 'lts-latest'); echo $__out__; if ($__out__ -eq $null){ exit 1 } else { $__out__ })
-fnm use 'lts/*'
