@@ -7,7 +7,10 @@ export type HasRedirectOutput = {
 
 export const redirectOutput = {
   bash: define<HasRedirectOutput>({
+    redirectOutput: (childCommand, opts) => `${childCommand} > ${opts.output}`,
+  }),
+  powershell: define<HasRedirectOutput>({
     redirectOutput: (childCommand, opts) =>
-      `(${childCommand}) > ${opts.output}`,
+      `${childCommand} | Out-File ${opts.output} -Encoding UTF8`,
   }),
 }

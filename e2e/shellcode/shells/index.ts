@@ -34,6 +34,7 @@ export const Zsh = {
   }),
   ...cmdEnv.bash,
   ...cmdCall.all,
+  ...redirectOutput.bash,
   ...cmdExpectCommandOutput.bash,
   ...cmdHasOutputContains.bash,
   ...cmdInSubShell.zsh,
@@ -58,14 +59,8 @@ export const Fish = {
 
 export const PowerShell = {
   ...define<Shell>({
-    binaryName: () => {
-      if (process.platform === "win32") {
-        return "powershell.exe"
-      } else {
-        return "pwsh"
-      }
-    },
-    forceFile: true,
+    binaryName: () => "pwsh",
+    forceFile: ".ps1",
     currentlySupported: () => true,
     name: () => "PowerShell",
     launchArgs: () => ["-NoProfile"],
@@ -74,6 +69,7 @@ export const PowerShell = {
   }),
   ...cmdEnv.powershell,
   ...cmdCall.all,
+  ...redirectOutput.powershell,
   ...cmdExpectCommandOutput.powershell,
   ...cmdHasOutputContains.powershell,
   ...cmdInSubShell.powershell,
@@ -97,4 +93,5 @@ export const WinCmd = {
   ...cmdEnv.wincmd,
   ...cmdCall.all,
   ...cmdExpectCommandOutput.wincmd,
+  ...redirectOutput.bash,
 }

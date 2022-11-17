@@ -40,7 +40,10 @@ class Script {
     const args = [...shell.launchArgs()]
 
     if (shell.forceFile) {
-      const filename = join(testTmpDir(), "script")
+      let filename = join(testTmpDir(), "script")
+      if (typeof shell.forceFile === "string") {
+        filename = filename + shell.forceFile
+      }
       await writeFile(filename, [...this.lines, "exit 0"].join("\n"))
       args.push(filename)
     }
@@ -105,8 +108,8 @@ function streamOutputsAndBuffer(child: execa.ExecaChildProcess) {
   const testName = expect.getState().currentTestName ?? "unknown"
   const testPath = expect.getState().testPath ?? "unknown"
 
-  const stdoutPrefix = chalk.yellow.dim(`[stdout] ${testPath}/${testName}: `)
-  const stderrPrefix = chalk.red.dim(`[stderr] ${testPath}/${testName}: `)
+  const stdoutPrefix = chalk.cyan.dim(`[stdout] ${testPath}/${testName}: `)
+  const stderrPrefix = chalk.magenta.dim(`[stderr] ${testPath}/${testName}: `)
 
   if (child.stdout) {
     child.stdout.on("data", (data) => {
