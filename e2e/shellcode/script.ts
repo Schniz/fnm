@@ -51,13 +51,18 @@ class Script {
     const child = execa(shell.binaryName(), args, {
       stdio: [shell.forceFile ? "ignore" : "pipe", "pipe", "pipe"],
       cwd: testCwd(),
-      env: {
-        ...removeAllFnmEnvVars(process.env),
-        PATH: [testBinDir(), fnmTargetDir(), process.env.PATH]
-          .filter(Boolean)
-          .join(path.delimiter),
-        FNM_DIR: this.config.fnmDir,
-      },
+      env: (() => {
+        const newProcessEnv: Record<string, string> = {
+          ...removeAllFnmEnvVars(process.env),
+          PATH: [testBinDir(), fnmTargetDir(), process.env.PATH]
+            .filter(Boolean)
+            .join(path.delimiter),
+          FNM_DIR: this.config.fnmDir,
+        }
+
+        delete newProcessEnv.NODE_OPTIONS
+        return newProcessEnv
+      })(),
       extendEnv: false,
       reject: false,
     })
