@@ -1,11 +1,11 @@
-import { script } from "./shellcode/script"
-import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells"
-import describe from "./describe"
+import { script } from "./shellcode/script.js"
+import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells.js"
+import describe from "./describe.js"
 import { writeFile } from "node:fs/promises"
 import path from "node:path"
-import testCwd from "./shellcode/test-cwd"
-import getStderr from "./shellcode/get-stderr"
-import testNodeVersion from "./shellcode/test-node-version"
+import testCwd from "./shellcode/test-cwd.js"
+import getStderr from "./shellcode/get-stderr.js"
+import testNodeVersion from "./shellcode/test-node-version.js"
 
 for (const shell of [Bash, Zsh, Fish, PowerShell]) {
   describe(shell, () => {

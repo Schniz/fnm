@@ -1,13 +1,13 @@
-import { ScriptLine, Shell } from "./shells/types"
-import execa from "execa"
-import testTmpDir from "./test-tmp-dir"
+import { ScriptLine, Shell } from "./shells/types.js"
+import { execa, type ExecaChildProcess } from "execa"
+import testTmpDir from "./test-tmp-dir.js"
 import { Writable } from "node:stream"
-import dedent from "ts-dedent"
-import testCwd from "./test-cwd"
+import { dedent } from "ts-dedent"
+import testCwd from "./test-cwd.js"
 import path, { join } from "node:path"
 import { writeFile } from "node:fs/promises"
 import chalk from "chalk"
-import testBinDir from "./test-bin-dir"
+import testBinDir from "./test-bin-dir.js"
 
 class Script {
   constructor(
@@ -51,13 +51,18 @@ class Script {
     const child = execa(shell.binaryName(), args, {
       stdio: [shell.forceFile ? "ignore" : "pipe", "pipe", "pipe"],
       cwd: testCwd(),
-      env: {
-        ...removeAllFnmEnvVars(process.env),
-        PATH: [testBinDir(), fnmTargetDir(), process.env.PATH]
-          .filter(Boolean)
-          .join(path.delimiter),
-        FNM_DIR: this.config.fnmDir,
-      },
+      env: (() => {
+        const newProcessEnv: Record<string, string> = {
+          ...removeAllFnmEnvVars(process.env),
+          PATH: [testBinDir(), fnmTargetDir(), process.env.PATH]
+            .filter(Boolean)
+            .join(path.delimiter),
+          FNM_DIR: this.config.fnmDir,
+        }
+
+        delete newProcessEnv.NODE_OPTIONS
+        return newProcessEnv
+      })(),
       extendEnv: false,
       reject: false,
     })
@@ -102,7 +107,7 @@ class Script {
   }
 }
 
-function streamOutputsAndBuffer(child: execa.ExecaChildProcess) {
+function streamOutputsAndBuffer(child: ExecaChildProcess) {
   const stdout: string[] = []
   const stderr: string[] = []
   const testName = expect.getState().currentTestName ?? "unknown"
@@ -151,7 +156,7 @@ function write(writable: Writable, text: string): Promise<void> {
 }
 
 export function script(shell: Pick<Shell, "dieOnErrors">): Script {
-  const fnmDir = `${testTmpDir()}/fnm`
+  const fnmDir = path.join(testTmpDir(), "fnm")
   return new Script({ fnmDir }, shell.dieOnErrors ? [shell.dieOnErrors()] : [])
 }
 
@@ -166,8 +171,9 @@ function removeAllFnmEnvVars(obj: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
 }
 
 function fnmTargetDir(): string {
-  return path.resolve(
-    __dirname,
-    `../../target/${process.env.FNM_TARGET_NAME ?? "debug"}`
+  return path.join(
+    process.cwd(),
+    "target",
+    process.env.FNM_TARGET_NAME ?? "debug"
   )
 }

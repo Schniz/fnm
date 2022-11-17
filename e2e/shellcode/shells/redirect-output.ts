@@ -1,4 +1,4 @@
-import { ScriptLine, define } from "./types"
+import { ScriptLine, define } from "./types.js"
 
 type RedirectOutputOpts = { output: string }
 export type HasRedirectOutput = {

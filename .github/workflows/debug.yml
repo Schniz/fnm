@@ -2,11 +2,6 @@ name: "debug"
 
 on:
   workflow_dispatch:
-    inputs:
-      commit_hash:
-        description: "Commit hash to debug"
-        required: true
-        type: string
 
 concurrency:
   group: debug
@@ -20,11 +15,24 @@ jobs:
     - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.inputs.commit_hash }}
+    - name: Download artifact
+      id: download-artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        workflow: rust.yml
+        workflow_conclusion: ""
+        branch: ${{ env.GITHUB_REF }}
+        name: "fnm-windows"
+        path: "target/release"
+        if_no_artifact_found: ignore
     - uses: hecrj/setup-rust-action@v1
+      if: steps.download-artifact.outputs.artifact-found == false
       with:
         rust-version: stable
     - uses: Swatinem/rust-cache@v1
+      if: steps.download-artifact.outputs.artifact-found == false
     - name: Build release binary
+      if: steps.download-artifact.outputs.artifact-found == false
       run: cargo build --release
       env:
         RUSTFLAGS: "-C target-feature=+crt-static"

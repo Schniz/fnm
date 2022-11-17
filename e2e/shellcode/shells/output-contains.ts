@@ -1,4 +1,4 @@
-import { define, ScriptLine } from "./types"
+import { define, ScriptLine } from "./types.js"
 
 export type HasOutputContains = {
   scriptOutputContains(script: ScriptLine, substring: string): ScriptLine

@@ -1,7 +1,7 @@
-import { script } from "./shellcode/script"
-import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells"
-import describe from "./describe"
-import getStderr from "./shellcode/get-stderr"
+import { script } from "./shellcode/script.js"
+import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells.js"
+import describe from "./describe.js"
+import getStderr from "./shellcode/get-stderr.js"
 
 for (const shell of [Bash, Zsh, Fish, PowerShell]) {
   describe(shell, () => {
