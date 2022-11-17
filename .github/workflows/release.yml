@@ -19,9 +19,9 @@ jobs:
       with:
         rust-version: stable
 
-    - uses: Swatinem/rust-cache@v1
+    - uses: Swatinem/rust-cache@v2
 
-    - uses: pnpm/action-setup@v2.2.2
+    - uses: pnpm/action-setup@v2.2.4
       with:
         run_install: false
 
