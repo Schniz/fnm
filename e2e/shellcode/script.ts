@@ -156,7 +156,7 @@ function write(writable: Writable, text: string): Promise<void> {
 }
 
 export function script(shell: Pick<Shell, "dieOnErrors">): Script {
-  const fnmDir = `${testTmpDir()}/fnm`
+  const fnmDir = path.join(testTmpDir(), "fnm")
   return new Script({ fnmDir }, shell.dieOnErrors ? [shell.dieOnErrors()] : [])
 }
 
@@ -171,8 +171,9 @@ function removeAllFnmEnvVars(obj: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
 }
 
 function fnmTargetDir(): string {
-  return new URL(
-    `../../target/${process.env.FNM_TARGET_NAME ?? "debug"}`,
-    import.meta.url
-  ).pathname
+  return path.join(
+    process.cwd(),
+    "target",
+    process.env.FNM_TARGET_NAME ?? "debug"
+  )
 }
