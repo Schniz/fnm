@@ -363,8 +363,8 @@ OPTIONS:
             [possible values: local, recursive]
 
         --with-shims
-            Adds `node` shims to your PATH environment variable to allow you to use `node` commands
-            in your shell without rehashing
+            EXPERIMENTAL: Adds `node` shims to your PATH environment variable to allow you to use
+            `node` commands in your shell without rehashing
 ```
 
 # `fnm exec`
