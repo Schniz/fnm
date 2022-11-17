@@ -24,7 +24,9 @@
 
 ### Using a script (macOS/Linux)
 
-For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
+For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh).
+
+First ensure that `curl` and `unzip` are already installed on you operating system. Then execute:
 
 ```sh
 curl -fsSL https://fnm.vercel.app/install | bash
