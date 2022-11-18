@@ -338,11 +338,8 @@ jobs:
       - name: Print fnm version
         run: fnm --version
       - run: fnm install
-      - uses: pnpm/action-setup@v2.2.4
-        with:
-          run_install: false
       - name: Install Node deps
-        run: fnm exec -- pnpm
+        run: fnm exec -- yarn
       - name: Generate command markdown
         run: |
-          fnm exec -- pnpm generate-command-docs --check --binary-path=$(which fnm)
+          fnm exec -- yarn generate-command-docs --check --binary-path=$(which fnm)
