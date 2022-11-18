@@ -339,7 +339,7 @@ jobs:
         run: fnm --version
       - run: fnm install
       - name: Install Node deps
-        run: fnm exec -- yarn
+        run: fnm exec -- pnpm
       - name: Generate command markdown
         run: |
-          fnm exec -- yarn generate-command-docs --check --binary-path=$(which fnm)
+          fnm exec -- pnpm generate-command-docs --check --binary-path=$(which fnm)
