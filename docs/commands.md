@@ -458,6 +458,9 @@ OPTIONS:
     -h, --help
             Print help information
 
+        --latest
+            Install latest version
+
         --log-level <LOG_LEVEL>
             The log level of fnm commands
 

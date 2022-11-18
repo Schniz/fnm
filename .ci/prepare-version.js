@@ -17,7 +17,7 @@ const command = cmd.command({
   async handler({}) {
     updateCargoToml(await getPackageVersion())
     exec("cargo build --release")
-    exec("yarn generate-command-docs --binary-path=./target/release/fnm")
+    exec("pnpm generate-command-docs --binary-path=./target/release/fnm")
     exec("./.ci/record_screen.sh")
   },
 })

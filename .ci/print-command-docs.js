@@ -42,7 +42,7 @@ const command = cmd.command({
       if (gitStatus.state === "dirty") {
         process.exitCode = 1
         console.error(
-          "The file has changed. Please re-run `yarn generate-command-docs`."
+          "The file has changed. Please re-run `pnpm generate-command-docs`."
         )
         console.error(`hint: The following diff was found:`)
         console.error()
@@ -76,7 +76,7 @@ async function main(targetFile, fnmPath) {
 
   stream.close()
 
-  await execa(`yarn`, ["prettier", "--write", targetFile])
+  await execa(`pnpm`, ["prettier", "--write", targetFile])
 }
 
 /**
