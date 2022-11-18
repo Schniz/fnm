@@ -85,8 +85,9 @@ impl super::command::Command for Install {
             UserVersion::Full(Version::Latest) => {
                 let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
                     .map_err(|source| Error::CantListRemoteVersions { source })?;
-                let picked_version = available_versions.last()
-                    .ok_or_else(|| Error::CantFindLatest)?
+                let picked_version = available_versions
+                    .last()
+                    .ok_or(Error::CantFindLatest)?
                     .version
                     .clone();
                 debug!(
@@ -175,7 +176,7 @@ pub enum Error {
     CantFindNodeVersion { requested_version: UserVersion },
     #[error("Can't find relevant LTS named {}", lts_type)]
     CantFindRelevantLts { lts_type: crate::lts::LtsType },
-    #[error("Can't find latest version")]
+    #[error("Can't find any versions in the upstream version index.")]
     CantFindLatest,
     #[error("The requested version is not installable: {}", version.v_str())]
     UninstallableVersion { version: Version },
@@ -214,5 +215,32 @@ mod tests {
                 .canonicalize()
                 .ok()
         );
+    }
+
+    #[test]
+    fn test_install_latest() {
+        let base_dir = tempfile::tempdir().unwrap();
+        let config = FnmConfig::default().with_base_dir(Some(base_dir.path().to_path_buf()));
+
+        Install {
+            version: None,
+            lts: false,
+            latest: true,
+        }
+        .apply(&config)
+        .expect("Can't install");
+
+        let available_versions: Vec<_> =
+            remote_node_index::list(&config.node_dist_mirror).expect("Can't get node version list");
+        let latest_version = available_versions.last().unwrap().version.clone();
+
+        assert!(config.installations_dir().exists());
+        assert!(config
+            .installations_dir()
+            .join(latest_version.to_string())
+            .join("installation")
+            .canonicalize()
+            .unwrap()
+            .exists());
     }
 }
