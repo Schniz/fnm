@@ -326,23 +326,38 @@ jobs:
     name: Ensure command docs are up-to-date
     needs: [build_static_linux_binary]
     steps:
-      - uses: actions/checkout@v3
-      - name: Download a single artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: fnm-linux
-      - name: Make the binary runnable
-        run: |
-          sudo install fnm /bin
-          fnm --version
-      - name: Print fnm version
-        run: fnm --version
-      - run: fnm install
-      - uses: pnpm/action-setup@v2.2.4
-        with:
-          run_install: false
-      - name: Install Node deps
-        run: fnm exec -- pnpm
-      - name: Generate command markdown
-        run: |
-          fnm exec -- pnpm generate-command-docs --check --binary-path=$(which fnm)
+    - name: install necessary shells
+      run: sudo apt-get update && sudo apt-get install -y fish zsh bash
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: fnm-linux
+        path: target/release
+    - name: mark binary as executable
+      run: chmod +x target/release/fnm
+    - name: install fnm as binary
+      run: |
+        sudo install target/release/fnm /bin
+        fnm --version
+    - uses: pnpm/action-setup@v2.2.4
+      with:
+        run_install: false
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+        cache: 'pnpm'
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      run: |
+        echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+    - uses: actions/cache@v3
+      name: Setup pnpm cache
+      with:
+        path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+    - run: pnpm install
+    - name: Generate command markdown
+      run: |
+        pnpm run generate-command-docs --check --binary-path=$(which fnm)
