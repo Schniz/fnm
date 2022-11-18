@@ -1,7 +1,6 @@
 # `fnm`
-
 ```
-fnm 1.32.0
+fnm 1.31.1
 A fast and simple Node.js manager
 
 USAGE:
@@ -10,12 +9,12 @@ USAGE:
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -23,14 +22,14 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
@@ -40,12 +39,12 @@ OPTIONS:
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
@@ -78,11 +77,9 @@ SUBCOMMANDS:
     use
             Change Node.js version
 ```
-
 # `fnm alias`
-
 ```
-fnm-alias
+fnm-alias 
 Alias a version to a common name
 
 USAGE:
@@ -90,20 +87,20 @@ USAGE:
 
 ARGS:
     <TO_VERSION>
-
+            
 
     <NAME>
-
+            
 
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -111,35 +108,33 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm completions`
-
 ```
-fnm-completions
+fnm-completions 
 Print shell completions to stdout
 
 USAGE:
@@ -148,12 +143,12 @@ USAGE:
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -161,14 +156,14 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
@@ -178,21 +173,19 @@ OPTIONS:
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm current`
-
 ```
-fnm-current
+fnm-current 
 Print the current Node.js version
 
 USAGE:
@@ -201,12 +194,12 @@ USAGE:
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -214,35 +207,33 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm default`
-
 ```
-fnm-default
+fnm-default 
 Set a version as the default version
 
 This is a shorthand for `fnm alias VERSION default`
@@ -252,17 +243,17 @@ USAGE:
 
 ARGS:
     <VERSION>
-
+            
 
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -270,35 +261,33 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm env`
-
 ```
-fnm-env
+fnm-env 
 Print and set up required environment variables for fnm
 
 This command generates a series of shell commands that should be evaluated by your shell to create a
@@ -314,36 +303,33 @@ USAGE:
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
             Print help information
 
-        --json
-            Print JSON instead of shell commands
-
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
         --shell <SHELL>
             The shell syntax to use. Infers when missing
-
+            
             [possible values: bash, zsh, fish, powershell]
 
         --use-on-cd
@@ -352,21 +338,19 @@ OPTIONS:
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm exec`
-
 ```
-fnm-exec
+fnm-exec 
 Run a command within fnm context
 
 Example:
@@ -384,12 +368,12 @@ ARGS:
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -397,14 +381,14 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
@@ -414,27 +398,23 @@ OPTIONS:
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm help`
-
 ```
 
 ```
-
 # `fnm install`
-
 ```
-fnm-install
+fnm-install 
 Install a new Node.js version
 
 USAGE:
@@ -447,20 +427,23 @@ ARGS:
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
             Print help information
 
+        --latest
+            Install latest version
+
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
@@ -470,28 +453,26 @@ OPTIONS:
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm list`
-
 ```
-fnm-list
+fnm-list 
 List all locally installed Node.js versions
 
 USAGE:
@@ -500,12 +481,12 @@ USAGE:
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -513,35 +494,33 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm list-remote`
-
 ```
-fnm-list-remote
+fnm-list-remote 
 List all remote Node.js versions
 
 USAGE:
@@ -550,12 +529,12 @@ USAGE:
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -563,35 +542,33 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm unalias`
-
 ```
-fnm-unalias
+fnm-unalias 
 Remove an alias definition
 
 USAGE:
@@ -599,17 +576,17 @@ USAGE:
 
 ARGS:
     <REQUESTED_ALIAS>
-
+            
 
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -617,35 +594,33 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm uninstall`
-
 ```
-fnm-uninstall
+fnm-uninstall 
 Uninstall a Node.js version
 
 > Warning: when providing an alias, it will remove the Node version the alias is pointing to, along
@@ -656,17 +631,17 @@ USAGE:
 
 ARGS:
     <VERSION>
-
+            
 
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -674,35 +649,33 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
 ```
-
 # `fnm use`
-
 ```
-fnm-use
+fnm-use 
 Change Node.js version
 
 USAGE:
@@ -710,17 +683,17 @@ USAGE:
 
 ARGS:
     <VERSION>
-
+            
 
 OPTIONS:
         --arch <ARCH>
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
-
+            
             [env: FNM_ARCH]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
-
+            
             [env: FNM_DIR]
 
     -h, --help
@@ -731,14 +704,14 @@ OPTIONS:
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
-
+            
             [env: FNM_LOGLEVEL]
             [default: info]
             [possible values: quiet, info, all, error]
 
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
-
+            
             [env: FNM_NODE_DIST_MIRROR]
             [default: https://nodejs.org/dist]
 
@@ -749,12 +722,12 @@ OPTIONS:
         --version-file-strategy <VERSION_FILE_STRATEGY>
             A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install`
             is called without a version, or when `--use-on-cd` is configured on evaluation.
-
+            
             * `local`: Use the local version of Node defined within the current directory
-
+            
             * `recursive`: Use the version of Node defined within the current directory and all
             parent directories
-
+            
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
