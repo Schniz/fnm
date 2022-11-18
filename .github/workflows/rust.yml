@@ -338,6 +338,9 @@ jobs:
       - name: Print fnm version
         run: fnm --version
       - run: fnm install
+      - uses: pnpm/action-setup@v2.2.4
+        with:
+          run_install: false
       - name: Install Node deps
         run: fnm exec -- pnpm
       - name: Generate command markdown
