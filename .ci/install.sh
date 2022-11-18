@@ -2,9 +2,18 @@
 
 set -e
 
-INSTALL_DIR="$HOME/.fnm"
 RELEASE="latest"
 OS="$(uname -s)"
+
+if [ -d "$HOME/.fnm" ]; then
+  INSTALL_DIR="$HOME/.fnm"
+elif [ -n "$XDG_DATA_HOME" ]; then
+  INSTALL_DIR="$XDG_DATA_HOME/fnm"
+elif [ "$OS" = "Darwin" ]; then
+  INSTALL_DIR="$HOME/Library/Application Support/fnm"
+else
+  INSTALL_DIR="$HOME/.local/share/fnm"
+fi
 
 # Parse Flags
 parse_args() {
@@ -154,12 +163,12 @@ setup_shell() {
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
-    echo '  export PATH='"$INSTALL_DIR"':$PATH'
+    echo '  export PATH="'"$INSTALL_DIR"':$PATH"'
     echo '  eval "`fnm env`"'
 
     echo '' >>$CONF_FILE
     echo '# fnm' >>$CONF_FILE
-    echo 'export PATH='$INSTALL_DIR':$PATH' >>$CONF_FILE
+    echo 'export PATH="'$INSTALL_DIR':$PATH"' >>$CONF_FILE
     echo 'eval "`fnm env`"' >>$CONF_FILE
 
   elif [ "$CURRENT_SHELL" = "fish" ]; then
@@ -168,11 +177,11 @@ setup_shell() {
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
-    echo '  set PATH '"$INSTALL_DIR"' $PATH'
+    echo '  set PATH "'"$INSTALL_DIR"'" $PATH'
     echo '  fnm env | source'
 
     echo '# fnm' >>$CONF_FILE
-    echo 'set PATH '"$INSTALL_DIR"' $PATH' >>$CONF_FILE
+    echo 'set PATH "'"$INSTALL_DIR"'" $PATH' >>$CONF_FILE
     echo 'fnm env | source' >>$CONF_FILE
 
   elif [ "$CURRENT_SHELL" = "bash" ]; then
@@ -185,12 +194,12 @@ setup_shell() {
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
     echo ""
     echo '  # fnm'
-    echo '  export PATH='"$INSTALL_DIR"':$PATH'
+    echo '  export PATH="'"$INSTALL_DIR"':$PATH"'
     echo '  eval "`fnm env`"'
 
     echo '' >>$CONF_FILE
     echo '# fnm' >>$CONF_FILE
-    echo 'export PATH='"$INSTALL_DIR"':$PATH' >>$CONF_FILE
+    echo 'export PATH="'"$INSTALL_DIR"':$PATH"' >>$CONF_FILE
     echo 'eval "`fnm env`"' >>$CONF_FILE
 
   else

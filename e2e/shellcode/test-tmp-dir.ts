@@ -1,4 +1,4 @@
-import { mkdirSync, rmSync } from "node:fs"
+import { mkdirSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
@@ -9,7 +9,6 @@ export default function testTmpDir(): string {
     .replace(/_+/g, "_")
   const tmpDir = join(tmpdir(), `shellcode/${testName}`)
   mkdirSync(tmpDir, { recursive: true })
-  rmSync(join(tmpDir, "fnm/aliases"), { recursive: true, force: true })
 
   return tmpDir
 }

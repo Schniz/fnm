@@ -8,6 +8,7 @@ import path, { join } from "node:path"
 import { writeFile } from "node:fs/promises"
 import chalk from "chalk"
 import testBinDir from "./test-bin-dir.js"
+import { rmSync } from "node:fs"
 
 class Script {
   constructor(
@@ -157,6 +158,7 @@ function write(writable: Writable, text: string): Promise<void> {
 
 export function script(shell: Pick<Shell, "dieOnErrors">): Script {
   const fnmDir = path.join(testTmpDir(), "fnm")
+  rmSync(join(fnmDir, "aliases"), { recursive: true, force: true })
   return new Script({ fnmDir }, shell.dieOnErrors ? [shell.dieOnErrors()] : [])
 }
 

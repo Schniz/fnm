@@ -1,6 +1,6 @@
 {
   "name": "fnm",
-  "version": "1.31.1",
+  "version": "1.32.0",
   "private": true,
   "repository": "git@github.com:Schniz/fnm.git",
   "author": "Gal Schlezinger <gal@spitfire.co.il>",
@@ -22,7 +22,7 @@
     }
   },
   "devDependencies": {
-    "@changesets/cli": "2.25.0",
+    "@changesets/cli": "2.25.2",
     "@svitejs/changesets-changelog-github-compact": "0.1.1",
     "@types/jest": "^29.2.3",
     "@types/node": "^18.11.9",
