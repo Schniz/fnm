@@ -41,7 +41,7 @@ impl UserVersion {
                     }
                 }
             }
-            (_, Version::Bypassed | Version::Lts(_) | Version::Alias(_)) => false,
+            (_, Version::Bypassed | Version::Lts(_) | Version::Alias(_) | Version::Latest) => false,
             (Self::OnlyMajor(major), Version::Semver(other)) => *major == other.major,
             (Self::MajorMinor(major, minor), Version::Semver(other)) => {
                 *major == other.major && *minor == other.minor
