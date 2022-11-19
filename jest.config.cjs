@@ -4,6 +4,7 @@ module.exports = {
   testEnvironment: "node",
   testTimeout: 120000,
   extensionsToTreatAsEsm: [".ts"],
+  testPathIgnorePatterns: ["<rootDir>/target/", "<rootDir>/node_modules/"],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
     "#ansi-styles": "ansi-styles/index.js",

@@ -1,14 +1,14 @@
 import { ScriptLine, define } from "./types.js"
 
-type EnvConfig = { useOnCd: boolean; logLevel: string }
+type EnvConfig = { useOnCd: boolean; logLevel: string; args: string[] }
 export type HasEnv = { env(cfg: Partial<EnvConfig>): ScriptLine }
 
-function stringify(envConfig: Partial<EnvConfig> = {}) {
-  const { useOnCd, logLevel } = envConfig
+function stringify(config: Partial<EnvConfig> = {}) {
   return [
     `fnm env`,
-    useOnCd && "--use-on-cd",
-    logLevel && `--log-level=${logLevel}`,
+    config.useOnCd && "--use-on-cd",
+    config.logLevel && `--log-level=${config.logLevel}`,
+    ...(config.args ?? []),
   ]
     .filter(Boolean)
     .join(" ")

@@ -1,6 +1,7 @@
 import { cmdCall } from "./shells/cmdCall.js"
 import { cmdEnv } from "./shells/cmdEnv.js"
 import { cmdExpectCommandOutput } from "./shells/expect-command-output.js"
+import { getEnvVar } from "./shells/get-env-var.js"
 import { cmdHasOutputContains } from "./shells/output-contains.js"
 import { redirectOutput } from "./shells/redirect-output.js"
 import { cmdInSubShell } from "./shells/sub-shell.js"
@@ -21,6 +22,7 @@ export const Bash = {
   ...cmdExpectCommandOutput.bash,
   ...cmdHasOutputContains.bash,
   ...cmdInSubShell.bash,
+  ...getEnvVar.posix,
 }
 
 export const Zsh = {
@@ -38,6 +40,7 @@ export const Zsh = {
   ...cmdExpectCommandOutput.bash,
   ...cmdHasOutputContains.bash,
   ...cmdInSubShell.zsh,
+  ...getEnvVar.posix,
 }
 
 export const Fish = {
@@ -55,6 +58,7 @@ export const Fish = {
   ...cmdExpectCommandOutput.fish,
   ...cmdHasOutputContains.fish,
   ...cmdInSubShell.fish,
+  ...getEnvVar.posix,
 }
 
 export const PowerShell = {
@@ -73,6 +77,7 @@ export const PowerShell = {
   ...cmdExpectCommandOutput.powershell,
   ...cmdHasOutputContains.powershell,
   ...cmdInSubShell.powershell,
+  ...getEnvVar.powershell,
 }
 
 export const WinCmd = {
@@ -94,4 +99,5 @@ export const WinCmd = {
   ...cmdCall.all,
   ...cmdExpectCommandOutput.wincmd,
   ...redirectOutput.bash,
+  ...getEnvVar.winCmd,
 }
