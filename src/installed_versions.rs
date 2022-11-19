@@ -36,6 +36,6 @@ pub enum Error {
     #[error(transparent)]
     SemverError {
         #[from]
-        source: semver::Error,
+        source: node_semver::SemverError,
     },
 }
