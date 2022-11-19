@@ -65,12 +65,13 @@ impl Shell for Bash {
     }
 }
 
-/// This code is based on Richard Hansen's answer on StackOverflow:
-/// https://stackoverflow.com/a/7287873/1176984
+/// This code is based on [Richard Hansen's answer on `StackOverflow`](https://stackoverflow.com/a/7287873/1176984)
 ///
 /// Usage:
+/// ```bash
 /// __fnm_trap_add__ 'echo "hello"' EXIT
-pub const TRAP_ADD: &'static str = indoc::indoc!(
+/// ```
+pub const TRAP_ADD: &str = indoc::indoc!(
     r#"
     __fnm_trap_add__() {
         __fnm_trap_add___cmd=$1; shift || fatal "${FUNCNAME} usage error"
