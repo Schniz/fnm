@@ -1,6 +1,6 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
-use super::shell::Shell;
+use super::{shell::Shell, trap_add_script::TRAP_ADD};
 use indoc::{formatdoc, indoc};
 use std::path::Path;
 
@@ -55,34 +55,12 @@ impl Shell for Bash {
     fn delete_on_exit(&self, fnm_multishell: &Path) -> Option<String> {
         Some(indoc::formatdoc!(
             r#"
-    # appends a command to a trap
-    #
-    # - 1st arg:  code to add
-    # - remaining args:  names of traps to modify
-    #
-    trap_add() {{
-        trap_add_cmd=$1; shift || fatal "${{FUNCNAME}} usage error"
-        for trap_add_name in "$@"; do
-            trap -- "$(
-                # helper fn to get existing trap command from output
-                # of trap -p
-                extract_trap_cmd() {{ printf '%s\n' "$3"; }}
-                # print existing trap command with newline
-                eval "extract_trap_cmd $(trap -p "${{trap_add_name}}")"
-                # print the new trap command
-                printf '%s\n' "${{trap_add_cmd}}"
-            )" "${{trap_add_name}}" \
-                || fatal "unable to add to trap ${{trap_add_name}}"
-        done
-    }}
-    # set the trace attribute for the above function.  this is
-    # required to modify DEBUG or RETURN traps because functions don't
-    # inherit them unless the trace attribute is set
-    declare -f -t trap_add
+    {TRAP_ADD}
 
-    trap_add 'echo hi; rm "{fnm_multishell}"' EXIT
+    __fnm_trap_add__ 'rm "{fnm_multishell}"' EXIT
             "#,
-            fnm_multishell = fnm_multishell.display()
+            fnm_multishell = fnm_multishell.display(),
+            TRAP_ADD = TRAP_ADD
         ))
     }
 }
