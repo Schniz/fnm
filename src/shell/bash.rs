@@ -1,6 +1,6 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
-use super::{shell::Shell, trap_add_script::TRAP_ADD};
+use super::shell::Shell;
 use indoc::{formatdoc, indoc};
 use std::path::Path;
 
@@ -64,3 +64,25 @@ impl Shell for Bash {
         ))
     }
 }
+
+/// This code is based on Richard Hansen's answer on StackOverflow:
+/// https://stackoverflow.com/a/7287873/1176984
+///
+/// Usage:
+/// __fnm_trap_add__ 'echo "hello"' EXIT
+pub const TRAP_ADD: &'static str = indoc::indoc!(
+    r#"
+    __fnm_trap_add__() {
+        __fnm_trap_add___cmd=$1; shift || fatal "${FUNCNAME} usage error"
+        for __fnm_trap_add___name in "$@"; do
+            trap -- "$(
+                extract_trap_cmd() { printf '%s\n' "$3"; }
+                eval "extract_trap_cmd $(trap -p "${__fnm_trap_add___name}")"
+                printf '%s\n' "${__fnm_trap_add___cmd}"
+            )" "${__fnm_trap_add___name}" \
+                || fatal "unable to add to trap ${__fnm_trap_add___name}"
+        done
+    }
+    declare -f -t __fnm_trap_add__
+    "#
+);
