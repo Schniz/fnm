@@ -41,7 +41,7 @@ impl UserVersion {
                     }
                 }
             }
-            (_, Version::Bypassed | Version::Lts(_) | Version::Alias(_)) => false,
+            (_, Version::Bypassed | Version::Lts(_) | Version::Alias(_) | Version::Latest) => false,
             (Self::OnlyMajor(major), Version::Semver(other)) => *major == other.major,
             (Self::MajorMinor(major, minor), Version::Semver(other)) => {
                 *major == other.major && *minor == other.minor
@@ -70,7 +70,7 @@ fn skip_first_v(str: &str) -> &str {
 }
 
 impl FromStr for UserVersion {
-    type Err = semver::Error;
+    type Err = node_semver::SemverError;
     fn from_str(s: &str) -> Result<UserVersion, Self::Err> {
         match Version::parse(s) {
             Ok(v) => Ok(Self::Full(v)),

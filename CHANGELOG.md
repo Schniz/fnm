@@ -1,5 +1,19 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.32.0
+
+### Minor Changes
+
+- Add `--json` to `fnm env` to output the env vars as JSON ([#800](https://github.com/Schniz/fnm/pull/800))
+
+### Patch Changes
+
+- This updates the Changesets configurations. ([#783](https://github.com/Schniz/fnm/pull/783))
+
+- fix test: Use correct PATH for npm install test ([#768](https://github.com/Schniz/fnm/pull/768))
+
+- Make installation script respect `$XDG_DATA_HOME` ([#614](https://github.com/Schniz/fnm/pull/614))
+
 ## 1.31.1
 
 ### Patch Changes

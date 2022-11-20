@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash current returns the current Node.js version set in fnm: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+if [ "$(fnm current)" != "none" ]; then
+  echo "Expected currently activated version to be none. Got $(fnm current)"
+  exit 1
+fi
+fnm install v8.11.3
+fnm install v10.10.0
+fnm use v8.11.3
+if [ "$(fnm current)" != "v8.11.3" ]; then
+  echo "Expected currently activated version to be v8.11.3. Got $(fnm current)"
+  exit 1
+fi
+fnm use v10.10.0
+if [ "$(fnm current)" != "v10.10.0" ]; then
+  echo "Expected currently activated version to be v10.10.0. Got $(fnm current)"
+  exit 1
+fi
+fnm use system
+if [ "$(fnm current)" != "system" ]; then
+  echo "Expected currently activated version to be system. Got $(fnm current)"
+  exit 1
+fi"
+`;
+
+exports[`Fish current returns the current Node.js version set in fnm: Fish 1`] = `
+"fnm env | source
+set ____test____ (fnm current)
+if test "$____test____" != "none"
+  echo "Expected currently activated version to be none. Got $____test____"
+  exit 1
+end
+fnm install v8.11.3
+fnm install v10.10.0
+fnm use v8.11.3
+set ____test____ (fnm current)
+if test "$____test____" != "v8.11.3"
+  echo "Expected currently activated version to be v8.11.3. Got $____test____"
+  exit 1
+end
+fnm use v10.10.0
+set ____test____ (fnm current)
+if test "$____test____" != "v10.10.0"
+  echo "Expected currently activated version to be v10.10.0. Got $____test____"
+  exit 1
+end
+fnm use system
+set ____test____ (fnm current)
+if test "$____test____" != "system"
+  echo "Expected currently activated version to be system. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`PowerShell current returns the current Node.js version set in fnm: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+if ( "$(fnm current)" -ne "none" ) { echo "Expected currently activated version to be none. Got $(fnm current)"; exit 1 }
+fnm install v8.11.3
+fnm install v10.10.0
+fnm use v8.11.3
+if ( "$(fnm current)" -ne "v8.11.3" ) { echo "Expected currently activated version to be v8.11.3. Got $(fnm current)"; exit 1 }
+fnm use v10.10.0
+if ( "$(fnm current)" -ne "v10.10.0" ) { echo "Expected currently activated version to be v10.10.0. Got $(fnm current)"; exit 1 }
+fnm use system
+if ( "$(fnm current)" -ne "system" ) { echo "Expected currently activated version to be system. Got $(fnm current)"; exit 1 }"
+`;
+
+exports[`Zsh current returns the current Node.js version set in fnm: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+if [ "$(fnm current)" != "none" ]; then
+  echo "Expected currently activated version to be none. Got $(fnm current)"
+  exit 1
+fi
+fnm install v8.11.3
+fnm install v10.10.0
+fnm use v8.11.3
+if [ "$(fnm current)" != "v8.11.3" ]; then
+  echo "Expected currently activated version to be v8.11.3. Got $(fnm current)"
+  exit 1
+fi
+fnm use v10.10.0
+if [ "$(fnm current)" != "v10.10.0" ]; then
+  echo "Expected currently activated version to be v10.10.0. Got $(fnm current)"
+  exit 1
+fi
+fnm use system
+if [ "$(fnm current)" != "system" ]; then
+  echo "Expected currently activated version to be system. Got $(fnm current)"
+  exit 1
+fi"
+`;

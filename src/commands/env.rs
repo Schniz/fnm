@@ -6,6 +6,7 @@ use crate::outln;
 use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
+use std::collections::HashMap;
 use std::fmt::Debug;
 use std::fs::File;
 use thiserror::Error;
@@ -19,6 +20,9 @@ pub struct Env {
     #[clap(long)]
     /// Creates and writes output to a file instead of stdout
     file: bool,
+    /// Print JSON instead of shell commands.
+    #[clap(long, conflicts_with = "shell")]
+    json: bool,
     /// Deprecated. This is the default now.
     #[clap(long, hide = true)]
     multi: bool,
@@ -63,16 +67,36 @@ impl Command for Env {
             );
         }
 
-        let shell: Box<dyn Shell> = self
-            .shell
-            .or_else(&infer_shell)
-            .ok_or(Error::CantInferShell)?;
         let multishell_path = make_symlink(config)?;
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
         } else {
             multishell_path.join("bin")
         };
+
+        let env_vars = HashMap::from([
+            (
+                "FNM_MULTISHELL_PATH",
+                multishell_path.to_str().unwrap().to_owned(),
+            ),
+            (
+                "FNM_VERSION_FILE_STRATEGY",
+                config.version_file_strategy().as_str().to_owned(),
+            ),
+            (
+                "FNM_DIR",
+                config.base_dir_with_default().to_str().unwrap().to_owned(),
+            ),
+            (
+                "FNM_LOGLEVEL",
+                <&'static str>::from(config.log_level().clone()).to_owned(),
+            ),
+            (
+                "FNM_NODE_DIST_MIRROR",
+                config.node_dist_mirror.as_str().to_owned(),
+            ),
+            ("FNM_ARCH", config.arch.to_string()),
+        ]);
 
         let mut writer = if self.file {
             let script_path = config
@@ -89,16 +113,22 @@ impl Command for Env {
             writeln!(writer, "{}", line).unwrap();
         };
 
-        writeln(shell.path(&binary_path)?);
-        writeln(shell.set_env_var("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap()));
-        writeln(shell.set_env_var(
-            "FNM_VERSION_FILE_STRATEGY",
-            config.version_file_strategy().as_str(),
-        ));
-        writeln(shell.set_env_var("FNM_DIR", config.base_dir_with_default().to_str().unwrap()));
-        writeln(shell.set_env_var("FNM_LOGLEVEL", config.log_level().clone().into()));
-        writeln(shell.set_env_var("FNM_NODE_DIST_MIRROR", config.node_dist_mirror.as_str()));
-        writeln(shell.set_env_var("FNM_ARCH", &config.arch.to_string()));
+        if self.json {
+            writeln("{}", serde_json::to_string(&env_vars).unwrap());
+            return Ok(());
+        }
+
+        let shell: Box<dyn Shell> = self
+            .shell
+            .or_else(infer_shell)
+            .ok_or(Error::CantInferShell)?;
+
+        writeln("{}", shell.path(&binary_path)?);
+
+        for (name, value) in &env_vars {
+            writeln("{}", shell.set_env_var(name, value));
+        }
+
         if self.use_on_cd {
             writeln(shell.use_on_cd(config)?);
         }

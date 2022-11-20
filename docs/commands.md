@@ -1,7 +1,7 @@
 # `fnm`
 
 ```
-fnm 1.31.1
+fnm 1.32.0
 A fast and simple Node.js manager
 
 USAGE:
@@ -325,6 +325,9 @@ OPTIONS:
     -h, --help
             Print help information
 
+        --json
+            Print JSON instead of shell commands
+
         --log-level <LOG_LEVEL>
             The log level of fnm commands
 
@@ -454,6 +457,9 @@ OPTIONS:
 
     -h, --help
             Print help information
+
+        --latest
+            Install latest version
 
         --log-level <LOG_LEVEL>
             The log level of fnm commands
