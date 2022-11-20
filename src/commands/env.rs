@@ -98,6 +98,11 @@ impl Command for Env {
             ("FNM_ARCH", config.arch.to_string()),
         ]);
 
+        let shell: Box<dyn Shell> = self
+            .shell
+            .or_else(infer_shell)
+            .ok_or(Error::CantInferShell)?;
+
         let mut writer = if self.file {
             let script_path = config
                 .base_dir_with_default()
@@ -114,19 +119,14 @@ impl Command for Env {
         };
 
         if self.json {
-            writeln("{}", serde_json::to_string(&env_vars).unwrap());
+            writeln(serde_json::to_string(&env_vars).unwrap());
             return Ok(());
         }
 
-        let shell: Box<dyn Shell> = self
-            .shell
-            .or_else(infer_shell)
-            .ok_or(Error::CantInferShell)?;
-
-        writeln("{}", shell.path(&binary_path)?);
+        writeln(shell.path(&binary_path)?);
 
         for (name, value) in &env_vars {
-            writeln("{}", shell.set_env_var(name, value));
+            writeln(shell.set_env_var(name, value));
         }
 
         if self.use_on_cd {
