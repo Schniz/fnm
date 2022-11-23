@@ -27,7 +27,7 @@ atty = "0.2.14"
 encoding_rs_io = "0.1.7"
 reqwest = { version = "0.11.13", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
 url = "2.3.1"
-sysinfo = "0.26.7"
+sysinfo = "0.26.8"
 thiserror = "1.0.37"
 clap_complete = "3.2.5"
 anyhow = "1.0.66"
