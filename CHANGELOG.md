@@ -1,5 +1,13 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.33.0
+
+### Minor Changes
+
+- Replace `semver` with `node_semver` ([#816](https://github.com/Schniz/fnm/pull/816))
+
+- support `fnm install --latest` to install the latest Node.js version ([#859](https://github.com/Schniz/fnm/pull/859))
+
 ## 1.32.0
 
 ### Minor Changes
