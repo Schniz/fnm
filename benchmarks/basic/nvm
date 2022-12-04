@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export NVM_DIR="$HOME/.nvm"
+\. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+nvm install v10.11.0
+nvm use v10.11.0
+node -v

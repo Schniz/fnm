@@ -1,0 +1,6 @@
+#!/bin/bash
+
+eval "$(~/.fnm-latest/fnm env --multi)"
+~/.fnm-latest/fnm install v10.11.0
+~/.fnm-latest/fnm use v10.11.0
+node -v
