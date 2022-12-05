@@ -368,7 +368,7 @@ jobs:
     needs: [build_static_linux_binary]
     steps:
     - name: install necessary shells
-      run: sudo apt-get update && sudo apt-get install -y fish zsh bash
+      run: sudo apt-get update && sudo apt-get install -y fish zsh bash hyperfine
     - uses: actions/checkout@v3
     - uses: actions/download-artifact@v3
       with:
