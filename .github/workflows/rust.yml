@@ -366,6 +366,9 @@ jobs:
     runs-on: ubuntu-latest
     name: bench/linux
     needs: [build_static_linux_binary]
+    permissions:
+      contents: |
+        ${{ github.event.issue.pull_request ? 'read' : 'write' }}
     steps:
     - name: install necessary shells
       run: sudo apt-get update && sudo apt-get install -y fish zsh bash hyperfine
