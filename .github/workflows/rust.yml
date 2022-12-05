@@ -404,12 +404,12 @@ jobs:
     - name: Run benchmarks
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXTRA_ARGS: ${{ !github.event.issue.pull_request && '--store' || '' }}
+        SHOULD_STORE: ${{ github.event.issue.pull_request && 'false' || 'true' }}
       id: benchmark
       run: |
         delimiter="$(openssl rand -hex 8)"
         echo "markdown<<${delimiter}" >> "${GITHUB_OUTPUT}"
-        node benchmarks/run.mjs $EXTRA_ARGS >> "${GITHUB_OUTPUT}"
+        node benchmarks/run.mjs --store=$SHOULD_STORE >> "${GITHUB_OUTPUT}"
         echo "${delimiter}" >> "${GITHUB_OUTPUT}"
 
     - name: Create a PR comment
