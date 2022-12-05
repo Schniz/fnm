@@ -402,7 +402,7 @@ jobs:
     - name: Run benchmarks
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        EXTRA_ARGS: ${{ github.event.issue.pull_request && '' || '--store' }}
+        EXTRA_ARGS: ${{ !github.event.issue.pull_request && '--store' || '' }}
       id: benchmark
       run: |
         delimiter="$(openssl rand -hex 8)"
