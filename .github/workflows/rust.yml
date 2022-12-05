@@ -289,7 +289,8 @@ jobs:
       run: cross build --target $RUST_TARGET --release
     - name: Compress binary using UPX
       run: |
-        sudo apt-get install -y upx
+        sudo apt-get update && apt-get install -y upx
+        upx --version
         upx target/$RUST_TARGET/release/fnm
     - uses: uraimo/run-on-arch-action@v2.1.2
       name: Sanity test
