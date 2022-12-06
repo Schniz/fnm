@@ -409,8 +409,7 @@ jobs:
     - name: Run benchmarks
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SHOULD_STORE: ${{ toJson(toJson(github.event.issue) != 'null') }}
-        DEBUGGING: ${{ toJson(github.event.issue) }}
+        SHOULD_STORE: 'true' # ${{ toJson(toJson(github.event.issue) != 'null') }}
       id: benchmark
       run: |
         delimiter="$(openssl rand -hex 8)"
@@ -419,7 +418,7 @@ jobs:
         echo "${delimiter}" >> "${GITHUB_OUTPUT}"
 
     - name: Create a PR comment
-      if: ${{ github.event.issue.pull_request }}
+      if: ${{ github.event.pull_request }}
       uses: thollander/actions-comment-pull-request@v1
       with:
         message: |
@@ -428,7 +427,7 @@ jobs:
         comment_includes: '<!--benchy comment-->'
 
     - name: Create a commit comment
-      if: ${{ !github.event.issue.pull_request }}
+      if: ${{ !github.event.pull_request }}
       uses: peter-evans/commit-comment@v2
       with:
         body: ${{ steps.benchmark.outputs.markdown }}
