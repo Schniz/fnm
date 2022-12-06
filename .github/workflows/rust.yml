@@ -368,6 +368,7 @@ jobs:
     # needs: [build_static_linux_binary]
     permissions:
       contents: write
+      pull-requests: write
     steps:
     - name: install necessary shells
       run: sudo apt-get update && sudo apt-get install -y fish zsh bash hyperfine
