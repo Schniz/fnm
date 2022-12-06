@@ -376,7 +376,7 @@ jobs:
       run: |
         curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir ~/.fnm --skip-shell
         # echo "PATH=$HOME/.fnm:$PATH" >> $GITHUB_ENV
-        sudo install .fnm/fnm /bin
+        sudo install ~/.fnm/fnm /bin
     # - uses: actions/download-artifact@v3
     #   with:
     #     name: fnm-linux
