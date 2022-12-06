@@ -409,7 +409,7 @@ jobs:
     - name: Run benchmarks
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SHOULD_STORE: ${{ github.event.issue.pull_request && 'false' || 'true' }}
+        SHOULD_STORE: ${{ toJson(toJson(github.event.issue) != 'null') }}
         DEBUGGING: ${{ toJson(github.event.issue) }}
       id: benchmark
       run: |
