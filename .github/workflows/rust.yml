@@ -409,7 +409,7 @@ jobs:
     - name: Run benchmarks
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SHOULD_STORE: 'true' # ${{ toJson(toJson(github.event.issue) != 'null') }}
+        SHOULD_STORE: ${{ toJson(!!github.event.pull_request) }}
       id: benchmark
       run: |
         delimiter="$(openssl rand -hex 8)"
