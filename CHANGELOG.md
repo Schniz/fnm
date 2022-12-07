@@ -1,5 +1,11 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.33.1
+
+### Patch Changes
+
+- remove upx compression from arm binaries because it fails to build on latest rust ([#875](https://github.com/Schniz/fnm/pull/875))
+
 ## 1.33.0
 
 ### Minor Changes
