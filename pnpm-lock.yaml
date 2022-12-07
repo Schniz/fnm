@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@changesets/cli': 2.25.2
-  '@svitejs/changesets-changelog-github-compact': 0.1.1
+  '@svitejs/changesets-changelog-github-compact': 1.0.0
   '@types/jest': ^29.2.3
   '@types/node': ^18.11.9
   '@types/shell-escape': ^0.2.1
@@ -23,7 +23,7 @@ specifiers:
 
 devDependencies:
   '@changesets/cli': 2.25.2
-  '@svitejs/changesets-changelog-github-compact': 0.1.1
+  '@svitejs/changesets-changelog-github-compact': 1.0.0
   '@types/jest': 29.2.3
   '@types/node': 18.11.9
   '@types/shell-escape': 0.2.1
@@ -1029,9 +1029,9 @@ packages:
     resolution: {integrity: sha512-8RRAMOB+vEC8FknZtoNKQnttATUN9uERYFC7+qjsd3X3UTb3o2oqVmLFU/kUY5Q72PxbBQqX7u0NAEnEytuMtA==}
     dev: true
 
-  /@svitejs/changesets-changelog-github-compact/0.1.1:
-    resolution: {integrity: sha512-eBi211CfmKtkxB6tINicaDPBMbolswPbaAy7kCx+uUFL/LxztLm9cB+7jP54TgCrv+mMz8vSJWIs/baH63PjsA==}
-    engines: {node: ^12.20 || ^14.13.1 || >= 16}
+  /@svitejs/changesets-changelog-github-compact/1.0.0:
+    resolution: {integrity: sha512-h9pvZ3Bkk1K9bVr707OlWMtjreBPmXnh/GsxbiIp3ukNu9RjmkxlLmyD+h/DCkr8e0l3UpOlDDAUvbUHYNfGnA==}
+    engines: {node: ^14.13.1 || ^16.0.0 || >=18}
     dependencies:
       '@changesets/get-github-info': 0.5.1
       dotenv: 16.0.3
