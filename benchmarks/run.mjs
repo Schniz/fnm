@@ -182,8 +182,8 @@ const cmd = command({
           <thead>
             <tr>
             <th align="left">benchmark</th>
-            <th>last value</th>
             <th>current value</th>
+            <th>last value</th>
             <th>diff</th>
             <th>trend</th>
             </tr>
