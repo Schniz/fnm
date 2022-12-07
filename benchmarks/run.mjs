@@ -69,52 +69,47 @@ const cmd = command({
     const repoName = "fnm"
     const repoOwner = "schniz"
 
-    const file = path.join(os.tmpdir(), `bench-${Date.now()}.json`)
-    await execa(
-      `hyperfine`,
-      [
-        `--export-json=${file}`,
-        "--warmup=2",
-        ...[
-          "--command-name=fnm_basic",
-          new URL("./basic/fnm", import.meta.url).pathname,
-        ],
-        // ...[
-        //   "--command-name=nvm_basic",
-        //   new URL("./basic/nvm", import.meta.url).pathname,
-        // ],
-      ],
-      {
-        stdout: process.stderr,
-        stderr: process.stderr,
-        stdin: "ignore",
-      }
-    )
+    const hyperfineResult = await runHyperfine()
 
-    const json = JSON.parse(await fs.readFile(file, "utf8"))
-    const parsed = HyperfineResult.safeParse(json)
-
-    if (!parsed.success) {
-      console.error(`Can't run benchmarks: wrong data:`, parsed.error.issues)
+    if (!hyperfineResult.success) {
+      console.error(
+        `Can't run benchmarks: wrong data:`,
+        hyperfineResult.error.issues
+      )
       process.exitCode = 1
       return
     }
 
-    const { results } = parsed.data
+    const { results } = hyperfineResult.data
 
     const url = new URL("/api/metrics", serverUrl)
     const trackedKeys = ["median", "max", "mean", "min"]
 
-    const metrics = results.flatMap((result) => {
-      return trackedKeys.map((key) => {
+    const metrics = results
+      .flatMap((result) => {
+        return trackedKeys.map((key) => {
+          return {
+            displayName: `${result.command}/${key}`,
+            value: result[key] * 1000, // everything is in seconds
+            units: "ms",
+          }
+        })
+      })
+      .concat([
+        {
+          displayName: `binary size`,
+          value: await getFilesize(),
+          units: "kb",
+        },
+      ])
+      .map((metric) => {
         return {
-          key: `${result.command}/${key}`,
-          value: result[key] * 1000, // everything is in seconds
+          ...metric,
+          key: `${os.platform()}/${os.arch()}/${metric.displayName}`,
         }
       })
-    })
 
-    const embeds$ = metrics.map(async ({ key, value }) => {
+    const embeds$ = metrics.map(async ({ key, value, displayName, units }) => {
       const response = await fetch(String(url), {
         method: "PUT",
         headers: {
@@ -136,7 +131,8 @@ const cmd = command({
 
       const { data } = BenchyResult.parse(await response.json())
       return {
-        key,
+        displayName,
+        units,
         ...data.embed,
       }
     })
@@ -148,13 +144,13 @@ const cmd = command({
         .map((data) => {
           return dedent`
             <tr>
-              <td><code>${data.key}</code></td>
+              <td><code>${data.displayName}</code></td>
+              <td><code>${round(data.currentValue, 2)}${data.units}</code></td>
               <td>${
                 !data.diff
                   ? ""
-                  : `<code>${round(data.diff.lastValue, 2)}</code>`
+                  : `<code>${round(data.diff.lastValue, 2)}${data.units}</code>`
               }</td>
-              <td><code>${round(data.currentValue, 2)}</code></td>
               <td>${
                 !data.diff
                   ? ""
@@ -169,7 +165,7 @@ const cmd = command({
                   <code>${data.diff.value > 0 ? "+" : ""}${round(
                       data.diff.value,
                       2
-                    )}</code>
+                    )}${data.units}</code>
                     `
               }</td>
               <td>
@@ -231,6 +227,45 @@ const cmd = command({
 function round(number, digits) {
   const pow = Math.pow(10, digits)
   return Math.round(number * pow) / pow
+}
+
+/**
+ * Returns the size of the `fnm` binary in kilobytes
+ *
+ * @returns number
+ */
+async function getFilesize() {
+  const fnmBinary = await execa("which", ["fnm"])
+  const stat = await fs.stat(fnmBinary.stdout.trim())
+  return Math.round(stat.size / 1024)
+}
+
+async function runHyperfine() {
+  const file = path.join(os.tmpdir(), `bench-${Date.now()}.json`)
+  await execa(
+    `hyperfine`,
+    [
+      `--export-json=${file}`,
+      "--warmup=2",
+      ...[
+        "--command-name=fnm_basic",
+        new URL("./basic/fnm", import.meta.url).pathname,
+      ],
+      // ...[
+      //   "--command-name=nvm_basic",
+      //   new URL("./basic/nvm", import.meta.url).pathname,
+      // ],
+    ],
+    {
+      stdout: process.stderr,
+      stderr: process.stderr,
+      stdin: "ignore",
+    }
+  )
+
+  const json = JSON.parse(await fs.readFile(file, "utf8"))
+  const parsed = HyperfineResult.safeParse(json)
+  return parsed
 }
 
 run(binary(cmd), process.argv)
