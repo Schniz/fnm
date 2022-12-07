@@ -35,9 +35,9 @@ const BenchyResult = z.object({
       big: z.string(),
 
       currentValue: z.number(),
+      lastValue: z.number().optional(),
       diff: z
         .object({
-          lastValue: z.number(),
           value: z.number(),
           arrowImage: z.string(),
         })
@@ -147,9 +147,9 @@ const cmd = command({
               <td><code>${data.displayName}</code></td>
               <td><code>${round(data.currentValue, 2)}${data.units}</code></td>
               <td>${
-                typeof data.diff === "undefined"
+                typeof data.lastValue === "undefined"
                   ? ""
-                  : `<code>${round(data.diff.lastValue, 2)}${data.units}</code>`
+                  : `<code>${round(data.lastValue, 2)}${data.units}</code>`
               }</td>
               <td>${
                 !data.diff
