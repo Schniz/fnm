@@ -424,6 +424,7 @@ jobs:
       with:
         message: |
           <!--benchy comment-->
+          ## Linux Benchmarks
           ${{ steps.benchmark.outputs.markdown }}
         comment_includes: '<!--benchy comment-->'
 
@@ -431,4 +432,6 @@ jobs:
       if: ${{ !github.event.pull_request }}
       uses: peter-evans/commit-comment@v2
       with:
-        body: ${{ steps.benchmark.outputs.markdown }}
+        body: |
+          ## Linux Benchmarks
+          ${{ steps.benchmark.outputs.markdown }}
