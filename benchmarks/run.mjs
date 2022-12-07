@@ -153,7 +153,7 @@ const cmd = command({
               }</td>
               <td>${
                 !data.diff
-                  ? ""
+                  ? "<code>0</code>"
                   : dedent`
                   <picture title=${JSON.stringify(
                     data.diff.value > 0 ? "increase" : "decrease"
