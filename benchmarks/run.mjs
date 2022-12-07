@@ -147,7 +147,7 @@ const cmd = command({
               <td><code>${data.displayName}</code></td>
               <td><code>${round(data.currentValue, 2)}${data.units}</code></td>
               <td>${
-                !data.diff
+                typeof data.diff === "undefined"
                   ? ""
                   : `<code>${round(data.diff.lastValue, 2)}${data.units}</code>`
               }</td>
@@ -171,7 +171,7 @@ const cmd = command({
               <td>
                 <details><summary><img valign="middle" src="${
                   data.small
-                }" /></summary><img src="${data.big}" /></details>
+                }" /></summary><br/><img src="${data.big}" /></details>
               </td>
             </tr>
           `
@@ -181,11 +181,11 @@ const cmd = command({
         <table>
           <thead>
             <tr>
-            <th align="left">benchmark</th>
-            <th>current value</th>
-            <th>last value</th>
-            <th>diff</th>
-            <th>trend</th>
+              <th align="left">benchmark</th>
+              <th>current value</th>
+              <th>last value</th>
+              <th>diff</th>
+              <th>trend</th>
             </tr>
           </thead>
           <tbody>
