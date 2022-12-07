@@ -424,7 +424,7 @@ jobs:
       with:
         message: |
           <!--benchy comment-->
-          ## Linux Benchmarks
+          ## Linux Benchmarks for ${{ github.event.pull_request.head.sha }}
           ${{ steps.benchmark.outputs.markdown }}
         comment_includes: '<!--benchy comment-->'
 
