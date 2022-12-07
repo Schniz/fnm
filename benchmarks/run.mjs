@@ -83,7 +83,7 @@ const cmd = command({
     const { results } = hyperfineResult.data
 
     const url = new URL("/api/metrics", serverUrl)
-    const trackedKeys = ["median", "max", "mean", "min"]
+    const trackedKeys = ["median", "max", "mean", "min", "stddev"]
 
     const metrics = results
       .flatMap((result) => {
@@ -245,6 +245,7 @@ async function runHyperfine() {
   await execa(
     `hyperfine`,
     [
+      "--min-runs=20",
       `--export-json=${file}`,
       "--warmup=2",
       ...[
