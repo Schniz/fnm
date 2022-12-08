@@ -22,6 +22,14 @@ impl LogLevel {
         }
     }
 
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::Quiet => "quiet",
+            Self::Error => "error",
+            Self::Info => "info",
+        }
+    }
+
     pub fn possible_values() -> &'static [&'static str; 4] {
         &["quiet", "info", "all", "error"]
     }
@@ -29,11 +37,7 @@ impl LogLevel {
 
 impl From<LogLevel> for &'static str {
     fn from(level: LogLevel) -> Self {
-        match level {
-            LogLevel::Quiet => "quiet",
-            LogLevel::Info => "info",
-            LogLevel::Error => "error",
-        }
+        level.as_str()
     }
 }
 

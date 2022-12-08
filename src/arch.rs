@@ -11,6 +11,20 @@ pub enum Arch {
     S390x,
 }
 
+impl Arch {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Arch::X86 => "x86",
+            Arch::X64 => "x64",
+            Arch::Arm64 => "arm64",
+            Arch::Armv7l => "armv7l",
+            Arch::Ppc64le => "ppc64le",
+            Arch::Ppc64 => "ppc64",
+            Arch::S390x => "s390x",
+        }
+    }
+}
+
 #[cfg(unix)]
 /// handle common case: Apple Silicon / Node < 16
 pub fn get_safe_arch<'a>(arch: &'a Arch, version: &Version) -> &'a Arch {
@@ -55,17 +69,7 @@ impl std::str::FromStr for Arch {
 
 impl std::fmt::Display for Arch {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let arch_str = match self {
-            Arch::X86 => String::from("x86"),
-            Arch::X64 => String::from("x64"),
-            Arch::Arm64 => String::from("arm64"),
-            Arch::Armv7l => String::from("armv7l"),
-            Arch::Ppc64le => String::from("ppc64le"),
-            Arch::Ppc64 => String::from("ppc64"),
-            Arch::S390x => String::from("s390x"),
-        };
-
-        write!(f, "{}", arch_str)
+        write!(f, "{}", self.as_str())
     }
 }
 

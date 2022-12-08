@@ -3,7 +3,8 @@
     clippy::enum_variant_names,
     clippy::large_enum_variant,
     clippy::module_name_repetitions,
-    clippy::similar_names
+    clippy::similar_names,
+    clippy::struct_excessive_bools
 )]
 
 mod alias;
@@ -23,6 +24,7 @@ mod lts;
 mod path_ext;
 mod remote_node_index;
 mod shell;
+mod shims;
 mod system_info;
 mod system_version;
 mod user_version;
@@ -35,6 +37,7 @@ mod version_files;
 mod log_level;
 mod default_version;
 mod directories;
+mod version_switch_strategy;
 
 fn main() {
     env_logger::init();

@@ -361,6 +361,10 @@ OPTIONS:
             [env: FNM_VERSION_FILE_STRATEGY]
             [default: local]
             [possible values: local, recursive]
+
+        --with-shims
+            EXPERIMENTAL: Adds `node` shims to your PATH environment variable to allow you to use
+            `node` commands in your shell without rehashing
 ```
 
 # `fnm exec`

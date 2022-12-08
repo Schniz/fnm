@@ -1,7 +1,7 @@
-use crate::arch::Arch;
 use crate::log_level::LogLevel;
 use crate::path_ext::PathExt;
 use crate::version_file_strategy::VersionFileStrategy;
+use crate::{arch::Arch, version_switch_strategy::VersionSwitchStrategy};
 use dirs::{data_dir, home_dir};
 use url::Url;
 
@@ -70,6 +70,14 @@ pub struct FnmConfig {
         hide_env_values = true,
     )]
     version_file_strategy: VersionFileStrategy,
+
+    #[clap(
+        env = "FNM_VERSION_SWITCH_STRATEGY",
+        hide = true,
+        possible_values = VersionSwitchStrategy::possible_values(),
+        default_value = "path-symlink"
+    )]
+    version_switch_strategy: VersionSwitchStrategy,
 }
 
 impl Default for FnmConfig {
@@ -81,6 +89,7 @@ impl Default for FnmConfig {
             log_level: LogLevel::Info,
             arch: Arch::default(),
             version_file_strategy: VersionFileStrategy::default(),
+            version_switch_strategy: VersionSwitchStrategy::default(),
         }
     }
 }
@@ -136,6 +145,10 @@ impl FnmConfig {
         self.base_dir_with_default()
             .join("aliases")
             .ensure_exists_silently()
+    }
+
+    pub fn version_switch_strategy(&self) -> &VersionSwitchStrategy {
+        &self.version_switch_strategy
     }
 
     #[cfg(test)]

@@ -8,6 +8,7 @@ use crate::system_version;
 use crate::user_version::UserVersion;
 use crate::version::Version;
 use crate::version_file_strategy::VersionFileStrategy;
+use crate::version_switch_strategy::VersionSwitchStrategy;
 use crate::{config::FnmConfig, user_version_reader::UserVersionReader};
 use colored::Colorize;
 use std::path::Path;
@@ -184,6 +185,13 @@ fn warn_if_multishell_path_not_in_path_env_var(
     multishell_path: &std::path::Path,
     config: &FnmConfig,
 ) {
+    if matches!(
+        config.version_switch_strategy(),
+        VersionSwitchStrategy::Shims
+    ) {
+        return;
+    }
+
     let bin_path = if cfg!(unix) {
         multishell_path.join("bin")
     } else {

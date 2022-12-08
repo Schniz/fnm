@@ -2,9 +2,10 @@ use super::command::Command;
 use crate::config::FnmConfig;
 use crate::directories;
 use crate::fs::symlink_dir;
-use crate::outln;
 use crate::path_ext::PathExt;
 use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
+use crate::version_switch_strategy::VersionSwitchStrategy;
+use crate::{outln, shims};
 use colored::Colorize;
 use std::collections::HashMap;
 use std::fmt::Debug;
@@ -25,6 +26,10 @@ pub struct Env {
     /// Print the script to change Node versions every directory change
     #[clap(long)]
     use_on_cd: bool,
+    /// EXPERIMENTAL: Adds `node` shims to your PATH environment variable to allow you
+    /// to use `node` commands in your shell without rehashing.
+    #[structopt(long)]
+    with_shims: bool,
 }
 
 fn generate_symlink_path() -> String {
@@ -64,34 +69,35 @@ impl Command for Env {
         }
 
         let multishell_path = make_symlink(config)?;
-        let binary_path = if cfg!(windows) {
+        let binary_path = if self.with_shims {
+            shims::store_shim(config).map_err(|source| Error::CantCreateShims { source })?
+        } else if cfg!(windows) {
             multishell_path.clone()
         } else {
             multishell_path.join("bin")
         };
 
+        let fnm_dir = config.base_dir_with_default();
+
         let env_vars = HashMap::from([
-            (
-                "FNM_MULTISHELL_PATH",
-                multishell_path.to_str().unwrap().to_owned(),
-            ),
+            ("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap()),
             (
                 "FNM_VERSION_FILE_STRATEGY",
-                config.version_file_strategy().as_str().to_owned(),
+                config.version_file_strategy().as_str(),
             ),
+            ("FNM_DIR", fnm_dir.to_str().unwrap()),
+            ("FNM_LOGLEVEL", config.log_level().as_str()),
+            ("FNM_NODE_DIST_MIRROR", config.node_dist_mirror.as_str()),
+            ("FNM_ARCH", config.arch.as_str()),
             (
-                "FNM_DIR",
-                config.base_dir_with_default().to_str().unwrap().to_owned(),
+                "FNM_VERSION_SWITCH_STRATEGY",
+                if self.with_shims {
+                    VersionSwitchStrategy::Shims
+                } else {
+                    VersionSwitchStrategy::PathSymlink
+                }
+                .as_str(),
             ),
-            (
-                "FNM_LOGLEVEL",
-                <&'static str>::from(config.log_level().clone()).to_owned(),
-            ),
-            (
-                "FNM_NODE_DIST_MIRROR",
-                config.node_dist_mirror.as_str().to_owned(),
-            ),
-            ("FNM_ARCH", config.arch.to_string()),
         ]);
 
         if self.json {
@@ -131,6 +137,11 @@ pub enum Error {
         shells_as_string()
     )]
     CantInferShell,
+    #[error("Can't create Node.js shims: {}", source)]
+    CantCreateShims {
+        #[source]
+        source: std::io::Error,
+    },
     #[error("Can't create the symlink for multishells at {temp_dir:?}. Maybe there are some issues with permissions for the directory? {source}")]
     CantCreateSymlink {
         #[source]
