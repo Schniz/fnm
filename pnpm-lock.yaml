@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@changesets/cli': 2.25.2
-  '@svitejs/changesets-changelog-github-compact': 0.1.1
+  '@svitejs/changesets-changelog-github-compact': 1.0.0
   '@types/jest': ^29.2.3
   '@types/node': ^18.11.9
   '@types/shell-escape': ^0.2.1
@@ -13,7 +13,7 @@ specifiers:
   jest: ^29.3.1
   lerna-changelog: 2.2.0
   node-fetch: ^3.3.0
-  prettier: 2.8.0
+  prettier: 2.8.1
   pv: 1.0.1
   shell-escape: ^0.2.0
   svg-term-cli: 2.1.1
@@ -25,7 +25,7 @@ specifiers:
 
 devDependencies:
   '@changesets/cli': 2.25.2
-  '@svitejs/changesets-changelog-github-compact': 0.1.1
+  '@svitejs/changesets-changelog-github-compact': 1.0.0
   '@types/jest': 29.2.3
   '@types/node': 18.11.9
   '@types/shell-escape': 0.2.1
@@ -36,7 +36,7 @@ devDependencies:
   jest: 29.3.1_@types+node@18.11.9
   lerna-changelog: 2.2.0
   node-fetch: 3.3.0
-  prettier: 2.8.0
+  prettier: 2.8.1
   pv: 1.0.1
   shell-escape: 0.2.0
   svg-term-cli: 2.1.1
@@ -407,7 +407,7 @@ packages:
       fs-extra: 7.0.1
       lodash.startcase: 4.4.0
       outdent: 0.5.0
-      prettier: 2.8.0
+      prettier: 2.8.1
       resolve-from: 5.0.0
       semver: 5.7.1
     dev: true
@@ -583,7 +583,7 @@ packages:
       '@changesets/types': 5.2.0
       fs-extra: 7.0.1
       human-id: 1.0.2
-      prettier: 2.8.0
+      prettier: 2.8.1
     dev: true
 
   /@gar/promisify/1.1.3:
@@ -1033,9 +1033,9 @@ packages:
     resolution: {integrity: sha512-8RRAMOB+vEC8FknZtoNKQnttATUN9uERYFC7+qjsd3X3UTb3o2oqVmLFU/kUY5Q72PxbBQqX7u0NAEnEytuMtA==}
     dev: true
 
-  /@svitejs/changesets-changelog-github-compact/0.1.1:
-    resolution: {integrity: sha512-eBi211CfmKtkxB6tINicaDPBMbolswPbaAy7kCx+uUFL/LxztLm9cB+7jP54TgCrv+mMz8vSJWIs/baH63PjsA==}
-    engines: {node: ^12.20 || ^14.13.1 || >= 16}
+  /@svitejs/changesets-changelog-github-compact/1.0.0:
+    resolution: {integrity: sha512-h9pvZ3Bkk1K9bVr707OlWMtjreBPmXnh/GsxbiIp3ukNu9RjmkxlLmyD+h/DCkr8e0l3UpOlDDAUvbUHYNfGnA==}
+    engines: {node: ^14.13.1 || ^16.0.0 || >=18}
     dependencies:
       '@changesets/get-github-info': 0.5.1
       dotenv: 16.0.3
@@ -3996,8 +3996,8 @@ packages:
       which-pm: 2.0.0
     dev: true
 
-  /prettier/2.8.0:
-    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
+  /prettier/2.8.1:
+    resolution: {integrity: sha512-lqGoSJBQNJidqCHE80vqZJHWHRFoNYsSpP9AjFhlhi9ODCJA541svILes/+/1GM3VaL/abZi7cpFzOpdR9UPKg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
