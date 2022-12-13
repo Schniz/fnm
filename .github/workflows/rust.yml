@@ -238,23 +238,17 @@ jobs:
     - uses: hecrj/setup-rust-action@v1
       with:
         rust-version: stable
-        targets: x86_64-unknown-linux-musl
+        targets: x86_64-unknown-linux-gnu
     - uses: Swatinem/rust-cache@v2
       with:
         key: static-linux-binary
-    - name: Install musl tools
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y --no-install-recommends musl-tools
     - uses: actions/checkout@v3
     - name: Build release binary
-      run: cargo build --release --target x86_64-unknown-linux-musl
-    - name: Strip binary from debug symbols
-      run: strip target/x86_64-unknown-linux-musl/release/fnm
+      run: cargo build --release --target x86_64-unknown-linux-gnu
     - uses: actions/upload-artifact@v3
       with:
         name: fnm-linux
-        path: target/x86_64-unknown-linux-musl/release/fnm
+        path: target/x86_64-unknown-linux-gnu/release/fnm
 
   build_static_arm_binary:
     name: "Build ARM binary"
