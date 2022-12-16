@@ -14,7 +14,7 @@ impl super::command::Command for LsRemote {
         for version in all_versions {
             print!("{}", version.version);
             if let Some(lts) = &version.lts {
-                print!(" ({})", lts);
+                print!(" ({lts})");
             }
             println!();
         }
