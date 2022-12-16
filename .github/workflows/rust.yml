@@ -414,11 +414,9 @@ jobs:
       uses: thollander/actions-comment-pull-request@v2
       with:
         message: |
-          <!--benchy comment-->
           ## Linux Benchmarks for ${{ github.event.pull_request.head.sha }}
           ${{ steps.benchmark.outputs.markdown }}
-        comment_includes: '<!--benchy comment-->'
-
+        comment_tag: benchy
     - name: Create a commit comment
       if: ${{ !github.event.pull_request }}
       uses: peter-evans/commit-comment@v2
