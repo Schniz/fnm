@@ -17,13 +17,13 @@ pub fn create_alias(
     let alias_dir = aliases_dir.join(common_name);
 
     remove_symlink_dir(&alias_dir).ok();
-    symlink_dir(&version_dir, &alias_dir)?;
+    symlink_dir(version_dir, &alias_dir)?;
 
     Ok(())
 }
 
 pub fn list_aliases(config: &FnmConfig) -> std::io::Result<Vec<StoredAlias>> {
-    let vec: Vec<_> = std::fs::read_dir(&config.aliases_dir())?
+    let vec: Vec<_> = std::fs::read_dir(config.aliases_dir())?
         .filter_map(Result::ok)
         .filter_map(|x| TryInto::<StoredAlias>::try_into(x.path().as_path()).ok())
         .collect();

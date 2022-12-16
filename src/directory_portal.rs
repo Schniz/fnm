@@ -57,7 +57,7 @@ mod tests {
         let tempdir = tempdir().expect("Can't generate a temp directory");
         let portal = DirectoryPortal::new_in(std::env::temp_dir(), tempdir.path().join("subdir"));
         let new_file_path = portal.to_path_buf().join("README.md");
-        std::fs::write(&new_file_path, "Hello world!").expect("Can't write file");
+        std::fs::write(new_file_path, "Hello world!").expect("Can't write file");
         let target = portal.teleport().expect("Can't close directory portal");
 
         let file_exists: Vec<_> = target

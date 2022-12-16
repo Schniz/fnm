@@ -7,7 +7,7 @@ pub trait Command: Sized {
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error>;
 
     fn handle_error(err: Self::Error, config: &FnmConfig) {
-        let err_s = format!("{}", err);
+        let err_s = format!("{err}");
         outln!(config, Error, "{} {}", "error:".red().bold(), err_s.red());
         std::process::exit(1);
     }
