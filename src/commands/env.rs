@@ -114,7 +114,7 @@ impl Command for Env {
             println!("{}", shell.use_on_cd(config)?);
         }
         if let Some(v) = shell.rehash() {
-            println!("{}", v);
+            println!("{v}");
         }
 
         Ok(())
@@ -147,7 +147,7 @@ pub enum Error {
 fn shells_as_string() -> String {
     AVAILABLE_SHELLS
         .iter()
-        .map(|x| format!("* {}", x))
+        .map(|x| format!("* {x}"))
         .collect::<Vec<_>>()
         .join("\n")
 }

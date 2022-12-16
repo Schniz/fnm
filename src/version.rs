@@ -53,7 +53,7 @@ impl Version {
     }
 
     pub fn v_str(&self) -> String {
-        format!("{}", self)
+        format!("{self}")
     }
 
     pub fn installation_path(&self, config: &config::FnmConfig) -> std::path::PathBuf {
@@ -91,9 +91,9 @@ impl std::fmt::Display for Version {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Bypassed => write!(f, "{}", system_version::display_name()),
-            Self::Lts(lts) => write!(f, "lts-{}", lts),
-            Self::Semver(semver) => write!(f, "v{}", semver),
-            Self::Alias(alias) => write!(f, "{}", alias),
+            Self::Lts(lts) => write!(f, "lts-{lts}"),
+            Self::Semver(semver) => write!(f, "v{semver}"),
+            Self::Alias(alias) => write!(f, "{alias}"),
             Self::Latest => write!(f, "latest"),
         }
     }
