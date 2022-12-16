@@ -171,8 +171,7 @@ mod tests {
         let version = Version::parse("12.0.0").unwrap();
         let arch = Arch::X64;
         let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
-        install_node_dist(&version, &node_dist_mirror, path, &arch)
-            .expect("Can't install Node 12");
+        install_node_dist(&version, &node_dist_mirror, path, &arch).expect("Can't install Node 12");
 
         let mut location_path = path.join(version.v_str()).join("installation");
 
