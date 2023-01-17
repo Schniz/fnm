@@ -154,7 +154,8 @@ eval "$(fnm env --use-on-cd)"
 Create `~/.config/fish/conf.d/fnm.fish` add this line to it:
 
 ```fish
-fnm env --use-on-cd | source
+set PATH "$HOME/.local/share/fnm" $PATH
+fnm env | source
 ```
 
 #### PowerShell
