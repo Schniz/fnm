@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`Bash uses .nvmrc with lts definition: Bash 1`] = `
+exports[`Bash > uses .nvmrc with lts definition > Bash 1`] = `
 "set -e
 eval "$(fnm env)"
 fnm install
@@ -8,14 +8,14 @@ fnm use
 (fnm ls) | grep lts-dubnium || (echo "Expected output to contain lts-dubnium" && exit 1)"
 `;
 
-exports[`Fish uses .nvmrc with lts definition: Fish 1`] = `
+exports[`Fish > uses .nvmrc with lts definition > Fish 1`] = `
 "fnm env | source
 fnm install
 fnm use
 begin; fnm ls; end | grep lts-dubnium; or echo "Expected output to contain lts-dubnium" && exit 1"
 `;
 
-exports[`PowerShell uses .nvmrc with lts definition: PowerShell 1`] = `
+exports[`PowerShell > uses .nvmrc with lts definition > PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
 fnm install
@@ -23,7 +23,7 @@ fnm use
 $($__out__ = $(fnm ls | Select-String lts-dubnium); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
 
-exports[`Zsh uses .nvmrc with lts definition: Zsh 1`] = `
+exports[`Zsh > uses .nvmrc with lts definition > Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
 fnm install

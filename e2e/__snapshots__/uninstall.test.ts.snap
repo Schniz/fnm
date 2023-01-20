@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`Bash uninstalls a version: Bash 1`] = `
+exports[`Bash > uninstalls a version > Bash 1`] = `
 "set -e
 fnm install 12.0.0
 fnm alias 12.0.0 hello
@@ -12,7 +12,7 @@ if [ "$(fnm ls)" != "* system" ]; then
 fi"
 `;
 
-exports[`Fish uninstalls a version: Fish 1`] = `
+exports[`Fish > uninstalls a version > Fish 1`] = `
 "fnm install 12.0.0
 fnm alias 12.0.0 hello
 begin; begin; fnm ls; end | grep v12.0.0; or echo "Expected output to contain v12.0.0" && exit 1; end | grep hello; or echo "Expected output to contain hello" && exit 1
@@ -24,7 +24,7 @@ if test "$____test____" != "* system"
 end"
 `;
 
-exports[`PowerShell uninstalls a version: PowerShell 1`] = `
+exports[`PowerShell > uninstalls a version > PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm install 12.0.0
 fnm alias 12.0.0 hello
@@ -33,7 +33,7 @@ fnm uninstall hello
 if ( "$(fnm ls)" -ne "* system" ) { echo "Expected fnm ls to be * system. Got $(fnm ls)"; exit 1 }"
 `;
 
-exports[`Zsh uninstalls a version: Zsh 1`] = `
+exports[`Zsh > uninstalls a version > Zsh 1`] = `
 "set -e
 fnm install 12.0.0
 fnm alias 12.0.0 hello
