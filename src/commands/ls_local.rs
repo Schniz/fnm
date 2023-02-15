@@ -7,7 +7,11 @@ use std::collections::HashMap;
 use thiserror::Error;
 
 #[derive(clap::Parser, Debug)]
-pub struct LsLocal {}
+pub struct LsLocal {
+    /// Shows the path to the installation directory
+    #[clap(long = "install-dir", hide = true)]
+    pub install_dir: bool
+}
 
 impl super::command::Command for LsLocal {
     type Error = Error;
@@ -35,7 +39,11 @@ impl super::command::Command for LsLocal {
                 }
             };
 
-            let version_str = format!("* {version}{version_aliases}");
+            let version_str = if self.install_dir && version != Version::Bypassed {
+                format!("* {version}{version_aliases} ({path})", path=version.installation_path(config).display())
+            }else{
+                format!("* {version}{version_aliases}")
+            };
 
             if curr_version == Some(version) {
                 println!("{}", version_str.cyan());
