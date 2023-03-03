@@ -195,6 +195,19 @@ call "%CMDER_ROOT%\bin\fnm_init.cmd"
 ```
 You can replace `%CMDER_ROOT%` with any other convenient path too.
 
+#### Usage with Git Bash
+
+Additional configuration is required in your `.bashrc` for usage in Git Bash due to some path translation that happens (see [issue](https://github.com/Schniz/fnm/issues/390#issuecomment-776660168)). Use the following to correctly load `npm` in your shell.
+
+```bash
+eval "$(fnm env | sed 1d)"
+export PATH=$(cygpath $FNM_MULTISHELL_PATH):$PATH
+
+if [[ -f .node-version || -f .nvmrc ]]; then
+    fnm use
+fi
+```
+
 ## [Usage](./docs/commands.md)
 
 [See the available commands for an extended usage documentation](./docs/commands.md)
