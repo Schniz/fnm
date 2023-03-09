@@ -164,8 +164,11 @@ setup_shell() {
     {
       echo ''
       echo '# fnm'
-      echo 'export PATH="'$INSTALL_DIR':$PATH"'
-      echo 'eval "`fnm env`"'
+      echo 'FNM_PATH="'"$INSTALL_DIR"'"'
+      echo 'if [ -d "$FNM_PATH" ]; then'
+      echo '  export PATH="'$INSTALL_DIR':$PATH"'
+      echo '  eval "`fnm env`"'
+      echo 'fi'
     } | tee -a "$CONF_FILE"
 
   elif [ "$CURRENT_SHELL" = "fish" ]; then
@@ -175,8 +178,11 @@ setup_shell() {
     {
       echo ''
       echo '# fnm'
-      echo 'set PATH "'"$INSTALL_DIR"'" $PATH'
-      echo 'fnm env | source'
+      echo 'set FNM_PATH "'"$INSTALL_DIR"'"'
+      echo 'if [ -d "$FNM_PATH" ]'
+      echo '  set PATH "$FNM_PATH" $PATH'
+      echo '  fnm env | source'
+      echo 'end'
     } | tee -a "$CONF_FILE"
 
   elif [ "$CURRENT_SHELL" = "bash" ]; then
@@ -190,8 +196,11 @@ setup_shell() {
     {
       echo ''
       echo '# fnm'
-      echo 'export PATH="'"$INSTALL_DIR"':$PATH"'
-      echo 'eval "`fnm env`"'
+      echo 'FNM_PATH="'"$INSTALL_DIR"'"'
+      echo 'if [ -d "$FNM_PATH" ]; then'
+      echo '  export PATH="$FNM_PATH:$PATH"'
+      echo '  eval "`fnm env`"'
+      echo 'fi'
     } | tee -a "$CONF_FILE"
 
   else
