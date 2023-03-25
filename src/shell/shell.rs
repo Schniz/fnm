@@ -2,10 +2,11 @@ use std::fmt::Debug;
 use std::path::Path;
 
 pub trait Shell: Debug {
-    fn path(&self, path: &Path) -> anyhow::Result<String>;
-    fn preferred_file_extension(&self) -> &'static str;
-    fn set_env_var(&self, name: &str, value: &str) -> String;
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String>;
+    fn init(&mut self, config: &crate::config::FnmConfig) {}
+    fn path(&mut self, path: &Path, config: &crate::config::FnmConfig) -> anyhow::Result<String>;
+    fn set_env_var(&mut self, name: &str, value: &str, config: &crate::config::FnmConfig)
+        -> String;
+    fn use_on_cd(&mut self, config: &crate::config::FnmConfig) -> anyhow::Result<String>;
     fn rehash(&self) -> Option<String> {
         None
     }

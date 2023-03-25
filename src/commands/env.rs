@@ -17,9 +17,6 @@ pub struct Env {
     #[clap(long)]
     #[clap(possible_values = AVAILABLE_SHELLS)]
     shell: Option<Box<dyn Shell>>,
-    #[clap(long)]
-    /// Creates and writes output to a file instead of stdout
-    file: bool,
     /// Print JSON instead of shell commands.
     #[clap(long, conflicts_with = "shell")]
     json: bool,
@@ -103,37 +100,22 @@ impl Command for Env {
             .or_else(infer_shell)
             .ok_or(Error::CantInferShell)?;
 
-        let mut writer = if self.file {
-            let script_path = config
-                .base_dir_with_default()
-                .to_owned()
-                .join("fnm_env".to_owned() + &shell.preferred_file_extension().to_owned());
-
-            Box::new(File::create(&script_path).unwrap()) as Box<dyn std::io::Write>
-        } else {
-            Box::new(std::io::stdout()) as Box<dyn std::io::Write>
-        };
-
-        let mut writeln = |line: String| {
-            writeln!(writer, "{}", line).unwrap();
-        };
-
         if self.json {
-            writeln(serde_json::to_string(&env_vars).unwrap());
+            println!("{}", serde_json::to_string(&env_vars).unwrap());
             return Ok(());
         }
 
-        writeln(shell.path(&binary_path)?);
+        println!("{}", shell.path(&binary_path)?);
 
         for (name, value) in &env_vars {
-            writeln(shell.set_env_var(name, value));
+            println!("{}", shell.set_env_var(name, value));
         }
 
         if self.use_on_cd {
-            writeln(shell.use_on_cd(config)?);
+            println!("{}", shell.use_on_cd(config)?);
         }
         if let Some(v) = shell.rehash() {
-            writeln(v);
+            println!("{}", v);
         }
 
         Ok(())

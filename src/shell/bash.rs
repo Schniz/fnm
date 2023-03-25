@@ -19,10 +19,6 @@ impl Shell for Bash {
         Ok(format!("export PATH={path:?}:$PATH"))
     }
 
-    fn preferred_file_extension(&self) -> &'static str {
-        ".bash"
-    }
-
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("export {name}={value:?}")
     }

@@ -19,10 +19,6 @@ impl Shell for Fish {
         Ok(format!("set -gx PATH {path:?} $PATH;"))
     }
 
-    fn preferred_file_extension(&self) -> &'static str {
-        ".fish"
-    }
-
     fn set_env_var(&self, name: &str, value: &str) -> String {
         format!("set -gx {name} {value:?};")
     }

@@ -2,34 +2,51 @@ use crate::version_file_strategy::VersionFileStrategy;
 
 use super::shell::Shell;
 use indoc::formatdoc;
-use std::path::Path;
+use std::{fs::File, io::Write, path::Path};
 
 #[derive(Debug)]
-pub struct Nushell;
+struct Nushell {
+    nu_env_script: Option<File>,
+    nu_config_script: Option<File>,
+}
 
 impl Shell for Nushell {
+    fn init(&mut self, config: &crate::config::FnmConfig) {
+        self.nu_env_script =
+            Some(File::create(config.base_dir_with_default().join("fnm_env.nu")).unwrap());
+        self.nu_config_script =
+            Some(File::create(config.base_dir_with_default().join("fnm_config.nu")).unwrap());
+    }
+
     fn to_clap_shell(&self) -> clap_complete::Shell {
         panic!("Shell completion is not supported for Nushell (yet.) See https://github.com/clap-rs/clap/issues/2778 for updates.");
     }
 
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
+    fn path(&mut self, path: &Path, _: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
 
         if std::env::consts::OS == "windows" {
-            Ok(format!("let-env Path = ($env.Path | prepend {:?})", path))
+            writeln!(
+                &mut self.nu_env_script.unwrap(),
+                "let-env Path = ($env.Path | prepend {:?})",
+                path
+            );
         } else {
-            Ok(format!("let-env PATH = ($env.PATH | prepend {:?})", path))
+            writeln!(
+                &mut self.nu_env_script.unwrap(),
+                "let-env PATH = ($env.Path | prepend {:?})",
+                path
+            );
         }
+
+        Ok("".to_string())
     }
 
-    fn preferred_file_extension(&self) -> &'static str {
-        ".nu"
-    }
-
-    fn set_env_var(&self, name: &str, value: &str) -> String {
-        format!("let-env {} = {:?}", name, value)
+    fn set_env_var(&mut self, name: &str, value: &str, _: &crate::config::FnmConfig) -> String {
+        // Nushell gets fnm environment variables in predefined script
+        format!("# {} = {:?}", name, value)
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
