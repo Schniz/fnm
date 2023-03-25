@@ -29,7 +29,7 @@ impl std::str::FromStr for Box<dyn Shell> {
             "fish" => Ok(Box::from(super::fish::Fish)),
             "powershell" => Ok(Box::from(super::powershell::PowerShell)),
             "nushell" => Ok(Box::from(super::nushell::Nushell)),
-            shell_type => Err(format!("I don't know the shell type of {:?}", shell_type)),
+            shell_type => Err(format!("I don't know the shell type of {shell_type:?}",)),
         }
     }
 }

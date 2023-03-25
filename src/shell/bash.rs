@@ -16,7 +16,7 @@ impl Shell for Bash {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("export PATH={:?}:$PATH", path))
+        Ok(format!("export PATH={path:?}:$PATH"))
     }
 
     fn preferred_file_extension(&self) -> &'static str {
@@ -24,7 +24,7 @@ impl Shell for Bash {
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
-        format!("export {}={:?}", name, value)
+        format!("export {name}={value:?}")
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {

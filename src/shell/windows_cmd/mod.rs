@@ -20,7 +20,7 @@ impl Shell for WindowsCmd {
         let new_path = new_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
-        Ok(format!("SET PATH={}", new_path))
+        Ok(format!("SET PATH={new_path}"))
     }
 
     fn preferred_file_extension(&self) -> &'static str {
@@ -28,7 +28,7 @@ impl Shell for WindowsCmd {
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
-        format!("SET {}={}", name, value)
+        format!("SET {name}={value}")
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
@@ -43,7 +43,7 @@ impl Shell for WindowsCmd {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read path to cd.cmd"))?;
-        Ok(format!("doskey cd={} $*", path,))
+        Ok(format!("doskey cd={path} $*",))
     }
 }
 

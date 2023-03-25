@@ -26,7 +26,7 @@ impl Shell for PowerShell {
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
-        format!(r#"$env:{} = "{}""#, name, value)
+        format!(r#"$env:{name} = "{value}""#)
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {

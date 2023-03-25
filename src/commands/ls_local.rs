@@ -35,12 +35,12 @@ impl super::command::Command for LsLocal {
                 }
             };
 
-            let version_str = format!("* {}{}", version, version_aliases);
+            let version_str = format!("* {version}{version_aliases}");
 
             if curr_version == Some(version) {
                 println!("{}", version_str.cyan());
             } else {
-                println!("{}", version_str);
+                println!("{version_str}");
             }
         }
         Ok(())

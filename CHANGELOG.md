@@ -1,5 +1,19 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.33.1
+
+### Patch Changes
+
+- remove upx compression from arm binaries because it fails to build on latest rust ([#875](https://github.com/Schniz/fnm/pull/875))
+
+## 1.33.0
+
+### Minor Changes
+
+- Replace `semver` with `node_semver` ([#816](https://github.com/Schniz/fnm/pull/816))
+
+- support `fnm install --latest` to install the latest Node.js version ([#859](https://github.com/Schniz/fnm/pull/859))
+
 ## 1.32.0
 
 ### Minor Changes

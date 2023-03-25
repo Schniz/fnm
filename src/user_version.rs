@@ -59,8 +59,8 @@ impl std::fmt::Display for UserVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Full(x) => x.fmt(f),
-            Self::OnlyMajor(major) => write!(f, "v{}.x.x", major),
-            Self::MajorMinor(major, minor) => write!(f, "v{}.{}.x", major, minor),
+            Self::OnlyMajor(major) => write!(f, "v{major}.x.x"),
+            Self::MajorMinor(major, minor) => write!(f, "v{major}.{minor}.x"),
         }
     }
 }
