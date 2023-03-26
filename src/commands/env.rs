@@ -63,7 +63,6 @@ impl Command for Env {
             );
         }
 
-
         let multishell_path = make_symlink(&config)?;
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
@@ -95,6 +94,11 @@ impl Command for Env {
             ("FNM_ARCH", config.arch.to_string()),
         ]);
 
+        if self.json {
+            println!("{}", serde_json::to_string(&env_vars).unwrap());
+            return Ok(());
+        }
+
         let mut shell: Box<dyn Shell> = self
             .shell
             .or_else(infer_shell)
@@ -102,19 +106,25 @@ impl Command for Env {
 
         println!("{}", shell.env_init(&config)?);
 
-        if self.json {
-            println!("{}", serde_json::to_string(&env_vars).unwrap());
-            return Ok(());
+        {
+            let line = shell.path(&binary_path, &config)?;
+            if !line.is_empty() {
+                println!("{}", line);
+            }
         }
 
-        println!("{}", shell.path(&binary_path, &config)?);
-
         for (name, value) in &env_vars {
-            println!("{}", shell.set_env_var(name, value, &config));
+            let line = shell.set_env_var(name, value, &config);
+            if !line.is_empty() {
+                println!("{}", line);
+            }
         }
 
         if self.use_on_cd {
-            println!("{}", shell.use_on_cd(&config)?);
+            let line = shell.use_on_cd(&config)?;
+            if !line.is_empty() {
+                println!("{}", line);
+            }
         }
         if let Some(v) = shell.rehash() {
             println!("{}", v);
