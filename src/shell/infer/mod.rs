@@ -15,7 +15,7 @@ pub(self) fn shell_from_string(shell: &str) -> Option<Box<dyn super::Shell>> {
         "fish" => return Some(Box::from(Fish)),
         "pwsh" | "powershell" => return Some(Box::from(PowerShell)),
         "cmd" => return Some(Box::from(WindowsCmd)),
-        "nu" => return Some(Box::from(Nushell)),
+        "nu" => return Some(Box::from(Nushell::default())),
         cmd_name => log::debug!("binary is not a supported shell: {:?}", cmd_name),
     };
     None

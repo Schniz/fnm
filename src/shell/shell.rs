@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::path::Path;
 
 pub trait Shell: Debug {
-    fn init(&mut self, config: &crate::config::FnmConfig) {}
+    fn env_init(&mut self, _: &crate::config::FnmConfig) -> anyhow::Result<String> { Ok("".to_string()) }
     fn path(&mut self, path: &Path, config: &crate::config::FnmConfig) -> anyhow::Result<String>;
     fn set_env_var(&mut self, name: &str, value: &str, config: &crate::config::FnmConfig)
         -> String;
@@ -29,7 +29,7 @@ impl std::str::FromStr for Box<dyn Shell> {
             "bash" => Ok(Box::from(super::bash::Bash)),
             "fish" => Ok(Box::from(super::fish::Fish)),
             "powershell" => Ok(Box::from(super::powershell::PowerShell)),
-            "nushell" => Ok(Box::from(super::nushell::Nushell)),
+            "nushell" => Ok(Box::from(super::nushell::Nushell::default())),
             shell_type => Err(format!("I don't know the shell type of {shell_type:?}",)),
         }
     }

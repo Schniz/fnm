@@ -12,18 +12,18 @@ impl Shell for Bash {
         clap_complete::Shell::Bash
     }
 
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
+    fn path(&mut self, path: &Path, _: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
         Ok(format!("export PATH={path:?}:$PATH"))
     }
 
-    fn set_env_var(&self, name: &str, value: &str) -> String {
+    fn set_env_var(&mut self, name: &str, value: &str, _: &crate::config::FnmConfig) -> String {
         format!("export {name}={value:?}")
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+    fn use_on_cd(&mut self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"

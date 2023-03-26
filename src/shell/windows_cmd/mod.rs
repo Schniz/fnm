@@ -10,7 +10,7 @@ impl Shell for WindowsCmd {
         panic!("Shell completion is not supported for Windows Command Prompt. Maybe try using PowerShell for a better experience?");
     }
 
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
+    fn path(&mut self, path: &Path, _: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let current_path =
             std::env::var_os("path").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;
         let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
@@ -23,11 +23,11 @@ impl Shell for WindowsCmd {
         Ok(format!("SET PATH={new_path}"))
     }
 
-    fn set_env_var(&self, name: &str, value: &str) -> String {
+    fn set_env_var(&mut self, name: &str, value: &str, _: &crate::config::FnmConfig) -> String {
         format!("SET {name}={value}")
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+    fn use_on_cd(&mut self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let path = config.base_dir_with_default().join("cd.cmd");
         create_cd_file_at(&path).map_err(|source| {
             anyhow::anyhow!(

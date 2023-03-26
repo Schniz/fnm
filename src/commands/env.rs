@@ -8,7 +8,6 @@ use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
 use colored::Colorize;
 use std::collections::HashMap;
 use std::fmt::Debug;
-use std::fs::File;
 use thiserror::Error;
 
 #[derive(clap::Parser, Debug, Default)]
@@ -64,7 +63,8 @@ impl Command for Env {
             );
         }
 
-        let multishell_path = make_symlink(config)?;
+
+        let multishell_path = make_symlink(&config)?;
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
         } else {
@@ -95,24 +95,26 @@ impl Command for Env {
             ("FNM_ARCH", config.arch.to_string()),
         ]);
 
-        let shell: Box<dyn Shell> = self
+        let mut shell: Box<dyn Shell> = self
             .shell
             .or_else(infer_shell)
             .ok_or(Error::CantInferShell)?;
+
+        println!("{}", shell.env_init(&config)?);
 
         if self.json {
             println!("{}", serde_json::to_string(&env_vars).unwrap());
             return Ok(());
         }
 
-        println!("{}", shell.path(&binary_path)?);
+        println!("{}", shell.path(&binary_path, &config)?);
 
         for (name, value) in &env_vars {
-            println!("{}", shell.set_env_var(name, value));
+            println!("{}", shell.set_env_var(name, value, &config));
         }
 
         if self.use_on_cd {
-            println!("{}", shell.use_on_cd(config)?);
+            println!("{}", shell.use_on_cd(&config)?);
         }
         if let Some(v) = shell.rehash() {
             println!("{}", v);
