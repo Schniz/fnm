@@ -19,7 +19,7 @@ fn nu_friendly_path_str(path: &Path) -> String {
     let home_dir = home_dir().unwrap();
     if let Ok(path) = path.strip_prefix(home_dir) {
         let path = &path.to_str().unwrap().replace(MAIN_SEPARATOR, "/");
-        format!("~/{}", path)
+        format!("~/{path}")
     } else {
         path.to_str().unwrap().replace(MAIN_SEPARATOR, "/")
     }

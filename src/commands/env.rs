@@ -109,25 +109,25 @@ impl Command for Env {
         {
             let line = shell.path(&binary_path, config)?;
             if !line.is_empty() {
-                println!("{}", line);
+                println!("{line}");
             }
         }
 
         for (name, value) in &env_vars {
             let line = shell.set_env_var(name, value, config);
             if !line.is_empty() {
-                println!("{}", line);
+                println!("{line}");
             }
         }
 
         if self.use_on_cd {
             let line = shell.use_on_cd(config)?;
             if !line.is_empty() {
-                println!("{}", line);
+                println!("{line}");
             }
         }
         if let Some(v) = shell.rehash() {
-            println!("{}", v);
+            println!("{v}");
         }
 
         Ok(())
