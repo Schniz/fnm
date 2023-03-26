@@ -18,7 +18,7 @@ impl Shell for PowerShell {
         let new_path = new_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read PATH"))?;
-        Ok(self.set_env_var("PATH", new_path, &config))
+        Ok(self.set_env_var("PATH", new_path, config))
     }
 
     fn set_env_var(&mut self, name: &str, value: &str, _: &crate::config::FnmConfig) -> String {

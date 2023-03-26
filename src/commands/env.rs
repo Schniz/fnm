@@ -63,7 +63,7 @@ impl Command for Env {
             );
         }
 
-        let multishell_path = make_symlink(&config)?;
+        let multishell_path = make_symlink(config)?;
         let binary_path = if cfg!(windows) {
             multishell_path.clone()
         } else {
@@ -104,24 +104,24 @@ impl Command for Env {
             .or_else(infer_shell)
             .ok_or(Error::CantInferShell)?;
 
-        println!("{}", shell.env_init(&config)?);
+        println!("{}", shell.env_init(config)?);
 
         {
-            let line = shell.path(&binary_path, &config)?;
+            let line = shell.path(&binary_path, config)?;
             if !line.is_empty() {
                 println!("{}", line);
             }
         }
 
         for (name, value) in &env_vars {
-            let line = shell.set_env_var(name, value, &config);
+            let line = shell.set_env_var(name, value, config);
             if !line.is_empty() {
                 println!("{}", line);
             }
         }
 
         if self.use_on_cd {
-            let line = shell.use_on_cd(&config)?;
+            let line = shell.use_on_cd(config)?;
             if !line.is_empty() {
                 println!("{}", line);
             }
