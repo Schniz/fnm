@@ -2,7 +2,9 @@ use std::fmt::Debug;
 use std::path::Path;
 
 pub trait Shell: Debug {
-    fn env_init(&mut self, _: &crate::config::FnmConfig) -> anyhow::Result<String> { Ok("".to_string()) }
+    fn env_init(&mut self, _: &crate::config::FnmConfig) -> anyhow::Result<String> {
+        Ok("".to_string())
+    }
     fn path(&mut self, path: &Path, config: &crate::config::FnmConfig) -> anyhow::Result<String>;
     fn set_env_var(&mut self, name: &str, value: &str, config: &crate::config::FnmConfig)
         -> String;
