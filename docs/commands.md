@@ -571,6 +571,10 @@ OPTIONS:
             [default: info]
             [possible values: quiet, info, all, error]
 
+        --lts [<LTS>]
+            List lts version. use --lts to list all lts version. use --lts=hydrogen to filter lts
+            version
+
         --node-dist-mirror <NODE_DIST_MIRROR>
             https://nodejs.org/dist/ mirror
 
