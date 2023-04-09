@@ -88,25 +88,25 @@ impl Shell for Nushell {
         match config.version_file_strategy() {
             VersionFileStrategy::Local => nu_config_script.write(formatdoc!(
                 r#"
-                    let-env config = ($env.config | upsert hooks.env_change.PWD {{
-                        [
-                            {{
-                                condition: {{|_, after| (($after | path join .node-version | path exists) or ($after | path join .nvmrc | path exists)) }}
-                                code: "fnm use --silent-if-unchanged"
-                            }}
-                        ]
-                    }})
+                let-env config = ($env.config | upsert hooks {{
+                    env_change: {{
+                        PWD: [{{
+                            condition: {{|_, after| (($after | path join .node-version | path exists) or ($after | path join .nvmrc | path exists)) }}
+                            code: "fnm use --silent-if-unchanged"
+                        }}]
+                    }}
+                }})
                 "#
             ).as_bytes()).unwrap(),
             VersionFileStrategy::Recursive => nu_config_script.write(formatdoc!(
                 r#"
-                    let-env config = ($env.config | upsert hooks.env_change.PWD {{
-                        [
-                            {{
-                                code: "fnm use --silent-if-unchanged"
-                            }}
-                        ]
-                    }})
+                let-env config = ($env.config | upsert hooks {{
+                    env_change: {{
+                        PWD: [{{
+                            code: "fnm use --silent-if-unchanged"
+                        }}]
+                    }}
+                }})
                 "#
             ).as_bytes()).unwrap(),
         };
