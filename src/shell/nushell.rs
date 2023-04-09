@@ -45,7 +45,15 @@ impl Shell for Nushell {
         if std::env::consts::OS == "windows" {
             writeln!(
                 self.nu_env_script.as_ref().unwrap(),
-                "let-env Path = ($env.Path | prepend $env.FNM_MULTISHELL_PATH)"
+                r#"
+                if 'PATH' in $env {{
+                    $env.PATH = ($env.PATH | prepend $env.FNM_MULTISHELL_PATH)
+                }}
+
+                if 'Path' in $env {{
+                    $env.Path = ($env.Path | prepend $env.FNM_MULTISHELL_PATH)
+                }}
+                "#
             )?;
         } else {
             writeln!(
