@@ -58,7 +58,7 @@ impl Shell for Nushell {
         } else {
             writeln!(
                 self.nu_env_script.as_ref().unwrap(),
-                "let-env PATH = ($env.PATH | prepend $env.FNM_MULTISHELL_PATH)"
+                "let-env PATH = ($env.PATH | prepend ($env.FNM_MULTISHELL_PATH + '/bin'))"
             )?;
         }
 
