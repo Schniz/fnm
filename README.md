@@ -102,7 +102,7 @@ Then, [set up your shell for fnm](#shell-setup)
 
 - Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
 - Make it available globally on `PATH` environment variable
-- Configure your shell profile:
+- [Set up your shell for fnm](#shell-setup)
 
 ### Removing
 To remove fnm (😢), just delete the `.fnm` folder in your home directory. You should also edit your shell configuration to remove any references to fnm (ie. read [Shell Setup](#shell-setup), and do the opposite).
