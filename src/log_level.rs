@@ -15,7 +15,7 @@ impl LogLevel {
         if self.is_writable(logging) {
             match logging {
                 Self::Error => Box::from(std::io::stderr()),
-                _ => Box::from(std::io::stdout()),
+                _ => Box::from(std::io::stderr()),
             }
         } else {
             Box::from(std::io::sink())
