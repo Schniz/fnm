@@ -68,6 +68,12 @@ brew install fnm
 
 Then, [set up your shell for fnm](#shell-setup)
 
+#### Using Winget (Windows)
+
+```sh
+winget install Schniz.fnm
+```
+
 #### Using Scoop (Windows)
 
 ```sh
