@@ -28,7 +28,11 @@ impl Shell for Fish {
             VersionFileStrategy::Local => indoc!(
                 r#"
                     if test -f .node-version -o -f .nvmrc
-                        fnm use --silent-if-unchanged
+                        if status is-interactive
+                            fnm use --silent-if-unchanged
+                        else
+                            fnm use --silent
+                        end
                     end
                 "#
             ),
