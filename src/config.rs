@@ -2,7 +2,7 @@ use crate::arch::Arch;
 use crate::log_level::LogLevel;
 use crate::path_ext::PathExt;
 use crate::version_file_strategy::VersionFileStrategy;
-use dirs::{data_dir, home_dir};
+use etcetera::BaseStrategy;
 use url::Url;
 
 #[derive(clap::Parser, Debug)]
@@ -107,19 +107,28 @@ impl FnmConfig {
             return dir;
         }
 
-        let legacy = home_dir()
-            .map(|dir| dir.join(".fnm"))
-            .filter(|dir| dir.exists());
+        let basedirs = etcetera::choose_base_strategy().expect("Can't get home directory");
 
-        let modern = data_dir().map(|dir| dir.join("fnm"));
+        let modern = basedirs.data_dir().join("fnm");
+        let legacy = basedirs.home_dir().join(".fnm");
 
-        if let Some(dir) = legacy {
-            return dir;
+        if modern.exists() {
+            return modern;
+        }
+        if legacy.exists() {
+            return legacy;
         }
 
-        modern
-            .expect("Can't get data directory")
-            .ensure_exists_silently()
+        #[cfg(target_os = "macos")]
+        {
+            let basedirs = etcetera::base_strategy::Apple::new().expect("Can't get home directory");
+            let legacy = basedirs.data_dir().join("fnm");
+            if legacy.exists() {
+                return legacy;
+            }
+        }
+
+        modern.ensure_exists_silently()
     }
 
     pub fn installations_dir(&self) -> std::path::PathBuf {
