@@ -13,6 +13,13 @@ OPTIONS:
 
             [env: FNM_ARCH]
 
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
+
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
 
@@ -101,6 +108,13 @@ OPTIONS:
 
             [env: FNM_ARCH]
 
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
+
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
 
@@ -150,6 +164,13 @@ OPTIONS:
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
             [env: FNM_ARCH]
+
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -203,6 +224,13 @@ OPTIONS:
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
             [env: FNM_ARCH]
+
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -260,6 +288,13 @@ OPTIONS:
 
             [env: FNM_ARCH]
 
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
+
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
 
@@ -316,6 +351,13 @@ OPTIONS:
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
             [env: FNM_ARCH]
+
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -387,6 +429,13 @@ OPTIONS:
 
             [env: FNM_ARCH]
 
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
+
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
 
@@ -450,6 +499,13 @@ OPTIONS:
 
             [env: FNM_ARCH]
 
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
+
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
 
@@ -506,6 +562,13 @@ OPTIONS:
 
             [env: FNM_ARCH]
 
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
+
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
 
@@ -555,6 +618,13 @@ OPTIONS:
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
             [env: FNM_ARCH]
+
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -609,6 +679,13 @@ OPTIONS:
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
             [env: FNM_ARCH]
+
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -667,6 +744,13 @@ OPTIONS:
 
             [env: FNM_ARCH]
 
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
+
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
 
@@ -720,6 +804,13 @@ OPTIONS:
             Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
             [env: FNM_ARCH]
+
+        --corepack-enabled
+            Enable corepack support for each new installation. This will make fnm call `corepack
+            enable` on every Node.js installation. For more information about corepack see
+            https://nodejs.org/api/corepack.html
+
+            [env: FNM_COREPACK_ENABLED=true]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
