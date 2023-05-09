@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash installs corepack: Bash 1`] = `
+"set -e
+eval "$(fnm env --corepack-enabled)"
+fnm install 18
+fnm exec --using=18 node test-pnpm-corepack.js"
+`;

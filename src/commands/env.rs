@@ -91,6 +91,10 @@ impl Command for Env {
                 "FNM_NODE_DIST_MIRROR",
                 config.node_dist_mirror.as_str().to_owned(),
             ),
+            (
+                "FNM_COREPACK_ENABLED",
+                config.corepack_enabled().to_string(),
+            ),
             ("FNM_ARCH", config.arch.to_string()),
         ]);
 

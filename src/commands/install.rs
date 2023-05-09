@@ -134,8 +134,16 @@ impl super::command::Command for Install {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
             }
-            other_err => other_err.map_err(|source| Error::DownloadError { source })?,
+            Err(source) => Err(Error::DownloadError { source })?,
+            Ok(_) => {}
         };
+
+        if config.corepack_enabled() {
+            outln!(config, Info, "Enabling corepack for {}", version_str.cyan());
+            super::exec::Exec::new_for_version(&version, "corepack", &["enable"])
+                .apply(config)
+                .map_err(|source| Error::CorepackError { source })?;
+        }
 
         if let UserVersion::Full(Version::Lts(lts_type)) = current_version {
             let alias_name = Version::Lts(lts_type).v_str();
@@ -164,6 +172,11 @@ pub enum Error {
     IoError {
         #[from]
         source: std::io::Error,
+    },
+    #[error("Can't enable corepack: {source}")]
+    CorepackError {
+        #[from]
+        source: super::exec::Error,
     },
     #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,

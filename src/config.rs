@@ -70,6 +70,12 @@ pub struct FnmConfig {
         hide_env_values = true,
     )]
     version_file_strategy: VersionFileStrategy,
+
+    /// Enable corepack support for each new installation.
+    /// This will make fnm call `corepack enable` on every Node.js installation.
+    /// For more information about corepack see https://nodejs.org/api/corepack.html
+    #[clap(long, env = "FNM_COREPACK_ENABLED", global = true)]
+    corepack_enabled: bool,
 }
 
 impl Default for FnmConfig {
@@ -81,6 +87,7 @@ impl Default for FnmConfig {
             log_level: LogLevel::Info,
             arch: Arch::default(),
             version_file_strategy: VersionFileStrategy::default(),
+            corepack_enabled: false,
         }
     }
 }
@@ -88,6 +95,10 @@ impl Default for FnmConfig {
 impl FnmConfig {
     pub fn version_file_strategy(&self) -> &VersionFileStrategy {
         &self.version_file_strategy
+    }
+
+    pub fn corepack_enabled(&self) -> bool {
+        self.corepack_enabled
     }
 
     pub fn multishell_path(&self) -> Option<&std::path::Path> {
