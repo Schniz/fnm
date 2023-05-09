@@ -18,7 +18,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -113,7 +113,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -170,7 +170,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -230,7 +230,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -293,7 +293,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -357,7 +357,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -434,7 +434,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -504,7 +504,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -567,7 +567,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -624,7 +624,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -685,7 +685,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -749,7 +749,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
@@ -810,7 +810,7 @@ OPTIONS:
             enable` on every Node.js installation. For more information about corepack see
             https://nodejs.org/api/corepack.html
 
-            [env: FNM_COREPACK_ENABLED=true]
+            [env: FNM_COREPACK_ENABLED]
 
         --fnm-dir <BASE_DIR>
             The root directory of fnm installations
