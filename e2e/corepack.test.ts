@@ -23,7 +23,7 @@ const nodescript = `
   }
 `
 
-for (const shell of [Bash]) {
+for (const shell of [Bash, Fish, PowerShell, Zsh]) {
   describe(shell, () => {
     test(`installs corepack`, async () => {
       const cwd = testCwd()
