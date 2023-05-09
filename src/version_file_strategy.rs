@@ -1,7 +1,8 @@
 use std::str::FromStr;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub enum VersionFileStrategy {
+    #[default]
     Local,
     Recursive,
 }
@@ -19,12 +20,6 @@ impl VersionFileStrategy {
     }
 }
 
-impl Default for VersionFileStrategy {
-    fn default() -> Self {
-        VersionFileStrategy::Local
-    }
-}
-
 impl FromStr for VersionFileStrategy {
     type Err = String;
 
@@ -33,8 +28,7 @@ impl FromStr for VersionFileStrategy {
             "local" => Ok(VersionFileStrategy::Local),
             "recursive" => Ok(VersionFileStrategy::Recursive),
             _ => Err(format!(
-                "Invalid strategy: {}. Expected one of: local, recursive",
-                s
+                "Invalid strategy: {s}. Expected one of: local, recursive",
             )),
         }
     }
