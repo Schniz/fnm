@@ -42,6 +42,7 @@ for (const shell of [Bash, Fish, PowerShell, Zsh]) {
           ])
         )
         .takeSnapshot(shell)
+        .addExtraEnvVar("RUST_LOG", "fnm=debug")
         .execute(shell)
     })
   })
