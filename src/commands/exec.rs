@@ -88,6 +88,8 @@ impl Cmd for Exec {
                 .map_err(|source| Error::CantAddPathToEnvironment { source })?
         };
 
+        log::debug!("Running {} with PATH={:?}", binary, path_env);
+
         let exit_status = Command::new(binary)
             .args(arguments)
             .stdin(Stdio::inherit())
@@ -95,7 +97,10 @@ impl Cmd for Exec {
             .stderr(Stdio::inherit())
             .env("PATH", path_env)
             .spawn()
-            .expect("Can't spawn program")
+            .map_err(|source| Error::CantSpawnProgram {
+                source,
+                binary: binary.to_string(),
+            })?
             .wait()
             .expect("Failed to grab exit code");
 
@@ -106,6 +111,11 @@ impl Cmd for Exec {
 
 #[derive(Debug, Error)]
 pub enum Error {
+    #[error("Can't spawn program: {}\nMaybe the program {} does not exist on not available in your PATH?", source, binary)]
+    CantSpawnProgram {
+        source: std::io::Error,
+        binary: String,
+    },
     #[error("Can't read path environment variable")]
     CantReadPathVariable,
     #[error("Can't add path to environment variable: {}", source)]
