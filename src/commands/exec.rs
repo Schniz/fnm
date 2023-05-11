@@ -111,7 +111,7 @@ impl Cmd for Exec {
 
 #[derive(Debug, Error)]
 pub enum Error {
-    #[error("Can't spawn program: {}\nMaybe the program {} does not exist on not available in your PATH?", source, binary)]
+    #[error("Can't spawn program: {source}\nMaybe the program {} does not exist on not available in PATH?", binary.bold())]
     CantSpawnProgram {
         source: std::io::Error,
         binary: String,
