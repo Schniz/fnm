@@ -8,8 +8,10 @@ pub fn maybe_fix_windows_path(path: &str) -> Option<String> {
         return None;
     }
 
-    use std::process::Command;
-    let output = Command::new("cygpath").arg(path).output().ok()?;
+    let output = std::process::Command::new("cygpath")
+        .arg(path)
+        .output()
+        .ok()?;
     if output.status.success() {
         String::from_utf8(output.stdout).ok()
     } else {
