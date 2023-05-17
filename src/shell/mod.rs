@@ -7,6 +7,7 @@ mod zsh;
 
 #[allow(clippy::module_inception)]
 mod shell;
+mod windows_compat;
 
 pub use bash::Bash;
 pub use fish::Fish;
