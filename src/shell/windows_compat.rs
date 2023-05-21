@@ -13,7 +13,8 @@ pub fn maybe_fix_windows_path(path: &str) -> Option<String> {
         .output()
         .ok()?;
     if output.status.success() {
-        String::from_utf8(output.stdout).ok()
+        let output = String::from_utf8(output.stdout).ok()?;
+        Some(output.trim().to_string())
     } else {
         None
     }
