@@ -25,7 +25,7 @@ pub fn get_safe_arch<'a>(arch: &'a Arch, version: &Version) -> &'a Arch {
 #[cfg(windows)]
 /// handle common case: Apple Silicon / Node < 16
 pub fn get_safe_arch<'a>(arch: &'a Arch, _version: &Version) -> &'a Arch {
-    return &arch;
+    arch
 }
 
 impl Default for Arch {

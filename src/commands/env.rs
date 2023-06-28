@@ -64,8 +64,10 @@ impl Command for Env {
         }
 
         let multishell_path = make_symlink(config)?;
+        let multishell_path_str = multishell_path.to_str().unwrap().to_owned();
+
         let binary_path = if cfg!(windows) {
-            multishell_path.clone()
+            multishell_path
         } else {
             multishell_path.join("bin")
         };
@@ -73,7 +75,7 @@ impl Command for Env {
         let env_vars = HashMap::from([
             (
                 "FNM_MULTISHELL_PATH",
-                multishell_path.to_str().unwrap().to_owned(),
+                multishell_path_str,
             ),
             (
                 "FNM_VERSION_FILE_STRATEGY",
