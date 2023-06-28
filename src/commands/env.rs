@@ -73,10 +73,7 @@ impl Command for Env {
         };
 
         let env_vars = HashMap::from([
-            (
-                "FNM_MULTISHELL_PATH",
-                multishell_path_str,
-            ),
+            ("FNM_MULTISHELL_PATH", multishell_path_str),
             (
                 "FNM_VERSION_FILE_STRATEGY",
                 config.version_file_strategy().as_str().to_owned(),
