@@ -16,6 +16,8 @@ impl Shell for Bash {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
+        let path =
+            super::windows_compat::maybe_fix_windows_path(path).unwrap_or_else(|| path.to_string());
         Ok(format!("export PATH={path:?}:$PATH"))
     }
 
