@@ -4,9 +4,13 @@ import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells.js"
 import describe from "./describe.js"
 import path from "path"
 import testCwd from "./shellcode/test-cwd.js"
+import { createRequire } from "module"
+
+const require = createRequire(import.meta.url)
+const whichPath = require.resolve("which")
 
 const nodescript = `
-  const which = require('which');
+  const which = require(${JSON.stringify(whichPath)});
   const pnpmBinary = which.sync('pnpm')
   const nodeBinary = which.sync('node')
 
