@@ -1,3 +1,4 @@
+use super::command::Command;
 use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
@@ -49,7 +50,7 @@ impl Install {
     }
 }
 
-impl super::command::Command for Install {
+impl Command for Install {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
@@ -134,8 +135,14 @@ impl super::command::Command for Install {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
             }
-            other_err => other_err.map_err(|source| Error::DownloadError { source })?,
+            Err(source) => Err(Error::DownloadError { source })?,
+            Ok(_) => {}
         };
+
+        if config.corepack_enabled() {
+            outln!(config, Info, "Enabling corepack for {}", version_str.cyan());
+            enable_corepack(&version, config)?;
+        }
 
         if let UserVersion::Full(Version::Lts(lts_type)) = current_version {
             let alias_name = Version::Lts(lts_type).v_str();
@@ -156,6 +163,19 @@ impl super::command::Command for Install {
     }
 }
 
+fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
+    let corepack_path = version.installation_path(config);
+    let corepack_path = if cfg!(windows) {
+        corepack_path.join("corepack.cmd")
+    } else {
+        corepack_path.join("bin").join("corepack")
+    };
+    super::exec::Exec::new_for_version(version, corepack_path.to_str().unwrap(), &["enable"])
+        .apply(config)
+        .map_err(|source| Error::CorepackError { source })?;
+    Ok(())
+}
+
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("Can't download the requested binary: {}", source)]
@@ -164,6 +184,11 @@ pub enum Error {
     IoError {
         #[from]
         source: std::io::Error,
+    },
+    #[error("Can't enable corepack: {source}")]
+    CorepackError {
+        #[from]
+        source: super::exec::Error,
     },
     #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,
@@ -186,7 +211,6 @@ pub enum Error {
 
 #[cfg(test)]
 mod tests {
-    use super::super::command::Command;
     use super::*;
     use pretty_assertions::assert_eq;
     use std::str::FromStr;

@@ -15,7 +15,8 @@ class Script {
     private readonly config: {
       fnmDir: string
     },
-    private readonly lines: ScriptLine[]
+    private readonly lines: ScriptLine[],
+    private readonly extraEnvVars: Record<string, string> = {}
   ) {}
   then(line: ScriptLine): Script {
     return new Script(this.config, [...this.lines, line])
@@ -26,6 +27,14 @@ class Script {
     expect(script).toMatchSnapshot(shell.name())
 
     return this
+  }
+
+  addExtraEnvVar(name: string, value: string): this {
+    return new Script(
+      this.config,
+      this.lines,
+      Object.assign({}, this.extraEnvVars, { [name]: value })
+    ) as this
   }
 
   async execute(
@@ -54,6 +63,7 @@ class Script {
       cwd: testCwd(),
       env: (() => {
         const newProcessEnv: Record<string, string> = {
+          ...this.extraEnvVars,
           ...removeAllFnmEnvVars(process.env),
           PATH: [testBinDir(), fnmTargetDir(), process.env.PATH]
             .filter(Boolean)
@@ -119,8 +129,8 @@ function streamOutputsAndBuffer(child: ExecaChildProcess) {
 
   if (child.stdout) {
     child.stdout.on("data", (data) => {
-      const line = data.toString().trim()
-      if (line) {
+      const lines = data.toString().trim().split(/\r?\n/)
+      for (const line of lines) {
         process.stdout.write(`${stdoutPrefix}${line}\n`)
       }
       stdout.push(data.toString())
@@ -129,8 +139,8 @@ function streamOutputsAndBuffer(child: ExecaChildProcess) {
 
   if (child.stderr) {
     child.stderr.on("data", (data) => {
-      const line = data.toString().trim()
-      if (line) {
+      const lines = data.toString().trim().split(/\r?\n/)
+      for (const line of lines) {
         process.stdout.write(`${stderrPrefix}${line}\n`)
       }
       stderr.push(data.toString())
