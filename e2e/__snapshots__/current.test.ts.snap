@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`Bash current returns the current Node.js version set in fnm: Bash 1`] = `
+exports[`Bash > current returns the current Node.js version set in fnm > Bash 1`] = `
 "set -e
 eval "$(fnm env)"
 if [ "$(fnm current)" != "none" ]; then
@@ -26,7 +26,7 @@ if [ "$(fnm current)" != "system" ]; then
 fi"
 `;
 
-exports[`Fish current returns the current Node.js version set in fnm: Fish 1`] = `
+exports[`Fish > current returns the current Node.js version set in fnm > Fish 1`] = `
 "fnm env | source
 set ____test____ (fnm current)
 if test "$____test____" != "none"
@@ -55,7 +55,7 @@ if test "$____test____" != "system"
 end"
 `;
 
-exports[`PowerShell current returns the current Node.js version set in fnm: PowerShell 1`] = `
+exports[`PowerShell > current returns the current Node.js version set in fnm > PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
 if ( "$(fnm current)" -ne "none" ) { echo "Expected currently activated version to be none. Got $(fnm current)"; exit 1 }
@@ -69,7 +69,7 @@ fnm use system
 if ( "$(fnm current)" -ne "system" ) { echo "Expected currently activated version to be system. Got $(fnm current)"; exit 1 }"
 `;
 
-exports[`Zsh current returns the current Node.js version set in fnm: Zsh 1`] = `
+exports[`Zsh > current returns the current Node.js version set in fnm > Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
 if [ "$(fnm current)" != "none" ]; then

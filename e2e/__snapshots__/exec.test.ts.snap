@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`Bash \`exec\` usage: Bash 1`] = `
+exports[`Bash > \`exec\` usage > Bash 1`] = `
 "set -e
 fnm install
 fnm install v6.10.0
@@ -19,7 +19,7 @@ if [ "$(fnm exec --using=10 -- node -v)" != "v10.10.0" ]; then
 fi"
 `;
 
-exports[`Fish \`exec\` usage: Fish 1`] = `
+exports[`Fish > \`exec\` usage > Fish 1`] = `
 "fnm install
 fnm install v6.10.0
 fnm install v10.10.0
@@ -40,7 +40,7 @@ if test "$____test____" != "v10.10.0"
 end"
 `;
 
-exports[`PowerShell \`exec\` usage: PowerShell 1`] = `
+exports[`PowerShell > \`exec\` usage > PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm install
 fnm install v6.10.0
@@ -50,7 +50,7 @@ if ( "$(fnm exec --using=6 -- node -v)" -ne "v6.10.0" ) { echo "Expected exec:6 
 if ( "$(fnm exec --using=10 -- node -v)" -ne "v10.10.0" ) { echo "Expected exec:6 node -v to be v10.10.0. Got $(fnm exec --using=10 -- node -v)"; exit 1 }"
 `;
 
-exports[`Zsh \`exec\` usage: Zsh 1`] = `
+exports[`Zsh > \`exec\` usage > Zsh 1`] = `
 "set -e
 fnm install
 fnm install v6.10.0

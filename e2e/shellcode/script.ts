@@ -61,7 +61,6 @@ class Script {
           FNM_DIR: this.config.fnmDir,
         }
 
-        delete newProcessEnv.NODE_OPTIONS
         return newProcessEnv
       })(),
       extendEnv: false,
