@@ -9,6 +9,9 @@ pub trait Shell: Debug {
         None
     }
     fn to_clap_shell(&self) -> clap_complete::Shell;
+    fn delete_on_exit(&self, _fnm_multishell: &Path) -> Option<String> {
+        None
+    }
 }
 
 #[cfg(windows)]

@@ -51,4 +51,19 @@ impl Shell for Zsh {
             autoload_hook = autoload_hook
         ))
     }
+
+    fn delete_on_exit(&self, fnm_multishell: &Path) -> Option<String> {
+        Some(indoc::formatdoc!(
+            r#"
+                autoload -U add-zsh-hook
+                _fnm_on_exit () {{
+                    rm -f "{fnm_multishell}"
+                }}
+
+                add-zsh-hook zshexit _fnm_on_exit \
+                    && _fnm_on_exit
+            "#,
+            fnm_multishell = fnm_multishell.display(),
+        ))
+    }
 }

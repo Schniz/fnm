@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises"
+import { lstat, readFile, realpath } from "node:fs/promises"
 import { join } from "node:path"
 import { script } from "./shellcode/script.js"
 import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells.js"
@@ -20,7 +20,8 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
 
       if (shell.currentlySupported()) {
         const file = await readFile(join(testCwd(), filename), "utf8")
-        expect(JSON.parse(file)).toEqual({
+        const json = JSON.parse(file)
+        expect(json).toEqual({
           FNM_ARCH: expect.any(String),
           FNM_DIR: expect.any(String),
           FNM_LOGLEVEL: "info",
@@ -28,6 +29,30 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
           FNM_NODE_DIST_MIRROR: expect.any(String),
           FNM_VERSION_FILE_STRATEGY: "local",
         })
+      }
+    })
+
+    test(`deletes the multishell upon shell exit`, async () => {
+      const filename = `multishell_path`
+      await script(shell)
+        .then(shell.env({ args: ["--delete-on-exit"] }))
+        .then(
+          shell.redirectOutput(
+            shell.call("echo", [shell.getEnvVar("FNM_MULTISHELL_PATH")]),
+            { output: filename }
+          )
+        )
+        .takeSnapshot(shell)
+        .execute(shell)
+
+      if (shell.currentlySupported()) {
+        const multishell = await readFile(
+          join(testCwd(), filename),
+          "utf8"
+        ).then((x) => x.trim())
+        await expect(lstat(multishell)).rejects.toThrowError(
+          /no such file or directory/
+        )
       }
     })
   })

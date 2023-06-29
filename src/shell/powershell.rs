@@ -45,6 +45,16 @@ impl Shell for PowerShell {
             autoload_hook = autoload_hook
         ))
     }
+
+    fn delete_on_exit(&self, fnm_multishell: &Path) -> Option<String> {
+        Some(indoc::formatdoc!(
+            r#"
+                Register-EngineEvent PowerShell.Exiting -Action {{ rm "{fnm_multishell}" > $null }} > $null
+            "#,
+            fnm_multishell = fnm_multishell.display()
+        ))
+    }
+
     fn to_clap_shell(&self) -> clap_complete::Shell {
         clap_complete::Shell::PowerShell
     }

@@ -51,4 +51,39 @@ impl Shell for Bash {
             autoload_hook = autoload_hook
         ))
     }
+
+    fn delete_on_exit(&self, fnm_multishell: &Path) -> Option<String> {
+        Some(indoc::formatdoc!(
+            r#"
+    {TRAP_ADD}
+
+    __fnm_trap_add__ 'rm "{fnm_multishell}"' EXIT
+            "#,
+            fnm_multishell = fnm_multishell.display(),
+            TRAP_ADD = TRAP_ADD
+        ))
+    }
 }
+
+/// This code is based on [Richard Hansen's answer on `StackOverflow`](https://stackoverflow.com/a/7287873/1176984)
+///
+/// Usage:
+/// ```bash
+/// __fnm_trap_add__ 'echo "hello"' EXIT
+/// ```
+pub const TRAP_ADD: &str = indoc::indoc!(
+    r#"
+    __fnm_trap_add__() {
+        __fnm_trap_add___cmd=$1; shift || fatal "${FUNCNAME} usage error"
+        for __fnm_trap_add___name in "$@"; do
+            trap -- "$(
+                extract_trap_cmd() { printf '%s\n' "$3"; }
+                eval "extract_trap_cmd $(trap -p "${__fnm_trap_add___name}")"
+                printf '%s\n' "${__fnm_trap_add___cmd}"
+            )" "${__fnm_trap_add___name}" \
+                || fatal "unable to add to trap ${__fnm_trap_add___name}"
+        done
+    }
+    declare -f -t __fnm_trap_add__
+    "#
+);

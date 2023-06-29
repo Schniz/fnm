@@ -46,4 +46,14 @@ impl Shell for Fish {
             autoload_hook = autoload_hook
         ))
     }
+
+    fn delete_on_exit(&self, fnm_multishell: &Path) -> Option<String> {
+        Some(indoc::formatdoc! {r#"
+            function _fnm_delete_multishell --on-event fish_exit
+                rm -f "{fnm_multishell}"
+            end
+
+            _fnm_delete_multishell
+        "#, fnm_multishell = fnm_multishell.display()})
+    }
 }

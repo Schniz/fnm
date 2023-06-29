@@ -25,6 +25,10 @@ pub struct Env {
     /// Print the script to change Node versions every directory change
     #[clap(long)]
     use_on_cd: bool,
+
+    /// EXPERIMENTAL: delete the multishell on shell exit
+    #[clap(long)]
+    delete_on_exit: bool,
 }
 
 fn generate_symlink_path() -> String {
@@ -114,6 +118,12 @@ impl Command for Env {
         }
         if let Some(v) = shell.rehash() {
             println!("{v}");
+        }
+
+        if self.delete_on_exit {
+            if let Some(v) = shell.delete_on_exit(&multishell_path) {
+                println!("{}", v);
+            }
         }
 
         Ok(())
