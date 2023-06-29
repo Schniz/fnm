@@ -21,6 +21,7 @@ specifiers:
   ts-dedent: ^2.2.0
   ts-jest: ^29.0.3
   typescript: ^4.8.4
+  which: ^3.0.1
   zod: ^3.19.1
 
 devDependencies:
@@ -44,6 +45,7 @@ devDependencies:
   ts-dedent: 2.2.0
   ts-jest: 29.0.3_4f6uxrzmuwipl5rr3bcogf6k74
   typescript: 4.9.3
+  which: 3.0.1
   zod: 3.19.1
 
 packages:
@@ -5052,6 +5054,14 @@ packages:
   /which/2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
+    hasBin: true
+    dependencies:
+      isexe: 2.0.0
+    dev: true
+
+  /which/3.0.1:
+    resolution: {integrity: sha512-XA1b62dzQzLfaEOSQFTCOd5KFf/1VSzZo7/7TUjnya6u0vGGKzU96UQBZTAThCb2j4/xjBAyii1OhRLJEivHvg==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     hasBin: true
     dependencies:
       isexe: 2.0.0

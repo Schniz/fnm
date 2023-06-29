@@ -4,6 +4,7 @@ use crate::current_version::current_version;
 use crate::fs;
 use crate::installed_versions;
 use crate::outln;
+use crate::shell;
 use crate::system_version;
 use crate::user_version::UserVersion;
 use crate::version::Version;
@@ -190,8 +191,11 @@ fn warn_if_multishell_path_not_in_path_env_var(
         multishell_path.to_path_buf()
     };
 
+    let fixed_path = bin_path.to_str().and_then(shell::maybe_fix_windows_path);
+    let fixed_path = fixed_path.as_ref().map(|x| &x[..]);
+
     for path in std::env::split_paths(&std::env::var("PATH").unwrap_or_default()) {
-        if bin_path == path {
+        if bin_path == path || fixed_path == path.to_str() {
             return;
         }
     }
