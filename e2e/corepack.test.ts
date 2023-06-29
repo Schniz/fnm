@@ -6,8 +6,9 @@ import path from "path"
 import testCwd from "./shellcode/test-cwd.js"
 
 const nodescript = `
-  const pnpmBinary = require('child_process').execSync('which pnpm', { encoding: 'utf8' }).trim()
-  const nodeBinary = require('child_process').execSync('which node', { encoding: 'utf8' }).trim()
+  const which = require('which');
+  const pnpmBinary = which.sync('pnpm')
+  const nodeBinary = which.sync('node')
 
   const binPath = require('path').dirname(nodeBinary);
 
@@ -42,7 +43,7 @@ for (const shell of [Bash, Fish, PowerShell, Zsh]) {
           ])
         )
         .takeSnapshot(shell)
-        .addExtraEnvVar("RUST_LOG", "fnm=debug")
+        // .addExtraEnvVar("RUST_LOG", "fnm=debug")
         .execute(shell)
     })
   })
