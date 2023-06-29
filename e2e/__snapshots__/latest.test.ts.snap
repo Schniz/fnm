@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash installs latest: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install --latest
+(fnm ls) | grep latest || (echo "Expected output to contain latest" && exit 1)
+fnm use 'latest'"
+`;
+
+exports[`Fish installs latest: Fish 1`] = `
+"fnm env | source
+fnm install --latest
+begin; fnm ls; end | grep latest; or echo "Expected output to contain latest" && exit 1
+fnm use 'latest'"
+`;
+
+exports[`PowerShell installs latest: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install --latest
+$($__out__ = $(fnm ls | Select-String latest); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm use 'latest'"
+`;
+
+exports[`Zsh installs latest: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install --latest
+(fnm ls) | grep latest || (echo "Expected output to contain latest" && exit 1)
+fnm use 'latest'"
+`;

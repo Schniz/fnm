@@ -137,6 +137,16 @@ impl super::command::Command for Install {
             other_err => other_err.map_err(|source| Error::DownloadError { source })?,
         };
 
+        if let UserVersion::Full(Version::Latest) = current_version {
+            let alias_name = Version::Latest.v_str();
+            debug!(
+                "Tagging {} as alias for {}",
+                alias_name.cyan(),
+                version.v_str().cyan()
+            );
+            create_alias(config, &alias_name, &version)?;
+        }
+
         if let UserVersion::Full(Version::Lts(lts_type)) = current_version {
             let alias_name = Version::Lts(lts_type).v_str();
             debug!(
