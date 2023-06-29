@@ -28,7 +28,7 @@ impl FromStr for VersionFileStrategy {
             "local" => Ok(VersionFileStrategy::Local),
             "recursive" => Ok(VersionFileStrategy::Recursive),
             _ => Err(format!(
-                "Invalid strategy: {s}. Expected one of: local, recursive",
+                "Invalid strategy: {s}. Expected one of: local, recursive"
             )),
         }
     }
