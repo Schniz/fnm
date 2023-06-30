@@ -19,15 +19,15 @@ node-semver = "2.1.0"
 dirs = "4.0.0"
 colored = "2.0.0"
 zip = "0.6.3"
-tempfile = "3.3.0"
+tempfile = "3.6.0"
 indoc = "1.0.8"
 log = "0.4.17"
 env_logger = "0.10.0"
 atty = "0.2.14"
 encoding_rs_io = "0.1.7"
 reqwest = { version = "0.11.13", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
-url = "2.3.1"
-sysinfo = "0.27.1"
+url = "2.4.0"
+sysinfo = "0.29.3"
 thiserror = "1.0.37"
 clap_complete = "3.2.5"
 anyhow = "1.0.66"
@@ -41,7 +41,7 @@ test-log = "0.2.12"
 embed-resource = "1.8.0"
 
 [target.'cfg(windows)'.dependencies]
-csv = "1.1.6"
+csv = "1.2.2"
 junction = "0.2.0"
 
 [features]
