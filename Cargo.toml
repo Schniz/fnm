@@ -16,7 +16,7 @@ chrono = { version = "0.4.26", features = ["serde"] }
 tar = "0.4.38"
 xz2 = "0.1.7"
 node-semver = "2.1.0"
-dirs = "4.0.0"
+dirs = "5.0.1"
 colored = "2.0.0"
 zip = "0.6.3"
 tempfile = "3.6.0"
