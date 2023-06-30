@@ -170,7 +170,7 @@ fn should_install_interactively(requested_version: &UserVersion) -> bool {
         requested_version.to_string().italic()
     );
     eprintln!("{}", error_message.red());
-    let do_you_want = format!("Do you want to install it? {} [y/n]:", "answer".bold());
+    let do_you_want = format!("Do you want to install it? {} [y/N]:", "answer".bold());
     eprint!("{} ", do_you_want.yellow());
     std::io::stdout().flush().unwrap();
     let mut s = String::new();
