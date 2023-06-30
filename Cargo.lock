@@ -964,9 +964,9 @@ dependencies = [
 
 [[package]]
 name = "junction"
-version = "0.2.1"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1bcc2cc77f63a374d3a17011d943b081f7cb60c942d1ddaf3504430378597385"
+checksum = "ca39ef0d69b18e6a2fd14c2f0a1d593200f4a4ed949b240b5917ab51fac754cb"
 dependencies = [
  "scopeguard",
  "winapi",
