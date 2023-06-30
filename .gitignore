@@ -7,3 +7,4 @@ feature_tests/.tmp
 *.log
 /site/public
 .vercel
+.proxy

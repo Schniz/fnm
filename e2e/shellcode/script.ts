@@ -69,6 +69,7 @@ class Script {
             .filter(Boolean)
             .join(path.delimiter),
           FNM_DIR: this.config.fnmDir,
+          FNM_NODE_DIST_MIRROR: "http://localhost:8080",
         }
 
         delete newProcessEnv.NODE_OPTIONS
