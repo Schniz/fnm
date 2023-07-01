@@ -1,6 +1,6 @@
 {
   "name": "fnm",
-  "version": "1.33.1",
+  "version": "1.34.0",
   "private": true,
   "repository": "git@github.com:Schniz/fnm.git",
   "author": "Gal Schlezinger <gal@spitfire.co.il>",
