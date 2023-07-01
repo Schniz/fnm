@@ -8,7 +8,7 @@ use std::path::Path;
 pub struct PowerShell;
 
 impl Shell for PowerShell {
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
+    fn path(&mut self, path: &Path, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let current_path =
             std::env::var_os("PATH").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;
         let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
@@ -18,14 +18,14 @@ impl Shell for PowerShell {
         let new_path = new_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read PATH"))?;
-        Ok(self.set_env_var("PATH", new_path))
+        Ok(self.set_env_var("PATH", new_path, config))
     }
 
-    fn set_env_var(&self, name: &str, value: &str) -> String {
+    fn set_env_var(&mut self, name: &str, value: &str, _: &crate::config::FnmConfig) -> String {
         format!(r#"$env:{name} = "{value}""#)
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+    fn use_on_cd(&mut self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"

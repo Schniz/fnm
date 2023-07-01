@@ -12,7 +12,7 @@ impl Shell for Zsh {
         clap_complete::Shell::Zsh
     }
 
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
+    fn path(&mut self, path: &Path, _: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Path is not valid UTF-8"))?;
@@ -21,7 +21,7 @@ impl Shell for Zsh {
         Ok(format!("export PATH={path:?}:$PATH"))
     }
 
-    fn set_env_var(&self, name: &str, value: &str) -> String {
+    fn set_env_var(&mut self, name: &str, value: &str, _: &crate::config::FnmConfig) -> String {
         format!("export {name}={value:?}")
     }
 
@@ -29,7 +29,7 @@ impl Shell for Zsh {
         Some("rehash".to_string())
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+    fn use_on_cd(&mut self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
                 r#"

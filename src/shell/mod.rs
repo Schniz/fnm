@@ -1,6 +1,7 @@
 mod bash;
 mod fish;
 mod infer;
+mod nushell;
 mod powershell;
 mod windows_cmd;
 mod zsh;
@@ -12,6 +13,7 @@ mod windows_compat;
 pub use bash::Bash;
 pub use fish::Fish;
 pub use infer::infer_shell;
+pub use nushell::Nushell;
 pub use powershell::PowerShell;
 pub use shell::{Shell, AVAILABLE_SHELLS};
 pub use windows_cmd::WindowsCmd;
