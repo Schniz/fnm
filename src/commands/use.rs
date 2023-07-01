@@ -159,9 +159,9 @@ fn replace_symlink(from: &std::path::Path, to: &std::path::Path) -> std::io::Res
 }
 
 fn should_install_interactively(requested_version: &UserVersion) -> bool {
-    use std::io::Write;
+    use std::io::{IsTerminal, Write};
 
-    if !(atty::is(atty::Stream::Stdout) && atty::is(atty::Stream::Stdin)) {
+    if !(std::io::stdout().is_terminal() && std::io::stdin().is_terminal()) {
         return false;
     }
 

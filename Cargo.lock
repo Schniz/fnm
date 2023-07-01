@@ -592,7 +592,6 @@ name = "fnm"
 version = "1.33.1"
 dependencies = [
  "anyhow",
- "atty",
  "chrono",
  "clap",
  "clap_complete",
