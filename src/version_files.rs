@@ -16,21 +16,23 @@ pub fn get_user_version_for_directory(
     config: &FnmConfig,
 ) -> Option<UserVersion> {
     match config.version_file_strategy() {
-        VersionFileStrategy::Local => get_user_version_for_single_directory(path),
-        VersionFileStrategy::Recursive => {
-            get_user_version_for_directory_recursive(path).or_else(|| {
+        VersionFileStrategy::Local => get_user_version_for_single_directory(path, config),
+        VersionFileStrategy::Recursive => get_user_version_for_directory_recursive(path, config)
+            .or_else(|| {
                 info!("Did not find anything recursively. Falling back to default alias.");
                 default_version::find_default_version(config).map(UserVersion::Full)
-            })
-        }
+            }),
     }
 }
 
-fn get_user_version_for_directory_recursive(path: impl AsRef<Path>) -> Option<UserVersion> {
+fn get_user_version_for_directory_recursive(
+    path: impl AsRef<Path>,
+    config: &FnmConfig,
+) -> Option<UserVersion> {
     let mut current_path = Some(path.as_ref());
 
     while let Some(child_path) = current_path {
-        if let Some(version) = get_user_version_for_single_directory(child_path) {
+        if let Some(version) = get_user_version_for_single_directory(child_path, config) {
             return Some(version);
         }
 
@@ -40,7 +42,10 @@ fn get_user_version_for_directory_recursive(path: impl AsRef<Path>) -> Option<Us
     None
 }
 
-fn get_user_version_for_single_directory(path: impl AsRef<Path>) -> Option<UserVersion> {
+fn get_user_version_for_single_directory(
+    path: impl AsRef<Path>,
+    config: &FnmConfig,
+) -> Option<UserVersion> {
     let path = path.as_ref();
 
     for path_part in &PATH_PARTS {
@@ -50,7 +55,7 @@ fn get_user_version_for_single_directory(path: impl AsRef<Path>) -> Option<UserV
             new_path.display(),
             new_path.exists()
         );
-        if let Some(version) = get_user_version_for_file(&new_path) {
+        if let Some(version) = get_user_version_for_file(&new_path, config) {
             return Some(version);
         }
     }
@@ -58,7 +63,10 @@ fn get_user_version_for_single_directory(path: impl AsRef<Path>) -> Option<UserV
     None
 }
 
-pub fn get_user_version_for_file(path: impl AsRef<Path>) -> Option<UserVersion> {
+pub fn get_user_version_for_file(
+    path: impl AsRef<Path>,
+    config: &FnmConfig,
+) -> Option<UserVersion> {
     let is_pkg_json = match path.as_ref().file_name() {
         Some(name) => name == "package.json",
         None => false,
@@ -70,16 +78,31 @@ pub fn get_user_version_for_file(path: impl AsRef<Path>) -> Option<UserVersion> 
         reader.read_to_string(&mut version).map(|_| version)
     };
 
-    match (file, is_pkg_json) {
-        (Err(err), _) => {
+    match (file, is_pkg_json, config) {
+        (
+            _,
+            true,
+            FnmConfig {
+                resolve_engines: false,
+                ..
+            },
+        ) => None,
+        (Err(err), _, _) => {
             info!("Can't read file: {}", err);
             None
         }
-        (Ok(version), false) => {
+        (Ok(version), false, _) => {
             info!("Found string {:?} in version file", version);
             UserVersion::from_str(version.trim()).ok()
         }
-        (Ok(pkg_json), true) => {
+        (
+            Ok(pkg_json),
+            true,
+            FnmConfig {
+                resolve_engines: true,
+                ..
+            },
+        ) => {
             let pkg_json = serde_json::from_str::<PackageJson>(&pkg_json).ok();
             let range: Option<node_semver::Range> =
                 pkg_json.as_ref().and_then(PackageJson::node_range).cloned();

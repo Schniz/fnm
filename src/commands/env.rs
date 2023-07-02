@@ -94,6 +94,7 @@ impl Command for Env {
                 "FNM_COREPACK_ENABLED",
                 config.corepack_enabled().to_string(),
             ),
+            ("FNM_RESOLVE_ENGINES", config.resolve_engines().to_string()),
             ("FNM_ARCH", config.arch.to_string()),
         ]);
 
