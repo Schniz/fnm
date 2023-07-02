@@ -41,7 +41,10 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
     })
 
     test(`package.json engines.node`, async () => {
-      await writeFile(join(testCwd(), "package.json"), JSON.stringify({engines: {node: "8.11.3"}})
+      await writeFile(
+        join(testCwd(), "package.json"),
+        JSON.stringify({ engines: { node: "8.11.3" } })
+      )
       await script(shell)
         .then(shell.env({}))
         .then(shell.call("fnm", ["install"]))
@@ -52,9 +55,11 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
     })
 
     test(`package.json engines.node with semver range`, async () => {
-      await writeFile(join(testCwd(), "package.json"), JSON.stringify({engines: {node: "^6 < 6.17.1"}})
+      await writeFile(
+        join(testCwd(), "package.json"),
+        JSON.stringify({ engines: { node: "^6 < 6.17.1" } })
+      )
       await script(shell)
-
         .then(shell.env({}))
         .then(shell.call("fnm", ["install"]))
         .then(shell.call("fnm", ["use"]))
