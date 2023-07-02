@@ -164,14 +164,12 @@ mod tests {
     fn test_smoke() {
         use crate::shell;
         let config = FnmConfig::default();
-        let shell: Box<dyn Shell> = if cfg!(windows) {
-            Box::from(shell::WindowsCmd)
-        } else {
-            Box::from(shell::Bash)
-        };
         Env {
-            shell: Some(shell),
-            ..Env::default()
+            #[cfg(windows)]
+            shell: Some(Shells::Cmd),
+            #[cfg(not(windows))]
+            shell: Some(Shells::Bash),
+            ..Default::default()
         }
         .call(config);
     }
