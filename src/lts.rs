@@ -23,7 +23,7 @@ impl Display for LtsType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Latest => write!(f, "latest"),
-            Self::CodeName(s) => write!(f, "{}", s),
+            Self::CodeName(s) => write!(f, "{s}"),
         }
     }
 }

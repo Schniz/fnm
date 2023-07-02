@@ -25,7 +25,7 @@ pub fn get_safe_arch<'a>(arch: &'a Arch, version: &Version) -> &'a Arch {
 #[cfg(windows)]
 /// handle common case: Apple Silicon / Node < 16
 pub fn get_safe_arch<'a>(arch: &'a Arch, _version: &Version) -> &'a Arch {
-    return &arch;
+    arch
 }
 
 impl Default for Arch {
@@ -48,7 +48,7 @@ impl std::str::FromStr for Arch {
             "ppc64le" => Ok(Arch::Ppc64le),
             "ppc64" => Ok(Arch::Ppc64),
             "s390x" => Ok(Arch::S390x),
-            unknown => Err(ArchError::new(&format!("Unknown Arch: {}", unknown))),
+            unknown => Err(ArchError::new(&format!("Unknown Arch: {unknown}"))),
         }
     }
 }
@@ -65,7 +65,7 @@ impl std::fmt::Display for Arch {
             Arch::S390x => String::from("s390x"),
         };
 
-        write!(f, "{}", arch_str)
+        write!(f, "{arch_str}")
     }
 }
 

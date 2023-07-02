@@ -1,3 +1,4 @@
+use super::command::Command;
 use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
@@ -18,30 +19,38 @@ pub struct Install {
     pub version: Option<UserVersion>,
 
     /// Install latest LTS
-    #[clap(long, conflicts_with = "version")]
+    #[clap(long, conflicts_with_all = &["version", "latest"])]
     pub lts: bool,
+
+    /// Install latest version
+    #[clap(long, conflicts_with_all = &["version", "lts"])]
+    pub latest: bool,
 }
 
 impl Install {
     fn version(self) -> Result<Option<UserVersion>, Error> {
         match self {
             Self {
-                version: Some(_),
-                lts: true,
-            } => Err(Error::TooManyVersionsProvided),
-            Self {
                 version: v,
                 lts: false,
+                latest: false,
             } => Ok(v),
             Self {
                 version: None,
                 lts: true,
+                latest: false,
             } => Ok(Some(UserVersion::Full(Version::Lts(LtsType::Latest)))),
+            Self {
+                version: None,
+                lts: false,
+                latest: true,
+            } => Ok(Some(UserVersion::Full(Version::Latest))),
+            _ => Err(Error::TooManyVersionsProvided),
         }
     }
 }
 
-impl super::command::Command for Install {
+impl Command for Install {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
@@ -70,6 +79,21 @@ impl super::command::Command for Install {
                 debug!(
                     "Resolved {} into Node version {}",
                     Version::Lts(lts_type).v_str().cyan(),
+                    picked_version.v_str().cyan()
+                );
+                picked_version
+            }
+            UserVersion::Full(Version::Latest) => {
+                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
+                    .map_err(|source| Error::CantListRemoteVersions { source })?;
+                let picked_version = available_versions
+                    .last()
+                    .ok_or(Error::CantFindLatest)?
+                    .version
+                    .clone();
+                debug!(
+                    "Resolved {} into Node version {}",
+                    Version::Latest.v_str().cyan(),
                     picked_version.v_str().cyan()
                 );
                 picked_version
@@ -111,8 +135,14 @@ impl super::command::Command for Install {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
             }
-            other_err => other_err.map_err(|source| Error::DownloadError { source })?,
+            Err(source) => Err(Error::DownloadError { source })?,
+            Ok(_) => {}
         };
+
+        if config.corepack_enabled() {
+            outln!(config, Info, "Enabling corepack for {}", version_str.cyan());
+            enable_corepack(&version, config)?;
+        }
 
         if let UserVersion::Full(Version::Lts(lts_type)) = current_version {
             let alias_name = Version::Lts(lts_type).v_str();
@@ -133,6 +163,19 @@ impl super::command::Command for Install {
     }
 }
 
+fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
+    let corepack_path = version.installation_path(config);
+    let corepack_path = if cfg!(windows) {
+        corepack_path.join("corepack.cmd")
+    } else {
+        corepack_path.join("bin").join("corepack")
+    };
+    super::exec::Exec::new_for_version(version, corepack_path.to_str().unwrap(), &["enable"])
+        .apply(config)
+        .map_err(|source| Error::CorepackError { source })?;
+    Ok(())
+}
+
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("Can't download the requested binary: {}", source)]
@@ -141,6 +184,11 @@ pub enum Error {
     IoError {
         #[from]
         source: std::io::Error,
+    },
+    #[error("Can't enable corepack: {source}")]
+    CorepackError {
+        #[from]
+        source: super::exec::Error,
     },
     #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,
@@ -153,6 +201,8 @@ pub enum Error {
     CantFindNodeVersion { requested_version: UserVersion },
     #[error("Can't find relevant LTS named {}", lts_type)]
     CantFindRelevantLts { lts_type: crate::lts::LtsType },
+    #[error("Can't find any versions in the upstream version index.")]
+    CantFindLatest,
     #[error("The requested version is not installable: {}", version.v_str())]
     UninstallableVersion { version: Version },
     #[error("Too many versions provided. Please don't use --lts with a version string.")]
@@ -161,7 +211,6 @@ pub enum Error {
 
 #[cfg(test)]
 mod tests {
-    use super::super::command::Command;
     use super::*;
     use pretty_assertions::assert_eq;
     use std::str::FromStr;
@@ -175,6 +224,7 @@ mod tests {
         Install {
             version: UserVersion::from_str("12.0.0").ok(),
             lts: false,
+            latest: false,
         }
         .apply(&config)
         .expect("Can't install");
@@ -189,5 +239,32 @@ mod tests {
                 .canonicalize()
                 .ok()
         );
+    }
+
+    #[test]
+    fn test_install_latest() {
+        let base_dir = tempfile::tempdir().unwrap();
+        let config = FnmConfig::default().with_base_dir(Some(base_dir.path().to_path_buf()));
+
+        Install {
+            version: None,
+            lts: false,
+            latest: true,
+        }
+        .apply(&config)
+        .expect("Can't install");
+
+        let available_versions: Vec<_> =
+            remote_node_index::list(&config.node_dist_mirror).expect("Can't get node version list");
+        let latest_version = available_versions.last().unwrap().version.clone();
+
+        assert!(config.installations_dir().exists());
+        assert!(config
+            .installations_dir()
+            .join(latest_version.to_string())
+            .join("installation")
+            .canonicalize()
+            .unwrap()
+            .exists());
     }
 }

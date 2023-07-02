@@ -13,7 +13,7 @@ impl Command for Current {
             Some(ver) => ver.v_str(),
             None => "none".into(),
         };
-        println!("{}", version_string);
+        println!("{version_string}");
         Ok(())
     }
 }

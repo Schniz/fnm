@@ -43,7 +43,7 @@ impl UserVersion {
                 }
             }
             (Self::SemverRange(range), Version::Semver(semver)) => semver.satisfies(range),
-            (_, Version::Bypassed | Version::Lts(_) | Version::Alias(_)) => false,
+            (_, Version::Bypassed | Version::Lts(_) | Version::Alias(_) | Version::Latest) => false,
             (Self::OnlyMajor(major), Version::Semver(other)) => *major == other.major,
             (Self::MajorMinor(major, minor), Version::Semver(other)) => {
                 *major == other.major && *minor == other.minor
@@ -62,8 +62,8 @@ impl std::fmt::Display for UserVersion {
         match self {
             Self::Full(x) => x.fmt(f),
             Self::SemverRange(x) => x.fmt(f),
-            Self::OnlyMajor(major) => write!(f, "v{}.x.x", major),
-            Self::MajorMinor(major, minor) => write!(f, "v{}.{}.x", major, minor),
+            Self::OnlyMajor(major) => write!(f, "v{major}.x.x"),
+            Self::MajorMinor(major, minor) => write!(f, "v{major}.{minor}.x"),
         }
     }
 }

@@ -1,7 +1,7 @@
 <h1 align="center">
   Fast Node Manager (<code>fnm</code>)
   <img alt="Amount of downloads" src="https://img.shields.io/github/downloads/Schniz/fnm/total.svg?style=flat" />
-  <a href="https://github.com/Schniz/fnm/actions"><img src="https://img.shields.io/github/workflow/status/Schniz/fnm/Rust/master?label=workflow" alt="GitHub Actions workflow status" /></a>
+  <a href="https://github.com/Schniz/fnm/actions"><img src="https://img.shields.io/github/actions/workflow/status/Schniz/fnm/rust.yml?branch=master&label=workflow" alt="GitHub Actions workflow status" /></a>
 </h1>
 
 > :rocket: Fast and simple Node.js version manager, built in Rust
@@ -24,7 +24,9 @@
 
 ### Using a script (macOS/Linux)
 
-For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh):
+For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh).
+
+First ensure that `curl` and `unzip` are already installed on you operating system. Then execute:
 
 ```sh
 curl -fsSL https://fnm.vercel.app/install | bash
@@ -66,6 +68,12 @@ brew install fnm
 
 Then, [set up your shell for fnm](#shell-setup)
 
+#### Using Winget (Windows)
+
+```sh
+winget install Schniz.fnm
+```
+
 #### Using Scoop (Windows)
 
 ```sh
@@ -94,7 +102,7 @@ Then, [set up your shell for fnm](#shell-setup)
 
 - Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
 - Make it available globally on `PATH` environment variable
-- Configure your shell profile:
+- [Set up your shell for fnm](#shell-setup)
 
 ### Removing
 To remove fnm (😢), just delete the `.fnm` folder in your home directory. You should also edit your shell configuration to remove any references to fnm (ie. read [Shell Setup](#shell-setup), and do the opposite).

@@ -9,6 +9,7 @@ pub enum Version {
     Semver(node_semver::Version),
     Lts(LtsType),
     Alias(String),
+    Latest,
     Bypassed,
 }
 
@@ -52,13 +53,13 @@ impl Version {
     }
 
     pub fn v_str(&self) -> String {
-        format!("{}", self)
+        format!("{self}")
     }
 
     pub fn installation_path(&self, config: &config::FnmConfig) -> std::path::PathBuf {
         match self {
             Self::Bypassed => system_version::path(),
-            v @ (Self::Lts(_) | Self::Alias(_)) => {
+            v @ (Self::Lts(_) | Self::Alias(_) | Self::Latest) => {
                 config.aliases_dir().join(v.alias_name().unwrap())
             }
             v @ Self::Semver(_) => config
@@ -76,6 +77,9 @@ impl Version {
     }
 }
 
+// TODO: add a trait called BinPath that &Path and PathBuf implements
+// which adds the `.bin_path()` which works both on windows and unix :)
+
 impl<'de> serde::Deserialize<'de> for Version {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -90,9 +94,10 @@ impl std::fmt::Display for Version {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Bypassed => write!(f, "{}", system_version::display_name()),
-            Self::Lts(lts) => write!(f, "lts-{}", lts),
-            Self::Semver(semver) => write!(f, "v{}", semver),
-            Self::Alias(alias) => write!(f, "{}", alias),
+            Self::Lts(lts) => write!(f, "lts-{lts}"),
+            Self::Semver(semver) => write!(f, "v{semver}"),
+            Self::Alias(alias) => write!(f, "{alias}"),
+            Self::Latest => write!(f, "latest"),
         }
     }
 }
@@ -107,7 +112,7 @@ impl FromStr for Version {
 impl PartialEq<node_semver::Version> for Version {
     fn eq(&self, other: &node_semver::Version) -> bool {
         match self {
-            Self::Bypassed | Self::Lts(_) | Self::Alias(_) => false,
+            Self::Bypassed | Self::Lts(_) | Self::Alias(_) | Self::Latest => false,
             Self::Semver(v) => v == other,
         }
     }

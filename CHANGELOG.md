@@ -1,5 +1,47 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.34.0
+
+### Minor Changes
+
+- Add --corepack-enabled flag for automatically enabling corepack on fnm install ([#960](https://github.com/Schniz/fnm/pull/960))
+
+### Patch Changes
+
+- modernize tty check (#973 by @tottoto) ([`48b2611`](https://github.com/Schniz/fnm/commit/48b2611e4b1c205f07dcbd50f2fff436becb77c1))
+
+- use cygwinpath to make the path posix-like on Windows Bash usage ([#960](https://github.com/Schniz/fnm/pull/960))
+
+- capitalize "n" to show default (#963 by @Joshuahuahua) ([`48b2611`](https://github.com/Schniz/fnm/commit/48b2611e4b1c205f07dcbd50f2fff436becb77c1))
+
+## 1.33.1
+
+### Patch Changes
+
+- remove upx compression from arm binaries because it fails to build on latest rust ([#875](https://github.com/Schniz/fnm/pull/875))
+
+## 1.33.0
+
+### Minor Changes
+
+- Replace `semver` with `node_semver` ([#816](https://github.com/Schniz/fnm/pull/816))
+
+- support `fnm install --latest` to install the latest Node.js version ([#859](https://github.com/Schniz/fnm/pull/859))
+
+## 1.32.0
+
+### Minor Changes
+
+- Add `--json` to `fnm env` to output the env vars as JSON ([#800](https://github.com/Schniz/fnm/pull/800))
+
+### Patch Changes
+
+- This updates the Changesets configurations. ([#783](https://github.com/Schniz/fnm/pull/783))
+
+- fix test: Use correct PATH for npm install test ([#768](https://github.com/Schniz/fnm/pull/768))
+
+- Make installation script respect `$XDG_DATA_HOME` ([#614](https://github.com/Schniz/fnm/pull/614))
+
 ## 1.31.1
 
 ### Patch Changes

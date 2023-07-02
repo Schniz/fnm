@@ -92,7 +92,7 @@ pub enum Error {
     CantInferVersion,
     #[error("Can't uninstall system version")]
     CantUninstallSystemVersion,
-    #[error("Too many versions had matched, please be more specific.\nFound {} matching versions, expected 1:\n{}", matched_versions.len(), matched_versions.iter().map(|v| format!("* {}", v)).collect::<Vec<_>>().join("\n"))]
+    #[error("Too many versions had matched, please be more specific.\nFound {} matching versions, expected 1:\n{}", matched_versions.len(), matched_versions.iter().map(|v| format!("* {v}")).collect::<Vec<_>>().join("\n"))]
     PleaseBeMoreSpecificToDelete { matched_versions: Vec<String> },
     #[error("Can't find a matching version")]
     CantFindVersion,

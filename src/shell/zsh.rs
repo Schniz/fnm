@@ -16,11 +16,13 @@ impl Shell for Zsh {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Path is not valid UTF-8"))?;
-        Ok(format!("export PATH={:?}:$PATH", path))
+        let path =
+            super::windows_compat::maybe_fix_windows_path(path).unwrap_or_else(|| path.to_string());
+        Ok(format!("export PATH={path:?}:$PATH"))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
-        format!("export {}={:?}", name, value)
+        format!("export {name}={value:?}")
     }
 
     fn rehash(&self) -> Option<String> {

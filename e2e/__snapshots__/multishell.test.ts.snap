@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash multishell changes don't affect parent: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v8.11.3
+fnm install v11.9.0
+echo 'set -e
+eval "$(fnm env)"
+fnm use v11
+if [ "$(node --version)" != "v11.9.0" ]; then
+  echo "Expected node version to be v11.9.0. Got $(node --version)"
+  exit 1
+fi' | bash
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Fish multishell changes don't affect parent: Fish 1`] = `
+"fnm env | source
+fnm install v8.11.3
+fnm install v11.9.0
+fish -c 'fnm env | source
+fnm use v11
+set ____test____ (node --version)
+if test "$____test____" != "v11.9.0"
+  echo "Expected node version to be v11.9.0. Got $____test____"
+  exit 1
+end'
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`PowerShell multishell changes don't affect parent: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install v8.11.3
+fnm install v11.9.0
+echo '$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm use v11
+if ( "$(node --version)" -ne "v11.9.0" ) { echo "Expected node version to be v11.9.0. Got $(node --version)"; exit 1 }' | pwsh -NoProfile
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`Zsh multishell changes don't affect parent: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v8.11.3
+fnm install v11.9.0
+echo 'set -e
+eval "$(fnm env)"
+fnm use v11
+if [ "$(node --version)" != "v11.9.0" ]; then
+  echo "Expected node version to be v11.9.0. Got $(node --version)"
+  exit 1
+fi' | zsh
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;

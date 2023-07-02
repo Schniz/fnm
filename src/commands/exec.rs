@@ -23,6 +23,25 @@ pub struct Exec {
     arguments: Vec<String>,
 }
 
+impl Exec {
+    pub(crate) fn new_for_version(
+        version: &crate::version::Version,
+        cmd: &str,
+        arguments: &[&str],
+    ) -> Self {
+        let reader = UserVersionReader::Direct(UserVersion::Full(version.clone()));
+        let args: Vec<_> = std::iter::once(cmd)
+            .chain(arguments.iter().copied())
+            .map(String::from)
+            .collect();
+        Self {
+            version: Some(reader),
+            using_file: false,
+            arguments: args,
+        }
+    }
+}
+
 impl Cmd for Exec {
     type Error = Error;
 
@@ -69,14 +88,19 @@ impl Cmd for Exec {
                 .map_err(|source| Error::CantAddPathToEnvironment { source })?
         };
 
-        let exit_status = Command::new(&binary)
+        log::debug!("Running {} with PATH={:?}", binary, path_env);
+
+        let exit_status = Command::new(binary)
             .args(arguments)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .env("PATH", path_env)
             .spawn()
-            .expect("Can't spawn program")
+            .map_err(|source| Error::CantSpawnProgram {
+                source,
+                binary: binary.to_string(),
+            })?
             .wait()
             .expect("Failed to grab exit code");
 
@@ -87,6 +111,11 @@ impl Cmd for Exec {
 
 #[derive(Debug, Error)]
 pub enum Error {
+    #[error("Can't spawn program: {source}\nMaybe the program {} does not exist on not available in PATH?", binary.bold())]
+    CantSpawnProgram {
+        source: std::io::Error,
+        binary: String,
+    },
     #[error("Can't read path environment variable")]
     CantReadPathVariable,
     #[error("Can't add path to environment variable: {}", source)]
