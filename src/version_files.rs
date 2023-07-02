@@ -78,15 +78,8 @@ pub fn get_user_version_for_file(
         reader.read_to_string(&mut version).map(|_| version)
     };
 
-    match (file, is_pkg_json, config) {
-        (
-            _,
-            true,
-            FnmConfig {
-                resolve_engines: false,
-                ..
-            },
-        ) => None,
+    match (file, is_pkg_json, config.resolve_engines()) {
+        (_, true, false) => None,
         (Err(err), _, _) => {
             info!("Can't read file: {}", err);
             None
@@ -95,14 +88,7 @@ pub fn get_user_version_for_file(
             info!("Found string {:?} in version file", version);
             UserVersion::from_str(version.trim()).ok()
         }
-        (
-            Ok(pkg_json),
-            true,
-            FnmConfig {
-                resolve_engines: true,
-                ..
-            },
-        ) => {
+        (Ok(pkg_json), true, true) => {
             let pkg_json = serde_json::from_str::<PackageJson>(&pkg_json).ok();
             let range: Option<node_semver::Range> =
                 pkg_json.as_ref().and_then(PackageJson::node_range).cloned();
