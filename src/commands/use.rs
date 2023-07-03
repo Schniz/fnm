@@ -4,6 +4,7 @@ use crate::current_version::current_version;
 use crate::fs;
 use crate::installed_versions;
 use crate::outln;
+use crate::shell;
 use crate::system_version;
 use crate::user_version::UserVersion;
 use crate::version::Version;
@@ -158,9 +159,9 @@ fn replace_symlink(from: &std::path::Path, to: &std::path::Path) -> std::io::Res
 }
 
 fn should_install_interactively(requested_version: &UserVersion) -> bool {
-    use std::io::Write;
+    use std::io::{IsTerminal, Write};
 
-    if !(atty::is(atty::Stream::Stdout) && atty::is(atty::Stream::Stdin)) {
+    if !(std::io::stdout().is_terminal() && std::io::stdin().is_terminal()) {
         return false;
     }
 
@@ -169,7 +170,7 @@ fn should_install_interactively(requested_version: &UserVersion) -> bool {
         requested_version.to_string().italic()
     );
     eprintln!("{}", error_message.red());
-    let do_you_want = format!("Do you want to install it? {} [y/n]:", "answer".bold());
+    let do_you_want = format!("Do you want to install it? {} [y/N]:", "answer".bold());
     eprint!("{} ", do_you_want.yellow());
     std::io::stdout().flush().unwrap();
     let mut s = String::new();
@@ -190,8 +191,11 @@ fn warn_if_multishell_path_not_in_path_env_var(
         multishell_path.to_path_buf()
     };
 
+    let fixed_path = bin_path.to_str().and_then(shell::maybe_fix_windows_path);
+    let fixed_path = fixed_path.as_ref().map(|x| &x[..]);
+
     for path in std::env::split_paths(&std::env::var("PATH").unwrap_or_default()) {
-        if bin_path == path {
+        if bin_path == path || fixed_path == path.to_str() {
             return;
         }
     }
