@@ -7,6 +7,7 @@ pub enum LogLevel {
     Quiet,
     Error,
     #[default]
+    #[value(alias("all"))]
     Info,
 }
 
