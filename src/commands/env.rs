@@ -162,7 +162,6 @@ mod tests {
 
     #[test]
     fn test_smoke() {
-        use crate::shell;
         let config = FnmConfig::default();
         Env {
             #[cfg(windows)]
