@@ -4,7 +4,7 @@ use crate::shell::Shell;
 use std::ffi::OsStr;
 use sysinfo::{ProcessExt, System, SystemExt};
 
-pub fn infer_shell() -> Option<Box<dyn Shell>> {
+pub fn infer_shell() -> Option<Shells> {
     let mut system = System::new();
     let mut current_pid = sysinfo::get_current_pid().ok();
 

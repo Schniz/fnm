@@ -1,9 +1,9 @@
 use super::command::Command;
 use crate::config::FnmConfig;
-use crate::shell::{infer_shell, Shell};
+use crate::shell::infer_shell;
 use crate::{cli::Cli, shell::Shells};
 use clap::{CommandFactory, Parser, ValueEnum};
-use clap_complete::{Generator, Shell as ClapShell};
+use clap_complete::{Generator, Shell};
 use thiserror::Error;
 
 #[derive(Parser, Debug)]
@@ -18,12 +18,11 @@ impl Command for Completions {
 
     fn apply(self, _config: &FnmConfig) -> Result<(), Self::Error> {
         let mut stdio = std::io::stdout();
-        let shell: Box<dyn Shell> = self
+        let shell: Shell = self
             .shell
-            .map(Into::into)
-            .or_else(|| infer_shell().map(Into::into))
-            .ok_or(Error::CantInferShell)?;
-        let shell: ClapShell = shell.into();
+            .or_else(infer_shell)
+            .ok_or(Error::CantInferShell)?
+            .into();
         let app = Cli::command();
         shell.generate(&app, &mut stdio);
         Ok(())
