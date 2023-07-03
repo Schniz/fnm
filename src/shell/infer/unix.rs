@@ -1,6 +1,6 @@
 #![cfg(unix)]
 
-use crate::shell::Shells;
+use crate::shell::Shell;
 use log::debug;
 use std::io::{Error, ErrorKind};
 use thiserror::Error;
@@ -13,7 +13,7 @@ struct ProcessInfo {
 
 const MAX_ITERATIONS: u8 = 10;
 
-pub fn infer_shell() -> Option<Shells> {
+pub fn infer_shell() -> Option<Box<dyn Shell>> {
     let mut pid = Some(std::process::id());
     let mut visited = 0;
 

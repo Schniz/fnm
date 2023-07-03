@@ -102,8 +102,9 @@ impl Command for Env {
             return Ok(());
         }
 
-        let shell = self
+        let shell: Box<dyn Shell> = self
             .shell
+            .map(Into::into)
             .or_else(infer_shell)
             .ok_or(Error::CantInferShell)?;
 
