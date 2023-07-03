@@ -4,7 +4,8 @@ use crate::directories;
 use crate::fs::symlink_dir;
 use crate::outln;
 use crate::path_ext::PathExt;
-use crate::shell::{infer_shell, Shell, AVAILABLE_SHELLS};
+use crate::shell::{infer_shell, Shell, Shells};
+use clap::ValueEnum;
 use colored::Colorize;
 use std::collections::HashMap;
 use std::fmt::Debug;
@@ -14,8 +15,7 @@ use thiserror::Error;
 pub struct Env {
     /// The shell syntax to use. Infers when missing.
     #[clap(long)]
-    #[clap(possible_values = AVAILABLE_SHELLS)]
-    shell: Option<Box<dyn Shell>>,
+    shell: Option<Shells>,
     /// Print JSON instead of shell commands.
     #[clap(long, conflicts_with = "shell")]
     json: bool,
@@ -104,6 +104,7 @@ impl Command for Env {
 
         let shell: Box<dyn Shell> = self
             .shell
+            .map(Into::into)
             .or_else(infer_shell)
             .ok_or(Error::CantInferShell)?;
 
@@ -148,7 +149,7 @@ pub enum Error {
 }
 
 fn shells_as_string() -> String {
-    AVAILABLE_SHELLS
+    Shells::value_variants()
         .iter()
         .map(|x| format!("* {x}"))
         .collect::<Vec<_>>()
@@ -161,16 +162,13 @@ mod tests {
 
     #[test]
     fn test_smoke() {
-        use crate::shell;
         let config = FnmConfig::default();
-        let shell: Box<dyn Shell> = if cfg!(windows) {
-            Box::from(shell::WindowsCmd)
-        } else {
-            Box::from(shell::Bash)
-        };
         Env {
-            shell: Some(shell),
-            ..Env::default()
+            #[cfg(windows)]
+            shell: Some(Shells::Cmd),
+            #[cfg(not(windows))]
+            shell: Some(Shells::Bash),
+            ..Default::default()
         }
         .call(config);
     }

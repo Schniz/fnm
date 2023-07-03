@@ -36,10 +36,9 @@ pub struct FnmConfig {
     #[clap(
         long,
         env = "FNM_LOGLEVEL",
-        default_value = "info",
+        default_value_t,
         global = true,
-        hide_env_values = true,
-        possible_values = LogLevel::possible_values()
+        hide_env_values = true
     )]
     log_level: LogLevel,
 
@@ -57,17 +56,12 @@ pub struct FnmConfig {
 
     /// A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is
     /// called without a version, or when `--use-on-cd` is configured on evaluation.
-    ///
-    /// * `local`: Use the local version of Node defined within the current directory
-    ///
-    /// * `recursive`: Use the version of Node defined within the current directory and all parent directories
     #[clap(
         long,
         env = "FNM_VERSION_FILE_STRATEGY",
-        possible_values = VersionFileStrategy::possible_values(),
-        default_value = "local",
+        default_value_t,
         global = true,
-        hide_env_values = true,
+        hide_env_values = true
     )]
     version_file_strategy: VersionFileStrategy,
 
