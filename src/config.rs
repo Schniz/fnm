@@ -76,15 +76,15 @@ pub struct FnmConfig {
     )]
     corepack_enabled: bool,
 
-    /// Enable experimental support for resolving `engines.node` field in `package.json`
-    /// whenever a `.node-version` or `.nvmrc` file is not present.
+    /// Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
     /// Note: This feature is experimental and subject to change.
     /// Note: `engines.node` can be any semver range, so resolution is non-deterministic.
     #[clap(
         long,
         env = "FNM_RESOLVE_ENGINES",
         global = true,
-        hide_env_values = true
+        hide_env_values = true,
+        verbatim_doc_comment
     )]
     resolve_engines: bool,
 }
