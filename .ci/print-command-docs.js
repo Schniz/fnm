@@ -106,11 +106,14 @@ async function getCommandHelp(fnmPath, command) {
   const result = await run(fnmPath, [...cmdArg, "--help"])
   const text = result.stdout
   const rows = text.split("\n")
-  const headerIndex = rows.findIndex((x) => x.includes("SUBCOMMANDS"))
+  const headerIndex = rows.findIndex((x) => x.includes("Commands:"))
   /** @type {string[]} */
   const subcommands = []
   if (!command) {
-    for (const row of rows.slice(headerIndex + 1)) {
+    for (const row of rows.slice(
+      headerIndex + 1,
+      rows.indexOf("", headerIndex + 1)
+    )) {
       const [, word] = row.split(/\s+/)
       if (word && word[0].toLowerCase() === word[0]) {
         subcommands.push(word)
