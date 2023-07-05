@@ -59,6 +59,13 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
+
   -h, --help
           Print help (see a summary with '-h')
 
@@ -112,6 +119,13 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -161,6 +175,13 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -222,6 +243,13 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -281,6 +309,13 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -347,6 +382,13 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -401,6 +443,13 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -459,6 +508,13 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -512,6 +568,13 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -569,6 +632,13 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -618,6 +688,13 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -681,6 +758,13 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -736,6 +820,13 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-engines
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          Note: This feature is experimental and subject to change.
+          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+
+          [env: FNM_RESOLVE_ENGINES]
 
   -h, --help
           Print help (see a summary with '-h')
