@@ -44,7 +44,7 @@ fi"
 
 exports[`Bash package.json engines.node with semver range: Bash 1`] = `
 "set -e
-eval "$(fnm env)"
+eval "$(fnm env --resolve-engines)"
 fnm install
 fnm use
 if [ "$(node --version)" != "v6.17.0" ]; then
@@ -55,7 +55,7 @@ fi"
 
 exports[`Bash package.json engines.node: Bash 1`] = `
 "set -e
-eval "$(fnm env)"
+eval "$(fnm env --resolve-engines)"
 fnm install
 fnm use
 if [ "$(node --version)" != "v8.11.3" ]; then
@@ -141,7 +141,7 @@ end"
 `;
 
 exports[`Fish package.json engines.node with semver range: Fish 1`] = `
-"fnm env | source
+"fnm env --resolve-engines | source
 fnm install
 fnm use
 set ____test____ (node --version)
@@ -152,7 +152,7 @@ end"
 `;
 
 exports[`Fish package.json engines.node: Fish 1`] = `
-"fnm env | source
+"fnm env --resolve-engines | source
 fnm install
 fnm use
 set ____test____ (node --version)
@@ -228,7 +228,7 @@ if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.
 
 exports[`PowerShell package.json engines.node with semver range: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
-fnm env | Out-String | Invoke-Expression
+fnm env --resolve-engines | Out-String | Invoke-Expression
 fnm install
 fnm use
 if ( "$(node --version)" -ne "v6.17.0" ) { echo "Expected node version to be v6.17.0. Got $(node --version)"; exit 1 }"
@@ -236,7 +236,7 @@ if ( "$(node --version)" -ne "v6.17.0" ) { echo "Expected node version to be v6.
 
 exports[`PowerShell package.json engines.node: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
-fnm env | Out-String | Invoke-Expression
+fnm env --resolve-engines | Out-String | Invoke-Expression
 fnm install
 fnm use
 if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
@@ -311,7 +311,7 @@ fi"
 
 exports[`Zsh package.json engines.node with semver range: Zsh 1`] = `
 "set -e
-eval "$(fnm env)"
+eval "$(fnm env --resolve-engines)"
 fnm install
 fnm use
 if [ "$(node --version)" != "v6.17.0" ]; then
@@ -322,7 +322,7 @@ fi"
 
 exports[`Zsh package.json engines.node: Zsh 1`] = `
 "set -e
-eval "$(fnm env)"
+eval "$(fnm env --resolve-engines)"
 fnm install
 fnm use
 if [ "$(node --version)" != "v8.11.3" ]; then
