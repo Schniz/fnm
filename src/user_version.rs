@@ -5,6 +5,7 @@ use std::str::FromStr;
 pub enum UserVersion {
     OnlyMajor(u64),
     MajorMinor(u64, u64),
+    SemverRange(node_semver::Range),
     Full(Version),
 }
 
@@ -41,6 +42,7 @@ impl UserVersion {
                     }
                 }
             }
+            (Self::SemverRange(range), Version::Semver(semver)) => semver.satisfies(range),
             (_, Version::Bypassed | Version::Lts(_) | Version::Alias(_) | Version::Latest) => false,
             (Self::OnlyMajor(major), Version::Semver(other)) => *major == other.major,
             (Self::MajorMinor(major, minor), Version::Semver(other)) => {
@@ -59,6 +61,7 @@ impl std::fmt::Display for UserVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Full(x) => x.fmt(f),
+            Self::SemverRange(x) => x.fmt(f),
             Self::OnlyMajor(major) => write!(f, "v{major}.x.x"),
             Self::MajorMinor(major, minor) => write!(f, "v{major}.{minor}.x"),
         }

@@ -4,16 +4,18 @@ type EnvConfig = {
   useOnCd: boolean
   logLevel: string
   corepackEnabled: boolean
+  resolveEngines: boolean
 }
 export type HasEnv = { env(cfg: Partial<EnvConfig>): ScriptLine }
 
 function stringify(envConfig: Partial<EnvConfig> = {}) {
-  const { useOnCd, logLevel, corepackEnabled } = envConfig
+  const { useOnCd, logLevel, corepackEnabled, resolveEngines } = envConfig
   return [
     `fnm env`,
     useOnCd && "--use-on-cd",
     logLevel && `--log-level=${logLevel}`,
     corepackEnabled && "--corepack-enabled",
+    resolveEngines && `--resolve-engines`,
   ]
     .filter(Boolean)
     .join(" ")

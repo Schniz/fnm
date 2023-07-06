@@ -75,6 +75,18 @@ pub struct FnmConfig {
         hide_env_values = true
     )]
     corepack_enabled: bool,
+
+    /// Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+    /// Experimental: This feature is subject to change.
+    /// Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
+    #[clap(
+        long,
+        env = "FNM_RESOLVE_ENGINES",
+        global = true,
+        hide_env_values = true,
+        verbatim_doc_comment
+    )]
+    resolve_engines: bool,
 }
 
 impl Default for FnmConfig {
@@ -87,6 +99,7 @@ impl Default for FnmConfig {
             arch: Arch::default(),
             version_file_strategy: VersionFileStrategy::default(),
             corepack_enabled: false,
+            resolve_engines: false,
         }
     }
 }
@@ -98,6 +111,10 @@ impl FnmConfig {
 
     pub fn corepack_enabled(&self) -> bool {
         self.corepack_enabled
+    }
+
+    pub fn resolve_engines(&self) -> bool {
+        self.resolve_engines
     }
 
     pub fn multishell_path(&self) -> Option<&std::path::Path> {

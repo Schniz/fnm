@@ -61,7 +61,7 @@ export const PowerShell = {
   ...define<Shell>({
     binaryName: () => "pwsh",
     forceFile: ".ps1",
-    currentlySupported: () => true,
+    currentlySupported: () => process.platform === "win32",
     name: () => "PowerShell",
     launchArgs: () => ["-NoProfile"],
     escapeText: (x) => x,
