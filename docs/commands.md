@@ -61,8 +61,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -121,8 +121,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -178,8 +178,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -245,8 +245,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -312,8 +312,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -384,8 +384,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -446,8 +446,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -510,8 +510,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -571,8 +571,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -634,8 +634,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -691,8 +691,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -760,8 +760,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
@@ -823,8 +823,8 @@ Options:
 
       --resolve-engines
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-          Note: This feature is experimental and subject to change.
-          Note: `engines.node` can be any semver range, so resolution is non-deterministic.
+          Experimental: This feature is subject to change.
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
 
           [env: FNM_RESOLVE_ENGINES]
 
