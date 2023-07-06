@@ -1,5 +1,15 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.35.0
+
+### Minor Changes
+
+- [#839](https://github.com/Schniz/fnm/pull/839) [`97be792`](https://github.com/Schniz/fnm/commit/97be792a4410d8f121e03a1f81f60c48cbfdee2c) Thanks [@amitdahan](https://github.com/amitdahan)! - Support resolving `engines.node` field via experimental `--resolve-engines` flag
+
+### Patch Changes
+
+- [#991](https://github.com/Schniz/fnm/pull/991) [`b19eb29`](https://github.com/Schniz/fnm/commit/b19eb29b26323f0b9fb427d3d9271c9cc13a58f8) Thanks [@amitdahan](https://github.com/amitdahan)! - Bump Clap 3 -> 4
+
 ## 1.34.0
 
 ### Minor Changes
