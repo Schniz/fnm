@@ -50,3 +50,20 @@ fn shells_as_string() -> String {
         .collect::<Vec<_>>()
         .join("\n")
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_smoke() {
+        let config = FnmConfig::default();
+        Completions {
+            #[cfg(windows)]
+            shell: Some(Shells::Cmd),
+            #[cfg(not(windows))]
+            shell: Some(Shells::Bash),
+        }
+        .call(config);
+    }
+}
