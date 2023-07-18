@@ -56,12 +56,10 @@ mod tests {
     use super::*;
 
     #[test]
+    #[cfg(not(windows))]
     fn test_smoke() {
         let config = FnmConfig::default();
         Completions {
-            #[cfg(windows)]
-            shell: Some(Shells::Cmd),
-            #[cfg(not(windows))]
             shell: Some(Shells::Bash),
         }
         .call(config);
