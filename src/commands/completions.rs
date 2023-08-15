@@ -24,7 +24,8 @@ impl Command for Completions {
             .or_else(|| infer_shell().map(Into::into))
             .ok_or(Error::CantInferShell)?;
         let shell: ClapShell = shell.into();
-        let app = Cli::command();
+        let mut app = Cli::command();
+        app.build();
         shell.generate(&app, &mut stdio);
         Ok(())
     }
@@ -48,4 +49,19 @@ fn shells_as_string() -> String {
         .map(|x| format!("* {x}"))
         .collect::<Vec<_>>()
         .join("\n")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[cfg(not(windows))]
+    fn test_smoke() {
+        let config = FnmConfig::default();
+        Completions {
+            shell: Some(Shells::Bash),
+        }
+        .call(config);
+    }
 }
