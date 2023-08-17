@@ -1,5 +1,11 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.35.1
+
+### Patch Changes
+
+- [#1010](https://github.com/Schniz/fnm/pull/1010) [`b185446`](https://github.com/Schniz/fnm/commit/b185446cfa08d4d6e2552db53937762a3c38d4db) Thanks [@quixoten](https://github.com/quixoten)! - fix: panic on `fnm completions`
+
 ## 1.35.0
 
 ### Minor Changes
