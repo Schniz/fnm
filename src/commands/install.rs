@@ -3,6 +3,7 @@ use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
+use crate::log_level::LogLevel;
 use crate::lts::LtsType;
 use crate::outln;
 use crate::remote_node_index;
@@ -63,7 +64,7 @@ impl Command for Install {
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let current_dir = std::env::current_dir().unwrap();
 
-        let show_progress = !self.no_progress;
+        let show_progress = !self.no_progress && config.log_level().is_writable(&LogLevel::Info);
 
         let current_version = self
             .version()?
