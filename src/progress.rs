@@ -12,10 +12,11 @@ fn make_progress_bar(size: u64) -> ProgressBar {
     let bar = ProgressBar::new(size);
 
     bar.set_style(
-        ProgressStyle::default_bar()
-            .template("[{elapsed_precise}] [{bar:40}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
-            .unwrap()
-            .progress_chars("#>-")
+        ProgressStyle::with_template(
+            "[{elapsed_precise}] [{bar:40}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})",
+        )
+        .unwrap()
+        .progress_chars("#>-"),
     );
 
     bar
