@@ -51,6 +51,6 @@ impl Read for ResponseProgress {
 
 impl Drop for ResponseProgress {
     fn drop(&mut self) {
-        self.finish()
+        self.finish();
     }
 }
