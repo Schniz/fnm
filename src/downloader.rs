@@ -65,7 +65,7 @@ fn download_url(base_url: &Url, version: &Version, arch: &Arch) -> Url {
     .unwrap()
 }
 
-fn extract_archive_into<P: AsRef<Path>, R: Read>(path: P, response: R) -> Result<(), Error> {
+fn extract_archive_into(path: impl AsRef<Path>, response: impl Read) -> Result<(), Error> {
     #[cfg(unix)]
     let extractor = archive::TarXz::new(response);
     #[cfg(windows)]
