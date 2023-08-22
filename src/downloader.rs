@@ -111,7 +111,10 @@ pub fn install_node_dist<P: AsRef<Path>>(
 
     debug!("Extracting response...");
     if show_progress {
-        extract_archive_into(&portal, ResponseProgress::new(response, ProgressDrawTarget::stderr()))?;
+        extract_archive_into(
+            &portal,
+            ResponseProgress::new(response, ProgressDrawTarget::stderr()),
+        )?;
     } else {
         extract_archive_into(&portal, response)?;
     }

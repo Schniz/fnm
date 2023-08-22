@@ -59,16 +59,64 @@ impl Drop for ResponseProgress {
 
 #[cfg(test)]
 mod tests {
-    use indicatif::ProgressDrawTarget;
+    use indicatif::{ProgressDrawTarget, TermLike};
     use reqwest::blocking::Response;
-    use std::io::Read;
+    use std::{
+        io::Read,
+        sync::{Arc, Mutex},
+    };
 
     use super::ResponseProgress;
 
     const CONTENT_LENGTH: usize = 100;
 
+    #[derive(Debug)]
+    struct MockedTerm {
+        pub buf: Arc<Mutex<String>>,
+    }
+
+    impl TermLike for MockedTerm {
+        fn width(&self) -> u16 {
+            80
+        }
+
+        fn move_cursor_up(&self, _n: usize) -> std::io::Result<()> {
+            Ok(())
+        }
+
+        fn move_cursor_down(&self, _n: usize) -> std::io::Result<()> {
+            Ok(())
+        }
+
+        fn move_cursor_right(&self, _n: usize) -> std::io::Result<()> {
+            Ok(())
+        }
+
+        fn move_cursor_left(&self, _n: usize) -> std::io::Result<()> {
+            Ok(())
+        }
+
+        fn write_line(&self, s: &str) -> std::io::Result<()> {
+            self.buf.lock().unwrap().push_str(s);
+            Ok(())
+        }
+
+        fn write_str(&self, s: &str) -> std::io::Result<()> {
+            self.buf.lock().unwrap().push_str(s);
+            Ok(())
+        }
+
+        fn clear_line(&self) -> std::io::Result<()> {
+            Ok(())
+        }
+
+        fn flush(&self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+
     #[test]
-    fn test_reads_data() {
+    fn test_reads_data_and_shows_progress() {
         let response: Response = http::Response::builder()
             .header("Content-Length", CONTENT_LENGTH)
             .body("a".repeat(CONTENT_LENGTH))
@@ -77,10 +125,23 @@ mod tests {
 
         let mut buf = [0; CONTENT_LENGTH];
 
-        let mut progress = ResponseProgress::new(response, ProgressDrawTarget::hidden());
+        let out_buf = Arc::new(Mutex::new(String::new()));
+
+        let mut progress = ResponseProgress::new(
+            response,
+            ProgressDrawTarget::term_like(Box::new(MockedTerm {
+                buf: out_buf.clone(),
+            })),
+        );
         let size = progress.read(&mut buf[..]).unwrap();
+
+        drop(progress);
 
         assert_eq!(size, CONTENT_LENGTH);
         assert_eq!(buf, "a".repeat(CONTENT_LENGTH).as_bytes());
+        assert!(out_buf
+            .lock()
+            .unwrap()
+            .contains(&format!("[{}]", &"#".repeat(40))));
     }
 }
