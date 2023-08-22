@@ -657,6 +657,7 @@ dependencies = [
  "embed-resource",
  "encoding_rs_io",
  "env_logger",
+ "http",
  "indicatif",
  "indoc",
  "junction",

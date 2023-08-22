@@ -4,6 +4,7 @@ use crate::archive::{Error as ExtractError, Extract};
 use crate::directory_portal::DirectoryPortal;
 use crate::progress::ResponseProgress;
 use crate::version::Version;
+use indicatif::ProgressDrawTarget;
 use log::debug;
 use std::io::Read;
 use std::path::Path;
@@ -110,7 +111,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
 
     debug!("Extracting response...");
     if show_progress {
-        extract_archive_into(&portal, ResponseProgress::new(response))?;
+        extract_archive_into(&portal, ResponseProgress::new(response, ProgressDrawTarget::stderr()))?;
     } else {
         extract_archive_into(&portal, response)?;
     }

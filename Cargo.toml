@@ -36,6 +36,7 @@ indicatif = "0.17.6"
 pretty_assertions = "1.4.0"
 duct = "0.13.6"
 test-log = "0.2.12"
+http = "0.2.9"
 
 [build-dependencies]
 embed-resource = "1.8.0"
