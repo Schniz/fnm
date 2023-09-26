@@ -174,8 +174,10 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
-- On Windows to open and edit your profile you can type in PowerShell `notepad $profile`
-
+- On Windows to edit your profile you can run this in a PowerShell
+  ```powershell
+  notepad $profile
+  ```
 #### Windows Command Prompt aka Batch aka WinCMD
 
 fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
