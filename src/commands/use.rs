@@ -43,6 +43,7 @@ impl Command for Use {
                 UserVersionReader::Path(current_dir)
             })
             .into_user_version(config)
+            .or_else(|| config.default_if_none())
             .ok_or_else(|| match config.version_file_strategy() {
                 VersionFileStrategy::Local => InferVersionError::Local,
                 VersionFileStrategy::Recursive => InferVersionError::Recursive,

@@ -1,7 +1,8 @@
-use crate::arch::Arch;
 use crate::log_level::LogLevel;
 use crate::path_ext::PathExt;
+use crate::version::Version;
 use crate::version_file_strategy::VersionFileStrategy;
+use crate::{arch::Arch, user_version::UserVersion};
 use dirs::{data_dir, home_dir};
 use url::Url;
 
@@ -87,6 +88,15 @@ pub struct FnmConfig {
         verbatim_doc_comment
     )]
     resolve_engines: bool,
+
+    /// Use the default node version if a node version cannot be found
+    #[clap(
+        long,
+        env = "FNM_DEFAULT_IF_NONE",
+        global = true,
+        hide_env_values = true
+    )]
+    default_if_none: bool,
 }
 
 impl Default for FnmConfig {
@@ -100,6 +110,7 @@ impl Default for FnmConfig {
             version_file_strategy: VersionFileStrategy::default(),
             corepack_enabled: false,
             resolve_engines: false,
+            default_if_none: false,
         }
     }
 }
@@ -107,6 +118,14 @@ impl Default for FnmConfig {
 impl FnmConfig {
     pub fn version_file_strategy(&self) -> &VersionFileStrategy {
         &self.version_file_strategy
+    }
+
+    pub fn default_if_none(&self) -> Option<UserVersion> {
+        if self.default_if_none {
+            Some(UserVersion::Full(Version::Alias("default".into())))
+        } else {
+            None
+        }
     }
 
     pub fn corepack_enabled(&self) -> bool {
