@@ -96,7 +96,7 @@ pub struct FnmConfig {
         global = true,
         hide_env_values = true
     )]
-    default_if_none: bool,
+    pub(crate) default_if_none: bool,
 }
 
 impl Default for FnmConfig {

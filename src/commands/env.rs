@@ -78,6 +78,7 @@ impl Command for Env {
                 "FNM_VERSION_FILE_STRATEGY",
                 config.version_file_strategy().as_str().to_owned(),
             ),
+            ("FNM_DEFAULT_IF_NONE", config.default_if_none.to_string()),
             (
                 "FNM_DIR",
                 config.base_dir_with_default().to_str().unwrap().to_owned(),
