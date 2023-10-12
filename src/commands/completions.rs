@@ -3,6 +3,7 @@ use crate::config::FnmConfig;
 use crate::shell::{infer_shell, Shell};
 use crate::{cli::Cli, shell::Shells};
 use clap::{CommandFactory, Parser, ValueEnum};
+use clap_complete::generate;
 use clap_complete::{Generator, Shell as ClapShell};
 use thiserror::Error;
 
@@ -25,8 +26,8 @@ impl Command for Completions {
             .ok_or(Error::CantInferShell)?;
         let shell: ClapShell = shell.into();
         let mut app = Cli::command();
-        app.build();
-        shell.generate(&app, &mut stdio);
+        let name = app.get_name().to_string();
+        generate(shell, &mut app, name, &mut stdio);
         Ok(())
     }
 }

@@ -124,6 +124,20 @@ Where `<SHELL>` can be one of the supported shells:
 - `powershell`
 
 Please follow your shell instructions to install them.
+### Zsh
+```
+fnm completions --shell zsh > /usr/local/share/zsh/site-functions/_fnm
+compinit
+fnm --<TAB>
+```
+
+### Fish
+```
+fnm completions --shell fish > ./fnm.fish
+. ./fnm.fish
+fnm --<TAB>
+```
+
 
 ### Shell Setup
 
