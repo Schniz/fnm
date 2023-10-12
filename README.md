@@ -4,7 +4,7 @@
   <a href="https://github.com/Schniz/fnm/actions"><img src="https://img.shields.io/github/actions/workflow/status/Schniz/fnm/rust.yml?branch=master&label=workflow" alt="GitHub Actions workflow status" /></a>
 </h1>
 
-> :rocket: Fast and simple Node.js version manager, built in Rust
+> 🚀 Fast and simple Node.js version manager, built in Rust
 
 <div align="center">
   <img src="./docs/fnm.svg" alt="Blazing fast!">
@@ -12,13 +12,13 @@
 
 ## Features
 
-:earth_americas: Cross-platform support (macOS, Windows, Linux)
+🌎 Cross-platform support (macOS, Windows, Linux)
 
-:sparkles: Single file, easy installation, instant startup
+✨ Single file, easy installation, instant startup
 
-:rocket: Built with speed in mind
+🚀 Built with speed in mind
 
-:open_file_folder: Works with `.node-version` and `.nvmrc` files
+📂 Works with `.node-version` and `.nvmrc` files
 
 ## Installation
 
