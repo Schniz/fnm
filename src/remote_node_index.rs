@@ -66,16 +66,35 @@ pub struct IndexedNodeVersion {
     pub files: Vec<String>,
 }
 
+#[derive(clap::ValueEnum, Clone, Debug, PartialEq)]
+pub enum SortingMethod {
+    #[clap(name = "desc")]
+    /// Sort versions in descending order (latest to earliest)
+    Descending,
+    #[clap(name = "asc")]
+    /// Sort versions in ascending order (earliest to latest)
+    Ascending,
+}
+
 /// Prints
 ///
 /// ```rust
 /// use crate::remote_node_index::list;
 /// ```
-pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, crate::http::Error> {
+pub fn list(
+    base_url: &Url,
+    sort: &SortingMethod,
+) -> Result<Vec<IndexedNodeVersion>, crate::http::Error> {
     let index_json_url = format!("{base_url}/index.json");
     let resp = crate::http::get(&index_json_url)?;
     let mut value: Vec<IndexedNodeVersion> = resp.json()?;
-    value.sort_by(|a, b| a.version.cmp(&b.version));
+
+    if *sort == SortingMethod::Ascending {
+        value.sort_by(|a, b| a.version.cmp(&b.version));
+    } else {
+        value.sort_by(|a, b| b.version.cmp(&a.version));
+    }
+
     Ok(value)
 }
 
@@ -88,7 +107,7 @@ mod tests {
     fn test_list() {
         let base_url = Url::parse("https://nodejs.org/dist").unwrap();
         let expected_version = Version::parse("12.0.0").unwrap();
-        let mut versions = list(&base_url).expect("Can't get HTTP data");
+        let mut versions = list(&base_url, &SortingMethod::Ascending).expect("Can't get HTTP data");
         assert_eq!(
             versions
                 .drain(..)

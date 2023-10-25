@@ -67,8 +67,11 @@ impl Command for Install {
                 return Err(Error::UninstallableVersion { version: v });
             }
             UserVersion::Full(Version::Lts(lts_type)) => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
-                    .map_err(|source| Error::CantListRemoteVersions { source })?;
+                let available_versions: Vec<_> = remote_node_index::list(
+                    &config.node_dist_mirror,
+                    &remote_node_index::SortingMethod::Ascending,
+                )
+                .map_err(|source| Error::CantListRemoteVersions { source })?;
                 let picked_version = lts_type
                     .pick_latest(&available_versions)
                     .ok_or_else(|| Error::CantFindRelevantLts {
@@ -84,8 +87,11 @@ impl Command for Install {
                 picked_version
             }
             UserVersion::Full(Version::Latest) => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
-                    .map_err(|source| Error::CantListRemoteVersions { source })?;
+                let available_versions: Vec<_> = remote_node_index::list(
+                    &config.node_dist_mirror,
+                    &remote_node_index::SortingMethod::Ascending,
+                )
+                .map_err(|source| Error::CantListRemoteVersions { source })?;
                 let picked_version = available_versions
                     .last()
                     .ok_or(Error::CantFindLatest)?
@@ -99,11 +105,14 @@ impl Command for Install {
                 picked_version
             }
             current_version => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
-                    .map_err(|source| Error::CantListRemoteVersions { source })?
-                    .drain(..)
-                    .map(|x| x.version)
-                    .collect();
+                let available_versions: Vec<_> = remote_node_index::list(
+                    &config.node_dist_mirror,
+                    &remote_node_index::SortingMethod::Ascending,
+                )
+                .map_err(|source| Error::CantListRemoteVersions { source })?
+                .drain(..)
+                .map(|x| x.version)
+                .collect();
 
                 current_version
                     .to_version(&available_versions, config)
@@ -254,8 +263,11 @@ mod tests {
         .apply(&config)
         .expect("Can't install");
 
-        let available_versions: Vec<_> =
-            remote_node_index::list(&config.node_dist_mirror).expect("Can't get node version list");
+        let available_versions: Vec<_> = remote_node_index::list(
+            &config.node_dist_mirror,
+            &remote_node_index::SortingMethod::Ascending,
+        )
+        .expect("Can't get node version list");
         let latest_version = available_versions.last().unwrap().version.clone();
 
         assert!(config.installations_dir().exists());
