@@ -1,4 +1,4 @@
-use crate::{pretty_serde::DecodeError, version::Version};
+use crate::version::Version;
 use serde::Deserialize;
 use url::Url;
 
@@ -62,18 +62,18 @@ pub struct IndexedNodeVersion {
     pub version: Version,
     #[serde(with = "lts_status")]
     pub lts: Option<String>,
-    // pub date: chrono::NaiveDate,
-    // pub files: Vec<String>,
+    pub date: chrono::NaiveDate,
+    pub files: Vec<String>,
 }
 
-#[derive(Debug, thiserror::Error, miette::Diagnostic)]
-pub enum Error {
-    #[error("can't get remote versions file: {0}")]
-    #[diagnostic(transparent)]
-    Http(#[from] crate::http::Error),
-    #[error("can't decode remote versions file: {0}")]
-    #[diagnostic(transparent)]
-    Decode(#[from] DecodeError),
+#[derive(clap::ValueEnum, Clone, Debug, PartialEq)]
+pub enum SortingMethod {
+    #[clap(name = "desc")]
+    /// Sort versions in descending order (latest to earliest)
+    Descending,
+    #[clap(name = "asc")]
+    /// Sort versions in ascending order (earliest to latest)
+    Ascending,
 }
 
 /// Prints
@@ -81,16 +81,20 @@ pub enum Error {
 /// ```rust
 /// use crate::remote_node_index::list;
 /// ```
-pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, Error> {
-    let base_url = base_url.as_str().trim_end_matches('/');
+pub fn list(
+    base_url: &Url,
+    sort: &SortingMethod,
+) -> Result<Vec<IndexedNodeVersion>, crate::http::Error> {
     let index_json_url = format!("{base_url}/index.json");
-    let resp = crate::http::get(&index_json_url)?
-        .error_for_status()
-        .map_err(crate::http::Error::from)?;
-    let text = resp.text().map_err(crate::http::Error::from)?;
-    let mut value: Vec<IndexedNodeVersion> =
-        serde_json::from_str(&text[..]).map_err(|cause| DecodeError::from_serde(text, cause))?;
-    value.sort_by(|a, b| a.version.cmp(&b.version));
+    let resp = crate::http::get(&index_json_url)?;
+    let mut value: Vec<IndexedNodeVersion> = resp.json()?;
+
+    if *sort == SortingMethod::Ascending {
+        value.sort_by(|a, b| a.version.cmp(&b.version));
+    } else {
+        value.sort_by(|a, b| b.version.cmp(&a.version));
+    }
+
     Ok(value)
 }
 
@@ -103,7 +107,7 @@ mod tests {
     fn test_list() {
         let base_url = Url::parse("https://nodejs.org/dist").unwrap();
         let expected_version = Version::parse("12.0.0").unwrap();
-        let mut versions = list(&base_url).expect("Can't get HTTP data");
+        let mut versions = list(&base_url, &SortingMethod::Ascending).expect("Can't get HTTP data");
         assert_eq!(
             versions
                 .drain(..)
