@@ -25,11 +25,10 @@ pub struct Exec {
     using_file: bool,
     /// The command to run
     ///
-    /// # Windows
     /// On Windows if the extension is not provided Windows will execute it
     /// if the target file ends with .exe
     /// To get around for node commands like npm, npx, etc
-    /// fnm will append PATHTEXT to the path
+    /// fnm will append `PATHEXT` to the path
     /// if the file exists with the extension in the node installation folder
     ///
     arguments: Vec<String>,
@@ -101,15 +100,15 @@ impl Cmd for Exec {
         // npx, etc inside the node installation folder
         #[cfg(windows)]
         let binary = {
-            if let Ok(value) = std::env::var("PATHTEXT") {
+            if let Ok(value) = std::env::var("PATHEXT") {
                 let split = value.split(";");
                 let mut windows_binary_name: Option<Cow<'_, OsStr>> = None;
                 for ext in split {
-                    // It already has a `PATHText` Extension so we don't need to add it
+                    // It already has a `PATHEXT` Extension so we don't need to add it
                     if binary.ends_with(ext) {
                         break;
                     }
-                    let binary_name = format!("{}.{}", binary, ext);
+                    let binary_name = format!("{}{}", binary, ext);
                     let bin_path = bin_path.join(binary_name);
                     if bin_path.exists() {
                         windows_binary_name = Some(Cow::Owned(bin_path.into_os_string()));
@@ -118,7 +117,7 @@ impl Cmd for Exec {
                 }
                 windows_binary_name.unwrap_or(Cow::Borrowed(binary.as_ref()))
             } else {
-                // No PathText found. We will continue with the binary as is
+                // No Pathext found. We will continue with the binary as is
                 Cow::Borrowed(OsStr::new(binary))
             }
         };
@@ -129,14 +128,8 @@ impl Cmd for Exec {
             std::env::join_paths(paths)
                 .map_err(|source| Error::CantAddPathToEnvironment { source })?
         };
-        #[cfg(windows)]
-        log::debug!(
-            "Running {} with PATH={:?}",
-            binary.to_string_lossy(),
-            path_env
-        );
-        #[cfg(not(windows))]
-        log::debug!("Running {} with PATH={:?}", binary, path_env);
+
+        log::debug!("Running {:?} with PATH={:?}", binary, path_env);
 
         let exit_status = Command::new(&binary)
             .args(arguments)
