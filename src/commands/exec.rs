@@ -7,6 +7,10 @@ use crate::outln;
 use crate::user_version::UserVersion;
 use crate::user_version_reader::UserVersionReader;
 use colored::Colorize;
+#[cfg(windows)]
+use std::borrow::Cow;
+#[cfg(windows)]
+use std::ffi::OsStr;
 use std::process::{Command, Stdio};
 use thiserror::Error;
 
@@ -20,6 +24,14 @@ pub struct Exec {
     #[clap(long = "using-file", hide = true)]
     using_file: bool,
     /// The command to run
+    ///
+    /// # Windows
+    /// On Windows if the extension is not provided Windows will execute it
+    /// if the target file ends with .exe
+    /// To get around for node commands like npm, npx, etc
+    /// fnm will append PATHTEXT to the path
+    /// if the file exists with the extension in the node installation folder
+    ///
     arguments: Vec<String>,
 }
 
@@ -80,6 +92,36 @@ impl Cmd for Exec {
         #[cfg(unix)]
         let bin_path = applicable_version.path().join("bin");
 
+        // https://github.com/rust-lang/rust/issues/37519
+        // Basically, on Windows, if the binary doesnt end with .exe it will not be found
+        // So we are going to append the PATHText
+        // This will only append it if it exists inside the node installation folder.
+        // Because checking against the entire PATH will be too slow for the benefit
+        // The main use case of doing this is to access npm,
+        // npx, etc inside the node installation folder
+        #[cfg(windows)]
+        let binary = {
+            if let Ok(value) = std::env::var("PATHTEXT") {
+                let split = value.split(";");
+                let mut windows_binary_name: Option<Cow<'_, OsStr>> = None;
+                for ext in split {
+                    // It already has a `PATHText` Extension so we don't need to add it
+                    if binary.ends_with(ext) {
+                        break;
+                    }
+                    let binary_name = format!("{}.{}", binary, ext);
+                    let bin_path = bin_path.join(binary_name);
+                    if bin_path.exists() {
+                        windows_binary_name = Some(Cow::Owned(bin_path.into_os_string()));
+                        break;
+                    }
+                }
+                windows_binary_name.unwrap_or(Cow::Borrowed(binary.as_ref()))
+            } else {
+                // No PathText found. We will continue with the binary as is
+                Cow::Borrowed(OsStr::new(binary))
+            }
+        };
         let path_env = {
             let paths_env = std::env::var_os("PATH").ok_or(Error::CantReadPathVariable)?;
             let mut paths: Vec<_> = std::env::split_paths(&paths_env).collect();
@@ -87,10 +129,16 @@ impl Cmd for Exec {
             std::env::join_paths(paths)
                 .map_err(|source| Error::CantAddPathToEnvironment { source })?
         };
-
+        #[cfg(windows)]
+        log::debug!(
+            "Running {} with PATH={:?}",
+            binary.to_string_lossy(),
+            path_env
+        );
+        #[cfg(not(windows))]
         log::debug!("Running {} with PATH={:?}", binary, path_env);
 
-        let exit_status = Command::new(binary)
+        let exit_status = Command::new(&binary)
             .args(arguments)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
@@ -99,7 +147,10 @@ impl Cmd for Exec {
             .spawn()
             .map_err(|source| Error::CantSpawnProgram {
                 source,
-                binary: binary.to_string(),
+                #[cfg(windows)]
+                binary: binary.to_string_lossy().into_owned(),
+                #[cfg(not(windows))]
+                binary: binary.to_owned(),
             })?
             .wait()
             .expect("Failed to grab exit code");
@@ -108,7 +159,6 @@ impl Cmd for Exec {
         std::process::exit(code);
     }
 }
-
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("Can't spawn program: {source}\nMaybe the program {} does not exist on not available in PATH?", binary.bold())]
