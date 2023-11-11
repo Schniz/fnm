@@ -10,6 +10,10 @@ pub struct LsRemote {
     /// Filter for versions
     filter: Option<UserVersion>,
 
+    /// Only show latest LTS versions
+    #[arg(long)]
+    lts: Option<Option<String>>,
+
     // Version sorting order
     #[arg(long, default_value = "asc")]
     sort: remote_node_index::SortingMethod,
@@ -20,6 +24,19 @@ impl super::command::Command for LsRemote {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let mut all_versions = remote_node_index::list(&config.node_dist_mirror, &self.sort)?;
+
+        if let Some(lts) = &self.lts {
+            all_versions = all_versions
+                .into_iter()
+                .filter(|v| match lts {
+                    None => v.lts.is_some(),
+                    Some(lts) => v
+                        .lts
+                        .as_ref()
+                        .is_some_and(|this_lts| this_lts.eq_ignore_ascii_case(lts)),
+                })
+                .collect();
+        }
 
         if let Some(filter) = &self.filter {
             all_versions = all_versions
