@@ -1,12 +1,14 @@
 use crate::config::FnmConfig;
 use crate::remote_node_index;
+use crate::user_version::UserVersion;
+
 use colored::Colorize;
 use thiserror::Error;
 
 #[derive(clap::Parser, Debug)]
 pub struct LsRemote {
-    /// Filter for version prefixes
-    filter: Option<String>,
+    /// Filter for versions
+    filter: Option<UserVersion>,
 
     // Version sorting order
     #[arg(long, default_value = "asc")]
@@ -17,22 +19,12 @@ impl super::command::Command for LsRemote {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        let filter = self
-            .filter
-            .and_then(|f| Some(f.strip_prefix('v').unwrap_or(&f).to_owned()));
-
         let mut all_versions = remote_node_index::list(&config.node_dist_mirror, &self.sort)?;
 
-        if let Some(filter) = &filter {
+        if let Some(filter) = &self.filter {
             all_versions = all_versions
                 .into_iter()
-                .filter(|v| {
-                    v.version
-                        .v_str()
-                        .strip_prefix('v')
-                        .and_then(|rv| Some(rv.starts_with(filter)))
-                        .unwrap_or(false)
-                })
+                .filter(|v| filter.matches(&v.version, config))
                 .collect();
         }
 
@@ -45,17 +37,7 @@ impl super::command::Command for LsRemote {
         }
 
         if all_versions.is_empty() {
-            eprintln!(
-                "{}",
-                format!(
-                    "No versions were found{}!",
-                    match filter {
-                        Some(filter) => format!(" with prefix {filter}"),
-                        None => "".to_owned(),
-                    }
-                )
-                .red()
-            );
+            eprintln!("{}", "No versions were found!".red());
         }
 
         Ok(())
