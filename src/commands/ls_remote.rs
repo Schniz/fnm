@@ -17,6 +17,10 @@ pub struct LsRemote {
     /// Version sorting order
     #[arg(long, default_value = "asc")]
     sort: remote_node_index::SortingMethod,
+
+    /// Only show the latest matching version
+    #[arg(long)]
+    latest: bool,
 }
 
 impl super::command::Command for LsRemote {
@@ -40,16 +44,21 @@ impl super::command::Command for LsRemote {
             all_versions.retain(|v| filter.matches(&v.version, config));
         }
 
+        if all_versions.is_empty() {
+            eprintln!("{}", "No versions were found!".red());
+            return Ok(());
+        }
+
+        if self.latest {
+            all_versions = vec![all_versions.into_iter().last().unwrap()];
+        }
+
         for version in &all_versions {
             print!("{}", version.version);
             if let Some(lts) = &version.lts {
                 print!("{}", format!(" ({lts})").cyan());
             }
             println!();
-        }
-
-        if all_versions.is_empty() {
-            eprintln!("{}", "No versions were found!".red());
         }
 
         Ok(())
