@@ -14,7 +14,7 @@ pub struct LsRemote {
     #[arg(long)]
     lts: Option<Option<String>>,
 
-    // Version sorting order
+    /// Version sorting order
     #[arg(long, default_value = "asc")]
     sort: remote_node_index::SortingMethod,
 }
