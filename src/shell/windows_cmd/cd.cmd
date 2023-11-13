@@ -1,5 +1,5 @@
 @echo off
-cd %1
+cd %*
 if "%FNM_VERSION_FILE_STRATEGY%" == "recursive" (
   fnm use --silent-if-unchanged
 ) else (
