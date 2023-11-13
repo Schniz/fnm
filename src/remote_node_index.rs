@@ -89,10 +89,9 @@ pub fn list(
     let resp = crate::http::get(&index_json_url)?;
     let mut value: Vec<IndexedNodeVersion> = resp.json()?;
 
-    if *sort == SortingMethod::Ascending {
-        value.sort_by(|a, b| a.version.cmp(&b.version));
-    } else {
-        value.sort_by(|a, b| b.version.cmp(&a.version));
+    value.sort_by_key(|v| v.version.clone());
+    if let SortingMethod::Descending = sort {
+        value.reverse();
     }
 
     Ok(value)
