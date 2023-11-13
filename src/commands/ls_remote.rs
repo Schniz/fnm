@@ -61,7 +61,7 @@ impl super::command::Command for LsRemote {
         }
 
         if self.latest {
-            all_versions = vec![all_versions.into_iter().last().unwrap()];
+            all_versions = vec![all_versions.into_iter().next().unwrap()];
         }
 
         all_versions.sort_by_key(|v| v.version.clone());
