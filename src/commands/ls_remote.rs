@@ -26,13 +26,14 @@ impl super::command::Command for LsRemote {
         let mut all_versions = remote_node_index::list(&config.node_dist_mirror, &self.sort)?;
 
         if let Some(lts) = &self.lts {
-            all_versions.retain(|v| match lts {
-                None => v.lts.is_some(),
-                Some(lts) => v
-                    .lts
-                    .as_ref()
-                    .is_some_and(|this_lts| this_lts.eq_ignore_ascii_case(lts)),
-            });
+            match lts {
+                Some(codename) => all_versions.retain(|v| {
+                    v.lts
+                        .as_ref()
+                        .is_some_and(|v_lts| v_lts.eq_ignore_ascii_case(codename))
+                }),
+                None => all_versions.retain(|v| v.lts.is_some()),
+            };
         }
 
         if let Some(filter) = &self.filter {
