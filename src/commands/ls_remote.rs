@@ -17,18 +17,28 @@ pub struct LsRemote {
 
     /// Version sorting order
     #[arg(long, default_value = "asc")]
-    sort: remote_node_index::SortingMethod,
+    sort: SortingMethod,
 
     /// Only show the latest matching version
     #[arg(long)]
     latest: bool,
 }
 
+#[derive(clap::ValueEnum, Clone, Debug, PartialEq)]
+pub enum SortingMethod {
+    #[clap(name = "desc")]
+    /// Sort versions in descending order (latest to earliest)
+    Descending,
+    #[clap(name = "asc")]
+    /// Sort versions in ascending order (earliest to latest)
+    Ascending,
+}
+
 impl super::command::Command for LsRemote {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        let mut all_versions = remote_node_index::list(&config.node_dist_mirror, &self.sort)?;
+        let mut all_versions = remote_node_index::list(&config.node_dist_mirror)?;
 
         if let Some(lts) = &self.lts {
             match lts {
@@ -52,6 +62,11 @@ impl super::command::Command for LsRemote {
 
         if self.latest {
             all_versions = vec![all_versions.into_iter().last().unwrap()];
+        }
+
+        all_versions.sort_by_key(|v| v.version.clone());
+        if let SortingMethod::Descending = self.sort {
+            all_versions.reverse();
         }
 
         for version in &all_versions {
