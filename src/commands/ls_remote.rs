@@ -11,7 +11,7 @@ pub struct LsRemote {
     #[arg(long)]
     filter: Option<UserVersion>,
 
-    /// Only show latest LTS versions
+    /// Show only LTS versions (optionally filter by LTS codename)  
     #[arg(long)]
     lts: Option<Option<String>>,
 
@@ -55,18 +55,18 @@ impl super::command::Command for LsRemote {
             all_versions.retain(|v| filter.matches(&v.version, config));
         }
 
-        if all_versions.is_empty() {
-            eprintln!("{}", "No versions were found!".red());
-            return Ok(());
-        }
-
         if self.latest {
-            all_versions = vec![all_versions.into_iter().next().unwrap()];
+            all_versions.truncate(1);
         }
 
         all_versions.sort_by_key(|v| v.version.clone());
         if let SortingMethod::Descending = self.sort {
             all_versions.reverse();
+        }
+
+        if all_versions.is_empty() {
+            eprintln!("{}", "No versions were found!".red());
+            return Ok(());
         }
 
         for version in &all_versions {
