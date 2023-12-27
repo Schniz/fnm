@@ -186,8 +186,18 @@ fnm is also supported but is not entirely covered. [You can set up a startup scr
 FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 ```
 
-⚠️ If you get the error `i was unexpected at this time`, please make a .cmd file as suggested by the first step in the Usage with Cmder secton add it's path to the `AutoRun` registry key.
+⚠️ If you get the error `i was unexpected at this time`, please make a .cmd file as suggested by the first step in the Usage with Cmder secton add it's path to the `AutoRun` registry key.  
+⚠️ If command hangs forever, try to wrap it inside [a loop check](https://stackoverflow.com/a/57451662): 
+```batch
+@echo off
+setlocal EnableDelayedExpansion
+set "cmd=!cmdcmdline!"
 
+if "!cmd!" == "!cmd:/=!" (
+  REM *** Stuff for AutoRun 
+  FOR /f "tokens=*" %%i IN ('fnm env --use-on-cd') DO CALL %%i
+)
+```
 #### Usage with Cmder
 
 Usage is very similar to the normal WinCMD install, apart for a few tweaks to allow being called from the cmder startup script. The example **assumes** that the `CMDER_ROOT` environment variable is **set** to the **root directory** of your Cmder installation.
