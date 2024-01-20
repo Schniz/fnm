@@ -42,7 +42,7 @@ On other operating systems, upgrading `fnm` is almost the same as installing it.
 
 `--install-dir`
 
-Set a custom directory for fnm to be installed. The default is `$HOME/.fnm`.
+Set a custom directory for fnm to be installed. The default is `$XDG_DATA_HOME/fnm` (if `$XDG_DATA_HOME` is not defined it falls back to `$HOME/.local/share/fnm` on linux and `$HOME/Library/Application Support/fnm` on MacOS).
 
 `--skip-shell`
 
