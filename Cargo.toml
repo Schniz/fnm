@@ -21,7 +21,7 @@ colored = "2.0.4"
 zip = "0.6.6"
 tempfile = "3.6.0"
 indoc = "2.0.2"
-log = "0.4.19"
+log = "0.4.21"
 env_logger = "0.10.0"
 encoding_rs_io = "0.1.7"
 reqwest = { version = "0.11.18", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
