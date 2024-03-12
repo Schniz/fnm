@@ -1,5 +1,13 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.35.2
+
+### Patch Changes
+
+- [#1050](https://github.com/Schniz/fnm/pull/1050) [`d6c132a`](https://github.com/Schniz/fnm/commit/d6c132adfd1c29c48acb0b9de42538146e23cf18) Thanks [@JakeHandsome](https://github.com/JakeHandsome)! - Fix `cd /D` on windows with `--use-on-cd`
+
+- [#1058](https://github.com/Schniz/fnm/pull/1058) [`734df47`](https://github.com/Schniz/fnm/commit/734df47795c3b71d104ec9638034447cc4ef47cc) Thanks [@aquacash5](https://github.com/aquacash5)! - fix: return default version if canonicalize fails
+
 ## 1.35.1
 
 ### Patch Changes
