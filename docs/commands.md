@@ -216,6 +216,9 @@ Options:
       --latest
           Install latest version
 
+      --no-progress
+          Do not display a progress bar
+
       --log-level <LOG_LEVEL>
           The log level of fnm commands
 
