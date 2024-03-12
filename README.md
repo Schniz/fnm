@@ -121,7 +121,7 @@ Where `<SHELL>` can be one of the supported shells:
 - `bash`
 - `zsh`
 - `fish`
-- `powershell`
+- `power-shell`
 
 Please follow your shell instructions to install them.
 
