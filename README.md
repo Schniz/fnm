@@ -182,6 +182,22 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
 
 fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
 
+```
+fnm env --use-on-cd > %USERPROFILE%/fnm.txt
+for /f "delims=" %%i in (%USERPROFILE%/fnm.txt) do (
+    call %%i
+)
+del %USERPROFILE%/fnm.txt
+```
+
+- Create a file fnm.bat and manually execute it:
+
+```
+FOR /f "tokens=*" %%i IN ('fnm env --use-on-cd') DO CALL %%i
+```
+
+- Manually execute the following command in cmd:
+
 ```batch
 FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
 ```
@@ -238,3 +254,4 @@ cargo run -- --help # Will behave like `fnm --help`
 ```sh
 cargo test
 ```
+
