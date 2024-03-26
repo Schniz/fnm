@@ -36,7 +36,7 @@ jobs:
       run: cargo build --release
       env:
         RUSTFLAGS: "-C target-feature=+crt-static"
-    - uses: pnpm/action-setup@v2.2.4
+    - uses: pnpm/action-setup@v2.4.0
       with:
         run_install: false
     - uses: actions/setup-node@v3
