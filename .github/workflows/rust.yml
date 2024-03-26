@@ -101,7 +101,7 @@ jobs:
           path: target/release
       - name: mark binary as executable
         run: chmod +x target/release/fnm
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v2.4.0
         with:
           run_install: false
       - uses: actions/setup-node@v3
@@ -135,7 +135,7 @@ jobs:
         with:
           name: fnm-windows
           path: target/release
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v2.4.0
         with:
           run_install: false
       - uses: actions/setup-node@v3
@@ -207,7 +207,7 @@ jobs:
           path: target/release
       - name: mark binary as executable
         run: chmod +x target/release/fnm
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v2.4.0
         with:
           run_install: false
       - uses: actions/setup-node@v3
@@ -335,7 +335,7 @@ jobs:
         run: |
           sudo install target/release/fnm /bin
           fnm --version
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v2.4.0
         with:
           run_install: false
       - uses: actions/setup-node@v3
@@ -379,7 +379,7 @@ jobs:
         run: |
           sudo install target/release/fnm /bin
           fnm --version
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v2.4.0
         with:
           run_install: false
       - uses: actions/setup-node@v3
