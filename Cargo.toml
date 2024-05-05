@@ -37,7 +37,7 @@ duct = "0.13.6"
 test-log = "0.2.12"
 
 [build-dependencies]
-embed-resource = "1.8.0"
+embed-resource = "2.0.0"
 
 [target.'cfg(windows)'.dependencies]
 csv = "1.2.2"
