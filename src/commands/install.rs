@@ -147,7 +147,7 @@ impl Command for Install {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
             }
             Err(source) => Err(Error::DownloadError { source })?,
-            Ok(_) => {}
+            Ok(()) => {}
         };
 
         if config.corepack_enabled() {
