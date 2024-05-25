@@ -68,5 +68,5 @@ Treats `package.json#engines#node` as a valid Node.js version file ("dotfile"). 
 
 Then:
 
-- `fnm install` will install the latest Node.js 20.x version available in the Node.js dist server
-- `fnm use` will use the latest Node.js 20.x version available on your system, or prompt to install if no version matched.
+- `fnm install` will install the latest satisfying Node.js 20.x version available in the Node.js dist server
+- `fnm use` will use the latest satisfying Node.js 20.x version available on your system, or prompt to install if no version matched.
