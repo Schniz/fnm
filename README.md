@@ -129,7 +129,10 @@ Please follow your shell instructions to install them.
 
 Environment variables need to be setup before you can start using fnm.
 This is done by evaluating the output of `fnm env`.
-To automatically run `fnm use` when a directory contains a `.node-version` or `.nvmrc` file, add the `--use-on-cd` option to your shell setup.
+
+> [!NOTE]
+> Check out the [Configuration](./docs/configuration.md) section to enable highly
+> recommended features, like automatic version switching.
 
 Adding a `.node-version` to your project is as simple as:
 
@@ -178,7 +181,7 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
   ```powershell
   notepad $profile
   ```
-  
+
 #### Windows Command Prompt aka Batch aka WinCMD
 
 fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following lines:
@@ -213,6 +216,10 @@ call "%CMDER_ROOT%\bin\fnm_init.cmd"
 ```
 
 You can replace `%CMDER_ROOT%` with any other convenient path too.
+
+## [Configuration](./docs/configuration.md)
+
+[See the available configuration options for an extended configuration documentation](./docs/configuration.md)
 
 ## [Usage](./docs/commands.md)
 
