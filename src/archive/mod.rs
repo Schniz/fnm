@@ -4,4 +4,3 @@ pub mod zip;
 
 pub use self::extract::{Error, Extract};
 pub use self::tar_xz::TarXz;
-
