@@ -4,7 +4,7 @@
   <a href="https://github.com/Schniz/fnm/actions"><img src="https://img.shields.io/github/actions/workflow/status/Schniz/fnm/rust.yml?branch=master&label=workflow" alt="GitHub Actions workflow status" /></a>
 </h1>
 
-> :rocket: Fast and simple Node.js version manager, built in Rust
+> 🚀 Fast and simple Node.js version manager, built in Rust
 
 <div align="center">
   <img src="./docs/fnm.svg" alt="Blazing fast!">
@@ -12,13 +12,13 @@
 
 ## Features
 
-:earth_americas: Cross-platform support (macOS, Windows, Linux)
+🌎 Cross-platform support (macOS, Windows, Linux)
 
-:sparkles: Single file, easy installation, instant startup
+✨ Single file, easy installation, instant startup
 
-:rocket: Built with speed in mind
+🚀 Built with speed in mind
 
-:open_file_folder: Works with `.node-version` and `.nvmrc` files
+📂 Works with `.node-version` and `.nvmrc` files
 
 ## Installation
 
@@ -42,7 +42,7 @@ On other operating systems, upgrading `fnm` is almost the same as installing it.
 
 `--install-dir`
 
-Set a custom directory for fnm to be installed. The default is `$HOME/.fnm`.
+Set a custom directory for fnm to be installed. The default is `$XDG_DATA_HOME/fnm` (if `$XDG_DATA_HOME` is not defined it falls back to `$HOME/.local/share/fnm` on linux and `$HOME/Library/Application Support/fnm` on MacOS).
 
 `--skip-shell`
 
@@ -121,7 +121,7 @@ Where `<SHELL>` can be one of the supported shells:
 - `bash`
 - `zsh`
 - `fish`
-- `powershell`
+- `power-shell`
 
 Please follow your shell instructions to install them.
 
@@ -174,19 +174,23 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
-- On Windows, PowerShell comes pre-installed, but there are two versions of it. [Read more about it here](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell). The profile is located at different places depending on which version you're using:
-  - Built in PowerShell (aka "Windows PowerShell"): `~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
-  - The newer, PowerShell >= 7, that's not built in: `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
-
+- On Windows to edit your profile you can run this in a PowerShell
+  ```powershell
+  notepad $profile
+  ```
+  
 #### Windows Command Prompt aka Batch aka WinCMD
 
-fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
+fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following lines:
 
 ```batch
-FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
+@echo off
+:: for /F will launch a new instance of cmd so we create a guard to prevent an infnite loop
+if not defined FNM_AUTORUN_GUARD (
+    set "FNM_AUTORUN_GUARD=AutorunGuard"
+    FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z
+)
 ```
-
-⚠️ If you get the error `i was unexpected at this time`, please make a .cmd file as suggested by the first step in the Usage with Cmder secton add it's path to the `AutoRun` registry key.
 
 #### Usage with Cmder
 
