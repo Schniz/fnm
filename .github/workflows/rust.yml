@@ -10,13 +10,16 @@ concurrency:
   group: ci-${{ github.head_ref }}
   cancel-in-progress: true
 
+env:
+  RUST_VERSION: "1.78"
+
 jobs:
   fmt:
     runs-on: ubuntu-latest
     steps:
       - uses: hecrj/setup-rust-action@v1
         with:
-          rust-version: stable
+          rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v3
       - name: cargo fmt
@@ -27,7 +30,7 @@ jobs:
     steps:
       - uses: hecrj/setup-rust-action@v1
         with:
-          rust-version: stable
+          rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v3
       - name: cargo clippy
@@ -41,7 +44,7 @@ jobs:
     steps:
       - uses: hecrj/setup-rust-action@v1
         with:
-          rust-version: stable
+          rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v3
       - name: Run tests
@@ -53,7 +56,7 @@ jobs:
     steps:
       - uses: hecrj/setup-rust-action@v1
         with:
-          rust-version: stable
+          rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v3
       - name: Build release binary
@@ -71,7 +74,7 @@ jobs:
     steps:
       - uses: hecrj/setup-rust-action@v1
         with:
-          rust-version: stable
+          rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v3
       - name: Build release binary
@@ -237,7 +240,7 @@ jobs:
     steps:
       - uses: hecrj/setup-rust-action@v1
         with:
-          rust-version: stable
+          rust-version: ${{env.RUST_VERSION}}
           targets: x86_64-unknown-linux-musl
       - uses: Swatinem/rust-cache@v2
         with:
@@ -278,7 +281,7 @@ jobs:
         uses: docker/setup-qemu-action@v2
       - uses: hecrj/setup-rust-action@v1
         with:
-          rust-version: stable
+          rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
         with:
           key: arm-binary-${{ matrix.arch }}
