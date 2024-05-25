@@ -115,6 +115,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
             &portal,
             ResponseProgress::new(response, ProgressDrawTarget::stderr()),
         )?;
+        eprintln!();
     } else {
         extract_archive_into(&portal, response)?;
     }
