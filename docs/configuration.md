@@ -1,3 +1,5 @@
+# Configuration
+
 fnm comes with many features out of the box. Some of them are not activated by default as they’re changing your shell default behavior, and some are just a feature flag to avoid breaking changes or just experimental until we decide it is worthwhile to introduce them.
 
 All these features can be configured by adding flags to the `fnm env` call when initializing the shell. For instance, if your shell set up looks like `eval "$(fnm env)"` then you can add a flag to it by changing it to `eval "$(fnm env --my-flag=value)"`
