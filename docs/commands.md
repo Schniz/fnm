@@ -216,8 +216,11 @@ Options:
       --latest
           Install latest version
 
-      --no-progress
-          Do not display a progress bar
+      --progress <PROGRESS>
+          Show an interactive progress bar for the download status
+
+          [default: auto]
+          [possible values: auto, never, always]
 
       --log-level <LOG_LEVEL>
           The log level of fnm commands
