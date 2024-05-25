@@ -8,15 +8,35 @@ pub struct ResponseProgress {
     response: Response,
 }
 
+#[derive(Default, Clone, Debug, clap::ValueEnum)]
+pub enum ProgressConfig {
+    #[default]
+    Auto,
+    Never,
+    Always,
+}
+
+impl ProgressConfig {
+    pub fn enabled(&self, config: &crate::config::FnmConfig) -> bool {
+        match self {
+            Self::Never => false,
+            Self::Always => true,
+            Self::Auto => config
+                .log_level()
+                .is_writable(&crate::log_level::LogLevel::Info),
+        }
+    }
+}
+
 fn make_progress_bar(size: u64, target: ProgressDrawTarget) -> ProgressBar {
     let bar = ProgressBar::with_draw_target(Some(size), target);
 
     bar.set_style(
         ProgressStyle::with_template(
-            "[{elapsed_precise}] [{bar:40}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})",
+            "{bar:40} {bytes}/{total_bytes} {elapsed_precise} ({bytes_per_sec}, {eta})",
         )
         .unwrap()
-        .progress_chars("#>-"),
+        .progress_chars("█▉▊▋▌▍▎▏  "),
     );
 
     bar
@@ -54,6 +74,7 @@ impl Read for ResponseProgress {
 impl Drop for ResponseProgress {
     fn drop(&mut self) {
         self.finish();
+        eprintln!();
     }
 }
 
