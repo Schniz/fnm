@@ -3,7 +3,6 @@ use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
-use crate::log_level::LogLevel;
 use crate::lts::LtsType;
 use crate::outln;
 use crate::progress::ProgressConfig;
@@ -238,7 +237,7 @@ mod tests {
             version: UserVersion::from_str("12.0.0").ok(),
             lts: false,
             latest: false,
-            no_progress: true,
+            progress: ProgressConfig::Never,
         }
         .apply(&config)
         .expect("Can't install");
@@ -264,7 +263,7 @@ mod tests {
             version: None,
             lts: false,
             latest: true,
-            no_progress: true,
+            progress: ProgressConfig::Never,
         }
         .apply(&config)
         .expect("Can't install");
