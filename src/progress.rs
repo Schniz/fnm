@@ -160,9 +160,6 @@ mod tests {
 
         assert_eq!(size, CONTENT_LENGTH);
         assert_eq!(buf, "a".repeat(CONTENT_LENGTH).as_bytes());
-        assert!(out_buf
-            .lock()
-            .unwrap()
-            .contains(&format!("[{}]", &"#".repeat(40))));
+        assert!(out_buf.lock().unwrap().contains(&"█".repeat(40)));
     }
 }
