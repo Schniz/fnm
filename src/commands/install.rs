@@ -3,9 +3,9 @@ use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
-use crate::log_level::LogLevel;
 use crate::lts::LtsType;
 use crate::outln;
+use crate::progress::ProgressConfig;
 use crate::remote_node_index;
 use crate::user_version::UserVersion;
 use crate::version::Version;
@@ -27,9 +27,11 @@ pub struct Install {
     #[clap(long, conflicts_with_all = &["version", "lts"])]
     pub latest: bool,
 
-    /// Do not display a progress bar
-    #[clap(long)]
-    pub no_progress: bool,
+    /// Show an interactive progress bar for the download
+    /// status.
+    #[clap(long, default_value_t)]
+    #[arg(value_enum)]
+    pub progress: ProgressConfig,
 }
 
 impl Install {
@@ -39,19 +41,19 @@ impl Install {
                 version: v,
                 lts: false,
                 latest: false,
-                no_progress: _,
+                ..
             } => Ok(v),
             Self {
                 version: None,
                 lts: true,
                 latest: false,
-                no_progress: _,
+                ..
             } => Ok(Some(UserVersion::Full(Version::Lts(LtsType::Latest)))),
             Self {
                 version: None,
                 lts: false,
                 latest: true,
-                no_progress: _,
+                ..
             } => Ok(Some(UserVersion::Full(Version::Latest))),
             _ => Err(Error::TooManyVersionsProvided),
         }
@@ -63,8 +65,7 @@ impl Command for Install {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let current_dir = std::env::current_dir().unwrap();
-
-        let show_progress = !self.no_progress && config.log_level().is_writable(&LogLevel::Info);
+        let show_progress = self.progress.enabled(config);
 
         let current_version = self
             .version()?
@@ -236,7 +237,7 @@ mod tests {
             version: UserVersion::from_str("12.0.0").ok(),
             lts: false,
             latest: false,
-            no_progress: true,
+            progress: ProgressConfig::Never,
         }
         .apply(&config)
         .expect("Can't install");
@@ -262,7 +263,7 @@ mod tests {
             version: None,
             lts: false,
             latest: true,
-            no_progress: true,
+            progress: ProgressConfig::Never,
         }
         .apply(&config)
         .expect("Can't install");
