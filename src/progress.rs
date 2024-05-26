@@ -33,7 +33,7 @@ fn make_progress_bar(size: u64, target: ProgressDrawTarget) -> ProgressBar {
 
     bar.set_style(
         ProgressStyle::with_template(
-            "{bar:40} {bytes}/{total_bytes} {elapsed_precise} ({bytes_per_sec}, {eta})",
+            "{elapsed_precise:.white.dim} {wide_bar:.cyan} {bytes}/{total_bytes} ({bytes_per_sec}, {eta})",
         )
         .unwrap()
         .progress_chars("█▉▊▋▌▍▎▏  "),
