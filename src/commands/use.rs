@@ -153,7 +153,7 @@ fn install_new_version(
 fn replace_symlink(from: &std::path::Path, to: &std::path::Path) -> std::io::Result<()> {
     let symlink_deletion_result = fs::remove_symlink_dir(to);
     match fs::symlink_dir(from, to) {
-        ok @ Ok(_) => ok,
+        ok @ Ok(()) => ok,
         err @ Err(_) => symlink_deletion_result.and(err),
     }
 }
