@@ -361,70 +361,70 @@ jobs:
         run: |
           pnpm run generate-command-docs --check --binary-path=$(which fnm)
 
-  run_e2e_benchmarks:
-    runs-on: ubuntu-latest
-    name: bench/linux
-    needs: [build_static_linux_binary]
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: install necessary shells
-        run: sudo apt-get update && sudo apt-get install -y fish zsh bash hyperfine
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: fnm-linux
-          path: target/release
-      - name: mark binary as executable
-        run: chmod +x target/release/fnm
-      - name: install fnm as binary
-        run: |
-          sudo install target/release/fnm /bin
-          fnm --version
-      - uses: pnpm/action-setup@v2.2.4
-        with:
-          run_install: false
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: "pnpm"
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
-      - name: Run benchmarks
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SHOULD_STORE: ${{ toJson(!github.event.pull_request) }}
-        id: benchmark
-        run: |
-          delimiter="$(openssl rand -hex 8)"
-          echo "markdown<<${delimiter}" >> "${GITHUB_OUTPUT}"
-          node benchmarks/run.mjs --store=$SHOULD_STORE >> "${GITHUB_OUTPUT}"
-          echo "${delimiter}" >> "${GITHUB_OUTPUT}"
-
-      - name: Create a PR comment
-        if: ${{ github.event.pull_request }}
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            ## Linux Benchmarks for ${{ github.event.pull_request.head.sha }}
-            ${{ steps.benchmark.outputs.markdown }}
-          comment_tag: "benchy comment"
-
-      - name: Create a commit comment
-        if: ${{ !github.event.pull_request }}
-        uses: peter-evans/commit-comment@v2
-        with:
-          body: |
-            ## Linux Benchmarks
-            ${{ steps.benchmark.outputs.markdown }}
+      # TODO: use bnz
+      # run_e2e_benchmarks:
+      #   runs-on: ubuntu-latest
+      #   name: bench/linux
+      #   needs: [build_static_linux_binary]
+      #   permissions:
+      #     contents: write
+      #     pull-requests: write
+      #   steps:
+      #     - name: install necessary shells
+      #       run: sudo apt-get update && sudo apt-get install -y fish zsh bash hyperfine
+      #     - uses: actions/checkout@v3
+      #     - uses: actions/download-artifact@v3
+      #       with:
+      #         name: fnm-linux
+      #         path: target/release
+      #     - name: mark binary as executable
+      #       run: chmod +x target/release/fnm
+      #     - name: install fnm as binary
+      #       run: |
+      #         sudo install target/release/fnm /bin
+      #         fnm --version
+      #     - uses: pnpm/action-setup@v2.2.4
+      #       with:
+      #         run_install: false
+      #     - uses: actions/setup-node@v3
+      #       with:
+      #         node-version: 18.x
+      #         cache: "pnpm"
+      #     - name: Get pnpm store directory
+      #       id: pnpm-cache
+      #       run: |
+      #         echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+      #     - uses: actions/cache@v3
+      #       name: Setup pnpm cache
+      #       with:
+      #         path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+      #         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+      #         restore-keys: |
+      #           ${{ runner.os }}-pnpm-store-
+      #     - run: pnpm install
+      #     - name: Run benchmarks
+      #       env:
+      #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #         SHOULD_STORE: ${{ toJson(!github.event.pull_request) }}
+      #       id: benchmark
+      #       run: |
+      #         delimiter="$(openssl rand -hex 8)"
+      #         echo "markdown<<${delimiter}" >> "${GITHUB_OUTPUT}"
+      #         node benchmarks/run.mjs --store=$SHOULD_STORE >> "${GITHUB_OUTPUT}"
+      #         echo "${delimiter}" >> "${GITHUB_OUTPUT}"
+      # - name: Create a PR comment
+      #   if: ${{ github.event.pull_request }}
+      #   uses: thollander/actions-comment-pull-request@v2
+      #   with:
+      #     message: |
+      #       ## Linux Benchmarks for ${{ github.event.pull_request.head.sha }}
+      #       ${{ steps.benchmark.outputs.markdown }}
+      #     comment_tag: "benchy comment"
+      #
+      # - name: Create a commit comment
+      #   if: ${{ !github.event.pull_request }}
+      #   uses: peter-evans/commit-comment@v2
+      #   with:
+      #     body: |
+      #       ## Linux Benchmarks
+      #       ${{ steps.benchmark.outputs.markdown }}
