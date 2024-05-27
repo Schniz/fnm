@@ -7,12 +7,13 @@ use thiserror::Error;
 
 #[derive(clap::Parser, Debug)]
 pub struct LsRemote {
-    /// Filter with SemVer
+    /// Filter with `SemVer`
     #[arg(long)]
     filter: Option<UserVersion>,
 
     /// Show only LTS versions (optionally filter by LTS codename)  
     #[arg(long)]
+    #[allow(clippy::option_option)]
     lts: Option<Option<String>>,
 
     /// Version sorting order

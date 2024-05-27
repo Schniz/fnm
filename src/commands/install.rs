@@ -259,7 +259,7 @@ mod tests {
     #[test]
     fn test_install_latest() {
         let base_dir = std::path::PathBuf::from("/tmp/test123");
-        let config = FnmConfig::default().with_base_dir(Some(base_dir.to_path_buf()));
+        let config = FnmConfig::default().with_base_dir(Some(base_dir.clone()));
 
         Install {
             version: None,
