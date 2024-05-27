@@ -103,8 +103,10 @@ impl Command for Install {
                 picked_version
             }
             UserVersion::Full(Version::Latest) => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
-                    .map_err(|source| Error::CantListRemoteVersions { source })?;
+                let mut available_versions: Vec<_> =
+                    remote_node_index::list(&config.node_dist_mirror)
+                        .map_err(|source| Error::CantListRemoteVersions { source })?;
+                available_versions.sort_by(|a, b| a.version.cmp(&b.version));
                 let picked_version = available_versions
                     .last()
                     .ok_or(Error::CantFindLatest)?
@@ -320,8 +322,8 @@ mod tests {
 
     #[test]
     fn test_install_latest() {
-        let base_dir = tempfile::tempdir().unwrap();
-        let config = FnmConfig::default().with_base_dir(Some(base_dir.path().to_path_buf()));
+        let base_dir = std::path::PathBuf::from("/tmp/test123");
+        let config = FnmConfig::default().with_base_dir(Some(base_dir.to_path_buf()));
 
         Install {
             version: None,
@@ -333,8 +335,9 @@ mod tests {
         .apply(&config)
         .expect("Can't install");
 
-        let available_versions: Vec<_> =
+        let mut available_versions: Vec<_> =
             remote_node_index::list(&config.node_dist_mirror).expect("Can't get node version list");
+        available_versions.sort_by(|a, b| a.version.cmp(&b.version));
         let latest_version = available_versions.last().unwrap().version.clone();
 
         assert!(config.installations_dir().exists());
