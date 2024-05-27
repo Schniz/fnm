@@ -74,8 +74,8 @@ pub struct IndexedNodeVersion {
 pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, crate::http::Error> {
     let index_json_url = format!("{base_url}/index.json");
     let resp = crate::http::get(&index_json_url)?;
-    let value: Vec<IndexedNodeVersion> = resp.json()?;
-
+    let mut value: Vec<IndexedNodeVersion> = resp.json()?;
+    value.sort_by(|a, b| a.version.cmp(&b.version));
     Ok(value)
 }
 

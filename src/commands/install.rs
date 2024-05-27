@@ -95,10 +95,8 @@ impl Command for Install {
                 picked_version
             }
             UserVersion::Full(Version::Latest) => {
-                let mut available_versions: Vec<_> =
-                    remote_node_index::list(&config.node_dist_mirror)
-                        .map_err(|source| Error::CantListRemoteVersions { source })?;
-                available_versions.sort_by(|a, b| a.version.cmp(&b.version));
+                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
+                    .map_err(|source| Error::CantListRemoteVersions { source })?;
                 let picked_version = available_versions
                     .last()
                     .ok_or(Error::CantFindLatest)?
@@ -270,9 +268,8 @@ mod tests {
         .apply(&config)
         .expect("Can't install");
 
-        let mut available_versions: Vec<_> =
+        let available_versions: Vec<_> =
             remote_node_index::list(&config.node_dist_mirror).expect("Can't get node version list");
-        available_versions.sort_by(|a, b| a.version.cmp(&b.version));
         let latest_version = available_versions.last().unwrap().version.clone();
 
         assert!(config.installations_dir().exists());
