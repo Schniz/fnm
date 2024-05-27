@@ -1,5 +1,7 @@
-use std::fmt::Debug;
+use std::fmt::{Debug, Display};
 use std::path::Path;
+
+use clap::ValueEnum;
 
 pub trait Shell: Debug {
     fn path(&self, path: &Path) -> anyhow::Result<String>;
@@ -11,23 +13,38 @@ pub trait Shell: Debug {
     fn to_clap_shell(&self) -> clap_complete::Shell;
 }
 
-#[cfg(windows)]
-pub const AVAILABLE_SHELLS: &[&str; 5] = &["cmd", "powershell", "bash", "zsh", "fish"];
+#[derive(Debug, Clone, ValueEnum)]
+pub enum Shells {
+    Bash,
+    Zsh,
+    Fish,
+    PowerShell,
+    #[cfg(windows)]
+    Cmd,
+}
 
-#[cfg(unix)]
-pub const AVAILABLE_SHELLS: &[&str; 4] = &["bash", "zsh", "fish", "powershell"];
+impl Display for Shells {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Shells::Bash => write!(f, "bash"),
+            Shells::Zsh => write!(f, "zsh"),
+            Shells::Fish => write!(f, "fish"),
+            Shells::PowerShell => write!(f, "powershell"),
+            #[cfg(windows)]
+            Shells::Cmd => write!(f, "cmd"),
+        }
+    }
+}
 
-impl std::str::FromStr for Box<dyn Shell> {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Box<dyn Shell>, Self::Err> {
-        match s {
-            "cmd" => Ok(Box::from(super::windows_cmd::WindowsCmd)),
-            "zsh" => Ok(Box::from(super::zsh::Zsh)),
-            "bash" => Ok(Box::from(super::bash::Bash)),
-            "fish" => Ok(Box::from(super::fish::Fish)),
-            "powershell" => Ok(Box::from(super::powershell::PowerShell)),
-            shell_type => Err(format!("I don't know the shell type of {shell_type:?}",)),
+impl From<Shells> for Box<dyn Shell> {
+    fn from(shell: Shells) -> Box<dyn Shell> {
+        match shell {
+            Shells::Zsh => Box::from(super::zsh::Zsh),
+            Shells::Bash => Box::from(super::bash::Bash),
+            Shells::Fish => Box::from(super::fish::Fish),
+            Shells::PowerShell => Box::from(super::powershell::PowerShell),
+            #[cfg(windows)]
+            Shells::Cmd => Box::from(super::windows_cmd::WindowsCmd),
         }
     }
 }

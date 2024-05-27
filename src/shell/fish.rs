@@ -16,6 +16,8 @@ impl Shell for Fish {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
+        let path =
+            super::windows_compat::maybe_fix_windows_path(path).unwrap_or_else(|| path.to_string());
         Ok(format!("set -gx PATH {path:?} $PATH;"))
     }
 
@@ -26,13 +28,13 @@ impl Shell for Fish {
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => indoc!(
-                r#"
+                r"
                     if test -f .node-version -o -f .nvmrc
                         fnm use --silent-if-unchanged
                     end
-                "#
+                "
             ),
-            VersionFileStrategy::Recursive => r#"fnm use --silent-if-unchanged"#,
+            VersionFileStrategy::Recursive => r"fnm use --silent-if-unchanged",
         };
         Ok(formatdoc!(
             r#"

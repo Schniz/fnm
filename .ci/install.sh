@@ -5,6 +5,10 @@ set -e
 RELEASE="latest"
 OS="$(uname -s)"
 
+case "${OS}" in
+   MINGW* | Win*) OS="Windows" ;;
+esac
+
 if [ -d "$HOME/.fnm" ]; then
   INSTALL_DIR="$HOME/.fnm"
 elif [ -n "$XDG_DATA_HOME" ]; then
@@ -70,6 +74,9 @@ set_filename() {
   elif [ "$OS" = "Darwin" ]; then
     USE_HOMEBREW="true"
     echo "Downloading fnm using Homebrew..."
+  elif [ "$OS" = "Windows" ] ; then
+    FILENAME="fnm-windows"
+    echo "Downloading the latest fnm binary from GitHub..."
   else
     echo "OS $OS is not supported."
     echo "If you think that's a bug - please file an issue to https://github.com/Schniz/fnm/issues"
