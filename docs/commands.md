@@ -22,7 +22,7 @@ Commands:
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -55,7 +55,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -82,7 +82,7 @@ Usage: fnm list-remote [OPTIONS]
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -115,7 +115,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -139,7 +139,7 @@ Usage: fnm list [OPTIONS]
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -172,7 +172,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -203,7 +203,7 @@ Options:
           Install latest LTS
 
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -215,6 +215,12 @@ Options:
 
       --latest
           Install latest version
+
+      --progress <PROGRESS>
+          Show an interactive progress bar for the download status
+
+          [default: auto]
+          [possible values: auto, never, always]
 
       --log-level <LOG_LEVEL>
           The log level of fnm commands
@@ -239,7 +245,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -270,7 +276,7 @@ Options:
           Install the version if it isn't installed yet
 
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -306,7 +312,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -334,7 +340,7 @@ Usage: fnm env [OPTIONS]
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -378,7 +384,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -402,7 +408,7 @@ Usage: fnm completions [OPTIONS]
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -440,7 +446,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -471,7 +477,7 @@ Arguments:
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -504,7 +510,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -532,7 +538,7 @@ Arguments:
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -565,7 +571,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -595,7 +601,7 @@ Arguments:
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -628,7 +634,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -652,7 +658,7 @@ Usage: fnm current [OPTIONS]
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -685,7 +691,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -718,7 +724,7 @@ Arguments:
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -754,7 +760,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 
@@ -784,7 +790,7 @@ Arguments:
 
 Options:
       --node-dist-mirror <NODE_DIST_MIRROR>
-          https://nodejs.org/dist/ mirror
+          <https://nodejs.org/dist/> mirror
 
           [env: FNM_NODE_DIST_MIRROR]
           [default: https://nodejs.org/dist]
@@ -817,7 +823,7 @@ Options:
           - recursive: Use the version of Node defined within the current directory and all parent directories
 
       --corepack-enabled
-          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see https://nodejs.org/api/corepack.html
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
 

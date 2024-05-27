@@ -121,7 +121,7 @@ Where `<SHELL>` can be one of the supported shells:
 - `bash`
 - `zsh`
 - `fish`
-- `powershell`
+- `power-shell`
 
 Please follow your shell instructions to install them.
 
@@ -129,7 +129,10 @@ Please follow your shell instructions to install them.
 
 Environment variables need to be setup before you can start using fnm.
 This is done by evaluating the output of `fnm env`.
-To automatically run `fnm use` when a directory contains a `.node-version` or `.nvmrc` file, add the `--use-on-cd` option to your shell setup.
+
+> [!NOTE]
+> Check out the [Configuration](./docs/configuration.md) section to enable highly
+> recommended features, like automatic version switching.
 
 Adding a `.node-version` to your project is as simple as:
 
@@ -174,19 +177,23 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
-- On Windows, PowerShell comes pre-installed, but there are two versions of it. [Read more about it here](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell). The profile is located at different places depending on which version you're using:
-  - Built in PowerShell (aka "Windows PowerShell"): `~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
-  - The newer, PowerShell >= 7, that's not built in: `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+- On Windows to edit your profile you can run this in a PowerShell
+  ```powershell
+  notepad $profile
+  ```
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
-fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
+fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following lines:
 
 ```batch
-FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
+@echo off
+:: for /F will launch a new instance of cmd so we create a guard to prevent an infnite loop
+if not defined FNM_AUTORUN_GUARD (
+    set "FNM_AUTORUN_GUARD=AutorunGuard"
+    FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z
+)
 ```
-
-⚠️ If you get the error `i was unexpected at this time`, please make a .cmd file as suggested by the first step in the Usage with Cmder secton add it's path to the `AutoRun` registry key.
 
 #### Usage with Cmder
 
@@ -209,6 +216,10 @@ call "%CMDER_ROOT%\bin\fnm_init.cmd"
 ```
 
 You can replace `%CMDER_ROOT%` with any other convenient path too.
+
+## [Configuration](./docs/configuration.md)
+
+[See the available configuration options for an extended configuration documentation](./docs/configuration.md)
 
 ## [Usage](./docs/commands.md)
 

@@ -5,6 +5,7 @@ use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
 use crate::lts::LtsType;
 use crate::outln;
+use crate::progress::ProgressConfig;
 use crate::remote_node_index;
 use crate::user_version::UserVersion;
 use crate::version::Version;
@@ -25,6 +26,12 @@ pub struct Install {
     /// Install latest version
     #[clap(long, conflicts_with_all = &["version", "lts"])]
     pub latest: bool,
+
+    /// Show an interactive progress bar for the download
+    /// status.
+    #[clap(long, default_value_t)]
+    #[arg(value_enum)]
+    pub progress: ProgressConfig,
 }
 
 impl Install {
@@ -34,16 +41,19 @@ impl Install {
                 version: v,
                 lts: false,
                 latest: false,
+                ..
             } => Ok(v),
             Self {
                 version: None,
                 lts: true,
                 latest: false,
+                ..
             } => Ok(Some(UserVersion::Full(Version::Lts(LtsType::Latest)))),
             Self {
                 version: None,
                 lts: false,
                 latest: true,
+                ..
             } => Ok(Some(UserVersion::Full(Version::Latest))),
             _ => Err(Error::TooManyVersionsProvided),
         }
@@ -55,6 +65,7 @@ impl Command for Install {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let current_dir = std::env::current_dir().unwrap();
+        let show_progress = self.progress.enabled(config);
 
         let current_version = self
             .version()?
@@ -131,12 +142,13 @@ impl Command for Install {
             &config.node_dist_mirror,
             config.installations_dir(),
             safe_arch,
+            show_progress,
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
             }
             Err(source) => Err(Error::DownloadError { source })?,
-            Ok(_) => {}
+            Ok(()) => {}
         };
 
         if config.corepack_enabled() {
@@ -225,6 +237,7 @@ mod tests {
             version: UserVersion::from_str("12.0.0").ok(),
             lts: false,
             latest: false,
+            progress: ProgressConfig::Never,
         }
         .apply(&config)
         .expect("Can't install");
@@ -250,6 +263,7 @@ mod tests {
             version: None,
             lts: false,
             latest: true,
+            progress: ProgressConfig::Never,
         }
         .apply(&config)
         .expect("Can't install");
