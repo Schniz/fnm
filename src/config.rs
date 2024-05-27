@@ -7,7 +7,7 @@ use url::Url;
 
 #[derive(clap::Parser, Debug)]
 pub struct FnmConfig {
-    /// https://nodejs.org/dist/ mirror
+    /// <https://nodejs.org/dist/> mirror
     #[clap(
         long,
         env = "FNM_NODE_DIST_MIRROR",
@@ -67,7 +67,7 @@ pub struct FnmConfig {
 
     /// Enable corepack support for each new installation.
     /// This will make fnm call `corepack enable` on every Node.js installation.
-    /// For more information about corepack see https://nodejs.org/api/corepack.html
+    /// For more information about corepack see <https://nodejs.org/api/corepack.html>
     #[clap(
         long,
         env = "FNM_COREPACK_ENABLED",

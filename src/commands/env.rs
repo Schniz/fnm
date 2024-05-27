@@ -44,7 +44,7 @@ fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
     }
 
     match symlink_dir(config.default_version_dir(), &temp_dir) {
-        Ok(_) => Ok(temp_dir),
+        Ok(()) => Ok(temp_dir),
         Err(source) => Err(Error::CantCreateSymlink { source, temp_dir }),
     }
 }

@@ -2,8 +2,11 @@ use crate::arch::Arch;
 use crate::archive;
 use crate::archive::{Error as ExtractError, Extract};
 use crate::directory_portal::DirectoryPortal;
+use crate::progress::ResponseProgress;
 use crate::version::Version;
+use indicatif::ProgressDrawTarget;
 use log::debug;
+use std::io::Read;
 use std::path::Path;
 use std::path::PathBuf;
 use thiserror::Error;
@@ -63,10 +66,7 @@ fn download_url(base_url: &Url, version: &Version, arch: &Arch) -> Url {
     .unwrap()
 }
 
-pub fn extract_archive_into<P: AsRef<Path>>(
-    path: P,
-    response: crate::http::Response,
-) -> Result<(), Error> {
+fn extract_archive_into(path: impl AsRef<Path>, response: impl Read) -> Result<(), Error> {
     #[cfg(unix)]
     let extractor = archive::TarXz::new(response);
     #[cfg(windows)]
@@ -81,6 +81,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
     node_dist_mirror: &Url,
     installations_dir: P,
     arch: &Arch,
+    show_progress: bool,
 ) -> Result<(), Error> {
     let installation_dir = PathBuf::from(installations_dir.as_ref()).join(version.v_str());
 
@@ -109,7 +110,14 @@ pub fn install_node_dist<P: AsRef<Path>>(
     }
 
     debug!("Extracting response...");
-    extract_archive_into(&portal, response)?;
+    if show_progress {
+        extract_archive_into(
+            &portal,
+            ResponseProgress::new(response, ProgressDrawTarget::stderr()),
+        )?;
+    } else {
+        extract_archive_into(&portal, response)?;
+    }
     debug!("Extraction completed");
 
     let installed_directory = std::fs::read_dir(&portal)?
@@ -171,7 +179,8 @@ mod tests {
         let version = Version::parse("12.0.0").unwrap();
         let arch = Arch::X64;
         let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
-        install_node_dist(&version, &node_dist_mirror, path, &arch).expect("Can't install Node 12");
+        install_node_dist(&version, &node_dist_mirror, path, &arch, false)
+            .expect("Can't install Node 12");
 
         let mut location_path = path.join(version.v_str()).join("installation");
 
