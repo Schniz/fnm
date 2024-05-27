@@ -81,6 +81,9 @@ List all remote Node.js versions
 Usage: fnm list-remote [OPTIONS]
 
 Options:
+      --filter <FILTER>
+          Filter with SemVer
+
       --node-dist-mirror <NODE_DIST_MIRROR>
           <https://nodejs.org/dist/> mirror
 
@@ -91,6 +94,21 @@ Options:
           The root directory of fnm installations
 
           [env: FNM_DIR]
+
+      --lts [<LTS>]
+          Show only LTS versions (optionally filter by LTS codename)
+
+      --sort <SORT>
+          Version sorting order
+
+          [default: asc]
+
+          Possible values:
+          - desc: Sort versions in descending order (latest to earliest)
+          - asc:  Sort versions in ascending order (earliest to latest)
+
+      --latest
+          Only show the latest matching version
 
       --log-level <LOG_LEVEL>
           The log level of fnm commands
