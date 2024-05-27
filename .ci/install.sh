@@ -5,6 +5,10 @@ set -e
 RELEASE="latest"
 OS="$(uname -s)"
 
+case "${OS}" in
+   MINGW* | Win*) OS="Windows" ;;
+esac
+
 if [ -d "$HOME/.fnm" ]; then
   INSTALL_DIR="$HOME/.fnm"
 elif [ -n "$XDG_DATA_HOME" ]; then
@@ -70,6 +74,9 @@ set_filename() {
   elif [ "$OS" = "Darwin" ]; then
     USE_HOMEBREW="true"
     echo "Downloading fnm using Homebrew..."
+  elif [ "$OS" = "Windows" ] ; then
+    FILENAME="fnm-windows"
+    echo "Downloading the latest fnm binary from GitHub..."
   else
     echo "OS $OS is not supported."
     echo "If you think that's a bug - please file an issue to https://github.com/Schniz/fnm/issues"
@@ -161,28 +168,29 @@ setup_shell() {
     CONF_FILE=${ZDOTDIR:-$HOME}/.zshrc
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
-    echo ""
-    echo '  # fnm'
-    echo '  export PATH="'"$INSTALL_DIR"':$PATH"'
-    echo '  eval "`fnm env`"'
-
-    echo '' >>$CONF_FILE
-    echo '# fnm' >>$CONF_FILE
-    echo 'export PATH="'$INSTALL_DIR':$PATH"' >>$CONF_FILE
-    echo 'eval "`fnm env`"' >>$CONF_FILE
+    {
+      echo ''
+      echo '# fnm'
+      echo 'FNM_PATH="'"$INSTALL_DIR"'"'
+      echo 'if [ -d "$FNM_PATH" ]; then'
+      echo '  export PATH="'$INSTALL_DIR':$PATH"'
+      echo '  eval "`fnm env`"'
+      echo 'fi'
+    } | tee -a "$CONF_FILE"
 
   elif [ "$CURRENT_SHELL" = "fish" ]; then
     CONF_FILE=$HOME/.config/fish/conf.d/fnm.fish
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
-    echo ""
-    echo '  # fnm'
-    echo '  set PATH "'"$INSTALL_DIR"'" $PATH'
-    echo '  fnm env | source'
-
-    echo '# fnm' >>$CONF_FILE
-    echo 'set PATH "'"$INSTALL_DIR"'" $PATH' >>$CONF_FILE
-    echo 'fnm env | source' >>$CONF_FILE
+    {
+      echo ''
+      echo '# fnm'
+      echo 'set FNM_PATH "'"$INSTALL_DIR"'"'
+      echo 'if [ -d "$FNM_PATH" ]'
+      echo '  set PATH "$FNM_PATH" $PATH'
+      echo '  fnm env | source'
+      echo 'end'
+    } | tee -a "$CONF_FILE"
 
   elif [ "$CURRENT_SHELL" = "bash" ]; then
     if [ "$OS" = "Darwin" ]; then
@@ -192,15 +200,15 @@ setup_shell() {
     fi
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
-    echo ""
-    echo '  # fnm'
-    echo '  export PATH="'"$INSTALL_DIR"':$PATH"'
-    echo '  eval "`fnm env`"'
-
-    echo '' >>$CONF_FILE
-    echo '# fnm' >>$CONF_FILE
-    echo 'export PATH="'"$INSTALL_DIR"':$PATH"' >>$CONF_FILE
-    echo 'eval "`fnm env`"' >>$CONF_FILE
+    {
+      echo ''
+      echo '# fnm'
+      echo 'FNM_PATH="'"$INSTALL_DIR"'"'
+      echo 'if [ -d "$FNM_PATH" ]; then'
+      echo '  export PATH="$FNM_PATH:$PATH"'
+      echo '  eval "`fnm env`"'
+      echo 'fi'
+    } | tee -a "$CONF_FILE"
 
   else
     echo "Could not infer shell type. Please set up manually."

@@ -40,6 +40,34 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .execute(shell)
     })
 
+    test(`package.json engines.node`, async () => {
+      await writeFile(
+        join(testCwd(), "package.json"),
+        JSON.stringify({ engines: { node: "8.11.3" } })
+      )
+      await script(shell)
+        .then(shell.env({ resolveEngines: true }))
+        .then(shell.call("fnm", ["install"]))
+        .then(shell.call("fnm", ["use"]))
+        .then(testNodeVersion(shell, "v8.11.3"))
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
+
+    test(`package.json engines.node with semver range`, async () => {
+      await writeFile(
+        join(testCwd(), "package.json"),
+        JSON.stringify({ engines: { node: "^6 < 6.17.1" } })
+      )
+      await script(shell)
+        .then(shell.env({ resolveEngines: true }))
+        .then(shell.call("fnm", ["install"]))
+        .then(shell.call("fnm", ["use"]))
+        .then(testNodeVersion(shell, "v6.17.0"))
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
+
     test(`use on cd`, async () => {
       await mkdir(join(testCwd(), "subdir"), { recursive: true })
       await writeFile(join(testCwd(), "subdir", ".node-version"), "v12.22.12")

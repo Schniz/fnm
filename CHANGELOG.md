@@ -1,5 +1,35 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.35.1
+
+### Patch Changes
+
+- [#1010](https://github.com/Schniz/fnm/pull/1010) [`b185446`](https://github.com/Schniz/fnm/commit/b185446cfa08d4d6e2552db53937762a3c38d4db) Thanks [@quixoten](https://github.com/quixoten)! - fix: panic on `fnm completions`
+
+## 1.35.0
+
+### Minor Changes
+
+- [#839](https://github.com/Schniz/fnm/pull/839) [`97be792`](https://github.com/Schniz/fnm/commit/97be792a4410d8f121e03a1f81f60c48cbfdee2c) Thanks [@amitdahan](https://github.com/amitdahan)! - Support resolving `engines.node` field via experimental `--resolve-engines` flag
+
+### Patch Changes
+
+- [#991](https://github.com/Schniz/fnm/pull/991) [`b19eb29`](https://github.com/Schniz/fnm/commit/b19eb29b26323f0b9fb427d3d9271c9cc13a58f8) Thanks [@amitdahan](https://github.com/amitdahan)! - Bump Clap 3 -> 4
+
+## 1.34.0
+
+### Minor Changes
+
+- Add --corepack-enabled flag for automatically enabling corepack on fnm install ([#960](https://github.com/Schniz/fnm/pull/960))
+
+### Patch Changes
+
+- modernize tty check (#973 by @tottoto) ([`48b2611`](https://github.com/Schniz/fnm/commit/48b2611e4b1c205f07dcbd50f2fff436becb77c1))
+
+- use cygwinpath to make the path posix-like on Windows Bash usage ([#960](https://github.com/Schniz/fnm/pull/960))
+
+- capitalize "n" to show default (#963 by @Joshuahuahua) ([`48b2611`](https://github.com/Schniz/fnm/commit/48b2611e4b1c205f07dcbd50f2fff436becb77c1))
+
 ## 1.33.1
 
 ### Patch Changes

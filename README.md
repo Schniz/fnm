@@ -1,10 +1,10 @@
 <h1 align="center">
   Fast Node Manager (<code>fnm</code>)
   <img alt="Amount of downloads" src="https://img.shields.io/github/downloads/Schniz/fnm/total.svg?style=flat" />
-  <a href="https://github.com/Schniz/fnm/actions"><img src="https://img.shields.io/github/workflow/status/Schniz/fnm/Rust/master?label=workflow" alt="GitHub Actions workflow status" /></a>
+  <a href="https://github.com/Schniz/fnm/actions"><img src="https://img.shields.io/github/actions/workflow/status/Schniz/fnm/rust.yml?branch=master&label=workflow" alt="GitHub Actions workflow status" /></a>
 </h1>
 
-> :rocket: Fast and simple Node.js version manager, built in Rust
+> 🚀 Fast and simple Node.js version manager, built in Rust
 
 <div align="center">
   <img src="./docs/fnm.svg" alt="Blazing fast!">
@@ -12,13 +12,13 @@
 
 ## Features
 
-:earth_americas: Cross-platform support (macOS, Windows, Linux)
+🌎 Cross-platform support (macOS, Windows, Linux)
 
-:sparkles: Single file, easy installation, instant startup
+✨ Single file, easy installation, instant startup
 
-:rocket: Built with speed in mind
+🚀 Built with speed in mind
 
-:open_file_folder: Works with `.node-version` and `.nvmrc` files
+📂 Works with `.node-version` and `.nvmrc` files
 
 ## Installation
 
@@ -42,7 +42,7 @@ On other operating systems, upgrading `fnm` is almost the same as installing it.
 
 `--install-dir`
 
-Set a custom directory for fnm to be installed. The default is `$HOME/.fnm`.
+Set a custom directory for fnm to be installed. The default is `$XDG_DATA_HOME/fnm` (if `$XDG_DATA_HOME` is not defined it falls back to `$HOME/.local/share/fnm` on linux and `$HOME/Library/Application Support/fnm` on MacOS).
 
 `--skip-shell`
 
@@ -67,6 +67,12 @@ brew install fnm
 ```
 
 Then, [set up your shell for fnm](#shell-setup)
+
+#### Using Winget (Windows)
+
+```sh
+winget install Schniz.fnm
+```
 
 #### Using Scoop (Windows)
 
@@ -96,9 +102,10 @@ Then, [set up your shell for fnm](#shell-setup)
 
 - Download the [latest release binary](https://github.com/Schniz/fnm/releases) for your system
 - Make it available globally on `PATH` environment variable
-- Configure your shell profile:
+- [Set up your shell for fnm](#shell-setup)
 
 ### Removing
+
 To remove fnm (😢), just delete the `.fnm` folder in your home directory. You should also edit your shell configuration to remove any references to fnm (ie. read [Shell Setup](#shell-setup), and do the opposite).
 
 ## Completions
@@ -114,7 +121,7 @@ Where `<SHELL>` can be one of the supported shells:
 - `bash`
 - `zsh`
 - `fish`
-- `powershell`
+- `power-shell`
 
 Please follow your shell instructions to install them.
 
@@ -122,9 +129,13 @@ Please follow your shell instructions to install them.
 
 Environment variables need to be setup before you can start using fnm.
 This is done by evaluating the output of `fnm env`.
-To automatically run `fnm use` when a directory contains a `.node-version` or `.nvmrc` file, add the `--use-on-cd` option to your shell setup.
+
+> [!NOTE]
+> Check out the [Configuration](./docs/configuration.md) section to enable highly
+> recommended features, like automatic version switching.
 
 Adding a `.node-version` to your project is as simple as:
+
 ```bash
 $ node --version
 v14.18.3
@@ -165,17 +176,24 @@ Add the following to the end of your profile file:
 fnm env --use-on-cd | Out-String | Invoke-Expression
 ```
 
-- On Windows, the profile is located at `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` or `$PROFILE`
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
+- On Windows to edit your profile you can run this in a PowerShell
+  ```powershell
+  notepad $profile
+  ```
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
-fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
+fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following lines:
 
 ```batch
-FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
+@echo off
+:: for /F will launch a new instance of cmd so we create a guard to prevent an infnite loop
+if not defined FNM_AUTORUN_GUARD (
+    set "FNM_AUTORUN_GUARD=AutorunGuard"
+    FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z
+)
 ```
-⚠️ If you get the error `i was unexpected at this time`, please make a .cmd file as suggested by the first step in the Usage with Cmder secton add it's path to the `AutoRun` registry key.
 
 #### Usage with Cmder
 
@@ -183,17 +201,25 @@ Usage is very similar to the normal WinCMD install, apart for a few tweaks to al
 Then you can do something like this:
 
 - Make a .cmd file to invoke it
+
 ```batch
 :: %CMDER_ROOT%\bin\fnm_init.cmd
 @echo off
 FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z
 ```
+
 - Add it to the startup script
+
 ```batch
 :: %CMDER_ROOT%\config\user_profile.cmd
 call "%CMDER_ROOT%\bin\fnm_init.cmd"
 ```
+
 You can replace `%CMDER_ROOT%` with any other convenient path too.
+
+## [Configuration](./docs/configuration.md)
+
+[See the available configuration options for an extended configuration documentation](./docs/configuration.md)
 
 ## [Usage](./docs/commands.md)
 

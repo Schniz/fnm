@@ -1,8 +1,24 @@
-#[derive(Debug, PartialEq, PartialOrd, Eq, Ord, Clone)]
+use std::fmt::Display;
+
+use clap::ValueEnum;
+
+#[derive(Debug, Default, PartialEq, PartialOrd, Eq, Ord, Clone, ValueEnum)]
 pub enum LogLevel {
     Quiet,
     Error,
+    #[default]
+    #[value(alias("all"))]
     Info,
+}
+
+impl Display for LogLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            LogLevel::Quiet => write!(f, "quiet"),
+            LogLevel::Error => write!(f, "error"),
+            LogLevel::Info => write!(f, "info"),
+        }
+    }
 }
 
 impl LogLevel {
@@ -33,19 +49,6 @@ impl From<LogLevel> for &'static str {
             LogLevel::Quiet => "quiet",
             LogLevel::Info => "info",
             LogLevel::Error => "error",
-        }
-    }
-}
-
-impl std::str::FromStr for LogLevel {
-    type Err = &'static str;
-
-    fn from_str(s: &str) -> Result<LogLevel, Self::Err> {
-        match s {
-            "quiet" => Ok(Self::Quiet),
-            "info" | "all" => Ok(Self::Info),
-            "error" => Ok(Self::Error),
-            _ => Err("Unsupported log level"),
         }
     }
 }

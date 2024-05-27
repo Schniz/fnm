@@ -1,9 +1,11 @@
+use super::command::Command;
 use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
 use crate::lts::LtsType;
 use crate::outln;
+use crate::progress::ProgressConfig;
 use crate::remote_node_index;
 use crate::user_version::UserVersion;
 use crate::version::Version;
@@ -24,6 +26,12 @@ pub struct Install {
     /// Install latest version
     #[clap(long, conflicts_with_all = &["version", "lts"])]
     pub latest: bool,
+
+    /// Show an interactive progress bar for the download
+    /// status.
+    #[clap(long, default_value_t)]
+    #[arg(value_enum)]
+    pub progress: ProgressConfig,
 }
 
 impl Install {
@@ -33,27 +41,31 @@ impl Install {
                 version: v,
                 lts: false,
                 latest: false,
+                ..
             } => Ok(v),
             Self {
                 version: None,
                 lts: true,
                 latest: false,
+                ..
             } => Ok(Some(UserVersion::Full(Version::Lts(LtsType::Latest)))),
             Self {
                 version: None,
                 lts: false,
                 latest: true,
+                ..
             } => Ok(Some(UserVersion::Full(Version::Latest))),
             _ => Err(Error::TooManyVersionsProvided),
         }
     }
 }
 
-impl super::command::Command for Install {
+impl Command for Install {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let current_dir = std::env::current_dir().unwrap();
+        let show_progress = self.progress.enabled(config);
 
         let current_version = self
             .version()?
@@ -130,11 +142,13 @@ impl super::command::Command for Install {
             &config.node_dist_mirror,
             config.installations_dir(),
             safe_arch,
+            show_progress,
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
             }
-            other_err => other_err.map_err(|source| Error::DownloadError { source })?,
+            Err(source) => Err(Error::DownloadError { source })?,
+            Ok(()) => {}
         };
 
         if let UserVersion::Full(Version::Latest) = current_version {
@@ -145,6 +159,11 @@ impl super::command::Command for Install {
                 version.v_str().cyan()
             );
             create_alias(config, &alias_name, &version)?;
+        }
+
+        if config.corepack_enabled() {
+            outln!(config, Info, "Enabling corepack for {}", version_str.cyan());
+            enable_corepack(&version, config)?;
         }
 
         if let UserVersion::Full(Version::Lts(lts_type)) = current_version {
@@ -166,6 +185,19 @@ impl super::command::Command for Install {
     }
 }
 
+fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
+    let corepack_path = version.installation_path(config);
+    let corepack_path = if cfg!(windows) {
+        corepack_path.join("corepack.cmd")
+    } else {
+        corepack_path.join("bin").join("corepack")
+    };
+    super::exec::Exec::new_for_version(version, corepack_path.to_str().unwrap(), &["enable"])
+        .apply(config)
+        .map_err(|source| Error::CorepackError { source })?;
+    Ok(())
+}
+
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("Can't download the requested binary: {}", source)]
@@ -174,6 +206,11 @@ pub enum Error {
     IoError {
         #[from]
         source: std::io::Error,
+    },
+    #[error("Can't enable corepack: {source}")]
+    CorepackError {
+        #[from]
+        source: super::exec::Error,
     },
     #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,
@@ -196,7 +233,6 @@ pub enum Error {
 
 #[cfg(test)]
 mod tests {
-    use super::super::command::Command;
     use super::*;
     use pretty_assertions::assert_eq;
     use std::str::FromStr;
@@ -211,6 +247,7 @@ mod tests {
             version: UserVersion::from_str("12.0.0").ok(),
             lts: false,
             latest: false,
+            progress: ProgressConfig::Never,
         }
         .apply(&config)
         .expect("Can't install");
@@ -236,6 +273,7 @@ mod tests {
             version: None,
             lts: false,
             latest: true,
+            progress: ProgressConfig::Never,
         }
         .apply(&config)
         .expect("Can't install");
