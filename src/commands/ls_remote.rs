@@ -7,7 +7,7 @@ use thiserror::Error;
 
 #[derive(clap::Parser, Debug)]
 pub struct LsRemote {
-    /// Filter with `SemVer`
+    /// Filter versions by a user-defined version or a semver range
     #[arg(long)]
     filter: Option<UserVersion>,
 

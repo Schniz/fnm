@@ -82,7 +82,7 @@ Usage: fnm list-remote [OPTIONS]
 
 Options:
       --filter <FILTER>
-          Filter with SemVer
+          Filter versions by a user-defined version or a semver range
 
       --node-dist-mirror <NODE_DIST_MIRROR>
           <https://nodejs.org/dist/> mirror
