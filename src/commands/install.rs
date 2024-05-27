@@ -151,23 +151,17 @@ impl Command for Install {
             Ok(()) => {}
         };
 
-        if let UserVersion::Full(Version::Latest) = current_version {
-            let alias_name = Version::Latest.v_str();
-            debug!(
-                "Tagging {} as alias for {}",
-                alias_name.cyan(),
-                version.v_str().cyan()
-            );
-            create_alias(config, &alias_name, &version)?;
-        }
-
         if config.corepack_enabled() {
             outln!(config, Info, "Enabling corepack for {}", version_str.cyan());
             enable_corepack(&version, config)?;
         }
 
-        if let UserVersion::Full(Version::Lts(lts_type)) = current_version {
-            let alias_name = Version::Lts(lts_type).v_str();
+        if let Some(tagged_alias) = match &current_version {
+            UserVersion::Full(Version::Latest) => Some(Version::Latest),
+            UserVersion::Full(Version::Lts(lts_type)) => Some(Version::Lts(lts_type.clone())),
+            _ => None,
+        } {
+            let alias_name = tagged_alias.v_str();
             debug!(
                 "Tagging {} as alias for {}",
                 alias_name.cyan(),
