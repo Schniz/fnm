@@ -156,27 +156,29 @@ impl Command for Install {
             enable_corepack(&version, config)?;
         }
 
-        if let Some(tagged_alias) = match &current_version {
-            UserVersion::Full(Version::Latest) => Some(Version::Latest),
-            UserVersion::Full(Version::Lts(lts_type)) => Some(Version::Lts(lts_type.clone())),
-            _ => None,
-        } {
-            let alias_name = tagged_alias.v_str();
-            debug!(
-                "Tagging {} as alias for {}",
-                alias_name.cyan(),
-                version.v_str().cyan()
-            );
-            create_alias(config, &alias_name, &version)?;
-        }
-
         if !config.default_version_dir().exists() {
             debug!("Tagging {} as the default version", version.v_str().cyan());
             create_alias(config, "default", &version)?;
         }
 
+        if let Some(tagged_alias) = current_version.inferred_alias() {
+            tag_alias(config, &version, &tagged_alias)?;
+        }
+
         Ok(())
     }
+}
+
+fn tag_alias(config: &FnmConfig, matched_version: &Version, alias: &Version) -> Result<(), Error> {
+    let alias_name = alias.v_str();
+    debug!(
+        "Tagging {} as alias for {}",
+        alias_name.cyan(),
+        matched_version.v_str().cyan()
+    );
+    create_alias(config, &alias_name, matched_version)?;
+
+    Ok(())
 }
 
 fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
