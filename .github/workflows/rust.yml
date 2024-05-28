@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Post token
-        run: curl "https://benchy.hagever.com/api/test?token=$GITHUB_TOKEN" -X POST
+        run: curl "https://benchy.hagever.com/api/test?token=$GITHUB_TOKEN" -X POST -f
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # fmt:
