@@ -46,7 +46,7 @@ repo/packages/my-package$ fnm use
 error: Can't find version in dotfiles. Please provide a version manually to the command.
 ```
 
-### `--enable-corepack`
+### `--corepack-enabled`
 
 **🧪 Experimental**
 
