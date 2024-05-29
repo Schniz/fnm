@@ -21,7 +21,7 @@ jobs:
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: cargo fmt
         run: cargo fmt -- --check
 
@@ -32,7 +32,7 @@ jobs:
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: cargo clippy
         run: cargo clippy -- -D warnings
 
@@ -46,7 +46,7 @@ jobs:
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run tests
         run: cargo test
 
@@ -58,7 +58,7 @@ jobs:
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build release binary
         run: cargo build --release
         env:
@@ -76,7 +76,7 @@ jobs:
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build release binary
         run: cargo build --release
         env:
@@ -97,7 +97,7 @@ jobs:
     steps:
       - name: install necessary shells
         run: brew install fish zsh bash
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: fnm-macos
@@ -133,7 +133,7 @@ jobs:
     needs: [build_release]
     name: "e2e/windows"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: fnm-windows
@@ -203,7 +203,7 @@ jobs:
     steps:
       - name: install necessary shells
         run: sudo apt-get update && sudo apt-get install -y fish zsh bash
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: fnm-linux
@@ -249,7 +249,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends musl-tools
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build release binary
         run: cargo build --release --target x86_64-unknown-linux-musl
       - name: Strip binary from debug symbols
@@ -287,7 +287,7 @@ jobs:
           key: arm-binary-${{ matrix.arch }}
       - name: "Download `cross` crate"
         run: cargo install cross
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Build release"
         run: cross build --target $RUST_TARGET --release
       - uses: uraimo/run-on-arch-action@v2.1.2
@@ -327,7 +327,7 @@ jobs:
     steps:
       - name: install necessary shells
         run: sudo apt-get update && sudo apt-get install -y fish zsh bash
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: fnm-linux

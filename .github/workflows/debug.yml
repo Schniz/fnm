@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     name: "e2e/windows/debug"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.inputs.commit_hash }}
     - name: Download artifact
