@@ -1,8 +1,8 @@
 use crate::arch::Arch;
+use crate::directories::Directories;
 use crate::log_level::LogLevel;
 use crate::path_ext::PathExt;
 use crate::version_file_strategy::VersionFileStrategy;
-use etcetera::BaseStrategy;
 use url::Url;
 
 #[derive(clap::Parser, Debug)]
@@ -87,6 +87,9 @@ pub struct FnmConfig {
         verbatim_doc_comment
     )]
     resolve_engines: bool,
+
+    #[clap(skip)]
+    directories: Directories,
 }
 
 impl Default for FnmConfig {
@@ -100,6 +103,7 @@ impl Default for FnmConfig {
             version_file_strategy: VersionFileStrategy::default(),
             corepack_enabled: false,
             resolve_engines: false,
+            directories: Directories::default(),
         }
     }
 }
@@ -134,28 +138,7 @@ impl FnmConfig {
             return dir;
         }
 
-        let basedirs = etcetera::choose_base_strategy().expect("Can't get home directory");
-
-        let modern = basedirs.data_dir().join("fnm");
-        let legacy = basedirs.home_dir().join(".fnm");
-
-        if modern.exists() {
-            return modern;
-        }
-        if legacy.exists() {
-            return legacy;
-        }
-
-        #[cfg(target_os = "macos")]
-        {
-            let basedirs = etcetera::base_strategy::Apple::new().expect("Can't get home directory");
-            let legacy = basedirs.data_dir().join("fnm");
-            if legacy.exists() {
-                return legacy;
-            }
-        }
-
-        modern.ensure_exists_silently()
+        self.directories.default_base_dir()
     }
 
     pub fn installations_dir(&self) -> std::path::PathBuf {
@@ -172,6 +155,10 @@ impl FnmConfig {
         self.base_dir_with_default()
             .join("aliases")
             .ensure_exists_silently()
+    }
+
+    pub fn multishell_storage(&self) -> std::path::PathBuf {
+        self.directories.multishell_storage()
     }
 
     #[cfg(test)]
