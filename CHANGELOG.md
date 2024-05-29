@@ -1,5 +1,17 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.37.0
+
+### Minor Changes
+
+- [#1143](https://github.com/Schniz/fnm/pull/1143) [`f76a001`](https://github.com/Schniz/fnm/commit/f76a0011f7a613bb818e47acd224b7de48c5a81f) Thanks [@Schniz](https://github.com/Schniz)! - use XDG conventions in MacOS directories by default
+
+### Patch Changes
+
+- [#1148](https://github.com/Schniz/fnm/pull/1148) [`0b530cc`](https://github.com/Schniz/fnm/commit/0b530cc257e33e9801804b73ed831a1f28489b57) Thanks [@Schniz](https://github.com/Schniz)! - fix ordering in ls-remote
+
+- [#1133](https://github.com/Schniz/fnm/pull/1133) [`a1afe84`](https://github.com/Schniz/fnm/commit/a1afe8436afb29960b71e14e221441398f6a48ca) Thanks [@Schniz](https://github.com/Schniz)! - upgrade all dependencies & maintain lockfile
+
 ## 1.36.0
 
 ### Minor Changes
