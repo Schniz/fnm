@@ -17,7 +17,7 @@ pub struct LsRemote {
     lts: Option<Option<String>>,
 
     /// Version sorting order
-    #[arg(long, default_value = "desc")]
+    #[arg(long, default_value = "asc")]
     sort: SortingMethod,
 
     /// Only show the latest matching version
