@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Set up QEMU
         id: qemu
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - uses: actions/checkout@v4
       - name: Run installation script in Docker
         run: |
