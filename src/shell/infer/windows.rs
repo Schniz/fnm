@@ -1,8 +1,7 @@
 #![cfg(not(unix))]
 
 use crate::shell::Shell;
-use std::ffi::OsStr;
-use sysinfo::{ProcessExt, System, SystemExt};
+use sysinfo::System;
 
 pub fn infer_shell() -> Option<Box<dyn Shell>> {
     let mut system = System::new();
@@ -14,8 +13,8 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
             current_pid = process.parent();
             let process_name = process
                 .exe()
-                .file_stem()
-                .and_then(OsStr::to_str)
+                .and_then(|x| x.file_stem())
+                .and_then(|x| x.to_str())
                 .map(str::to_lowercase);
             if let Some(shell) = process_name
                 .as_ref()
