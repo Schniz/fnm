@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
     name: "e2e/windows/debug"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.inputs.commit_hash }}
     - name: Download artifact
@@ -36,7 +36,7 @@ jobs:
       run: cargo build --release
       env:
         RUSTFLAGS: "-C target-feature=+crt-static"
-    - uses: pnpm/action-setup@v2.2.4
+    - uses: pnpm/action-setup@v2.4.0
       with:
         run_install: false
     - uses: actions/setup-node@v3
@@ -47,7 +47,7 @@ jobs:
       id: pnpm-cache
       run: |
         echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       name: Setup pnpm cache
       with:
         path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}

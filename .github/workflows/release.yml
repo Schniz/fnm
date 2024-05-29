@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # set up
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: hecrj/setup-rust-action@v1
         with:
@@ -20,7 +20,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v2.4.0
         with:
           run_install: false
 
@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
