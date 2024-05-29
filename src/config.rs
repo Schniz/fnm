@@ -7,7 +7,7 @@ use url::Url;
 
 #[derive(clap::Parser, Debug)]
 pub struct FnmConfig {
-    /// https://nodejs.org/dist/ mirror
+    /// <https://nodejs.org/dist/> mirror
     #[clap(
         long,
         env = "FNM_NODE_DIST_MIRROR",
@@ -36,10 +36,9 @@ pub struct FnmConfig {
     #[clap(
         long,
         env = "FNM_LOGLEVEL",
-        default_value = "info",
+        default_value_t,
         global = true,
-        hide_env_values = true,
-        possible_values = LogLevel::possible_values()
+        hide_env_values = true
     )]
     log_level: LogLevel,
 
@@ -57,19 +56,37 @@ pub struct FnmConfig {
 
     /// A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is
     /// called without a version, or when `--use-on-cd` is configured on evaluation.
-    ///
-    /// * `local`: Use the local version of Node defined within the current directory
-    ///
-    /// * `recursive`: Use the version of Node defined within the current directory and all parent directories
     #[clap(
         long,
         env = "FNM_VERSION_FILE_STRATEGY",
-        possible_values = VersionFileStrategy::possible_values(),
-        default_value = "local",
+        default_value_t,
         global = true,
-        hide_env_values = true,
+        hide_env_values = true
     )]
     version_file_strategy: VersionFileStrategy,
+
+    /// Enable corepack support for each new installation.
+    /// This will make fnm call `corepack enable` on every Node.js installation.
+    /// For more information about corepack see <https://nodejs.org/api/corepack.html>
+    #[clap(
+        long,
+        env = "FNM_COREPACK_ENABLED",
+        global = true,
+        hide_env_values = true
+    )]
+    corepack_enabled: bool,
+
+    /// Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+    /// Experimental: This feature is subject to change.
+    /// Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
+    #[clap(
+        long,
+        env = "FNM_RESOLVE_ENGINES",
+        global = true,
+        hide_env_values = true,
+        verbatim_doc_comment
+    )]
+    resolve_engines: bool,
 }
 
 impl Default for FnmConfig {
@@ -81,6 +98,8 @@ impl Default for FnmConfig {
             log_level: LogLevel::Info,
             arch: Arch::default(),
             version_file_strategy: VersionFileStrategy::default(),
+            corepack_enabled: false,
+            resolve_engines: false,
         }
     }
 }
@@ -88,6 +107,14 @@ impl Default for FnmConfig {
 impl FnmConfig {
     pub fn version_file_strategy(&self) -> &VersionFileStrategy {
         &self.version_file_strategy
+    }
+
+    pub fn corepack_enabled(&self) -> bool {
+        self.corepack_enabled
+    }
+
+    pub fn resolve_engines(&self) -> bool {
+        self.resolve_engines
     }
 
     pub fn multishell_path(&self) -> Option<&std::path::Path> {

@@ -42,6 +42,28 @@ if [ "$(node --version)" != "v8.11.3" ]; then
 fi"
 `;
 
+exports[`Bash package.json engines.node with semver range: Bash 1`] = `
+"set -e
+eval "$(fnm env --resolve-engines)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v6.17.0" ]; then
+  echo "Expected node version to be v6.17.0. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash package.json engines.node: Bash 1`] = `
+"set -e
+eval "$(fnm env --resolve-engines)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
 exports[`Bash resolves partial semver: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
@@ -118,6 +140,28 @@ if test "$____test____" != "v8.11.3"
 end"
 `;
 
+exports[`Fish package.json engines.node with semver range: Fish 1`] = `
+"fnm env --resolve-engines | source
+fnm install
+fnm use
+set ____test____ (node --version)
+if test "$____test____" != "v6.17.0"
+  echo "Expected node version to be v6.17.0. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish package.json engines.node: Fish 1`] = `
+"fnm env --resolve-engines | source
+fnm install
+fnm use
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
 exports[`Fish resolves partial semver: Fish 1`] = `
 "fnm env | source
 fnm install 6
@@ -182,6 +226,22 @@ fnm use v8.11.3
 if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
 `;
 
+exports[`PowerShell package.json engines.node with semver range: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --resolve-engines | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v6.17.0" ) { echo "Expected node version to be v6.17.0. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell package.json engines.node: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --resolve-engines | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
 exports[`PowerShell resolves partial semver: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
@@ -243,6 +303,28 @@ exports[`Zsh basic usage: Zsh 1`] = `
 eval "$(fnm env)"
 fnm install v8.11.3
 fnm use v8.11.3
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh package.json engines.node with semver range: Zsh 1`] = `
+"set -e
+eval "$(fnm env --resolve-engines)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v6.17.0" ]; then
+  echo "Expected node version to be v6.17.0. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh package.json engines.node: Zsh 1`] = `
+"set -e
+eval "$(fnm env --resolve-engines)"
+fnm install
+fnm use
 if [ "$(node --version)" != "v8.11.3" ]; then
   echo "Expected node version to be v8.11.3. Got $(node --version)"
   exit 1

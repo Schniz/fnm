@@ -77,6 +77,9 @@ impl Version {
     }
 }
 
+// TODO: add a trait called BinPath that &Path and PathBuf implements
+// which adds the `.bin_path()` which works both on windows and unix :)
+
 impl<'de> serde::Deserialize<'de> for Version {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

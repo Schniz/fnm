@@ -4,6 +4,7 @@ use crate::version::Version;
 pub enum Arch {
     X86,
     X64,
+    X64Musl,
     Arm64,
     Armv7l,
     Ppc64le,
@@ -16,16 +17,16 @@ pub enum Arch {
 pub fn get_safe_arch<'a>(arch: &'a Arch, version: &Version) -> &'a Arch {
     use crate::system_info::{platform_arch, platform_name};
 
-    return match (platform_name(), platform_arch(), version) {
+    match (platform_name(), platform_arch(), version) {
         ("darwin", "arm64", Version::Semver(v)) if v.major < 16 => &Arch::X64,
         _ => arch,
-    };
+    }
 }
 
 #[cfg(windows)]
 /// handle common case: Apple Silicon / Node < 16
 pub fn get_safe_arch<'a>(arch: &'a Arch, _version: &Version) -> &'a Arch {
-    return &arch;
+    arch
 }
 
 impl Default for Arch {
@@ -43,6 +44,7 @@ impl std::str::FromStr for Arch {
         match s {
             "x86" => Ok(Arch::X86),
             "x64" => Ok(Arch::X64),
+            "x64-musl" => Ok(Arch::X64Musl),
             "arm64" => Ok(Arch::Arm64),
             "armv7l" => Ok(Arch::Armv7l),
             "ppc64le" => Ok(Arch::Ppc64le),
@@ -58,6 +60,7 @@ impl std::fmt::Display for Arch {
         let arch_str = match self {
             Arch::X86 => String::from("x86"),
             Arch::X64 => String::from("x64"),
+            Arch::X64Musl => String::from("x64-musl"),
             Arch::Arm64 => String::from("arm64"),
             Arch::Armv7l => String::from("armv7l"),
             Arch::Ppc64le => String::from("ppc64le"),

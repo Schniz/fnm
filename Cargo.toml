@@ -1,6 +1,6 @@
 [package]
 name = "fnm"
-version = "1.33.1"
+version = "1.36.0"
 authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
 edition = "2021"
 build = "build.rs"
@@ -9,39 +9,41 @@ repository = "https://github.com/Schniz/fnm"
 description = "Fast and simple Node.js version manager"
 
 [dependencies]
-serde = { version = "1.0.149", features = ["derive"] }
-clap = { version = "3.2.23", features = ["derive", "env"] }
-serde_json = "1.0.89"
-chrono = { version = "0.4.23", features = ["serde"] }
-tar = "0.4.38"
+serde = { version = "1.0.203", features = ["derive"] }
+clap = { version = "4.5.4", features = ["derive", "env"] }
+serde_json = "1.0.117"
+chrono = { version = "0.4.38", features = ["serde", "now"], default-features = false }
+tar = "0.4.40"
 xz2 = "0.1.7"
 node-semver = "2.1.0"
+dirs = "5.0.1"
 etcetera = "0.8.0"
-colored = "2.0.0"
-zip = "0.6.3"
-tempfile = "3.3.0"
-indoc = "1.0.8"
-log = "0.4.17"
-env_logger = "0.10.0"
-atty = "0.2.14"
+colored = "2.1.0"
+zip = "2.1.0"
+tempfile = "3.10.1"
+indoc = "2.0.5"
+log = "0.4.21"
+env_logger = "0.11.3"
 encoding_rs_io = "0.1.7"
-reqwest = { version = "0.11.13", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
-url = "2.3.1"
-sysinfo = "0.27.1"
-thiserror = "1.0.37"
-clap_complete = "3.2.5"
-anyhow = "1.0.66"
+reqwest = { version = "0.12.4", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
+url = "2.5.0"
+sysinfo = "0.30.12"
+thiserror = "1.0.61"
+clap_complete = "4.5.2"
+anyhow = "1.0.86"
+indicatif = { version = "0.17.8", features = ["improved_unicode"] }
 
 [dev-dependencies]
-pretty_assertions = "1.3.0"
-duct = "0.13.6"
-test-log = "0.2.11"
+pretty_assertions = "1.4.0"
+duct = "0.13.7"
+test-log = "0.2.16"
+http = "1.1.0"
 
 [build-dependencies]
-embed-resource = "1.8.0"
+embed-resource = "2.4.2"
 
 [target.'cfg(windows)'.dependencies]
-csv = "1.1.6"
-junction = "0.2.0"
+csv = "1.3.0"
+junction = "1.1.0"
 
 [features]
