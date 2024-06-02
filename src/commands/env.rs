@@ -35,17 +35,16 @@ fn generate_symlink_path() -> String {
 }
 
 fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
-    let base_dir = if cfg!(windows) {
-        config.multishell_storage().ensure_exists_silently()
-    } else {
-        config
-            .multishell_storage()
-            .ensure_exists_silently_with_permissions(|permissions| {
-                use std::os::unix::fs::PermissionsExt;
-                // r/w only for owner
-                permissions.set_mode(0o700);
-            })
-    };
+    #[cfg(windows)]
+    let base_dir = { config.multishell_storage().ensure_exists_silently() };
+    #[cfg(not(windows))]
+    let base_dir = config
+        .multishell_storage()
+        .ensure_exists_silently_with_permissions(|permissions| {
+            use std::os::unix::fs::PermissionsExt;
+            // r/w only for owner
+            permissions.set_mode(0o700);
+        });
 
     let mut temp_dir = base_dir.join(generate_symlink_path());
 
