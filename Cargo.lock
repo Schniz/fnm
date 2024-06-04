@@ -2520,9 +2520,9 @@ dependencies = [
 
 [[package]]
 name = "zip"
-version = "2.1.1"
+version = "2.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1dd56a4d5921bc2f99947ac5b3abe5f510b1be7376fdc5e9fce4a23c6a93e87c"
+checksum = "098d5d7737fb0b70814faa73c17df84f047d38dd31d13bbf2ec3fb354b5abf45"
 dependencies = [
  "aes",
  "arbitrary",
