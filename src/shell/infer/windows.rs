@@ -1,11 +1,13 @@
 #![cfg(not(unix))]
 
 use crate::shell::Shell;
+use log::warn;
 use sysinfo::System;
 
 pub fn infer_shell() -> Option<Box<dyn Shell>> {
     let mut system = System::new();
     let mut current_pid = sysinfo::get_current_pid().ok();
+    system.refresh_processes();
 
     while let Some(pid) = current_pid {
         system.refresh_process(pid);
@@ -13,8 +15,16 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
             current_pid = process.parent();
             let process_name = process
                 .exe()
-                .and_then(|x| x.file_stem())
-                .and_then(|x| x.to_str())
+                .and_then(|x| {
+                    tap_none(x.file_stem(), || {
+                        warn!("failed to get file stem from {:?}", x);
+                    })
+                })
+                .and_then(|x| {
+                    tap_none(x.to_str(), || {
+                        warn!("failed to convert file stem to string: {:?}", x);
+                    })
+                })
                 .map(str::to_lowercase);
             if let Some(shell) = process_name
                 .as_ref()
@@ -29,4 +39,16 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
     }
 
     None
+}
+
+fn tap_none<T, F>(opt: Option<T>, f: F) -> Option<T>
+where
+    F: FnOnce(),
+{
+    match &opt {
+        Some(_) => (),
+        None => f(),
+    };
+
+    opt
 }
