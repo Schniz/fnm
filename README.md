@@ -169,7 +169,7 @@ fnm env --use-on-cd | source
 ```
 
 #### PowerShell
-First create your PowerShell profile file if you haven't:
+Create your PowerShell Profile File (if it doesn't exist):
 ```powershell
 # Check if the directory for the profile exists, if not, create it
 $profileDir = Split-Path $profile
@@ -183,22 +183,21 @@ if (-Not (Test-Path -Path $profile)) {
 }
 ```
 
-And then open the Profile File in Notepad:
-```powershell
-notepad $profile
-```
+Open the Profile File in a text editor:
+- On Windows to edit your profile you can run this in PowerShell
+  ```powershell
+  notepad $profile
+  ```
+- For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
 
 And then add the following to the end of your profile file:
 
 ```powershell
 fnm env --use-on-cd | Out-String | Invoke-Expression
 ```
+Save and Close Notepad.
 
-- For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
-- On Windows to edit your profile you can run this in a PowerShell
-  ```powershell
-  notepad $profile
-  ```
+Restart PowerShell, meaning close your current PowerShell session and open a new one to apply the changes.
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
