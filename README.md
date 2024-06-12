@@ -169,8 +169,26 @@ fnm env --use-on-cd | source
 ```
 
 #### PowerShell
+First create your PowerShell profile file if you haven't:
+```powershell
+# Check if the directory for the profile exists, if not, create it
+$profileDir = Split-Path $profile
+if (-Not (Test-Path -Path $profileDir)) {
+    New-Item -ItemType Directory -Path $profileDir -Force
+}
 
-Add the following to the end of your profile file:
+# Create the profile file if it does not exist
+if (-Not (Test-Path -Path $profile)) {
+    New-Item -ItemType File -Path $profile -Force
+}
+```
+
+And then open the Profile File in Notepad:
+```powershell
+notepad $profile
+```
+
+And then add the following to the end of your profile file:
 
 ```powershell
 fnm env --use-on-cd | Out-String | Invoke-Expression
