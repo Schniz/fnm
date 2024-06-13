@@ -4,7 +4,6 @@ import testNodeVersion from "./shellcode/test-node-version.js"
 import describe from "./describe.js"
 import os from "node:os"
 import { execa } from "execa"
-import path from "node:path"
 
 if (os.platform() === "win32") {
   beforeAll(async () => {
@@ -13,7 +12,7 @@ if (os.platform() === "win32") {
       "shim",
       "add",
       "fnm_release",
-      path.join(__dirname, "../target/release/fnm.exe"),
+      "target/release/fnm.exe",
     ])
   })
 
