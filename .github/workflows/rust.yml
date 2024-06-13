@@ -138,6 +138,7 @@ jobs:
         with:
           name: fnm-windows
           path: target/release
+      - uses: MinoruSekine/setup-scoop@v4
       - uses: pnpm/action-setup@v2.4.0
         with:
           run_install: false

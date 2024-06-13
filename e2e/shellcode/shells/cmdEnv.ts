@@ -1,6 +1,7 @@
 import { ScriptLine, define } from "./types.js"
 
 type EnvConfig = {
+  executableName: string
   useOnCd: boolean
   logLevel: string
   corepackEnabled: boolean
@@ -9,9 +10,15 @@ type EnvConfig = {
 export type HasEnv = { env(cfg: Partial<EnvConfig>): ScriptLine }
 
 function stringify(envConfig: Partial<EnvConfig> = {}) {
-  const { useOnCd, logLevel, corepackEnabled, resolveEngines } = envConfig
+  const {
+    useOnCd,
+    logLevel,
+    corepackEnabled,
+    resolveEngines,
+    executableName = "fnm",
+  } = envConfig
   return [
-    `fnm env`,
+    `${executableName} env`,
     useOnCd && "--use-on-cd",
     logLevel && `--log-level=${logLevel}`,
     corepackEnabled && "--corepack-enabled",
