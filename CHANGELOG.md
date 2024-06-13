@@ -1,5 +1,11 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.37.1
+
+### Patch Changes
+
+- [#1164](https://github.com/Schniz/fnm/pull/1164) [`318f86d`](https://github.com/Schniz/fnm/commit/318f86d72938166cb2b3195cae37826f827b6c08) Thanks [@Schniz](https://github.com/Schniz)! - windows: fix shell inference in powershell when using scoop's shims
+
 ## 1.37.0
 
 ### Minor Changes
