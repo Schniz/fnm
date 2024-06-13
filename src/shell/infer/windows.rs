@@ -1,18 +1,20 @@
 #![cfg(not(unix))]
 
 use crate::shell::Shell;
-use log::warn;
-use sysinfo::System;
+use log::{debug, warn};
+use sysinfo::{ProcessRefreshKind, System, UpdateKind};
 
 pub fn infer_shell() -> Option<Box<dyn Shell>> {
     let mut system = System::new();
     let mut current_pid = sysinfo::get_current_pid().ok();
-    system.refresh_processes();
+
+    system
+        .refresh_processes_specifics(ProcessRefreshKind::new().with_exe(UpdateKind::OnlyIfNotSet));
 
     while let Some(pid) = current_pid {
-        system.refresh_process(pid);
         if let Some(process) = system.process(pid) {
             current_pid = process.parent();
+            debug!("pid {pid} parent process is {current_pid:?}");
             let process_name = process
                 .exe()
                 .and_then(|x| {
@@ -34,6 +36,7 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
                 return Some(shell);
             }
         } else {
+            warn!("process not found for {pid}");
             current_pid = None;
         }
     }
