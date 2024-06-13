@@ -2,4 +2,4 @@
 "fnm": patch
 ---
 
-be more verbose on shell inference issues on Windows
+windows: fix shell inference in powershell when using scoop's shims
