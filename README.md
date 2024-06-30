@@ -162,7 +162,7 @@ eval "$(fnm env --use-on-cd)"
 
 #### Fish shell
 
-Create `~/.config/fish/conf.d/fnm.fish` add this line to it:
+Create `~/.config/fish/conf.d/fnm.fish` and add this line to it:
 
 ```fish
 fnm env --use-on-cd | source
