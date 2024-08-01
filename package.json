@@ -22,7 +22,7 @@
     }
   },
   "devDependencies": {
-    "@changesets/cli": "2.27.6",
+    "@changesets/cli": "2.27.7",
     "@changesets/changelog-github": "0.5.0",
     "@types/jest": "^29.2.3",
     "@types/node": "^18.11.9",
@@ -34,7 +34,7 @@
     "jest": "^29.3.1",
     "lerna-changelog": "2.2.0",
     "node-fetch": "^3.3.0",
-    "prettier": "3.3.2",
+    "prettier": "3.3.3",
     "pv": "1.0.1",
     "shell-escape": "^0.2.0",
     "svg-term-cli": "2.1.1",
