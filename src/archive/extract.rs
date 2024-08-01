@@ -39,5 +39,5 @@ impl From<crate::http::Error> for Error {
 }
 
 pub trait Extract {
-    fn extract_into<P: AsRef<Path>>(self, path: P) -> Result<(), Error>;
+    fn extract_into(self: Box<Self>, path: &Path) -> Result<(), Error>;
 }
