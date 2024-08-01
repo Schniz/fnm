@@ -57,7 +57,11 @@ impl super::command::Command for LsRemote {
         }
 
         if self.latest {
-            all_versions.drain(0..all_versions.len() - 1);
+            let len = all_versions.len();
+            if len > 1 {
+                all_versions.swap(0, len - 1);
+                all_versions.truncate(1);
+            }
         }
 
         if let SortingMethod::Descending = self.sort {
