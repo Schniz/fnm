@@ -1,7 +1,7 @@
 # Working with Node nightly builds
 
 fnm doesn't give you any shorthands to install nightly builds, but you can
-do that by simply proviging `--node-dist-mirror` flag. 
+do that by manually passing a "dist mirror" with the `--node-dist-mirror` flag. 
 
 ## Example usage
 
