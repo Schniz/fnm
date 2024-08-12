@@ -26,12 +26,12 @@ pub enum Shells {
 impl Display for Shells {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Shells::Bash => write!(f, "bash"),
-            Shells::Zsh => write!(f, "zsh"),
-            Shells::Fish => write!(f, "fish"),
-            Shells::PowerShell => write!(f, "powershell"),
+            Shells::Bash => f.write_str("bash"),
+            Shells::Zsh => f.write_str("zsh"),
+            Shells::Fish => f.write_str("fish"),
+            Shells::PowerShell => f.write_str("powershell"),
             #[cfg(windows)]
-            Shells::Cmd => write!(f, "cmd"),
+            Shells::Cmd => f.write_str("cmd"),
         }
     }
 }
