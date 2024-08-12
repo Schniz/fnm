@@ -134,7 +134,7 @@ impl Command for Install {
             Info,
             "Installing {} ({})",
             version_str.cyan(),
-            safe_arch.to_string()
+            safe_arch.as_str()
         );
 
         match install_node_dist(
