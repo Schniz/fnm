@@ -38,7 +38,7 @@ pub enum Error {
 }
 
 #[cfg(unix)]
-fn filename_for_version(version: &Version, arch: &Arch) -> String {
+fn filename_for_version(version: &Version, arch: Arch) -> String {
     format!(
         "node-{node_ver}-{platform}-{arch}.tar.xz",
         node_ver = &version,
@@ -56,7 +56,7 @@ fn filename_for_version(version: &Version, arch: &Arch) -> String {
     )
 }
 
-fn download_url(base_url: &Url, version: &Version, arch: &Arch) -> Url {
+fn download_url(base_url: &Url, version: &Version, arch: Arch) -> Url {
     Url::parse(&format!(
         "{}/{}/{}",
         base_url.as_str().trim_end_matches('/'),
@@ -80,7 +80,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
     version: &Version,
     node_dist_mirror: &Url,
     installations_dir: P,
-    arch: &Arch,
+    arch: Arch,
     show_progress: bool,
 ) -> Result<(), Error> {
     let installation_dir = PathBuf::from(installations_dir.as_ref()).join(version.v_str());
@@ -105,7 +105,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
     if response.status() == 404 {
         return Err(Error::VersionNotFound {
             version: version.clone(),
-            arch: arch.clone(),
+            arch,
         });
     }
 
@@ -179,7 +179,7 @@ mod tests {
         let version = Version::parse("12.0.0").unwrap();
         let arch = Arch::X64;
         let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
-        install_node_dist(&version, &node_dist_mirror, path, &arch, false)
+        install_node_dist(&version, &node_dist_mirror, path, arch, false)
             .expect("Can't install Node 12");
 
         let mut location_path = path.join(version.v_str()).join("installation");
