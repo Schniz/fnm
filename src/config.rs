@@ -128,8 +128,8 @@ impl FnmConfig {
         }
     }
 
-    pub fn log_level(&self) -> &LogLevel {
-        &self.log_level
+    pub fn log_level(&self) -> LogLevel {
+        self.log_level
     }
 
     pub fn base_dir_with_default(&self) -> std::path::PathBuf {
