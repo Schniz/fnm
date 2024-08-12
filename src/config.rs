@@ -109,8 +109,8 @@ impl Default for FnmConfig {
 }
 
 impl FnmConfig {
-    pub fn version_file_strategy(&self) -> &VersionFileStrategy {
-        &self.version_file_strategy
+    pub fn version_file_strategy(&self) -> VersionFileStrategy {
+        self.version_file_strategy
     }
 
     pub fn corepack_enabled(&self) -> bool {
