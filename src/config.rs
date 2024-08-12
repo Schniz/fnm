@@ -133,9 +133,8 @@ impl FnmConfig {
     }
 
     pub fn base_dir_with_default(&self) -> std::path::PathBuf {
-        let user_pref = self.base_dir.clone();
-        if let Some(dir) = user_pref {
-            return dir;
+        if let Some(dir) = &self.base_dir {
+            return dir.clone();
         }
 
         self.directories.default_base_dir()
