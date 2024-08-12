@@ -48,12 +48,8 @@ fn filename_for_version(version: &Version, arch: Arch) -> String {
 }
 
 #[cfg(windows)]
-fn filename_for_version(version: &Version, arch: &Arch) -> String {
-    format!(
-        "node-{node_ver}-win-{arch}.zip",
-        node_ver = &version,
-        arch = arch,
-    )
+fn filename_for_version(version: &Version, arch: Arch) -> String {
+    format!("node-{node_ver}-win-{arch}.zip", node_ver = &version)
 }
 
 fn download_url(base_url: &Url, version: &Version, arch: Arch) -> Url {
