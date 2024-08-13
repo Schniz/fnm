@@ -25,8 +25,8 @@ impl Shell for Zsh {
         format!("export {name}={value:?}")
     }
 
-    fn rehash(&self) -> Option<String> {
-        Some("rehash".to_string())
+    fn rehash(&self) -> Option<&'static str> {
+        Some("rehash")
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {

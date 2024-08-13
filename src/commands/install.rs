@@ -126,7 +126,7 @@ impl Command for Install {
         };
 
         // Automatically swap Apple Silicon to x64 arch for appropriate versions.
-        let safe_arch = get_safe_arch(&config.arch, &version);
+        let safe_arch = get_safe_arch(config.arch, &version);
 
         let version_str = format!("Node {}", &version);
         outln!(
@@ -134,7 +134,7 @@ impl Command for Install {
             Info,
             "Installing {} ({})",
             version_str.cyan(),
-            safe_arch.to_string()
+            safe_arch.as_str()
         );
 
         match install_node_dist(
