@@ -71,7 +71,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
     version: &Version,
     node_dist_mirror: &Url,
     installations_dir: P,
-    arch: &Arch,
+    arch: Arch,
     show_progress: bool,
 ) -> Result<(), Error> {
     let installation_dir = PathBuf::from(installations_dir.as_ref()).join(version.v_str());
@@ -90,7 +90,6 @@ pub fn install_node_dist<P: AsRef<Path>>(
     let portal = DirectoryPortal::new_in(&temp_installations_dir, installation_dir);
 
     for extract in Archive::supported().iter() {
-
         let ext = extract.get_file_suffix();
         let url = download_url(node_dist_mirror, version, arch, ext);
         debug!("Going to call for {}", &url);
@@ -176,7 +175,7 @@ mod tests {
         let version = Version::parse("12.0.0").unwrap();
         let arch = Arch::X64;
         let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
-        install_node_dist(&version, &node_dist_mirror, path, &arch, false)
+        install_node_dist(&version, &node_dist_mirror, path, arch, false)
             .expect("Can't install Node 12");
 
         let mut location_path = path.join(version.v_str()).join("installation");
