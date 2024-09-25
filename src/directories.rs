@@ -5,7 +5,7 @@ use crate::path_ext::PathExt;
 
 fn xdg_dir(env: &str) -> Option<PathBuf> {
     if cfg!(windows) {
-        let env_var = std::env::var(env).ok()?;
+        let env_var = std::env::var_os(env)?;
         Some(PathBuf::from(env_var))
     } else {
         // On non-Windows platforms, `etcetera` already handles XDG variables
