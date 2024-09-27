@@ -30,9 +30,10 @@ impl Shell for Zsh {
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
-        let version_file_exists_condition = match config.resolve_engines() {
-            true => "-f .node-version || -f .nvmrc || -f package.json",
-            false => "-f .node-version || -f .nvmrc",
+        let version_file_exists_condition = if config.resolve_engines() {
+            "-f .node-version || -f .nvmrc || -f package.json"
+        } else {
+            "-f .node-version || -f .nvmrc"
         };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(

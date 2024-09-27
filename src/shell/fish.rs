@@ -26,9 +26,10 @@ impl Shell for Fish {
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
-        let version_file_exists_condition = match config.resolve_engines() {
-            true => "test -f .node-version -o -f .nvmrc -o -f package.json",
-            false => "test -f .node-version -o -f .nvmrc",
+        let version_file_exists_condition = if config.resolve_engines() {
+            "test -f .node-version -o -f .nvmrc -o -f package.json"
+        } else {
+            "test -f .node-version -o -f .nvmrc"
         };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(

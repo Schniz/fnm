@@ -26,9 +26,10 @@ impl Shell for PowerShell {
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
-        let version_file_exists_condition = match config.resolve_engines() {
-            true => "(Test-Path .nvmrc) -Or (Test-Path .node-version) -Or (Test-Path package.json)",
-            false => "(Test-Path .nvmrc) -Or (Test-Path .node-version)",
+        let version_file_exists_condition = if config.resolve_engines() {
+            "(Test-Path .nvmrc) -Or (Test-Path .node-version) -Or (Test-Path package.json)"
+        } else {
+            "(Test-Path .nvmrc) -Or (Test-Path .node-version)"
         };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
