@@ -1,7 +1,7 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
 use super::shell::Shell;
-use indoc::{formatdoc, indoc};
+use indoc::formatdoc;
 use std::path::Path;
 
 #[derive(Debug)]
@@ -30,15 +30,20 @@ impl Shell for Zsh {
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+        let package_json = if config.resolve_engines() {
+            "|| -f package.json"
+        } else {
+            ""
+        };
         let autoload_hook = match config.version_file_strategy() {
-            VersionFileStrategy::Local => indoc!(
+            VersionFileStrategy::Local => formatdoc!(
                 r"
-                    if [[ -f .node-version || -f .nvmrc ]]; then
+                    if [[ -f .node-version || -f .nvmrc {package_json} ]]; then
                         fnm use --silent-if-unchanged
                     fi
                 "
             ),
-            VersionFileStrategy::Recursive => r"fnm use --silent-if-unchanged",
+            VersionFileStrategy::Recursive => r"fnm use --silent-if-unchanged".to_string(),
         };
         Ok(formatdoc!(
             r#"

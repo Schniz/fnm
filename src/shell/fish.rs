@@ -1,7 +1,7 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
 use super::shell::Shell;
-use indoc::{formatdoc, indoc};
+use indoc::formatdoc;
 use std::path::Path;
 
 #[derive(Debug)]
@@ -26,15 +26,20 @@ impl Shell for Fish {
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+        let package_json = if config.resolve_engines() {
+            "-o -f package.json"
+        } else {
+            ""
+        };
         let autoload_hook = match config.version_file_strategy() {
-            VersionFileStrategy::Local => indoc!(
+            VersionFileStrategy::Local => formatdoc!(
                 r"
-                    if test -f .node-version -o -f .nvmrc
+                    if test -f .node-version -o -f .nvmrc {package_json}
                         fnm use --silent-if-unchanged
                     end
                 "
             ),
-            VersionFileStrategy::Recursive => r"fnm use --silent-if-unchanged",
+            VersionFileStrategy::Recursive => r"fnm use --silent-if-unchanged".to_string(),
         };
         Ok(formatdoc!(
             r#"

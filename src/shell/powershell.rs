@@ -1,7 +1,7 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
 use super::Shell;
-use indoc::{formatdoc, indoc};
+use indoc::formatdoc;
 use std::path::Path;
 
 #[derive(Debug)]
@@ -26,13 +26,18 @@ impl Shell for PowerShell {
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+        let package_json = if config.resolve_engines() {
+            "-Or (Test-Path package.json)"
+        } else {
+            ""
+        };
         let autoload_hook = match config.version_file_strategy() {
-            VersionFileStrategy::Local => indoc!(
+            VersionFileStrategy::Local => formatdoc!(
                 r"
-                    If ((Test-Path .nvmrc) -Or (Test-Path .node-version)) { & fnm use --silent-if-unchanged }
+                    If ((Test-Path .nvmrc) -Or (Test-Path .node-version) {package_json}) {{ & fnm use --silent-if-unchanged }}
                 "
             ),
-            VersionFileStrategy::Recursive => r"fnm use --silent-if-unchanged",
+            VersionFileStrategy::Recursive => r"fnm use --silent-if-unchanged".to_string(),
         };
         Ok(formatdoc!(
             r#"

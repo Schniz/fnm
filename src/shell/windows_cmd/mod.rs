@@ -39,7 +39,7 @@ impl Shell for WindowsCmd {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read path to cd.cmd"))?;
-        Ok(format!("doskey cd={path} $*",))
+        Ok(format!("doskey cd={path} $*"))
     }
 }
 
