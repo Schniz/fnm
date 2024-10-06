@@ -9,13 +9,25 @@ import testNodeVersion from "./shellcode/test-node-version.js"
 
 for (const shell of [Bash, Zsh, Fish, PowerShell]) {
   describe(shell, () => {
+    test(`installs aliases when corepack is enabled`, async () => {
+      await writeFile(path.join(testCwd(), ".node-version"), "lts/*")
+      await script(shell)
+        .then(shell.env({ corepackEnabled: true }))
+        .then(shell.call("fnm", ["use", "--install-if-missing"]))
+        .then(
+          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "lts-latest"),
+        )
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
+
     test(`allows to install an lts if version missing`, async () => {
       await writeFile(path.join(testCwd(), ".node-version"), "lts/*")
       await script(shell)
         .then(shell.env({}))
         .then(shell.call("fnm", ["use", "--install-if-missing"]))
         .then(
-          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "lts-latest")
+          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "lts-latest"),
         )
         .takeSnapshot(shell)
         .execute(shell)
@@ -28,8 +40,8 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
         .then(
           shell.scriptOutputContains(
             getStderr(shell.call("fnm", ["use"])),
-            "'Requested version lts-latest is not'"
-          )
+            "'Requested version lts-latest is not'",
+          ),
         )
         .takeSnapshot(shell)
         .execute(shell)
@@ -46,8 +58,8 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
         .then(
           shell.scriptOutputContains(
             getStderr(shell.call("fnm", ["use", "version8"])),
-            "'Requested version version8 is not currently installed'"
-          )
+            "'Requested version version8 is not currently installed'",
+          ),
         )
         .takeSnapshot(shell)
         .execute(shell)
@@ -59,8 +71,8 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
         .then(
           shell.scriptOutputContains(
             getStderr(shell.call("fnm", ["unalias", "lts"])),
-            "'Requested alias lts not found'"
-          )
+            "'Requested alias lts not found'",
+          ),
         )
         .takeSnapshot(shell)
         .execute(shell)
@@ -71,25 +83,25 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
         .then(shell.env({}))
         .then(shell.call("fnm", ["alias", "system", "my_system"]))
         .then(
-          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "my_system")
+          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "my_system"),
         )
         .then(shell.call("fnm", ["alias", "system", "default"]))
         .then(shell.call("fnm", ["alias", "my_system", "my_system2"]))
         .then(
-          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "my_system2")
+          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "my_system2"),
         )
         .then(
           shell.scriptOutputContains(
             shell.call("fnm", ["use", "my_system"]),
-            "'Bypassing fnm'"
-          )
+            "'Bypassing fnm'",
+          ),
         )
         .then(shell.call("fnm", ["unalias", "my_system"]))
         .then(
           shell.scriptOutputContains(
             getStderr(shell.call("fnm", ["use", "my_system"])),
-            "'Requested version my_system is not currently installed'"
-          )
+            "'Requested version my_system is not currently installed'",
+          ),
         )
         .takeSnapshot(shell)
         .execute(shell)
@@ -107,14 +119,14 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
         .then(
           shell.scriptOutputContains(
             shell.scriptOutputContains(installedVersions, "8.11.3"),
-            "oldie"
-          )
+            "oldie",
+          ),
         )
         .then(
           shell.scriptOutputContains(
             shell.scriptOutputContains(installedVersions, "6.11.3"),
-            "older"
-          )
+            "older",
+          ),
         )
         .then(shell.call("fnm", ["use", "older"]))
         .then(testNodeVersion(shell, "v6.11.3"))
