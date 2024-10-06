@@ -36,7 +36,7 @@ pub enum Error {
 }
 
 #[cfg(unix)]
-fn filename_for_version(version: &Version, arch: &Arch, ext: String) -> String {
+fn filename_for_version(version: &Version, arch: Arch, ext: &str) -> String {
     format!(
         "node-{node_ver}-{platform}-{arch}.{ext}",
         node_ver = &version,
@@ -47,7 +47,7 @@ fn filename_for_version(version: &Version, arch: &Arch, ext: String) -> String {
 }
 
 #[cfg(windows)]
-fn filename_for_version(version: &Version, arch: &Arch, ext: String) -> String {
+fn filename_for_version(version: &Version, arch: &Arch, ext: &str) -> String {
     format!(
         "node-{node_ver}-win-{arch}.{ext}",
         node_ver = &version,
@@ -56,7 +56,7 @@ fn filename_for_version(version: &Version, arch: &Arch, ext: String) -> String {
     )
 }
 
-fn download_url(base_url: &Url, version: &Version, arch: &Arch, ext: String) -> Url {
+fn download_url(base_url: &Url, version: &Version, arch: Arch, ext: &str) -> Url {
     Url::parse(&format!(
         "{}/{}/{}",
         base_url.as_str().trim_end_matches('/'),
@@ -89,11 +89,13 @@ pub fn install_node_dist<P: AsRef<Path>>(
 
     let portal = DirectoryPortal::new_in(&temp_installations_dir, installation_dir);
 
-    for extract in Archive::supported().iter() {
-        let ext = extract.get_file_suffix();
+    for extract in Archive::supported() {
+        let ext = extract.file_extension();
         let url = download_url(node_dist_mirror, version, arch, ext);
         debug!("Going to call for {}", &url);
         let response = crate::http::get(url.as_str())?;
+
+        debug!("{response:?}");
 
         if !response.status().is_success() {
             continue;
@@ -122,11 +124,11 @@ pub fn install_node_dist<P: AsRef<Path>>(
 
         return Ok(());
     }
-    
-    return Err(Error::VersionNotFound {
+
+    Err(Error::VersionNotFound {
         version: version.clone(),
-        arch: arch.clone(),
-    });
+        arch,
+    })
 }
 
 #[cfg(test)]

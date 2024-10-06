@@ -35,7 +35,7 @@ impl Archive {
         Ok(())
     }
 
-    pub fn get_file_suffix(&self) -> String {
+    pub fn file_extension(&self) -> &'static str {
         match self {
             #[cfg(windows)]
             Self::Zip => "zip",
@@ -43,16 +43,16 @@ impl Archive {
             Self::TarXz => "tar.xz",
             #[cfg(unix)]
             Self::TarGz => "tar.gz",
-        }.into()
+        }
     }
 
     #[cfg(windows)]
-    pub fn supported() -> Vec<Self> {
+    pub fn supported() -> &'static [Self] {
         vec![Self::Zip]
     }
 
     #[cfg(unix)]
-    pub fn supported() -> Vec<Self> {
-        vec![Self::TarXz, Self::TarGz]
+    pub fn supported() -> &'static [Self] {
+        &[Self::TarXz, Self::TarGz]
     }
 }
