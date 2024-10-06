@@ -66,7 +66,7 @@ pub enum SubCommand {
     /// Uninstall a Node.js version
     ///
     /// > Warning: when providing an alias, it will remove the Node version the alias
-    /// is pointing to, along with the other aliases that point to the same version.
+    /// > is pointing to, along with the other aliases that point to the same version.
     #[clap(name = "uninstall", bin_name = "uninstall", visible_aliases = &["uni"])]
     Uninstall(commands::uninstall::Uninstall),
 }
