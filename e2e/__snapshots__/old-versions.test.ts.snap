@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash download old Node.js 0.10.x: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v0.10.36
+fnm use v0.10.36
+if [ "$(node --version)" != "v0.10.36" ]; then
+  echo "Expected node version to be v0.10.36. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Fish download old Node.js 0.10.x: Fish 1`] = `
+"fnm env | source
+fnm install v0.10.36
+fnm use v0.10.36
+set ____test____ (node --version)
+if test "$____test____" != "v0.10.36"
+  echo "Expected node version to be v0.10.36. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`PowerShell download old Node.js 0.10.x: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install v0.10.36
+fnm use v0.10.36
+if ( "$(node --version)" -ne "v0.10.36" ) { echo "Expected node version to be v0.10.36. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`Zsh download old Node.js 0.10.x: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v0.10.36
+fnm use v0.10.36
+if [ "$(node --version)" != "v0.10.36" ]; then
+  echo "Expected node version to be v0.10.36. Got $(node --version)"
+  exit 1
+fi"
+`;
