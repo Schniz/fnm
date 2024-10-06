@@ -13,7 +13,10 @@ pub struct LsRemote {
 
     /// Show only LTS versions (optionally filter by LTS codename)  
     #[arg(long)]
-    #[allow(clippy::option_option)]
+    #[expect(
+        clippy::option_option,
+        reason = "clap Option<Option<T>> supports --x and --x=value syntaxes"
+    )]
     lts: Option<Option<String>>,
 
     /// Version sorting order
