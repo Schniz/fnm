@@ -666,6 +666,7 @@ dependencies = [
  "encoding_rs_io",
  "env_logger",
  "etcetera",
+ "flate2",
  "http",
  "indicatif",
  "indoc",

@@ -30,6 +30,7 @@ const download = async ({ pathname, filename, headersFilename }) => {
     },
   )
   const headers = Object.fromEntries(response.headers.entries())
+  headers.__status__ = String(response.status)
   const body = await response.arrayBuffer()
   fs.writeFileSync(headersFilename, JSON.stringify(headers))
   fs.writeFileSync(filename, Buffer.from(body))
@@ -46,10 +47,13 @@ export const server = createServer((req, res) => {
   const filename = path.join(baseDir, hash) + extension
   const headersFilename = path.join(baseDir, hash) + ".headers.json"
   try {
-    const headers = JSON.parse(fs.readFileSync(headersFilename, "utf-8"))
+    const { __status__ = "200", ...headers } = JSON.parse(
+      fs.readFileSync(headersFilename, "utf-8"),
+    )
+    const status = parseInt(__status__, 10)
     const body = fs.createReadStream(filename)
     console.log(chalk.green.dim(`[proxy] hit: ${pathname} -> ${filename}`))
-    res.writeHead(200, headers)
+    res.writeHead(status, headers)
     body.pipe(res)
   } catch {
     let promise = cache.get(filename)
@@ -74,8 +78,8 @@ export const server = createServer((req, res) => {
     }
 
     promise.then(
-      ({ headers, body }) => {
-        res.writeHead(200, headers)
+      ({ headers: { __status__ = "200", ...headers }, body }) => {
+        res.writeHead(parseInt(__status__, 10), headers)
         res.end(Buffer.from(body))
       },
       (err) => {
