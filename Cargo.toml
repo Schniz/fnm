@@ -1,6 +1,6 @@
 [package]
 name = "fnm"
-version = "1.37.0"
+version = "1.37.2"
 authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
 edition = "2021"
 build = "build.rs"

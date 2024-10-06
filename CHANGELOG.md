@@ -1,5 +1,29 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.37.2
+
+### Patch Changes
+
+- [#1264](https://github.com/Schniz/fnm/pull/1264) [`364d2a9`](https://github.com/Schniz/fnm/commit/364d2a939c684fede25c43c6a9c14b7c4c6e3fc5) Thanks [@Schniz](https://github.com/Schniz)! - fix: allow to type powershell and power-shell as shell type inputs
+
+- [#1195](https://github.com/Schniz/fnm/pull/1195) [`74d7c33`](https://github.com/Schniz/fnm/commit/74d7c33da9f5ac53a42633012d775015eb774bcb) Thanks [@mattmess1221](https://github.com/mattmess1221)! - When downloading from node-dist, Fallback to .tar.gz download when the .tar.xz download fails
+
+- [#1259](https://github.com/Schniz/fnm/pull/1259) [`1000914`](https://github.com/Schniz/fnm/commit/10009143460e161b76350eb738652f332e8a893c) Thanks [@skirsten](https://github.com/skirsten)! - Fix `--resolve-engines` in combination with `--use-on-cd`
+
+- [#1248](https://github.com/Schniz/fnm/pull/1248) [`e03d345`](https://github.com/Schniz/fnm/commit/e03d345e9f485c4ab0183a3a542bcba20525fff4) Thanks [@bburns](https://github.com/bburns)! - docs: add link for windows terminal startup script configuration
+
+- [#1184](https://github.com/Schniz/fnm/pull/1184) [`fefdf69`](https://github.com/Schniz/fnm/commit/fefdf69870ddaec0ba59b103aef730dd03e56e4a) Thanks [@julescubtree](https://github.com/julescubtree)! - fix panic when list-remote --filter --latest has no results
+
+- [#1255](https://github.com/Schniz/fnm/pull/1255) [`71c1c9a`](https://github.com/Schniz/fnm/commit/71c1c9a9998f7fd0dc512de6ead9244f03fa532d) Thanks [@stefanboca](https://github.com/stefanboca)! - set aliases during install, even if corepack is enabled
+
+- [#1204](https://github.com/Schniz/fnm/pull/1204) [`19bffe5`](https://github.com/Schniz/fnm/commit/19bffe5af6ee1d624095c94f5ec55660fe69ac3b) Thanks [@JLarky](https://github.com/JLarky)! - Document how to use nightly builds
+
+- [#1218](https://github.com/Schniz/fnm/pull/1218) [`345adaf`](https://github.com/Schniz/fnm/commit/345adafb856e2e0ba8feb8acf487a4669cea4055) Thanks [@Schniz](https://github.com/Schniz)! - internal: retry download in case of error in test proxy
+
+- [#1226](https://github.com/Schniz/fnm/pull/1226) [`8e2d37d`](https://github.com/Schniz/fnm/commit/8e2d37d858b15d965d9644b27f5c111478cc59f2) Thanks [@mo8it](https://github.com/mo8it)! - performance optimizations, especially for `fnm env`
+
+- [#1223](https://github.com/Schniz/fnm/pull/1223) [`2b211ef`](https://github.com/Schniz/fnm/commit/2b211ef64a7eb2ff5fe7ac017d1f963db522b6cf) Thanks [@mo8it](https://github.com/mo8it)! - Allow reading non-unicode paths from environment variables
+
 ## 1.37.1
 
 ### Patch Changes
