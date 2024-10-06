@@ -35,6 +35,15 @@ pub enum SortingMethod {
     Ascending,
 }
 
+/// Drain all elements but the last one
+fn truncate_except_latest<T>(list: &mut Vec<T>) {
+    let len = list.len();
+    if len > 1 {
+        list.swap(0, len - 1);
+        list.truncate(1);
+    }
+}
+
 impl super::command::Command for LsRemote {
     type Error = Error;
 
@@ -57,11 +66,7 @@ impl super::command::Command for LsRemote {
         }
 
         if self.latest {
-            let len = all_versions.len();
-            if len > 1 {
-                all_versions.swap(0, len - 1);
-                all_versions.truncate(1);
-            }
+            truncate_except_latest(&mut all_versions);
         }
 
         if let SortingMethod::Descending = self.sort {
@@ -92,4 +97,24 @@ pub enum Error {
         #[from]
         source: crate::http::Error,
     },
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_truncate_except_latest() {
+        let mut list = vec![1, 2, 3, 4, 5];
+        truncate_except_latest(&mut list);
+        assert_eq!(list, vec![5]);
+
+        let mut list: Vec<()> = vec![];
+        truncate_except_latest(&mut list);
+        assert_eq!(list, vec![]);
+
+        let mut list = vec![1];
+        truncate_except_latest(&mut list);
+        assert_eq!(list, vec![1]);
+    }
 }
