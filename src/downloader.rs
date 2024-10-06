@@ -47,7 +47,7 @@ fn filename_for_version(version: &Version, arch: Arch, ext: &str) -> String {
 }
 
 #[cfg(windows)]
-fn filename_for_version(version: &Version, arch: &Arch, ext: &str) -> String {
+fn filename_for_version(version: &Version, arch: Arch, ext: &str) -> String {
     format!(
         "node-{node_ver}-win-{arch}.{ext}",
         node_ver = &version,
@@ -94,8 +94,6 @@ pub fn install_node_dist<P: AsRef<Path>>(
         let url = download_url(node_dist_mirror, version, arch, ext);
         debug!("Going to call for {}", &url);
         let response = crate::http::get(url.as_str())?;
-
-        debug!("{response:?}");
 
         if !response.status().is_success() {
             continue;

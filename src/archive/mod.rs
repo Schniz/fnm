@@ -48,7 +48,7 @@ impl Archive {
 
     #[cfg(windows)]
     pub fn supported() -> &'static [Self] {
-        vec![Self::Zip]
+        &[Self::Zip]
     }
 
     #[cfg(unix)]
