@@ -14,7 +14,7 @@ Commands:
   completions  Print shell completions to stdout
   alias        Alias a version to a common name
   unalias      Remove an alias definition
-  default      Set a version as the default version
+  default      Set a version as the default version or get the current default version
   current      Print the current Node.js version
   exec         Run a command within fnm context
   uninstall    Uninstall a Node.js version
@@ -607,14 +607,14 @@ Options:
 # `fnm default`
 
 ```
-Set a version as the default version
+Set a version as the default version or get the current default version.
 
 This is a shorthand for `fnm alias VERSION default`
 
-Usage: fnm default [OPTIONS] <VERSION>
+Usage: fnm default [OPTIONS] [VERSION]
 
 Arguments:
-  <VERSION>
+  [VERSION]
 
 
 Options:
