@@ -366,7 +366,7 @@ Options:
       --shell <SHELL>
           The shell syntax to use. Infers when missing
 
-          [possible values: bash, zsh, fish, power-shell]
+          [possible values: bash, zsh, fish, powershell]
 
       --fnm-dir <BASE_DIR>
           The root directory of fnm installations
@@ -434,7 +434,7 @@ Options:
       --shell <SHELL>
           The shell syntax to use. Infers when missing
 
-          [possible values: bash, zsh, fish, power-shell]
+          [possible values: bash, zsh, fish, powershell]
 
       --fnm-dir <BASE_DIR>
           The root directory of fnm installations
