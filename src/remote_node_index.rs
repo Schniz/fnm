@@ -62,8 +62,8 @@ pub struct IndexedNodeVersion {
     pub version: Version,
     #[serde(with = "lts_status")]
     pub lts: Option<String>,
-    pub date: chrono::NaiveDate,
-    pub files: Vec<String>,
+    // pub date: chrono::NaiveDate,
+    // pub files: Vec<String>,
 }
 
 /// Prints
