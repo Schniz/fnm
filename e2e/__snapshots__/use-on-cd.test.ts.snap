@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash use on cd: Bash 1`] = `
+"set -e
+eval "$(fnm env --use-on-cd)"
+fnm install v8.11.3
+fnm install v12.22.12
+cd subdir
+if [ "$(node --version)" != "v12.22.12" ]; then
+  echo "Expected node version to be v12.22.12. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Fish use on cd: Fish 1`] = `
+"fnm env --use-on-cd | source
+fnm install v8.11.3
+fnm install v12.22.12
+cd subdir
+set ____test____ (node --version)
+if test "$____test____" != "v12.22.12"
+  echo "Expected node version to be v12.22.12. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`PowerShell use on cd: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --use-on-cd | Out-String | Invoke-Expression
+fnm install v8.11.3
+fnm install v12.22.12
+cd subdir
+if ( "$(node --version)" -ne "v12.22.12" ) { echo "Expected node version to be v12.22.12. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`Zsh use on cd: Zsh 1`] = `
+"set -e
+eval "$(fnm env --use-on-cd)"
+fnm install v8.11.3
+fnm install v12.22.12
+cd subdir
+if [ "$(node --version)" != "v12.22.12" ]; then
+  echo "Expected node version to be v12.22.12. Got $(node --version)"
+  exit 1
+fi"
+`;

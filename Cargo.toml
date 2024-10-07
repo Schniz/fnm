@@ -1,6 +1,6 @@
 [package]
 name = "fnm"
-version = "1.37.0"
+version = "1.37.2"
 authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
 edition = "2021"
 build = "build.rs"
@@ -31,6 +31,7 @@ thiserror = "1.0.61"
 clap_complete = "4.5.2"
 anyhow = "1.0.86"
 indicatif = { version = "0.17.8", features = ["improved_unicode"] }
+flate2 = "1.0.30"
 
 [dev-dependencies]
 pretty_assertions = "1.4.0"

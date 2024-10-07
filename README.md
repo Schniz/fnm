@@ -121,7 +121,7 @@ Where `<SHELL>` can be one of the supported shells:
 - `bash`
 - `zsh`
 - `fish`
-- `power-shell`
+- `powershell`
 
 Please follow your shell instructions to install them.
 
@@ -173,7 +173,7 @@ fnm env --use-on-cd --shell fish | source
 Add the following to the end of your profile file:
 
 ```powershell
-fnm env --use-on-cd --shell power-shell | Out-String | Invoke-Expression
+fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
@@ -184,7 +184,7 @@ fnm env --use-on-cd --shell power-shell | Out-String | Invoke-Expression
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
-fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following lines:
+fnm is also supported but is not entirely covered. You can set up a startup script for [cmd.exe]( https://superuser.com/a/144348) or [Windows Terminal](https://superuser.com/a/1855283) and append the following lines:
 
 ```batch
 @echo off

@@ -151,11 +151,6 @@ impl Command for Install {
             Ok(()) => {}
         };
 
-        if config.corepack_enabled() {
-            outln!(config, Info, "Enabling corepack for {}", version_str.cyan());
-            enable_corepack(&version, config)?;
-        }
-
         if !config.default_version_dir().exists() {
             debug!("Tagging {} as the default version", version.v_str().cyan());
             create_alias(config, "default", &version)?;
@@ -163,6 +158,11 @@ impl Command for Install {
 
         if let Some(tagged_alias) = current_version.inferred_alias() {
             tag_alias(config, &version, &tagged_alias)?;
+        }
+
+        if config.corepack_enabled() {
+            outln!(config, Info, "Enabling corepack for {}", version_str.cyan());
+            enable_corepack(&version, config)?;
         }
 
         Ok(())

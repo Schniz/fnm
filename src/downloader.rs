@@ -1,12 +1,10 @@
 use crate::arch::Arch;
-use crate::archive;
-use crate::archive::{Error as ExtractError, Extract};
+use crate::archive::{Archive, Error as ExtractError};
 use crate::directory_portal::DirectoryPortal;
 use crate::progress::ResponseProgress;
 use crate::version::Version;
 use indicatif::ProgressDrawTarget;
 use log::debug;
-use std::io::Read;
 use std::path::Path;
 use std::path::PathBuf;
 use thiserror::Error;
@@ -38,37 +36,34 @@ pub enum Error {
 }
 
 #[cfg(unix)]
-fn filename_for_version(version: &Version, arch: Arch) -> String {
+fn filename_for_version(version: &Version, arch: Arch, ext: &str) -> String {
     format!(
-        "node-{node_ver}-{platform}-{arch}.tar.xz",
+        "node-{node_ver}-{platform}-{arch}.{ext}",
         node_ver = &version,
         platform = crate::system_info::platform_name(),
         arch = arch,
+        ext = ext
     )
 }
 
 #[cfg(windows)]
-fn filename_for_version(version: &Version, arch: Arch) -> String {
-    format!("node-{node_ver}-win-{arch}.zip", node_ver = &version)
+fn filename_for_version(version: &Version, arch: Arch, ext: &str) -> String {
+    format!(
+        "node-{node_ver}-win-{arch}.{ext}",
+        node_ver = &version,
+        arch = arch,
+        ext = ext,
+    )
 }
 
-fn download_url(base_url: &Url, version: &Version, arch: Arch) -> Url {
+fn download_url(base_url: &Url, version: &Version, arch: Arch, ext: &str) -> Url {
     Url::parse(&format!(
         "{}/{}/{}",
         base_url.as_str().trim_end_matches('/'),
         version,
-        filename_for_version(version, arch)
+        filename_for_version(version, arch, ext)
     ))
     .unwrap()
-}
-
-fn extract_archive_into(path: impl AsRef<Path>, response: impl Read) -> Result<(), Error> {
-    #[cfg(unix)]
-    let extractor = archive::TarXz::new(response);
-    #[cfg(windows)]
-    let extractor = archive::Zip::new(response);
-    extractor.extract_into(path)?;
-    Ok(())
 }
 
 /// Install a Node package
@@ -94,39 +89,44 @@ pub fn install_node_dist<P: AsRef<Path>>(
 
     let portal = DirectoryPortal::new_in(&temp_installations_dir, installation_dir);
 
-    let url = download_url(node_dist_mirror, version, arch);
-    debug!("Going to call for {}", &url);
-    let response = crate::http::get(url.as_str())?;
+    for extract in Archive::supported() {
+        let ext = extract.file_extension();
+        let url = download_url(node_dist_mirror, version, arch, ext);
+        debug!("Going to call for {}", &url);
+        let response = crate::http::get(url.as_str())?;
 
-    if response.status() == 404 {
-        return Err(Error::VersionNotFound {
-            version: version.clone(),
-            arch,
-        });
+        if !response.status().is_success() {
+            continue;
+        }
+
+        debug!("Extracting response...");
+        if show_progress {
+            extract.extract_archive_into(
+                portal.as_ref(),
+                ResponseProgress::new(response, ProgressDrawTarget::stderr()),
+            )?;
+        } else {
+            extract.extract_archive_into(portal.as_ref(), response)?;
+        }
+        debug!("Extraction completed");
+
+        let installed_directory = std::fs::read_dir(&portal)?
+            .next()
+            .ok_or(Error::TarIsEmpty)??;
+        let installed_directory = installed_directory.path();
+
+        let renamed_installation_dir = portal.join("installation");
+        std::fs::rename(installed_directory, renamed_installation_dir)?;
+
+        portal.teleport()?;
+
+        return Ok(());
     }
 
-    debug!("Extracting response...");
-    if show_progress {
-        extract_archive_into(
-            &portal,
-            ResponseProgress::new(response, ProgressDrawTarget::stderr()),
-        )?;
-    } else {
-        extract_archive_into(&portal, response)?;
-    }
-    debug!("Extraction completed");
-
-    let installed_directory = std::fs::read_dir(&portal)?
-        .next()
-        .ok_or(Error::TarIsEmpty)??;
-    let installed_directory = installed_directory.path();
-
-    let renamed_installation_dir = portal.join("installation");
-    std::fs::rename(installed_directory, renamed_installation_dir)?;
-
-    portal.teleport()?;
-
-    Ok(())
+    Err(Error::VersionNotFound {
+        version: version.clone(),
+        arch,
+    })
 }
 
 #[cfg(test)]
