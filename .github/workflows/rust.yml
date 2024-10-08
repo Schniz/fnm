@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  RUST_VERSION: "1.78"
+  RUST_VERSION: "1.81"
 
 jobs:
   fmt:
