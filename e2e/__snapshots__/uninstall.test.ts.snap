@@ -2,10 +2,10 @@
 
 exports[`Bash uninstalls a version: Bash 1`] = `
 "set -e
-fnm install 12.0.0
+fnm i 12.0.0
 fnm alias 12.0.0 hello
 ((fnm ls) | grep v12.0.0 || (echo "Expected output to contain v12.0.0" && exit 1)) | grep hello || (echo "Expected output to contain hello" && exit 1)
-fnm uninstall hello
+fnm uni hello
 if [ "$(fnm ls)" != "* system" ]; then
   echo "Expected fnm ls to be * system. Got $(fnm ls)"
   exit 1
@@ -13,10 +13,10 @@ fi"
 `;
 
 exports[`Fish uninstalls a version: Fish 1`] = `
-"fnm install 12.0.0
+"fnm i 12.0.0
 fnm alias 12.0.0 hello
 begin; begin; fnm ls; end | grep v12.0.0; or echo "Expected output to contain v12.0.0" && exit 1; end | grep hello; or echo "Expected output to contain hello" && exit 1
-fnm uninstall hello
+fnm uni hello
 set ____test____ (fnm ls)
 if test "$____test____" != "* system"
   echo "Expected fnm ls to be * system. Got $____test____"
@@ -26,19 +26,19 @@ end"
 
 exports[`PowerShell uninstalls a version: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
-fnm install 12.0.0
+fnm i 12.0.0
 fnm alias 12.0.0 hello
 $($__out__ = $($($__out__ = $(fnm ls | Select-String v12.0.0); if ($__out__ -eq $null) { exit 1 } else { $__out__ }) | Select-String hello); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
-fnm uninstall hello
+fnm uni hello
 if ( "$(fnm ls)" -ne "* system" ) { echo "Expected fnm ls to be * system. Got $(fnm ls)"; exit 1 }"
 `;
 
 exports[`Zsh uninstalls a version: Zsh 1`] = `
 "set -e
-fnm install 12.0.0
+fnm i 12.0.0
 fnm alias 12.0.0 hello
 ((fnm ls) | grep v12.0.0 || (echo "Expected output to contain v12.0.0" && exit 1)) | grep hello || (echo "Expected output to contain hello" && exit 1)
-fnm uninstall hello
+fnm uni hello
 if [ "$(fnm ls)" != "* system" ]; then
   echo "Expected fnm ls to be * system. Got $(fnm ls)"
   exit 1
