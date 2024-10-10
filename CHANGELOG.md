@@ -1,5 +1,11 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.37.3
+
+### Patch Changes
+
+- [#1277](https://github.com/Schniz/fnm/pull/1277) [`12cf977`](https://github.com/Schniz/fnm/commit/12cf977beb8581000ea84d7b8d1636dc3ae25db3) Thanks [@deanshub](https://github.com/deanshub)! - Having install and uninstall aliases
+
 ## 1.37.2
 
 ### Patch Changes
