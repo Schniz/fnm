@@ -38,4 +38,6 @@ pub enum Error {
     VersionNotFound { version: UserVersion },
     #[error(transparent)]
     CantUnderstandVersion { source: ApplicableVersionError },
+    #[error("A default version has not been set.")]
+    DefaultAliasDoesNotExist,
 }
