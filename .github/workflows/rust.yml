@@ -53,42 +53,54 @@ jobs:
   build_release:
     runs-on: windows-latest
     name: "Release build for Windows"
+    strategy:
+      matrix:
+        arch: [x86_64, arm64]
     steps:
       - uses: hecrj/setup-rust-action@v1
         with:
           rust-version: ${{env.RUST_VERSION}}
+          targets: ${{ matrix.arch == 'x86_64' && 'x86_64-pc-windows-msvc' || 'aarch64-pc-windows-msvc' }}
       - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v4
       - name: Build release binary
         run: cargo build --release
         env:
           RUSTFLAGS: "-C target-feature=+crt-static"
+      - name: Zip the binary
+        run: |
+          mkdir -p target/release
+          zip -j target/release/fnm-${{ matrix.arch }}-pc-windows-msvc.zip target/release/fnm.exe
       - uses: actions/upload-artifact@v4
         with:
-          name: fnm-windows
-          path: target/release/fnm.exe
+          name: fnm-${{ matrix.arch }}-pc-windows-msvc.zip
+          path: target/release/fnm-${{ matrix.arch }}-pc-windows-msvc.zip
 
   build_macos_release:
     runs-on: macos-latest
     name: "Release build for macOS"
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
     steps:
       - uses: hecrj/setup-rust-action@v1
         with:
           rust-version: ${{env.RUST_VERSION}}
+          targets: ${{ matrix.arch == 'x86_64' && 'x86_64-apple-darwin' || 'aarch64-apple-darwin' }}
       - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v4
       - name: Build release binary
         run: cargo build --release
-        env:
-          LZMA_API_STATIC: "true"
       - name: Strip binary from debug symbols
         run: strip target/release/fnm
-      - name: List dynamically linked libraries
-        run: otool -L target/release/fnm
+      - name: Zip the binary
+        run: |
+          mkdir -p target/release
+          zip -j target/release/fnm-${{ matrix.arch }}-apple-darwin.zip target/release/fnm
       - uses: actions/upload-artifact@v4
         with:
-          name: fnm-macos
-          path: target/release/fnm
+          name: fnm-${{ matrix.arch }}-apple-darwin.zip
+          path: target/release/fnm-${{ matrix.arch }}-apple-darwin.zip
 
   e2e_macos:
     runs-on: macos-latest
@@ -238,27 +250,33 @@ jobs:
   build_static_linux_binary:
     name: "Build static Linux binary"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64, armv7]
+        rust_target: [x86_64-unknown-linux-musl, aarch64-unknown-linux-musl, armv7-unknown-linux-gnueabihf]
     steps:
       - uses: hecrj/setup-rust-action@v1
         with:
           rust-version: ${{env.RUST_VERSION}}
-          targets: x86_64-unknown-linux-musl
+          targets: ${{ matrix.rust_target }}
       - uses: Swatinem/rust-cache@v2
-        with:
-          key: static-linux-binary
       - name: Install musl tools
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends musl-tools
       - uses: actions/checkout@v4
       - name: Build release binary
-        run: cargo build --release --target x86_64-unknown-linux-musl
+        run: cargo build --release --target ${{ matrix.rust_target }}
       - name: Strip binary from debug symbols
-        run: strip target/x86_64-unknown-linux-musl/release/fnm
+        run: strip target/${{ matrix.rust_target }}/release/fnm
+      - name: Zip the binary
+        run: |
+          mkdir -p target/${{ matrix.rust_target }}/release
+          zip -j target/${{ matrix.rust_target }}/release/fnm-${{ matrix.arch }}-unknown-linux-musl.zip target/${{ matrix.rust_target }}/release/fnm
       - uses: actions/upload-artifact@v4
         with:
-          name: fnm-linux
-          path: target/x86_64-unknown-linux-musl/release/fnm
+          name: fnm-${{ matrix.arch }}-unknown-linux-musl.zip
+          path: target/${{ matrix.rust_target }}/release/fnm-${{ matrix.arch }}-unknown-linux-musl.zip
 
   build_static_arm_binary:
     name: "Build ARM binary"
