@@ -1,0 +1,36 @@
+[[package]]
+name = "fnm"
+version = "1.37.2" 
+repository = "https://github.com/Schniz/fnm"
+authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
+edition = "2021"
+build = "build.rs"
+license = "GPL-3.0"
+description = "Fast and simple Node.js version manager"
+
+[package.targets]
+
+# Linux (x86_64)
+[[package.targets.linux]]
+url = "https://github.com/Schniz/fnm/releases/download/v1.37.2/fnm-linux.zip"
+checksum = "sha256:439ccbc11e65df970500833e152b896c107f3f3014ea7aaf42213241b403338c"
+
+# macOS (x86_64)
+[[package.targets.mac]]
+url = "https://github.com/Schniz/fnm/releases/download/v1.37.2/fnm-macos.zip"
+checksum = "sha256:a886932043e8c1dee457a733e57edc39df2287d9952a96948155df2a0b6b26b1"
+
+# Windows (x86_64)
+[[package.targets.windows]]
+url = "https://github.com/Schniz/fnm/releases/download/v1.37.2/fnm-windows.zip"
+checksum = "sha256:4f634f9153635e4af26ea96b15c01a28e5e4acc03849a0b51a86be9c70897173"
+
+# ARM32
+[[package.targets.linux-arm]]
+url = "https://github.com/Schniz/fnm/releases/download/v1.37.2/fnm-arm32.zip"
+checksum = "sha256:7047833cdfab2287899dcd686d26b84a2398f43b5aa1cf0f370e0826e89fe039"
+
+# ARM64
+[[package.targets.linux-arm64]]
+url = "https://github.com/Schniz/fnm/releases/download/v1.37.2/fnm-arm64.zip"
+checksum = "sha256:8db196f4bcbb2f27b4742bd5a898ab79d444006d121f888d9201bb3690419763"
