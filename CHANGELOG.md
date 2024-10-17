@@ -1,5 +1,20 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.38.0
+
+### Minor Changes
+
+- [#1265](https://github.com/Schniz/fnm/pull/1265) [`186e4bb`](https://github.com/Schniz/fnm/commit/186e4bbd9204d7658a4f9923955281687a01e8c3) Thanks [@Schniz](https://github.com/Schniz)! - enable `--resolve-engines` by default. out of experimental phase.
+
+  to disable it, add a `--resolve-engines=false` flag, and make sure to open an issue describing _why_.
+  It might feel like a breaking change but .nvmrc and .node-version have precedence so it should not.
+
+  I am all in favor of better experience and I believe supporting engines.node is a good direction.
+
+### Patch Changes
+
+- [#1277](https://github.com/Schniz/fnm/pull/1277) [`12cf977`](https://github.com/Schniz/fnm/commit/12cf977beb8581000ea84d7b8d1636dc3ae25db3) Thanks [@deanshub](https://github.com/deanshub)! - Having install and uninstall aliases
+
 ## 1.37.2
 
 ### Patch Changes
