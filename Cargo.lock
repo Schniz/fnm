@@ -653,7 +653,7 @@ dependencies = [
 
 [[package]]
 name = "fnm"
-version = "1.37.2"
+version = "1.38.0"
 dependencies = [
  "anyhow",
  "chrono",
