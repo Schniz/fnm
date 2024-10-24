@@ -675,6 +675,7 @@ dependencies = [
  "node-semver",
  "pretty_assertions",
  "reqwest",
+ "semver",
  "serde",
  "serde_json",
  "sysinfo",
