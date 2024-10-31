@@ -856,7 +856,7 @@ Options:
 # `fnm uninstall`
 
 ```
-Uninstall a Node.js version
+Uninstall a Node.js version. Allow multiple versions using semantic versioning to be uninstalled at once. Example: `fnm uninstall "<v22.0.0"`
 
 > Warning: when providing an alias, it will remove the Node version the alias > is pointing to, along with the other aliases that point to the same version.
 
