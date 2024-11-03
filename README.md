@@ -149,7 +149,10 @@ Check out the following guides for the shell you use:
 Add the following to your `.bashrc` profile:
 
 ```bash
-eval "$(fnm env --use-on-cd --shell bash)"
+# fnm
+if ! shopt -q login_shell && command -v fnm > /dev/null; then
+    eval "$(fnm env --use-on-cd --shell bash)"
+fi
 ```
 
 #### Zsh
@@ -157,15 +160,21 @@ eval "$(fnm env --use-on-cd --shell bash)"
 Add the following to your `.zshrc` profile:
 
 ```zsh
-eval "$(fnm env --use-on-cd --shell zsh)"
+# fnm
+if ! [[ -o login ]] && command -v fnm > /dev/null; then
+    eval "$(fnm env --use-on-cd --shell zsh)"
+fi
 ```
 
 #### Fish shell
 
-Create `~/.config/fish/conf.d/fnm.fish` and add this line to it:
+Create `~/.config/fish/conf.d/fnm.fish` and add the following to it:
 
 ```fish
-fnm env --use-on-cd --shell fish | source
+# fnm
+if not status --is-login; and command -v fnm > /dev/null
+    fnm env --use-on-cd --shell fish | source
+end
 ```
 
 #### PowerShell
