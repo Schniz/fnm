@@ -72,13 +72,13 @@ jobs:
     runs-on: macos-latest
     name: "Release build for macOS"
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: moonrepo/setup-rust@v1
         with:
-          rust-version: ${{env.RUST_VERSION}}
-      - uses: Swatinem/rust-cache@v2
+          targets: 'aarch64-apple-darwin,x86_64-apple-darwin'
+          bins: 'cargo-zigbuild@0.19.0'
       - uses: actions/checkout@v4
       - name: Build release binary
-        run: cargo build --release
+        run: cargo zigbuild --release --target=universal2-apple-darwin
         env:
           LZMA_API_STATIC: "true"
       - name: Strip binary from debug symbols
