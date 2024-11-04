@@ -75,7 +75,7 @@ jobs:
       - uses: moonrepo/setup-rust@v1
         with:
           targets: 'aarch64-apple-darwin,x86_64-apple-darwin'
-          bins: 'cargo-zigbuild@0.19.0'
+          bins: 'cargo-zigbuild'
       - uses: mlugg/setup-zig@v1
       - uses: actions/checkout@v4
       - name: Build release binary
