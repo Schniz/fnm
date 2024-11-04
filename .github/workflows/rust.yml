@@ -72,11 +72,12 @@ jobs:
     runs-on: macos-latest
     name: "Release build for macOS"
     steps:
-      - uses: moonrepo/setup-rust@v1
+      - uses: hecrj/setup-rust-action@v1
         with:
-          targets: 'aarch64-apple-darwin,x86_64-apple-darwin'
-          bins: 'cargo-zigbuild'
+          rust-version: ${{env.RUST_VERSION}}
+      - uses: Swatinem/rust-cache@v2
       - uses: mlugg/setup-zig@v1
+      - run: cargo install --locked cargo-zigbuild
       - uses: actions/checkout@v4
       - name: Build release binary
         run: cargo zigbuild --release --target=universal2-apple-darwin
