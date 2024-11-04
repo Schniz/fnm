@@ -76,6 +76,7 @@ jobs:
         with:
           targets: 'aarch64-apple-darwin,x86_64-apple-darwin'
           bins: 'cargo-zigbuild@0.19.0'
+      - uses: mlugg/setup-zig@v1
       - uses: actions/checkout@v4
       - name: Build release binary
         run: cargo zigbuild --release --target=universal2-apple-darwin
