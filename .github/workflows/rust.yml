@@ -75,6 +75,7 @@ jobs:
       - uses: hecrj/setup-rust-action@v1
         with:
           rust-version: ${{env.RUST_VERSION}}
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
       - uses: Swatinem/rust-cache@v2
       - uses: mlugg/setup-zig@v1
       - run: cargo install --locked cargo-zigbuild
