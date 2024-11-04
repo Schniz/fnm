@@ -85,13 +85,13 @@ jobs:
         env:
           LZMA_API_STATIC: "true"
       - name: Strip binary from debug symbols
-        run: strip target/release/fnm
+        run: strip target/universal2-apple-darwin/fnm
       - name: List dynamically linked libraries
-        run: otool -L target/release/fnm
+        run: otool -L target/universal2-apple-darwin/fnm
       - uses: actions/upload-artifact@v4
         with:
           name: fnm-macos
-          path: target/release/fnm
+          path: target/universal2-apple-darwin/fnm
 
   e2e_macos:
     runs-on: macos-latest
