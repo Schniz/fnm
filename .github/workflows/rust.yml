@@ -81,17 +81,20 @@ jobs:
       - run: cargo install --locked cargo-zigbuild
       - uses: actions/checkout@v4
       - name: Build release binary
-        run: cargo zigbuild --release --target=universal2-apple-darwin
+        run: |
+          cargo zigbuild --release --target=universal2-apple-darwin
+          mkdir -p target/release
+          cp target/universal2-apple-darwin/release/fnm target/release/fnm
         env:
           LZMA_API_STATIC: "true"
       - name: Strip binary from debug symbols
-        run: strip target/universal2-apple-darwin/fnm
+        run: strip target/release/fnm
       - name: List dynamically linked libraries
-        run: otool -L target/universal2-apple-darwin/fnm
+        run: otool -L target/release/fnm
       - uses: actions/upload-artifact@v4
         with:
           name: fnm-macos
-          path: target/universal2-apple-darwin/fnm
+          path: target/release/fnm
 
   e2e_macos:
     runs-on: macos-latest
