@@ -7,7 +7,7 @@ import getStderr from "./shellcode/get-stderr.js"
 for (const shell of [Bash, Zsh, Fish, PowerShell]) {
   describe(shell, () => {
     test("`exec` usage", async () => {
-      const server = http.createServer((req, res) => {
+      const server = http.createServer((_req, res) => {
         res.write(JSON.stringify([{ version: 666 }]))
         res.end()
       })
@@ -24,7 +24,7 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
           .then(
             shell.scriptOutputContains(
               getStderr(shell.call("fnm", ["install", "v23"])),
-              "'at this position'",
+              "'╰── invalid type: integer `666`'",
             ),
           )
           // .takeSnapshot(shell)
