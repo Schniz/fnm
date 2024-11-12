@@ -1138,7 +1138,6 @@ dependencies = [
  "cfg-if",
  "miette-derive 7.2.0",
  "owo-colors",
- "serde",
  "supports-color",
  "supports-hyperlinks",
  "supports-unicode",
