@@ -30,7 +30,7 @@ impl Command for Alias {
     }
 }
 
-#[derive(Debug, Error, miette::Diagnostic)]
+#[derive(Debug, Error)]
 pub enum Error {
     #[error("Can't create symlink for alias: {}", source)]
     CantCreateSymlink { source: std::io::Error },

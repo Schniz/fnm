@@ -60,7 +60,7 @@ fn generate_aliases_hash(config: &FnmConfig) -> std::io::Result<HashMap<String, 
     Ok(hashmap)
 }
 
-#[derive(Debug, Error, miette::Diagnostic)]
+#[derive(Debug, Error)]
 pub enum Error {
     #[error("Can't list locally installed versions: {}", source)]
     CantListLocallyInstalledVersion {

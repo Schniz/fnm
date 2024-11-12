@@ -30,7 +30,7 @@ pub fn current_version(config: &FnmConfig) -> Result<Option<Version>, Error> {
     }
 }
 
-#[derive(Debug, Error, miette::Diagnostic)]
+#[derive(Debug, Error)]
 pub enum Error {
     #[error("`fnm env` was not applied in this context.\nCan't find fnm's environment variables")]
     EnvNotApplied,

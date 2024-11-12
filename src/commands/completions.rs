@@ -31,7 +31,7 @@ impl Command for Completions {
     }
 }
 
-#[derive(Error, Debug, miette::Diagnostic)]
+#[derive(Error, Debug)]
 pub enum Error {
     #[error(
         "{}\n{}\n{}\n{}",

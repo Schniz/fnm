@@ -212,7 +212,7 @@ fn warn_if_multishell_path_not_in_path_env_var(
     );
 }
 
-#[derive(Debug, Error, miette::Diagnostic)]
+#[derive(Debug, Error)]
 pub enum Error {
     #[error("Can't create the symlink: {}", source)]
     SymlinkingCreationIssue { source: std::io::Error },

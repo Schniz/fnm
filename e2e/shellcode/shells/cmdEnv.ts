@@ -6,6 +6,7 @@ type EnvConfig = {
   logLevel: string
   corepackEnabled: boolean
   resolveEngines: boolean
+  nodeDistMirror: string
 }
 export type HasEnv = { env(cfg: Partial<EnvConfig>): ScriptLine }
 
@@ -16,6 +17,7 @@ function stringify(envConfig: Partial<EnvConfig> = {}) {
     corepackEnabled,
     resolveEngines,
     executableName = "fnm",
+    nodeDistMirror,
   } = envConfig
   return [
     `${executableName} env`,
@@ -23,6 +25,7 @@ function stringify(envConfig: Partial<EnvConfig> = {}) {
     logLevel && `--log-level=${logLevel}`,
     corepackEnabled && "--corepack-enabled",
     resolveEngines && `--resolve-engines`,
+    nodeDistMirror && `--node-dist-mirror=${JSON.stringify(nodeDistMirror)}`,
   ]
     .filter(Boolean)
     .join(" ")

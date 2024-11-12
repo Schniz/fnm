@@ -93,11 +93,13 @@ impl super::command::Command for LsRemote {
     }
 }
 
-#[derive(Debug, Error, miette::Diagnostic)]
+#[derive(Debug, Error)]
 pub enum Error {
     #[error(transparent)]
-    #[diagnostic(transparent)]
-    RemoteIndex(#[from] crate::remote_node_index::Error),
+    RemoteListing {
+        #[from]
+        source: remote_node_index::Error,
+    },
 }
 
 #[cfg(test)]

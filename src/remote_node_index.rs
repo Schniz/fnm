@@ -1,5 +1,4 @@
-use crate::version::Version;
-use miette::SourceOffset;
+use crate::{pretty_serde::DecodeError, version::Version};
 use serde::Deserialize;
 use url::Url;
 
@@ -69,35 +68,12 @@ pub struct IndexedNodeVersion {
 
 #[derive(Debug, thiserror::Error, miette::Diagnostic)]
 pub enum Error {
-    #[error(transparent)]
+    #[error("can't get remote versions file: {0}")]
     #[diagnostic(transparent)]
     Http(#[from] crate::http::Error),
-    #[error(transparent)]
+    #[error("can't decode remote versions file: {0}")]
     #[diagnostic(transparent)]
     Decode(#[from] DecodeError),
-}
-
-#[derive(Debug, thiserror::Error, miette::Diagnostic)]
-#[error("{cause}")]
-#[diagnostic(code("fnm::serde::decode_error"))]
-pub struct DecodeError {
-    cause: serde_json::Error,
-    #[source_code]
-    input: String,
-    #[label("at this position")]
-    location: SourceOffset,
-}
-
-impl DecodeError {
-    pub fn from_serde(input: impl Into<String>, cause: serde_json::Error) -> Self {
-        let input = input.into();
-        let location = SourceOffset::from_location(&input, cause.line(), cause.column());
-        DecodeError {
-            cause,
-            input,
-            location,
-        }
-    }
 }
 
 /// Prints
@@ -106,7 +82,7 @@ impl DecodeError {
 /// use crate::remote_node_index::list;
 /// ```
 pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, Error> {
-    let index_json_url = format!("{base_url}/index");
+    let index_json_url = format!("{base_url}/index.tab");
     let resp = crate::http::get(&index_json_url)
         .map_err(crate::http::Error::from)?
         .error_for_status()
