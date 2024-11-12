@@ -82,6 +82,8 @@ pub enum Error {
 /// use crate::remote_node_index::list;
 /// ```
 pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, Error> {
+    let base_url = base_url.to_string();
+    let base_url = base_url.trim_end_matches('/');
     let index_json_url = format!("{base_url}/index.json");
     let resp = crate::http::get(&index_json_url)
         .map_err(crate::http::Error::from)?

@@ -2,7 +2,7 @@
 //! In the future, if we want to migrate to a different HTTP library,
 //! we can easily change this facade instead of multiple places in the crate.
 
-use reqwest::blocking::Client;
+use reqwest::{blocking::Client, IntoUrl};
 
 #[derive(Debug, thiserror::Error, miette::Diagnostic)]
 #[error(transparent)]
@@ -10,7 +10,7 @@ use reqwest::blocking::Client;
 pub struct Error(#[from] reqwest::Error);
 pub type Response = reqwest::blocking::Response;
 
-pub fn get(url: &str) -> Result<Response, Error> {
+pub fn get(url: impl IntoUrl) -> Result<Response, Error> {
     Ok(Client::new()
         .get(url)
         // Some sites require a user agent.
