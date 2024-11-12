@@ -78,8 +78,7 @@ impl Command for Install {
                 return Err(Error::UninstallableVersion { version: v });
             }
             UserVersion::Full(Version::Lts(lts_type)) => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
-                    .map_err(|source| Error::CantListRemoteVersions { source })?;
+                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)?;
                 let picked_version = lts_type
                     .pick_latest(&available_versions)
                     .ok_or_else(|| Error::CantFindRelevantLts {
@@ -95,8 +94,7 @@ impl Command for Install {
                 picked_version
             }
             UserVersion::Full(Version::Latest) => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
-                    .map_err(|source| Error::CantListRemoteVersions { source })?;
+                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)?;
                 let picked_version = available_versions
                     .last()
                     .ok_or(Error::CantFindLatest)?
@@ -110,8 +108,7 @@ impl Command for Install {
                 picked_version
             }
             current_version => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
-                    .map_err(|source| Error::CantListRemoteVersions { source })?
+                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)?
                     .drain(..)
                     .map(|x| x.version)
                     .collect();
@@ -194,7 +191,7 @@ fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
     Ok(())
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, miette::Diagnostic)]
 pub enum Error {
     #[error("Can't download the requested binary: {}", source)]
     DownloadError { source: DownloaderError },
@@ -210,8 +207,8 @@ pub enum Error {
     },
     #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,
-    #[error("Having a hard time listing the remote versions: {}", source)]
-    CantListRemoteVersions { source: crate::http::Error },
+    #[error("Having a hard time listing the remote versions: {0}")]
+    CantListRemoteVersions(#[from] remote_node_index::Error),
     #[error(
         "Can't find a Node version that matches {} in remote",
         requested_version

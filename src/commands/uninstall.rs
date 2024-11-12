@@ -84,7 +84,7 @@ impl Command for Uninstall {
     }
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, miette::Diagnostic)]
 pub enum Error {
     #[error("Can't get locally installed versions: {}", source)]
     VersionListingError { source: installed_versions::Error },

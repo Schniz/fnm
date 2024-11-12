@@ -128,7 +128,7 @@ impl Command for Env {
     }
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, miette::Diagnostic)]
 pub enum Error {
     #[error(
         "{}\n{}\n{}\n{}",

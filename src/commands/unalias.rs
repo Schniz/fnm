@@ -31,7 +31,7 @@ impl Command for Unalias {
     }
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, miette::Diagnostic)]
 pub enum Error {
     #[error("Can't delete symlink: {}", source)]
     CantDeleteSymlink { source: std::io::Error },
