@@ -121,7 +121,7 @@ Where `<SHELL>` can be one of the supported shells:
 - `bash`
 - `zsh`
 - `fish`
-- `power-shell`
+- `powershell`
 
 Please follow your shell instructions to install them.
 
@@ -149,7 +149,7 @@ Check out the following guides for the shell you use:
 Add the following to your `.bashrc` profile:
 
 ```bash
-eval "$(fnm env --use-on-cd)"
+eval "$(fnm env --use-on-cd --shell bash)"
 ```
 
 #### Zsh
@@ -157,15 +157,15 @@ eval "$(fnm env --use-on-cd)"
 Add the following to your `.zshrc` profile:
 
 ```zsh
-eval "$(fnm env --use-on-cd)"
+eval "$(fnm env --use-on-cd --shell zsh)"
 ```
 
 #### Fish shell
 
-Create `~/.config/fish/conf.d/fnm.fish` add this line to it:
+Create `~/.config/fish/conf.d/fnm.fish` and add this line to it:
 
 ```fish
-fnm env --use-on-cd | source
+fnm env --use-on-cd --shell fish | source
 ```
 
 #### PowerShell
@@ -173,7 +173,7 @@ fnm env --use-on-cd | source
 Add the following to the end of your profile file:
 
 ```powershell
-fnm env --use-on-cd | Out-String | Invoke-Expression
+fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
@@ -184,7 +184,7 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
-fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following lines:
+fnm is also supported but is not entirely covered. You can set up a startup script for [cmd.exe]( https://superuser.com/a/144348) or [Windows Terminal](https://superuser.com/a/1855283) and append the following lines:
 
 ```batch
 @echo off

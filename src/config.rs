@@ -77,8 +77,12 @@ pub struct FnmConfig {
     corepack_enabled: bool,
 
     /// Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
-    /// Experimental: This feature is subject to change.
+    /// This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
+    ///
     /// Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
+    /// Note 2: If you disable it, please open an issue on GitHub describing _why_ you disabled it.
+    ///         In the future, disabling it might be a no-op, so it's worth knowing any reason to
+    ///         do that.
     #[clap(
         long,
         env = "FNM_RESOLVE_ENGINES",
@@ -86,7 +90,11 @@ pub struct FnmConfig {
         hide_env_values = true,
         verbatim_doc_comment
     )]
-    resolve_engines: bool,
+    #[expect(
+        clippy::option_option,
+        reason = "clap Option<Option<T>> supports --x and --x=value syntaxes"
+    )]
+    resolve_engines: Option<Option<bool>>,
 
     #[clap(skip)]
     directories: Directories,
@@ -102,15 +110,15 @@ impl Default for FnmConfig {
             arch: Arch::default(),
             version_file_strategy: VersionFileStrategy::default(),
             corepack_enabled: false,
-            resolve_engines: false,
+            resolve_engines: None,
             directories: Directories::default(),
         }
     }
 }
 
 impl FnmConfig {
-    pub fn version_file_strategy(&self) -> &VersionFileStrategy {
-        &self.version_file_strategy
+    pub fn version_file_strategy(&self) -> VersionFileStrategy {
+        self.version_file_strategy
     }
 
     pub fn corepack_enabled(&self) -> bool {
@@ -118,7 +126,7 @@ impl FnmConfig {
     }
 
     pub fn resolve_engines(&self) -> bool {
-        self.resolve_engines
+        self.resolve_engines.flatten().unwrap_or(true)
     }
 
     pub fn multishell_path(&self) -> Option<&std::path::Path> {
@@ -128,14 +136,13 @@ impl FnmConfig {
         }
     }
 
-    pub fn log_level(&self) -> &LogLevel {
-        &self.log_level
+    pub fn log_level(&self) -> LogLevel {
+        self.log_level
     }
 
     pub fn base_dir_with_default(&self) -> std::path::PathBuf {
-        let user_pref = self.base_dir.clone();
-        if let Some(dir) = user_pref {
-            return dir;
+        if let Some(dir) = &self.base_dir {
+            return dir.clone();
         }
 
         self.directories.default_base_dir()

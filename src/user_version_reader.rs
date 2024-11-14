@@ -45,7 +45,7 @@ mod tests {
     #[test]
     fn test_file_pathbuf_to_version() {
         let mut file = NamedTempFile::new().unwrap();
-        write!(file, "14").unwrap();
+        file.write_all(b"14").unwrap();
         let pathbuf = file.path().to_path_buf();
 
         let user_version =

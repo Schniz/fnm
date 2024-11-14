@@ -48,6 +48,15 @@ fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
     }
 }
 
+#[inline]
+fn bool_as_str(value: bool) -> &'static str {
+    if value {
+        "true"
+    } else {
+        "false"
+    }
+}
+
 impl Command for Env {
     type Error = Error;
 
@@ -63,42 +72,30 @@ impl Command for Env {
         }
 
         let multishell_path = make_symlink(config)?;
-        let multishell_path_str = multishell_path.to_str().unwrap().to_owned();
+        let base_dir = config.base_dir_with_default();
 
-        let binary_path = if cfg!(windows) {
-            multishell_path
-        } else {
-            multishell_path.join("bin")
-        };
-
-        let env_vars = HashMap::from([
-            ("FNM_MULTISHELL_PATH", multishell_path_str),
+        let env_vars = [
+            ("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap()),
             (
                 "FNM_VERSION_FILE_STRATEGY",
-                config.version_file_strategy().as_str().to_owned(),
+                config.version_file_strategy().as_str(),
             ),
-            (
-                "FNM_DIR",
-                config.base_dir_with_default().to_str().unwrap().to_owned(),
-            ),
-            (
-                "FNM_LOGLEVEL",
-                <&'static str>::from(config.log_level().clone()).to_owned(),
-            ),
-            (
-                "FNM_NODE_DIST_MIRROR",
-                config.node_dist_mirror.as_str().to_owned(),
-            ),
+            ("FNM_DIR", base_dir.to_str().unwrap()),
+            ("FNM_LOGLEVEL", config.log_level().as_str()),
+            ("FNM_NODE_DIST_MIRROR", config.node_dist_mirror.as_str()),
             (
                 "FNM_COREPACK_ENABLED",
-                config.corepack_enabled().to_string(),
+                bool_as_str(config.corepack_enabled()),
             ),
-            ("FNM_RESOLVE_ENGINES", config.resolve_engines().to_string()),
-            ("FNM_ARCH", config.arch.to_string()),
-        ]);
+            ("FNM_RESOLVE_ENGINES", bool_as_str(config.resolve_engines())),
+            ("FNM_ARCH", config.arch.as_str()),
+        ];
 
         if self.json {
-            println!("{}", serde_json::to_string(&env_vars).unwrap());
+            println!(
+                "{}",
+                serde_json::to_string(&HashMap::from(env_vars)).unwrap()
+            );
             return Ok(());
         }
 
@@ -108,7 +105,13 @@ impl Command for Env {
             .or_else(infer_shell)
             .ok_or(Error::CantInferShell)?;
 
-        println!("{}", shell.path(&binary_path)?);
+        let binary_path = if cfg!(windows) {
+            shell.path(&multishell_path)
+        } else {
+            shell.path(&multishell_path.join("bin"))
+        };
+
+        println!("{}", binary_path?);
 
         for (name, value) in &env_vars {
             println!("{}", shell.set_env_var(name, value));
