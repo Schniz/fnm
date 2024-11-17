@@ -36,7 +36,11 @@ curl -fsSL https://fnm.vercel.app/install | bash
 
 On macOS, it is as simple as `brew upgrade fnm`.
 
-On other operating systems, upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file add `--skip-shell` to install command.
+On other operating systems, upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file, pass `--skip-shell` to the install command:
+
+```sh
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+```
 
 #### Parameters
 
