@@ -1,5 +1,11 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.38.1
+
+### Patch Changes
+
+- [#1326](https://github.com/Schniz/fnm/pull/1326) [`172fb0a`](https://github.com/Schniz/fnm/commit/172fb0adc9d9d78b4763be087769388802c5345d) Thanks [@Schniz](https://github.com/Schniz)! - fix --use-on-cd failing with newly released default of --resolve-engines when `engines` key didn't exist
+
 ## 1.38.0
 
 ### Minor Changes
