@@ -50,10 +50,9 @@ impl Command for Use {
             .map_err(|source| Error::CantInferVersion { source });
 
         // Swallow the missing version error if `silent_if_unchanged` was provided
-        let requested_version = if self.silent_if_unchanged {
-            return Ok(());
-        } else {
-            requested_version?
+        let requested_version = match (self.silent_if_unchanged, requested_version) {
+            (true, Err(_)) => return Ok(()),
+            (_, v) => v?,
         };
 
         let (message, version_path) = if let UserVersion::Full(Version::Bypassed) =
