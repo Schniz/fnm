@@ -47,7 +47,14 @@ impl Command for Use {
                 VersionFileStrategy::Local => InferVersionError::Local,
                 VersionFileStrategy::Recursive => InferVersionError::Recursive,
             })
-            .map_err(|source| Error::CantInferVersion { source })?;
+            .map_err(|source| Error::CantInferVersion { source });
+
+        // Swallow the missing version error if `silent_if_unchanged` was provided
+        let requested_version = if self.silent_if_unchanged {
+            return Ok(());
+        } else {
+            requested_version?
+        };
 
         let (message, version_path) = if let UserVersion::Full(Version::Bypassed) =
             requested_version
