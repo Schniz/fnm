@@ -177,9 +177,16 @@ fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
-- On Windows to edit your profile you can run this in a PowerShell
+- For Windows location is either:
+  - `%userprofile%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` Powershell 5
+  - `%userprofile%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` Powershell 6+
+- To create the profile file you can run this in PowerShell:
   ```powershell
-  notepad $profile
+  if (-not (Test-Path $profile)) { New-Item $profile }
+  ```
+- To edit your profile run this in PowerShell:
+  ```powershell
+  Invoke-Item $profile
   ```
 
 #### Windows Command Prompt aka Batch aka WinCMD
