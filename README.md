@@ -182,7 +182,7 @@ fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
   - `%userprofile%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` Powershell 6+
 - To create the profile file you can run this in PowerShell:
   ```powershell
-  if (-not (Test-Path $profile)) { New-Item $profile }
+  if (-not (Test-Path $profile)) { New-Item $profile -Force }
   ```
 - To edit your profile run this in PowerShell:
   ```powershell
