@@ -44,7 +44,7 @@ pub enum SubCommand {
     #[clap(name = "unalias", bin_name = "unalias")]
     Unalias(commands::unalias::Unalias),
 
-    /// Set a version as the default version
+    /// Set a version as the default version or get the current default version.
     ///
     /// This is a shorthand for `fnm alias VERSION default`
     #[clap(name = "default", bin_name = "default")]
