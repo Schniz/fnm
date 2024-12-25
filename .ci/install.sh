@@ -75,7 +75,13 @@ set_filename() {
     USE_HOMEBREW="true"
     echo "Downloading fnm using Homebrew..."
   elif [ "$OS" = "Windows" ] ; then
-    FILENAME="fnm-windows"
+    case "$(uname -m)" in
+      aarch* | armv8*)
+        FILENAME="fnm-windows-arm64"
+        ;;
+      *)
+        FILENAME="fnm-windows"
+    esac
     echo "Downloading the latest fnm binary from GitHub..."
   else
     echo "OS $OS is not supported."
