@@ -37,6 +37,7 @@ mod version_files;
 mod log_level;
 mod default_version;
 mod directories;
+mod pretty_serde;
 
 fn main() {
     env_logger::init();

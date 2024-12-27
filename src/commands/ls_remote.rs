@@ -96,9 +96,9 @@ impl super::command::Command for LsRemote {
 #[derive(Debug, Error)]
 pub enum Error {
     #[error(transparent)]
-    HttpError {
+    RemoteListing {
         #[from]
-        source: crate::http::Error,
+        source: remote_node_index::Error,
     },
 }
 
