@@ -1,7 +1,7 @@
 use crate::config::FnmConfig;
+use crate::current_version::{current_version, Error as CurrentVersionError};
 use crate::remote_node_index;
 use crate::user_version::UserVersion;
-use crate::current_version::{current_version, Error as CurrentVersionError};
 
 use colored::Colorize;
 use thiserror::Error;
@@ -44,15 +44,18 @@ impl super::command::Command for Info {
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         // Get all versions from the Node.js URL.
-        let all_versions = remote_node_index::list(&config.node_dist_mirror)?;
+        let all_versions = remote_node_index::list(&config.node_dist_mirror)
+            .map_err(|source| Error::CantListRemoteVersions { source })?;
 
         // Filter the latest LTS version.
-        let latest_lts = all_versions.iter().rev()
-        .find(|v| match &v.lts {
-            Some(_) => true,               // If it is Some, pass (any value)
-            None => false,                  // If it is None, do not pass
-        })
-        .map(|v| v.version.clone());
+        let latest_lts = all_versions
+            .iter()
+            .rev()
+            .find(|v| match &v.lts {
+                Some(_) => true, // If it is Some, pass (any value)
+                None => false,   // If it is None, do not pass
+            })
+            .map(|v| v.version.clone());
 
         // Filter the latest version "latest".
         let latest = all_versions.last().map(|v| v.version.clone());
@@ -89,13 +92,10 @@ impl super::command::Command for Info {
 #[derive(Debug, Error)]
 pub enum Error {
     #[error(transparent)]
-    HttpError {
-        #[from]
-        source: crate::http::Error,
-    },
-    #[error(transparent)]
     CurrentVersionError {
         #[from]
         source: CurrentVersionError,
     },
+    #[error(transparent)]
+    CantListRemoteVersions { source: remote_node_index::Error },
 }
