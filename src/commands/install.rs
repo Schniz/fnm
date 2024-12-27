@@ -210,8 +210,8 @@ pub enum Error {
     },
     #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,
-    #[error("Having a hard time listing the remote versions: {}", source)]
-    CantListRemoteVersions { source: crate::http::Error },
+    #[error(transparent)]
+    CantListRemoteVersions { source: remote_node_index::Error },
     #[error(
         "Can't find a Node version that matches {} in remote",
         requested_version
