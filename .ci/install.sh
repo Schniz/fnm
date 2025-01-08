@@ -87,6 +87,7 @@ set_filename() {
 download_fnm() {
   if [ "$USE_HOMEBREW" = "true" ]; then
     brew install fnm
+    INSTALL_DIR="$(brew --prefix fnm)/bin"
   else
     if [ "$RELEASE" = "latest" ]; then
       URL="https://github.com/Schniz/fnm/releases/latest/download/$FILENAME.zip"
@@ -173,7 +174,9 @@ setup_shell() {
       echo '# fnm'
       echo 'FNM_PATH="'"$INSTALL_DIR"'"'
       echo 'if [ -d "$FNM_PATH" ]; then'
-      echo '  export PATH="'$INSTALL_DIR':$PATH"'
+      if [ "$USE_HOMEBREW" != "true" ]; then
+        echo '  export PATH="$FNM_PATH:$PATH"'
+      fi
       echo '  eval "`fnm env`"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
@@ -187,7 +190,9 @@ setup_shell() {
       echo '# fnm'
       echo 'set FNM_PATH "'"$INSTALL_DIR"'"'
       echo 'if [ -d "$FNM_PATH" ]'
-      echo '  set PATH "$FNM_PATH" $PATH'
+      if [ "$USE_HOMEBREW" != "true" ]; then
+        echo '  set PATH "$FNM_PATH" $PATH'
+      fi
       echo '  fnm env | source'
       echo 'end'
     } | tee -a "$CONF_FILE"
@@ -205,7 +210,9 @@ setup_shell() {
       echo '# fnm'
       echo 'FNM_PATH="'"$INSTALL_DIR"'"'
       echo 'if [ -d "$FNM_PATH" ]; then'
-      echo '  export PATH="$FNM_PATH:$PATH"'
+      if [ "$USE_HOMEBREW" != "true" ]; then
+        echo '  export PATH="$FNM_PATH:$PATH"'
+      fi
       echo '  eval "`fnm env`"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
