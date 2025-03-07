@@ -1,0 +1,29 @@
+name: release to cargo
+on:
+  workflow_dispatch:
+  push:
+    tags: ['*']
+jobs:
+  publish_to_crates_io:
+    runs-on: ubuntu-latest
+    name: Publish to crates.io
+    steps:
+      # set up
+      - uses: actions/checkout@v4
+
+      - uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: pnpm/action-setup@v4.0.0
+        with:
+          run_install: false
+
+      - name: Publish to crates.io
+        run: cargo publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          TERM: xterm

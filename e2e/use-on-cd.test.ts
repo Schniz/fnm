@@ -40,5 +40,19 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .then(testNodeVersion(shell, "v12.22.12"))
         .execute(shell)
     })
+
+    test(`doesn't throw on missing env data`, async () => {
+      await mkdir(join(testCwd(), "subdir"), { recursive: true })
+      await writeFile(
+        join(testCwd(), "subdir", "package.json"),
+        JSON.stringify({
+          name: "hello",
+        }),
+      )
+      await script(shell)
+        .then(shell.env({ useOnCd: true, resolveEngines: true }))
+        .then(shell.call("cd", ["subdir"]))
+        .execute(shell)
+    })
   })
 }
