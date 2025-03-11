@@ -1,7 +1,6 @@
 use crate::config::FnmConfig;
-use crate::remote_node_index;
+use crate::remote_node_index::{self, IndexedNodeVersion};
 use crate::user_version::UserVersion;
-
 use colored::Colorize;
 use thiserror::Error;
 
@@ -11,7 +10,7 @@ pub struct LsRemote {
     #[arg(long)]
     filter: Option<UserVersion>,
 
-    /// Show only LTS versions (optionally filter by LTS codename)  
+    /// Show only LTS versions (optionally filter by LTS codename)
     #[arg(long)]
     #[expect(
         clippy::option_option,
@@ -26,6 +25,10 @@ pub struct LsRemote {
     /// Only show the latest matching version
     #[arg(long)]
     latest: bool,
+
+    /// Show the latest version of each LTS
+    #[arg(long)]
+    latest_lts: bool,
 }
 
 #[derive(clap::ValueEnum, Clone, Debug, PartialEq)]
@@ -53,15 +56,28 @@ impl super::command::Command for LsRemote {
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let mut all_versions = remote_node_index::list(&config.node_dist_mirror)?;
 
-        if let Some(lts) = &self.lts {
-            match lts {
-                Some(codename) => all_versions.retain(|v| {
-                    v.lts
-                        .as_ref()
-                        .is_some_and(|v_lts| v_lts.eq_ignore_ascii_case(codename))
-                }),
-                None => all_versions.retain(|v| v.lts.is_some()),
-            };
+        if let Some(Some(lts_codename)) = &self.lts {
+            all_versions.retain(|v| {
+                v.lts
+                    .as_ref()
+                    .is_some_and(|v_lts| v_lts.eq_ignore_ascii_case(lts_codename))
+            });
+        } else if self.lts.is_some() || self.latest_lts {
+            all_versions.retain(|v| v.lts.is_some());
+        }
+
+        if self.latest_lts {
+            let mut latest_lts: Vec<IndexedNodeVersion> = Vec::new();
+            let mut iter = all_versions.iter().peekable();
+            while let Some(version) = iter.next() {
+                if let Some(next) = iter.peek() {
+                    if version.lts == next.lts {
+                        continue;
+                    }
+                }
+                latest_lts.push(version.clone());
+            }
+            all_versions = latest_lts;
         }
 
         if let Some(filter) = &self.filter {
