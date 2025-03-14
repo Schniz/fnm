@@ -17,7 +17,7 @@ jobs:
         ref: ${{ github.event.inputs.commit_hash }}
     - name: Download artifact
       id: download-artifact
-      uses: dawidd6/action-download-artifact@v6
+      uses: dawidd6/action-download-artifact@v2
       with:
         workflow: rust.yml
         workflow_conclusion: ""
