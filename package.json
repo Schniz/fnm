@@ -2,10 +2,13 @@
   "name": "fnm",
   "version": "1.37.0",
   "private": true,
-  "repository": "git@github.com:Schniz/fnm.git",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Schniz/fnm.git"
+  },
   "author": "Gal Schlezinger <gal@spitfire.co.il>",
   "type": "module",
-  "packageManager": "pnpm@8.15.8",
+  "packageManager": "pnpm@8.15.9+sha256.daa27a0b541bc635323ff96c2ded995467ff9fe6d69ff67021558aa9ad9dcc36",
   "license": "GPLv3",
   "scripts": {
     "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest",
@@ -22,12 +25,12 @@
     }
   },
   "devDependencies": {
-    "@changesets/cli": "2.27.5",
     "@changesets/changelog-github": "0.5.0",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^18.19.33",
+    "@changesets/cli": "2.27.5",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^18.19.80",
     "@types/shell-escape": "^0.2.3",
-    "chalk": "^5.3.0",
+    "chalk": "^5.4.1",
     "cmd-ts": "0.13.0",
     "cross-env": "^7.0.3",
     "execa": "7.2.0",
@@ -40,12 +43,23 @@
     "svg-term-cli": "2.1.1",
     "toml": "3.0.0",
     "ts-dedent": "^2.2.0",
-    "ts-jest": "^29.1.4",
-    "typescript": "^5.4.5",
+    "ts-jest": "^29.2.6",
+    "typescript": "^5.8.2",
     "which": "^3.0.1",
-    "zod": "^3.23.8"
+    "zod": "^3.24.2"
   },
   "prettier": {
     "semi": false
-  }
+  },
+  "description": "<h1 align=\"center\">   Fast Node Manager (<code>fnm</code>)   <img alt=\"Amount of downloads\" src=\"https://img.shields.io/github/downloads/Schniz/fnm/total.svg?style=flat\" />   <a href=\"https://github.com/Schniz/fnm/actions\"><img src=\"https://img.shields.io/github/actions/workflow/status/Schniz/fnm/rust.yml?branch=master&label=workflow\" alt=\"GitHub Actions workflow status\" /></a> </h1>",
+  "bugs": {
+    "url": "https://github.com/Schniz/fnm/issues"
+  },
+  "homepage": "https://github.com/Schniz/fnm#readme",
+  "main": "jest.global-setup.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "keywords": []
 }
