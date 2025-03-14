@@ -1,4 +1,4 @@
-import { writeFile, mkdir } from "node:fs/promises"
+import { writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { script } from "./shellcode/script.js"
 import { Bash, Fish, PowerShell, WinCmd, Zsh } from "./shellcode/shells.js"
@@ -43,7 +43,7 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
     test(`package.json engines.node`, async () => {
       await writeFile(
         join(testCwd(), "package.json"),
-        JSON.stringify({ engines: { node: "8.11.3" } })
+        JSON.stringify({ engines: { node: "8.11.3" } }),
       )
       await script(shell)
         .then(shell.env({ resolveEngines: true }))
@@ -57,26 +57,13 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
     test(`package.json engines.node with semver range`, async () => {
       await writeFile(
         join(testCwd(), "package.json"),
-        JSON.stringify({ engines: { node: "^6 < 6.17.1" } })
+        JSON.stringify({ engines: { node: "^6 < 6.17.1" } }),
       )
       await script(shell)
         .then(shell.env({ resolveEngines: true }))
         .then(shell.call("fnm", ["install"]))
         .then(shell.call("fnm", ["use"]))
         .then(testNodeVersion(shell, "v6.17.0"))
-        .takeSnapshot(shell)
-        .execute(shell)
-    })
-
-    test(`use on cd`, async () => {
-      await mkdir(join(testCwd(), "subdir"), { recursive: true })
-      await writeFile(join(testCwd(), "subdir", ".node-version"), "v12.22.12")
-      await script(shell)
-        .then(shell.env({ useOnCd: true }))
-        .then(shell.call("fnm", ["install", "v8.11.3"]))
-        .then(shell.call("fnm", ["install", "v12.22.12"]))
-        .then(shell.call("cd", ["subdir"]))
-        .then(testNodeVersion(shell, "v12.22.12"))
         .takeSnapshot(shell)
         .execute(shell)
     })
@@ -98,8 +85,8 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
           shell.hasCommandOutput(
             shell.call("fnm", ["ls"]),
             "* system",
-            "fnm ls"
-          )
+            "fnm ls",
+          ),
         )
         .takeSnapshot(shell)
         .execute(shell)

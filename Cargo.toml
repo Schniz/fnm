@@ -1,6 +1,6 @@
 [package]
 name = "fnm"
-version = "1.36.0"
+version = "1.38.1"
 authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
 edition = "2021"
 build = "build.rs"
@@ -16,7 +16,7 @@ chrono = { version = "0.4.38", features = ["serde", "now"], default-features = f
 tar = "0.4.40"
 xz2 = "0.1.7"
 node-semver = "2.1.0"
-dirs = "5.0.1"
+etcetera = "0.8.0"
 colored = "2.1.0"
 zip = "2.1.0"
 tempfile = "3.10.1"
@@ -31,6 +31,8 @@ thiserror = "1.0.61"
 clap_complete = "4.5.2"
 anyhow = "1.0.86"
 indicatif = { version = "0.17.8", features = ["improved_unicode"] }
+flate2 = "1.0.30"
+miette = { version = "7.2.0", features = ["fancy"] }
 
 [dev-dependencies]
 pretty_assertions = "1.4.0"

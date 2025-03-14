@@ -23,7 +23,7 @@ impl ProgressConfig {
             Self::Always => true,
             Self::Auto => config
                 .log_level()
-                .is_writable(&crate::log_level::LogLevel::Info),
+                .is_writable(crate::log_level::LogLevel::Info),
         }
     }
 }

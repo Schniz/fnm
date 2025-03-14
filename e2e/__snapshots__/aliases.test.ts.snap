@@ -53,6 +53,13 @@ eval "$(fnm env --log-level=error)"
 (fnm use 2>&1) | grep 'Requested version lts-latest is not' || (echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1)"
 `;
 
+exports[`Bash installs aliases when corepack is enabled: Bash 1`] = `
+"set -e
+eval "$(fnm env --corepack-enabled)"
+fnm use --install-if-missing
+(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
+`;
+
 exports[`Bash unalias a version: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
@@ -122,6 +129,12 @@ exports[`Fish errors when alias is not found: Fish 1`] = `
 begin; fnm use 2>&1; end | grep 'Requested version lts-latest is not'; or echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1"
 `;
 
+exports[`Fish installs aliases when corepack is enabled: Fish 1`] = `
+"fnm env --corepack-enabled | source
+fnm use --install-if-missing
+begin; fnm ls; end | grep lts-latest; or echo "Expected output to contain lts-latest" && exit 1"
+`;
+
 exports[`Fish unalias a version: Fish 1`] = `
 "fnm env | source
 fnm install 11.10.0
@@ -179,6 +192,13 @@ exports[`PowerShell errors when alias is not found: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env --log-level=error | Out-String | Invoke-Expression
 $($__out__ = $(fnm use 2>&1 | Select-String 'Requested version lts-latest is not'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell installs aliases when corepack is enabled: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --corepack-enabled | Out-String | Invoke-Expression
+fnm use --install-if-missing
+$($__out__ = $(fnm ls | Select-String lts-latest); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
 
 exports[`PowerShell unalias a version: PowerShell 1`] = `
@@ -249,6 +269,13 @@ exports[`Zsh errors when alias is not found: Zsh 1`] = `
 "set -e
 eval "$(fnm env --log-level=error)"
 (fnm use 2>&1) | grep 'Requested version lts-latest is not' || (echo "Expected output to contain 'Requested version lts-latest is not'" && exit 1)"
+`;
+
+exports[`Zsh installs aliases when corepack is enabled: Zsh 1`] = `
+"set -e
+eval "$(fnm env --corepack-enabled)"
+fnm use --install-if-missing
+(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
 `;
 
 exports[`Zsh unalias a version: Zsh 1`] = `

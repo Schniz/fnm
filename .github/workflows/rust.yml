@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  RUST_VERSION: "1.78"
+  RUST_VERSION: "1.81"
 
 jobs:
   fmt:
@@ -63,7 +63,7 @@ jobs:
         run: cargo build --release
         env:
           RUSTFLAGS: "-C target-feature=+crt-static"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: fnm-windows
           path: target/release/fnm.exe
@@ -75,17 +75,23 @@ jobs:
       - uses: hecrj/setup-rust-action@v1
         with:
           rust-version: ${{env.RUST_VERSION}}
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
       - uses: Swatinem/rust-cache@v2
+      - uses: mlugg/setup-zig@v1
+      - run: cargo install --locked cargo-zigbuild
       - uses: actions/checkout@v4
       - name: Build release binary
-        run: cargo build --release
+        run: |
+          cargo zigbuild --release --target=universal2-apple-darwin
+          mkdir -p target/release
+          cp target/universal2-apple-darwin/release/fnm target/release/fnm
         env:
           LZMA_API_STATIC: "true"
       - name: Strip binary from debug symbols
         run: strip target/release/fnm
       - name: List dynamically linked libraries
         run: otool -L target/release/fnm
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: fnm-macos
           path: target/release/fnm
@@ -98,16 +104,16 @@ jobs:
       - name: install necessary shells
         run: brew install fish zsh bash
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: fnm-macos
           path: target/release
       - name: mark binary as executable
         run: chmod +x target/release/fnm
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         with:
           run_install: false
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
           cache: "pnpm"
@@ -134,14 +140,15 @@ jobs:
     name: "e2e/windows"
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: fnm-windows
           path: target/release
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: MinoruSekine/setup-scoop@v4
+      - uses: pnpm/action-setup@v4.0.0
         with:
           run_install: false
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
           cache: "pnpm"
@@ -204,16 +211,16 @@ jobs:
       - name: install necessary shells
         run: sudo apt-get update && sudo apt-get install -y fish zsh bash
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: fnm-linux
           path: target/release
       - name: mark binary as executable
         run: chmod +x target/release/fnm
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         with:
           run_install: false
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
           cache: "pnpm"
@@ -254,7 +261,7 @@ jobs:
         run: cargo build --release --target x86_64-unknown-linux-musl
       - name: Strip binary from debug symbols
         run: strip target/x86_64-unknown-linux-musl/release/fnm
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: fnm-linux
           path: target/x86_64-unknown-linux-musl/release/fnm
@@ -315,7 +322,7 @@ jobs:
             echo "fnm exec --using=12 -- node --version"
             /artifacts/fnm exec --using=12 -- node --version
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: fnm-${{ matrix.arch }}
           path: target/${{ env.RUST_TARGET }}/release/fnm
@@ -328,7 +335,7 @@ jobs:
       - name: install necessary shells
         run: sudo apt-get update && sudo apt-get install -y fish zsh bash
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: fnm-linux
           path: target/release
@@ -338,10 +345,10 @@ jobs:
         run: |
           sudo install target/release/fnm /bin
           fnm --version
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v4.0.0
         with:
           run_install: false
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
           cache: "pnpm"

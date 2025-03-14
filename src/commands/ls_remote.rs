@@ -13,7 +13,10 @@ pub struct LsRemote {
 
     /// Show only LTS versions (optionally filter by LTS codename)  
     #[arg(long)]
-    #[allow(clippy::option_option)]
+    #[expect(
+        clippy::option_option,
+        reason = "clap Option<Option<T>> supports --x and --x=value syntaxes"
+    )]
     lts: Option<Option<String>>,
 
     /// Version sorting order
@@ -33,6 +36,15 @@ pub enum SortingMethod {
     #[clap(name = "asc")]
     /// Sort versions in ascending order (earliest to latest)
     Ascending,
+}
+
+/// Drain all elements but the last one
+fn truncate_except_latest<T>(list: &mut Vec<T>) {
+    let len = list.len();
+    if len > 1 {
+        list.swap(0, len - 1);
+        list.truncate(1);
+    }
 }
 
 impl super::command::Command for LsRemote {
@@ -57,10 +69,9 @@ impl super::command::Command for LsRemote {
         }
 
         if self.latest {
-            all_versions.truncate(1);
+            truncate_except_latest(&mut all_versions);
         }
 
-        all_versions.sort_by_key(|v| v.version.clone());
         if let SortingMethod::Descending = self.sort {
             all_versions.reverse();
         }
@@ -85,8 +96,28 @@ impl super::command::Command for LsRemote {
 #[derive(Debug, Error)]
 pub enum Error {
     #[error(transparent)]
-    HttpError {
+    RemoteListing {
         #[from]
-        source: crate::http::Error,
+        source: remote_node_index::Error,
     },
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_truncate_except_latest() {
+        let mut list = vec![1, 2, 3, 4, 5];
+        truncate_except_latest(&mut list);
+        assert_eq!(list, vec![5]);
+
+        let mut list: Vec<()> = vec![];
+        truncate_except_latest(&mut list);
+        assert_eq!(list, vec![]);
+
+        let mut list = vec![1];
+        truncate_except_latest(&mut list);
+        assert_eq!(list, vec![1]);
+    }
 }

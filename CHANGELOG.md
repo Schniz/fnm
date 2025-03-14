@@ -1,5 +1,72 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.38.1
+
+### Patch Changes
+
+- [#1326](https://github.com/Schniz/fnm/pull/1326) [`172fb0a`](https://github.com/Schniz/fnm/commit/172fb0adc9d9d78b4763be087769388802c5345d) Thanks [@Schniz](https://github.com/Schniz)! - fix --use-on-cd failing with newly released default of --resolve-engines when `engines` key didn't exist
+
+## 1.38.0
+
+### Minor Changes
+
+- [#1265](https://github.com/Schniz/fnm/pull/1265) [`186e4bb`](https://github.com/Schniz/fnm/commit/186e4bbd9204d7658a4f9923955281687a01e8c3) Thanks [@Schniz](https://github.com/Schniz)! - enable `--resolve-engines` by default. out of experimental phase.
+
+  to disable it, add a `--resolve-engines=false` flag, and make sure to open an issue describing _why_.
+  It might feel like a breaking change but .nvmrc and .node-version have precedence so it should not.
+
+  I am all in favor of better experience and I believe supporting engines.node is a good direction.
+
+### Patch Changes
+
+- [#1310](https://github.com/Schniz/fnm/pull/1310) [`9273981`](https://github.com/Schniz/fnm/commit/9273981dc0d78124181927fae8746b5a61901c45) Thanks [@Schniz](https://github.com/Schniz)! - make github releases of macos to be a universal macos executable (both m1 and x64) as github changed the workers to be m1
+
+- [#1277](https://github.com/Schniz/fnm/pull/1277) [`12cf977`](https://github.com/Schniz/fnm/commit/12cf977beb8581000ea84d7b8d1636dc3ae25db3) Thanks [@deanshub](https://github.com/deanshub)! - Having install and uninstall aliases
+
+- [#1318](https://github.com/Schniz/fnm/pull/1318) [`65f7a22`](https://github.com/Schniz/fnm/commit/65f7a22822ce03f07972fe175d08cc60112856f8) Thanks [@Schniz](https://github.com/Schniz)! - better error handling for malformed json
+
+## 1.37.2
+
+### Patch Changes
+
+- [#1264](https://github.com/Schniz/fnm/pull/1264) [`364d2a9`](https://github.com/Schniz/fnm/commit/364d2a939c684fede25c43c6a9c14b7c4c6e3fc5) Thanks [@Schniz](https://github.com/Schniz)! - fix: allow to type powershell and power-shell as shell type inputs
+
+- [#1195](https://github.com/Schniz/fnm/pull/1195) [`74d7c33`](https://github.com/Schniz/fnm/commit/74d7c33da9f5ac53a42633012d775015eb774bcb) Thanks [@mattmess1221](https://github.com/mattmess1221)! - When downloading from node-dist, Fallback to .tar.gz download when the .tar.xz download fails
+
+- [#1259](https://github.com/Schniz/fnm/pull/1259) [`1000914`](https://github.com/Schniz/fnm/commit/10009143460e161b76350eb738652f332e8a893c) Thanks [@skirsten](https://github.com/skirsten)! - Fix `--resolve-engines` in combination with `--use-on-cd`
+
+- [#1248](https://github.com/Schniz/fnm/pull/1248) [`e03d345`](https://github.com/Schniz/fnm/commit/e03d345e9f485c4ab0183a3a542bcba20525fff4) Thanks [@bburns](https://github.com/bburns)! - docs: add link for windows terminal startup script configuration
+
+- [#1184](https://github.com/Schniz/fnm/pull/1184) [`fefdf69`](https://github.com/Schniz/fnm/commit/fefdf69870ddaec0ba59b103aef730dd03e56e4a) Thanks [@julescubtree](https://github.com/julescubtree)! - fix panic when list-remote --filter --latest has no results
+
+- [#1255](https://github.com/Schniz/fnm/pull/1255) [`71c1c9a`](https://github.com/Schniz/fnm/commit/71c1c9a9998f7fd0dc512de6ead9244f03fa532d) Thanks [@stefanboca](https://github.com/stefanboca)! - set aliases during install, even if corepack is enabled
+
+- [#1204](https://github.com/Schniz/fnm/pull/1204) [`19bffe5`](https://github.com/Schniz/fnm/commit/19bffe5af6ee1d624095c94f5ec55660fe69ac3b) Thanks [@JLarky](https://github.com/JLarky)! - Document how to use nightly builds
+
+- [#1218](https://github.com/Schniz/fnm/pull/1218) [`345adaf`](https://github.com/Schniz/fnm/commit/345adafb856e2e0ba8feb8acf487a4669cea4055) Thanks [@Schniz](https://github.com/Schniz)! - internal: retry download in case of error in test proxy
+
+- [#1226](https://github.com/Schniz/fnm/pull/1226) [`8e2d37d`](https://github.com/Schniz/fnm/commit/8e2d37d858b15d965d9644b27f5c111478cc59f2) Thanks [@mo8it](https://github.com/mo8it)! - performance optimizations, especially for `fnm env`
+
+- [#1223](https://github.com/Schniz/fnm/pull/1223) [`2b211ef`](https://github.com/Schniz/fnm/commit/2b211ef64a7eb2ff5fe7ac017d1f963db522b6cf) Thanks [@mo8it](https://github.com/mo8it)! - Allow reading non-unicode paths from environment variables
+
+## 1.37.1
+
+### Patch Changes
+
+- [#1164](https://github.com/Schniz/fnm/pull/1164) [`318f86d`](https://github.com/Schniz/fnm/commit/318f86d72938166cb2b3195cae37826f827b6c08) Thanks [@Schniz](https://github.com/Schniz)! - windows: fix shell inference in powershell when using scoop's shims
+
+## 1.37.0
+
+### Minor Changes
+
+- [#1143](https://github.com/Schniz/fnm/pull/1143) [`f76a001`](https://github.com/Schniz/fnm/commit/f76a0011f7a613bb818e47acd224b7de48c5a81f) Thanks [@Schniz](https://github.com/Schniz)! - use XDG conventions in MacOS directories by default
+
+### Patch Changes
+
+- [#1148](https://github.com/Schniz/fnm/pull/1148) [`0b530cc`](https://github.com/Schniz/fnm/commit/0b530cc257e33e9801804b73ed831a1f28489b57) Thanks [@Schniz](https://github.com/Schniz)! - fix ordering in ls-remote
+
+- [#1133](https://github.com/Schniz/fnm/pull/1133) [`a1afe84`](https://github.com/Schniz/fnm/commit/a1afe8436afb29960b71e14e221441398f6a48ca) Thanks [@Schniz](https://github.com/Schniz)! - upgrade all dependencies & maintain lockfile
+
 ## 1.36.0
 
 ### Minor Changes

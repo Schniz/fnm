@@ -36,7 +36,11 @@ curl -fsSL https://fnm.vercel.app/install | bash
 
 On macOS, it is as simple as `brew upgrade fnm`.
 
-On other operating systems, upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file add `--skip-shell` to install command.
+On other operating systems, upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file, pass `--skip-shell` to the install command:
+
+```sh
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+```
 
 #### Parameters
 
@@ -121,7 +125,7 @@ Where `<SHELL>` can be one of the supported shells:
 - `bash`
 - `zsh`
 - `fish`
-- `power-shell`
+- `powershell`
 
 Please follow your shell instructions to install them.
 
@@ -149,7 +153,7 @@ Check out the following guides for the shell you use:
 Add the following to your `.bashrc` profile:
 
 ```bash
-eval "$(fnm env --use-on-cd)"
+eval "$(fnm env --use-on-cd --shell bash)"
 ```
 
 #### Zsh
@@ -157,15 +161,15 @@ eval "$(fnm env --use-on-cd)"
 Add the following to your `.zshrc` profile:
 
 ```zsh
-eval "$(fnm env --use-on-cd)"
+eval "$(fnm env --use-on-cd --shell zsh)"
 ```
 
 #### Fish shell
 
-Create `~/.config/fish/conf.d/fnm.fish` add this line to it:
+Create `~/.config/fish/conf.d/fnm.fish` and add this line to it:
 
 ```fish
-fnm env --use-on-cd | source
+fnm env --use-on-cd --shell fish | source
 ```
 
 #### PowerShell
@@ -173,18 +177,25 @@ fnm env --use-on-cd | source
 Add the following to the end of your profile file:
 
 ```powershell
-fnm env --use-on-cd | Out-String | Invoke-Expression
+fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
-- On Windows to edit your profile you can run this in a PowerShell
+- For Windows location is either:
+  - `%userprofile%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` Powershell 5
+  - `%userprofile%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` Powershell 6+
+- To create the profile file you can run this in PowerShell:
   ```powershell
-  notepad $profile
+  if (-not (Test-Path $profile)) { New-Item $profile -Force }
+  ```
+- To edit your profile run this in PowerShell:
+  ```powershell
+  Invoke-Item $profile
   ```
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
-fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following lines:
+fnm is also supported but is not entirely covered. You can set up a startup script for [cmd.exe]( https://superuser.com/a/144348) or [Windows Terminal](https://superuser.com/a/1855283) and append the following lines:
 
 ```batch
 @echo off
