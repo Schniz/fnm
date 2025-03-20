@@ -24,6 +24,9 @@ pub struct Env {
     /// Print the script to change Node versions every directory change
     #[clap(long)]
     use_on_cd: bool,
+    /// Suppress "Using Node Version..." message when changing versions with --use-on-cd
+    #[clap(long)]
+    silent: bool,
 }
 
 fn generate_symlink_path() -> String {
@@ -89,6 +92,7 @@ impl Command for Env {
             ),
             ("FNM_RESOLVE_ENGINES", bool_as_str(config.resolve_engines())),
             ("FNM_ARCH", config.arch.as_str()),
+            ("FNM_SILENT", bool_as_str(config.silent())),
         ];
 
         if self.json {

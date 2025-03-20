@@ -76,6 +76,15 @@ pub struct FnmConfig {
     )]
     corepack_enabled: bool,
 
+    /// Suppress "Using Node Version..." message when changing versions with --use-on-cd
+    #[clap(
+        long,
+        env = "FNM_SILENT",
+        global = true,
+        hide_env_values = true
+    )]
+    silent: bool,
+
     /// Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
     /// This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
     ///
@@ -110,6 +119,7 @@ impl Default for FnmConfig {
             arch: Arch::default(),
             version_file_strategy: VersionFileStrategy::default(),
             corepack_enabled: false,
+            silent: false,
             resolve_engines: None,
             directories: Directories::default(),
         }
@@ -123,6 +133,10 @@ impl FnmConfig {
 
     pub fn corepack_enabled(&self) -> bool {
         self.corepack_enabled
+    }
+
+    pub fn silent(&self) -> bool {
+        self.silent
     }
 
     pub fn resolve_engines(&self) -> bool {
