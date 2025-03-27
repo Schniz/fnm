@@ -228,6 +228,40 @@ call "%CMDER_ROOT%\bin\fnm_init.cmd"
 
 You can replace `%CMDER_ROOT%` with any other convenient path too.
 
+#### Useage with Clink
+
+By default Clink load *.lua under %LOCALAPPDATA%\clink when starting a new WinCMD instence so the startup script should written in lua. So this script will convert the CMD-style environment variable setting statement to lua-style. Write the following script into %LOCALAPPDATA%\clink\fnm.lua (or other path, depending on your clink configuration):
+
+```lua
+if (clink.version_encoded or 0) < 10020030 then
+  error("fnm requires a newer version of Clink; please upgrade to Clink v1.2.30 or later.")
+end
+
+if( os.getenv(FNM_AUTORUN_GUARD) == nil )
+then
+	os.setenv('FNM_AUTORUN_GUARD', 'AutorunGuard')
+	local command_handle = io.popen('fnm env --use-on-cd', "r")
+	local command_result = command_handle:read("*a")
+	command_handle:close()
+	for line in command_result:gmatch("([^\r\n]+)") do
+		if line:sub(1,4) == "SET " or line:sub(1,4) == "set " then
+			local rest = line:sub(5)
+			local eq_pos = rest:find("=", 1, true)
+			if eq_pos then
+				local var = rest:sub(1, eq_pos - 1):match("^%s*(.-)%s*$")
+				local value = rest:sub(eq_pos + 1):match("^%s*(.-)%s*$")
+				if os.setenv then
+					os.setenv(var, value)
+				end
+			end
+		else if line:sub(1,7) == "DOSKEY " or line:sub(1,7) == "doskey " then
+				os.execute(line)
+			end
+		end
+	end
+end
+```
+
 ## [Configuration](./docs/configuration.md)
 
 [See the available configuration options for an extended configuration documentation](./docs/configuration.md)
