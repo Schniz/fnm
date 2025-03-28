@@ -40,6 +40,22 @@ export const Zsh = {
   ...cmdInSubShell.zsh,
 }
 
+export const Elvish = {
+  ...define<Shell>({
+    binaryName: () => "elvish",
+    currentlySupported: () => true,
+    name: () => "Elvish",
+    launchArgs: () => [],
+    escapeText: (x) => x,
+  }),
+  ...cmdEnv.elvish,
+  ...cmdCall.all,
+  ...redirectOutput.bash,
+  ...cmdExpectCommandOutput.elvish,
+  ...cmdHasOutputContains.elvish,
+  ...cmdInSubShell.elvish,
+}
+
 export const Fish = {
   ...define<Shell>({
     binaryName: () => "fish",
