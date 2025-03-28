@@ -34,13 +34,12 @@ impl Shell for Elvish {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
                 r#"
-	                try {{
-		                {version_file_exists_condition}
-	                }} catch e {{
-
-	                }} else {{
-		                fnm use --silent-if-unchanged
-	                }}
+                try {{
+                  {version_file_exists_condition}
+                }} catch e {{
+                }} else {{
+                  fnm use --silent-if-unchanged
+                }}
                 "#,
                 version_file_exists_condition = version_file_exists_condition,
             ),
@@ -48,10 +47,7 @@ impl Shell for Elvish {
         };
         Ok(formatdoc!(
             r#"
-							fn _fnm_autoload_hook {{
-							{autoload_hook}
-							}}
-							set after-chdir = [{{|dir| {autoload_hook} }}]
+            set after-chdir = [{{|dir| {autoload_hook} }}]
             "#,
             autoload_hook = autoload_hook
         ))
