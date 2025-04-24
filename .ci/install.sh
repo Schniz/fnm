@@ -4,6 +4,7 @@ set -e
 
 RELEASE="latest"
 OS="$(uname -s)"
+USE_HOMEBREW="false"
 
 case "${OS}" in
    MINGW* | Win*) OS="Windows" ;;
@@ -168,29 +169,45 @@ setup_shell() {
     CONF_FILE=${ZDOTDIR:-$HOME}/.zshrc
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Zsh. Appending the following to $CONF_FILE:"
-    {
-      echo ''
-      echo '# fnm'
-      echo 'FNM_PATH="'"$INSTALL_DIR"'"'
-      echo 'if [ -d "$FNM_PATH" ]; then'
-      echo '  export PATH="'$INSTALL_DIR':$PATH"'
-      echo '  eval "`fnm env`"'
-      echo 'fi'
-    } | tee -a "$CONF_FILE"
+    if [ "$USE_HOMEBREW" = "false" ]; then
+      {
+        echo ''
+        echo '# fnm'
+        echo 'FNM_PATH="'"$INSTALL_DIR"'"'
+        echo 'if [ -d "$FNM_PATH" ]; then'
+        echo '  export PATH="'$INSTALL_DIR':$PATH"'
+        echo '  eval "`fnm env`"'
+        echo 'fi'
+      } | tee -a "$CONF_FILE"
+    else
+      {
+        echo ''
+        echo '# fnm'
+        echo 'eval "`fnm env`"'
+      } | tee -a "$CONF_FILE"
+    fi
 
   elif [ "$CURRENT_SHELL" = "fish" ]; then
     CONF_FILE=$HOME/.config/fish/conf.d/fnm.fish
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Fish. Appending the following to $CONF_FILE:"
-    {
-      echo ''
-      echo '# fnm'
-      echo 'set FNM_PATH "'"$INSTALL_DIR"'"'
-      echo 'if [ -d "$FNM_PATH" ]'
-      echo '  set PATH "$FNM_PATH" $PATH'
-      echo '  fnm env | source'
-      echo 'end'
-    } | tee -a "$CONF_FILE"
+    if [ "$USE_HOMEBREW" = "false" ]; then
+      {
+        echo ''
+        echo '# fnm'
+        echo 'set FNM_PATH "'"$INSTALL_DIR"'"'
+        echo 'if [ -d "$FNM_PATH" ]'
+        echo '  set PATH "$FNM_PATH" $PATH'
+        echo '  fnm env | source'
+        echo 'end'
+      } | tee -a "$CONF_FILE"
+    else
+      {
+        echo ''
+        echo '# fnm'
+        echo 'fnm env | source'
+      } | tee -a "$CONF_FILE"
+    fi
 
   elif [ "$CURRENT_SHELL" = "bash" ]; then
     if [ "$OS" = "Darwin" ]; then
@@ -200,15 +217,23 @@ setup_shell() {
     fi
     ensure_containing_dir_exists "$CONF_FILE"
     echo "Installing for Bash. Appending the following to $CONF_FILE:"
-    {
-      echo ''
-      echo '# fnm'
-      echo 'FNM_PATH="'"$INSTALL_DIR"'"'
-      echo 'if [ -d "$FNM_PATH" ]; then'
-      echo '  export PATH="$FNM_PATH:$PATH"'
-      echo '  eval "`fnm env`"'
-      echo 'fi'
-    } | tee -a "$CONF_FILE"
+    if [ "$USE_HOMEBREW" = "false" ]; then
+      {
+        echo ''
+        echo '# fnm'
+        echo 'FNM_PATH="'"$INSTALL_DIR"'"'
+        echo 'if [ -d "$FNM_PATH" ]; then'
+        echo '  export PATH="$FNM_PATH:$PATH"'
+        echo '  eval "`fnm env`"'
+        echo 'fi'
+      } | tee -a "$CONF_FILE"
+    else
+      {
+        echo ''
+        echo '# fnm'
+        echo 'eval "`fnm env`"'
+      } | tee -a "$CONF_FILE"
+    fi
 
   else
     echo "Could not infer shell type. Please set up manually."
