@@ -45,7 +45,7 @@
     "ts-dedent": "^2.2.0",
     "ts-jest": "^29.2.6",
     "typescript": "^5.8.2",
-    "which": "^3.0.1",
+    "which": "^5.0.0",
     "zod": "^3.24.2"
   },
   "prettier": {
