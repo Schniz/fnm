@@ -28,7 +28,7 @@
     "@changesets/changelog-github": "0.5.0",
     "@changesets/cli": "2.28.1",
     "@types/jest": "^29.5.14",
-    "@types/node": "^18.19.80",
+    "@types/node": "^22.14.0",
     "@types/shell-escape": "^0.2.3",
     "chalk": "^5.4.1",
     "cmd-ts": "0.13.0",
