@@ -51,7 +51,13 @@ impl Display for LogLevel {
 macro_rules! outln {
     ($config:ident, $level:path, $($expr:expr),+) => {{
         use $crate::log_level::LogLevel::*;
-        writeln!($config.log_level().writer_for($level), $($expr),+).expect("Can't write output");
+        use std::io::ErrorKind;
+        let result = writeln!($config.log_level().writer_for($level), $($expr),+);
+        if let Err(e) = result {
+            if e.kind() != ErrorKind::BrokenPipe {
+                panic!("Failed to write output: {}", e);
+            }
+        }
     }}
 }
 
