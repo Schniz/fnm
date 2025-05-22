@@ -13,7 +13,7 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .then(
           shell.redirectOutput(shell.call("fnm", ["env", "--json"]), {
             output: filename,
-          })
+          }),
         )
         .takeSnapshot(shell)
         .execute(shell)
@@ -26,7 +26,7 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
           FNM_LOGLEVEL: "info",
           FNM_MULTISHELL_PATH: expect.any(String),
           FNM_NODE_DIST_MIRROR: expect.any(String),
-          FNM_RESOLVE_ENGINES: "false",
+          FNM_RESOLVE_ENGINES: "true",
           FNM_COREPACK_ENABLED: "false",
           FNM_VERSION_FILE_STRATEGY: "local",
         })

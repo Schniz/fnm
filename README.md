@@ -4,7 +4,7 @@
   <a href="https://github.com/Schniz/fnm/actions"><img src="https://img.shields.io/github/actions/workflow/status/Schniz/fnm/rust.yml?branch=master&label=workflow" alt="GitHub Actions workflow status" /></a>
 </h1>
 
-> :rocket: Fast and simple Node.js version manager, built in Rust
+> 🚀 Fast and simple Node.js version manager, built in Rust
 
 <div align="center">
   <img src="./docs/fnm.svg" alt="Blazing fast!">
@@ -12,13 +12,13 @@
 
 ## Features
 
-:earth_americas: Cross-platform support (macOS, Windows, Linux)
+🌎 Cross-platform support (macOS, Windows, Linux)
 
-:sparkles: Single file, easy installation, instant startup
+✨ Single file, easy installation, instant startup
 
-:rocket: Built with speed in mind
+🚀 Built with speed in mind
 
-:open_file_folder: Works with `.node-version` and `.nvmrc` files
+📂 Works with `.node-version` and `.nvmrc` files
 
 ## Installation
 
@@ -36,13 +36,17 @@ curl -fsSL https://fnm.vercel.app/install | bash
 
 On macOS, it is as simple as `brew upgrade fnm`.
 
-On other operating systems, upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file add `--skip-shell` to install command.
+On other operating systems, upgrading `fnm` is almost the same as installing it. To prevent duplication in your shell config file, pass `--skip-shell` to the install command:
+
+```sh
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+```
 
 #### Parameters
 
 `--install-dir`
 
-Set a custom directory for fnm to be installed. The default is `$HOME/.fnm`.
+Set a custom directory for fnm to be installed. The default is `$XDG_DATA_HOME/fnm` (if `$XDG_DATA_HOME` is not defined it falls back to `$HOME/.local/share/fnm` on linux and `$HOME/Library/Application Support/fnm` on MacOS).
 
 `--skip-shell`
 
@@ -129,7 +133,10 @@ Please follow your shell instructions to install them.
 
 Environment variables need to be setup before you can start using fnm.
 This is done by evaluating the output of `fnm env`.
-To automatically run `fnm use` when a directory contains a `.node-version` or `.nvmrc` file, add the `--use-on-cd` option to your shell setup.
+
+> [!NOTE]
+> Check out the [Configuration](./docs/configuration.md) section to enable highly
+> recommended features, like automatic version switching.
 
 Adding a `.node-version` to your project is as simple as:
 
@@ -146,7 +153,7 @@ Check out the following guides for the shell you use:
 Add the following to your `.bashrc` profile:
 
 ```bash
-eval "$(fnm env --use-on-cd)"
+eval "$(fnm env --use-on-cd --shell bash)"
 ```
 
 #### Zsh
@@ -154,15 +161,15 @@ eval "$(fnm env --use-on-cd)"
 Add the following to your `.zshrc` profile:
 
 ```zsh
-eval "$(fnm env --use-on-cd)"
+eval "$(fnm env --use-on-cd --shell zsh)"
 ```
 
 #### Fish shell
 
-Create `~/.config/fish/conf.d/fnm.fish` add this line to it:
+Create `~/.config/fish/conf.d/fnm.fish` and add this line to it:
 
 ```fish
-fnm env --use-on-cd | source
+fnm env --use-on-cd --shell fish | source
 ```
 
 #### PowerShell
@@ -170,23 +177,34 @@ fnm env --use-on-cd | source
 Add the following to the end of your profile file:
 
 ```powershell
-fnm env --use-on-cd | Out-String | Invoke-Expression
+fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
-- On Windows, PowerShell comes pre-installed, but there are two versions of it. [Read more about it here](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell). The profile is located at different places depending on which version you're using:
-  - Built in PowerShell (aka "Windows PowerShell"): `~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
-  - The newer, PowerShell >= 7, that's not built in: `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+- For Windows location is either:
+  - `%userprofile%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` Powershell 5
+  - `%userprofile%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` Powershell 6+
+- To create the profile file you can run this in PowerShell:
+  ```powershell
+  if (-not (Test-Path $profile)) { New-Item $profile -Force }
+  ```
+- To edit your profile run this in PowerShell:
+  ```powershell
+  Invoke-Item $profile
+  ```
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
-fnm is also supported but is not entirely covered. [You can set up a startup script](https://superuser.com/a/144348) and append the following line:
+fnm is also supported but is not entirely covered. You can set up a startup script for [cmd.exe]( https://superuser.com/a/144348) or [Windows Terminal](https://superuser.com/a/1855283) and append the following lines:
 
 ```batch
-FOR /f "tokens=*" %i IN ('fnm env --use-on-cd') DO CALL %i
+@echo off
+:: for /F will launch a new instance of cmd so we create a guard to prevent an infnite loop
+if not defined FNM_AUTORUN_GUARD (
+    set "FNM_AUTORUN_GUARD=AutorunGuard"
+    FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z
+)
 ```
-
-⚠️ If you get the error `i was unexpected at this time`, please make a .cmd file as suggested by the first step in the Usage with Cmder secton add it's path to the `AutoRun` registry key.
 
 #### Usage with Cmder
 
@@ -209,6 +227,10 @@ call "%CMDER_ROOT%\bin\fnm_init.cmd"
 ```
 
 You can replace `%CMDER_ROOT%` with any other convenient path too.
+
+## [Configuration](./docs/configuration.md)
+
+[See the available configuration options for an extended configuration documentation](./docs/configuration.md)
 
 ## [Usage](./docs/commands.md)
 

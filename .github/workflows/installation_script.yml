@@ -21,8 +21,8 @@ jobs:
     steps:
       - name: Set up QEMU
         id: qemu
-        uses: docker/setup-qemu-action@v2
-      - uses: actions/checkout@v3
+        uses: docker/setup-qemu-action@v3
+      - uses: actions/checkout@v4
       - name: Run installation script in Docker
         run: |
           docker run --rm -v $(pwd):$(pwd) -e "RUST_LOG=fnm=debug" --workdir $(pwd) ${{matrix.docker_image}} bash -c '
@@ -62,7 +62,7 @@ jobs:
             script_arguments: '--force-no-brew'
     runs-on: ${{ matrix.setup.os }}-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: "sudo apt-get install -y ${{ matrix.shell }}"
         name: Install ${{matrix.shell}} using apt-get
         if: matrix.setup.os == 'ubuntu'

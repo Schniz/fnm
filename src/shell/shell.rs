@@ -7,7 +7,7 @@ pub trait Shell: Debug {
     fn path(&self, path: &Path) -> anyhow::Result<String>;
     fn set_env_var(&self, name: &str, value: &str) -> String;
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String>;
-    fn rehash(&self) -> Option<String> {
+    fn rehash(&self) -> Option<&'static str> {
         None
     }
     fn to_clap_shell(&self) -> clap_complete::Shell;
@@ -18,6 +18,7 @@ pub enum Shells {
     Bash,
     Zsh,
     Fish,
+    #[clap(name = "powershell", alias = "power-shell")]
     PowerShell,
     #[cfg(windows)]
     Cmd,
@@ -26,12 +27,12 @@ pub enum Shells {
 impl Display for Shells {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Shells::Bash => write!(f, "bash"),
-            Shells::Zsh => write!(f, "zsh"),
-            Shells::Fish => write!(f, "fish"),
-            Shells::PowerShell => write!(f, "powershell"),
+            Shells::Bash => f.write_str("bash"),
+            Shells::Zsh => f.write_str("zsh"),
+            Shells::Fish => f.write_str("fish"),
+            Shells::PowerShell => f.write_str("powershell"),
             #[cfg(windows)]
-            Shells::Cmd => write!(f, "cmd"),
+            Shells::Cmd => f.write_str("cmd"),
         }
     }
 }
