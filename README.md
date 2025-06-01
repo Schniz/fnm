@@ -228,39 +228,127 @@ call "%CMDER_ROOT%\bin\fnm_init.cmd"
 
 You can replace `%CMDER_ROOT%` with any other convenient path too.
 
-#### Useage with Clink
+#### Usage with Clink
 
 By default Clink load *.lua under %LOCALAPPDATA%\clink when starting a new WinCMD instence so the startup script should written in lua. So this script will convert the CMD-style environment variable setting statement to lua-style. Write the following script into %LOCALAPPDATA%\clink\fnm.lua (or other path, depending on your clink configuration):
+<details open> <summary>fnm.lua</summary>
 
 ```lua
 if (clink.version_encoded or 0) < 10020030 then
 	error("fnm requires a newer version of Clink; please upgrade to Clink v1.2.30 or later.")
 end
 
-if( os.getenv(FNM_AUTORUN_GUARD) == nil )
-then
-	os.setenv('FNM_AUTORUN_GUARD', 'AutorunGuard')
-	local command_handle = io.popen('fnm env --use-on-cd', "r")
-	local command_result = command_handle:read("*a")
-	command_handle:close()
-	for line in command_result:gmatch("([^\r\n]+)") do
-		if line:sub(1,4) == "SET " or line:sub(1,4) == "set " then
-			local rest = line:sub(5)
-			local eq_pos = rest:find("=", 1, true)
-			if eq_pos then
-				local var = rest:sub(1, eq_pos - 1)
-				local value = rest:sub(eq_pos + 1)
-				if os.setenv then
-					os.setenv(var, value)
-				end
-			end
-		else if line:sub(1,7) == "DOSKEY " or line:sub(1,7) == "doskey " then
-				os.execute(line)
-			end
-		end
-	end
+-- ANSI escape codes for colors and styles
+local RED   = "\27[31m"
+local YELLOW = "\27[33m"
+local CYAN = "\27[36m"
+local RESET = "\27[0m"
+local BOLD  = "\27[1m"
+local ITAL  = "\27[3m"
+
+local function prompt_install()
+    local handle = io.popen("fnm use --silent-if-unchanged 2>&1")
+    local t = handle:read("*a")
+    handle:close()
+
+    if not t or t == "" then return end
+
+    -- Check for missing version error
+    local version = t:match("error: Requested version ([^%s]+) is not currently installed")
+    if version then
+        version = tostring(version)
+        io.write(
+            RED, "Can't find an installed Node version matching ", ITAL, version, RESET, ".\n"
+        )
+        io.write(
+            YELLOW, "Do you want to install it? ", BOLD, "answer", RESET, YELLOW, " [y/N]: ", RESET
+        )
+        local answer = io.read()
+        if answer and answer:lower() == "y" then
+            os.execute("fnm use --silent-if-unchanged --install-if-missing")
+        end
+        return
+    end
+
+    -- Success: output contains "Using Node v..."
+    local node_version = t:match("Using Node (v%d+%.%d+%.%d+)")
+    if node_version then
+        io.write("Using Node ", CYAN, node_version, RESET, "\n")
+        return
+    end
+
+    -- All other cases are errors
+    error("fnm use --silent-if-unchanged failed: " .. t)
 end
+
+local function parse_fnm_env()
+    local handle = io.popen('fnm env --use-on-cd 2>nul')
+    if not handle then return nil end
+    local out = handle:read("*a")
+    handle:close()
+
+    local env = {}
+    for line in out:gmatch("[^\r\n]+") do
+        -- Matches: set VAR=VALUE  (quotes rarely used, but handle if present)
+        local var, value = line:match("^[Ss][Ee][Tt]%s+([^=]+)=(.*)$")
+        if var and value then
+            value = value:gsub('^"(.*)"$', '%1') -- remove surrounding quotes if present
+            env[var:match("^%s*(.-)%s*$")] = value -- trim spaces from var
+        end
+    end
+    return env, out
+end
+
+local function check_and_use_fnm()
+    -- Check FNM_VERSION_FILE_STRATEGY environment variable
+    local fnm_strategy = os.getenv("FNM_VERSION_FILE_STRATEGY")
+    
+    -- -- Check if we should use recursive strategy
+    if fnm_strategy == "recursive" then
+        prompt_install()
+    else
+        -- Check for .nvmrc file
+        local nvmrc = io.open(".nvmrc", "r")
+        if nvmrc ~= nil then
+            io.close(nvmrc)
+            prompt_install()
+        else
+            -- Check for .node-version file
+            local node_version = io.open(".node-version", "r")
+            if node_version ~= nil then
+                io.close(node_version)
+                prompt_install()
+            end
+        end
+    end
+end
+
+local function setup_fnm()
+    local env, raw = parse_fnm_env()
+    if not env or not raw then return end
+
+    for var, value in pairs(env) do
+        os.setenv(var, value)
+    end
+
+    -- doskey replacement
+    clink.onbeginedit(check_and_use_fnm)
+
+    -- remove fnm symlinks on exit
+    clink.onendedit(function(line)
+        if line:match("^exit") then
+            local path = os.getenv("FNM_MULTISHELL_PATH")
+            if path then
+                os.rmdir(path)
+            end
+        end
+    end)
+end
+
+setup_fnm()
+
 ```
+</details>
 
 ## [Configuration](./docs/configuration.md)
 
