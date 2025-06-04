@@ -4,7 +4,7 @@ use crate::package_json::PackageJson;
 use crate::user_version::UserVersion;
 use crate::version_file_strategy::VersionFileStrategy;
 use encoding_rs_io::DecodeReaderBytes;
-use log::info;
+use log::{debug, info};
 use std::io::Read;
 use std::path::Path;
 use std::str::FromStr;
@@ -78,28 +78,64 @@ pub fn get_user_version_for_file(
         reader.read_to_string(&mut version).map(|_| version)
     };
 
-    match (file, is_pkg_json, config.resolve_engines()) {
-        (_, true, false) => None,
-        (Err(err), _, _) => {
+    match (
+        file,
+        is_pkg_json,
+        config.resolve_dev_engines(),
+        config.resolve_engines(),
+    ) {
+        (_, true, false, false) => None,
+        (Err(err), _, _, _) => {
             info!("Can't read file: {}", err);
             None
         }
-        (Ok(version), false, _) => {
+        (Ok(version), false, _, _) => {
             info!("Found string {:?} in version file", version);
             UserVersion::from_str(version.trim()).ok()
         }
-        (Ok(pkg_json), true, true) => {
-            let pkg_json = serde_json::from_str::<PackageJson>(&pkg_json).ok();
-            let range: Option<node_semver::Range> =
-                pkg_json.as_ref().and_then(PackageJson::node_range).cloned();
-
-            if let Some(range) = range {
-                info!("Found package.json with {:?} in engines.node field", range);
-                Some(UserVersion::SemverRange(range))
-            } else {
-                info!("No engines.node range found in package.json");
-                None
-            }
+        (Ok(pkg_json), true, resolve_dev_engines, resolve_engines) => {
+            get_version_from_package_json(&pkg_json, resolve_dev_engines, resolve_engines)
         }
     }
+}
+
+fn get_version_from_package_json(
+    pkg_json: &str,
+    resolve_dev_engines: bool,
+    resolve_engines: bool,
+) -> Option<UserVersion> {
+    if !resolve_dev_engines && !resolve_engines {
+        return None;
+    }
+
+    let pkg_json = match serde_json::from_str::<PackageJson>(pkg_json) {
+        Ok(parsed) => parsed,
+        Err(err) => {
+            debug!("Failed to parse package.json: {}", err);
+            return None;
+        }
+    };
+    let mut range: Option<node_semver::Range> = None;
+
+    if resolve_dev_engines {
+        range = pkg_json.dev_node_range().cloned();
+        if range.is_some() {
+            info!(
+                "Found package.json with Node version range {:?} in devEngines.runtime field",
+                range
+            );
+        } else {
+            info!("No Node version range found in package.json devEngines.runtime field");
+        }
+    }
+    if resolve_engines && range.is_none() {
+        range = pkg_json.node_range().cloned();
+        if range.is_some() {
+            info!("Found package.json with {:?} in engines.node field", range);
+        } else {
+            info!("No engines.node range found in package.json");
+        }
+    }
+
+    range.map(UserVersion::SemverRange)
 }
