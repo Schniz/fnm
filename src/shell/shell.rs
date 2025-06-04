@@ -18,7 +18,7 @@ pub enum Shells {
     Bash,
     Zsh,
     Fish,
-    #[clap(name = "powershell", alias = "power-shell")]
+    #[clap(name = "power-shell", alias = "powershell")]
     PowerShell,
     #[cfg(windows)]
     Cmd,
