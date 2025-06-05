@@ -5,7 +5,7 @@ use crate::user_version::UserVersion;
 
 #[derive(clap::Parser, Debug)]
 pub struct Default {
-    version: UserVersion,
+    pub version: UserVersion,
 }
 
 impl Command for Default {

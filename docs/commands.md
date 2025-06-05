@@ -294,6 +294,9 @@ Options:
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
 
+      --default
+          Set the installed version as the default version.
+
   -h, --help
           Print help (see a summary with '-h')
 ```
