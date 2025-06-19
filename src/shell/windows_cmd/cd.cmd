@@ -8,6 +8,10 @@ if "%FNM_VERSION_FILE_STRATEGY%" == "recursive" (
   ) else (
     if exist .node-version (
       fnm use --silent-if-unchanged
+    ) else (
+      if exist package.json (
+        fnm use --silent-if-unchanged
+      )
     )
   )
 )
