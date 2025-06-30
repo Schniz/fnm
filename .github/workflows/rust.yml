@@ -17,7 +17,7 @@ jobs:
   fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
@@ -28,7 +28,7 @@ jobs:
   clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
@@ -42,7 +42,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
@@ -54,7 +54,7 @@ jobs:
     runs-on: windows-latest
     name: "Release build for Windows"
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
@@ -72,7 +72,7 @@ jobs:
     runs-on: macos-latest
     name: "Release build for macOS"
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
           targets: x86_64-apple-darwin,aarch64-apple-darwin
@@ -245,7 +245,7 @@ jobs:
     name: "Build static Linux binary"
     runs-on: ubuntu-latest
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
           targets: x86_64-unknown-linux-musl
@@ -286,7 +286,7 @@ jobs:
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v3
-      - uses: hecrj/setup-rust-action@v1
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
