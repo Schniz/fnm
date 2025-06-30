@@ -57,7 +57,7 @@ mod lts_status {
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct IndexedNodeVersion {
     pub version: Version,
     #[serde(with = "lts_status")]

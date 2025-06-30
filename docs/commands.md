@@ -127,6 +127,9 @@ Options:
 
           [env: FNM_ARCH]
 
+      --latest-lts
+          Show the latest version of each LTS
+
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
 
