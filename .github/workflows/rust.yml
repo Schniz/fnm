@@ -77,16 +77,21 @@ jobs:
           rust-version: ${{env.RUST_VERSION}}
           targets: x86_64-apple-darwin,aarch64-apple-darwin
       - uses: Swatinem/rust-cache@v2
-      - uses: mlugg/setup-zig@v2
-        with:
-          version: 0.14.1
-      - run: cargo install --locked cargo-zigbuild
       - uses: actions/checkout@v4
       - name: Build release binary
         run: |
-          cargo zigbuild --release --target=universal2-apple-darwin
+          cargo build --release --target x86_64-apple-darwin
+          strip target/x86_64-apple-darwin/release/fnm
+          cargo build --release --target aarch64-apple-darwin
+          strip target/aarch64-apple-darwin/release/fnm
+
           mkdir -p target/release
-          cp target/universal2-apple-darwin/release/fnm target/release/fnm
+
+          # create a universal binary
+          lipo -create \
+            target/x86_64-apple-darwin/release/fnm \
+            target/aarch64-apple-darwin/release/fnm \
+            -output target/release/fnm
         env:
           LZMA_API_STATIC: "true"
       - name: Strip binary from debug symbols
