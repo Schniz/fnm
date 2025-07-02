@@ -87,6 +87,10 @@ impl Command for Env {
                 "FNM_COREPACK_ENABLED",
                 bool_as_str(config.corepack_enabled()),
             ),
+            (
+                "FNM_RESOLVE_DEV_ENGINES",
+                bool_as_str(config.resolve_dev_engines()),
+            ),
             ("FNM_RESOLVE_ENGINES", bool_as_str(config.resolve_engines())),
             ("FNM_ARCH", config.arch.as_str()),
         ];
