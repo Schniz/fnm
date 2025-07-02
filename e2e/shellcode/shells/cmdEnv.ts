@@ -7,6 +7,7 @@ type EnvConfig = {
   corepackEnabled: boolean
   resolveEngines: boolean
   nodeDistMirror: string
+  silent: boolean
 }
 export type HasEnv = { env(cfg: Partial<EnvConfig>): ScriptLine }
 
@@ -18,6 +19,7 @@ function stringify(envConfig: Partial<EnvConfig> = {}) {
     resolveEngines,
     executableName = "fnm",
     nodeDistMirror,
+    silent,
   } = envConfig
   return [
     `${executableName} env`,
@@ -26,6 +28,7 @@ function stringify(envConfig: Partial<EnvConfig> = {}) {
     corepackEnabled && "--corepack-enabled",
     resolveEngines && `--resolve-engines`,
     nodeDistMirror && `--node-dist-mirror=${JSON.stringify(nodeDistMirror)}`,
+    silent && "--silent",
   ]
     .filter(Boolean)
     .join(" ")
