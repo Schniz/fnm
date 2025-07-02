@@ -61,7 +61,7 @@ impl super::command::Command for LsRemote {
                         .is_some_and(|v_lts| v_lts.eq_ignore_ascii_case(codename))
                 }),
                 None => all_versions.retain(|v| v.lts.is_some()),
-            };
+            }
         }
 
         if let Some(filter) = &self.filter {
