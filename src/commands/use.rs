@@ -107,7 +107,7 @@ impl Command for Use {
             })?;
         }
 
-        replace_symlink(&version_path, multishell_path)
+        crate::fs::two_phase_symlink(&version_path, multishell_path)
             .map_err(|source| Error::SymlinkingCreationIssue { source })?;
 
         Ok(())
@@ -148,20 +148,6 @@ fn install_new_version(
     .apply(config)?;
 
     Ok(())
-}
-
-/// Tries to delete `from`, and then tries to symlink `from` to `to` anyway.
-/// If the symlinking fails, it will return the errors in the following order:
-/// * The deletion error (if exists)
-/// * The creation error
-///
-/// This way, we can create a symlink if it is missing.
-fn replace_symlink(from: &std::path::Path, to: &std::path::Path) -> std::io::Result<()> {
-    let symlink_deletion_result = fs::remove_symlink_dir(to);
-    match fs::symlink_dir(from, to) {
-        ok @ Ok(()) => ok,
-        err @ Err(_) => symlink_deletion_result.and(err),
-    }
 }
 
 fn should_install_interactively(requested_version: &UserVersion) -> bool {
@@ -221,7 +207,9 @@ fn warn_if_multishell_path_not_in_path_env_var(
 #[derive(Debug, Error)]
 pub enum Error {
     #[error("Can't create the symlink: {}", source)]
-    SymlinkingCreationIssue { source: std::io::Error },
+    SymlinkingCreationIssue {
+        source: crate::fs::TwoPhaseSymlinkError,
+    },
     #[error(transparent)]
     InstallError { source: <Install as Command>::Error },
     #[error("Can't get locally installed versions: {}", source)]
