@@ -149,7 +149,7 @@ impl Command for Install {
             }
             Err(source) => Err(Error::DownloadError { source })?,
             Ok(()) => {}
-        };
+        }
 
         if !config.default_version_dir().exists() {
             debug!("Tagging {} as the default version", version.v_str().cyan());
