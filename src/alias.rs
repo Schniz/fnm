@@ -30,6 +30,11 @@ pub fn list_aliases(config: &FnmConfig) -> std::io::Result<Vec<StoredAlias>> {
     Ok(vec)
 }
 
+pub fn get_alias_by_name(config: &FnmConfig, alias_name: &str) -> Option<StoredAlias> {
+    let alias_path = config.aliases_dir().join(alias_name);
+    TryInto::<StoredAlias>::try_into(alias_path.as_path()).ok()
+}
+
 #[derive(Debug)]
 pub struct StoredAlias {
     alias_path: PathBuf,
