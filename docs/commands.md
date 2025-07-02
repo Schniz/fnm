@@ -255,6 +255,9 @@ Options:
           [default: auto]
           [possible values: auto, never, always]
 
+      --default
+          Set the installed version as the default version
+
       --log-level <LOG_LEVEL>
           The log level of fnm commands
 
@@ -293,9 +296,6 @@ Options:
 
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
-
-      --default
-          Set the installed version as the default version.
 
   -h, --help
           Print help (see a summary with '-h')
@@ -394,7 +394,7 @@ Options:
       --shell <SHELL>
           The shell syntax to use. Infers when missing
 
-          [possible values: bash, zsh, fish, powershell]
+          [possible values: bash, zsh, fish, powershell, cmd]
 
       --fnm-dir <BASE_DIR>
           The root directory of fnm installations
@@ -467,7 +467,7 @@ Options:
       --shell <SHELL>
           The shell syntax to use. Infers when missing
 
-          [possible values: bash, zsh, fish, powershell]
+          [possible values: bash, zsh, fish, powershell, cmd]
 
       --fnm-dir <BASE_DIR>
           The root directory of fnm installations
