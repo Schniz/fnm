@@ -13,6 +13,9 @@ export const cmdInSubShell = {
   fish: define<HasInSubShell>({
     inSubShell: (script) => `fish -c ${quote([script])}`,
   }),
+  elvish: define<HasInSubShell>({
+    inSubShell: (script) => `elvish -c ${quote([script])}`
+  }),
   powershell: define<HasInSubShell>({
     inSubShell: (script) =>
       `echo '${script.replace(/'/g, "\\'")}' | pwsh -NoProfile`,
