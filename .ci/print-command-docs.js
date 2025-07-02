@@ -4,19 +4,21 @@
 
 import { execa } from "execa"
 import fs from "node:fs"
+import path from "node:path"
 import cmd from "cmd-ts"
 import cmdFs from "cmd-ts/dist/cjs/batteries/fs.js"
 
 const FnmBinaryPath = {
   ...cmdFs.ExistingPath,
   defaultValue() {
-    const target = new URL("../target/debug/fnm", import.meta.url)
+    const executable = process.platform === "win32" ? "fnm.exe" : "fnm"
+    const target = path.resolve(`target/debug/${executable}`)
     if (!fs.existsSync(target)) {
       throw new Error(
         "Can't find debug target, please run `cargo build` or provide a specific binary path"
       )
     }
-    return target.pathname
+    return target
   },
 }
 
@@ -35,7 +37,7 @@ const command = cmd.command({
     }),
   },
   async handler({ checkForDirty, fnmPath }) {
-    const targetFile = new URL("../docs/commands.md", import.meta.url).pathname
+    const targetFile = path.resolve("docs/commands.md")
     await main(targetFile, fnmPath)
     if (checkForDirty) {
       const gitStatus = await checkGitStatus(targetFile)
