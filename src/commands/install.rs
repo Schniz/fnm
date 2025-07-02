@@ -163,17 +163,7 @@ impl Command for Install {
         }
 
         if set_default {
-            outln!(
-                config,
-                Info,
-                "Setting {} as the default version",
-                version.v_str().cyan()
-            );
-            Default {
-                version: UserVersion::Full(version.clone()),
-            }
-            .apply(config)
-            .map_err(|source| Error::DefaultError { source })?;
+            set_as_default_version(config, &version)?;
         }
 
         if let Some(tagged_alias) = current_version.inferred_alias() {
@@ -187,6 +177,21 @@ impl Command for Install {
 
         Ok(())
     }
+}
+
+fn set_as_default_version(config: &FnmConfig, version: &Version) -> Result<(), Error> {
+    outln!(
+        config,
+        Info,
+        "Setting {} as the default version",
+        version.v_str().cyan()
+    );
+    Default {
+        version: UserVersion::Full(version.clone()),
+    }
+    .apply(config)
+    .map_err(|source| Error::DefaultError { source })?;
+    Ok(())
 }
 
 fn tag_alias(config: &FnmConfig, matched_version: &Version, alias: &Version) -> Result<(), Error> {
