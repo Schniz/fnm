@@ -1,5 +1,11 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.38.2
+
+### Patch Changes
+
+- [#1441](https://github.com/Schniz/fnm/pull/1441) [`bc4d19a`](https://github.com/Schniz/fnm/commit/bc4d19a481c11b4182f51683f03a8d366f1208d2) Thanks [@Schniz](https://github.com/Schniz)! - bump Rust toolchain to 1.88
+
 ## 1.38.1
 
 ### Patch Changes
