@@ -153,7 +153,7 @@ Check out the following guides for the shell you use:
 Add the following to your `.bashrc` profile:
 
 ```bash
-eval "$(fnm env --use-on-cd --shell bash)"
+eval "$(fnm env --use-on-cd --version-file-strategy recursive --shell bash)"
 ```
 
 #### Zsh
@@ -161,7 +161,7 @@ eval "$(fnm env --use-on-cd --shell bash)"
 Add the following to your `.zshrc` profile:
 
 ```zsh
-eval "$(fnm env --use-on-cd --shell zsh)"
+eval "$(fnm env --use-on-cd --version-file-strategy recursive --shell zsh)"
 ```
 
 #### Fish shell
@@ -169,7 +169,7 @@ eval "$(fnm env --use-on-cd --shell zsh)"
 Create `~/.config/fish/conf.d/fnm.fish` and add this line to it:
 
 ```fish
-fnm env --use-on-cd --shell fish | source
+fnm env --use-on-cd --version-file-strategy recursive --shell fish | source
 ```
 
 #### PowerShell
@@ -177,7 +177,7 @@ fnm env --use-on-cd --shell fish | source
 Add the following to the end of your profile file:
 
 ```powershell
-fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
+fnm env --use-on-cd --version-file-strategy recursive --shell powershell | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
@@ -202,7 +202,7 @@ fnm is also supported but is not entirely covered. You can set up a startup scri
 :: for /F will launch a new instance of cmd so we create a guard to prevent an infnite loop
 if not defined FNM_AUTORUN_GUARD (
     set "FNM_AUTORUN_GUARD=AutorunGuard"
-    FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z
+    FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd --version-file-strategy recursive') DO CALL %%z
 )
 ```
 
@@ -216,7 +216,7 @@ Then you can do something like this:
 ```batch
 :: %CMDER_ROOT%\bin\fnm_init.cmd
 @echo off
-FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z
+FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd --version-file-strategy recursive') DO CALL %%z
 ```
 
 - Add it to the startup script
