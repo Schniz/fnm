@@ -255,6 +255,9 @@ Options:
           [default: auto]
           [possible values: auto, never, always]
 
+      --default
+          Set the installed version as the default version
+
       --log-level <LOG_LEVEL>
           The log level of fnm commands
 
