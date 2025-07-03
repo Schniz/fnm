@@ -126,6 +126,7 @@ Where `<SHELL>` can be one of the supported shells:
 - `zsh`
 - `fish`
 - `powershell`
+- `nushell`
 
 Please follow your shell instructions to install them.
 
@@ -192,6 +193,14 @@ fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
   ```powershell
   Invoke-Item $profile
   ```
+
+  #### Nushell
+
+Add the following to your config.nu:
+
+```nushell
+fnm env | save -f ($nu.data-dir | path join "vendor/autoload/fnm.nu")
+```
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
