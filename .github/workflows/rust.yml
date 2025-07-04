@@ -117,7 +117,7 @@ jobs:
           path: target/release
       - name: mark binary as executable
         run: chmod +x target/release/fnm
-      - uses: pnpm/action-setup@v4.0.0
+      - uses: pnpm/action-setup@v4.1.0
         with:
           run_install: false
       - uses: actions/setup-node@v4
@@ -152,7 +152,7 @@ jobs:
           name: fnm-windows
           path: target/release
       - uses: MinoruSekine/setup-scoop@v4
-      - uses: pnpm/action-setup@v4.0.0
+      - uses: pnpm/action-setup@v4.1.0
         with:
           run_install: false
       - uses: actions/setup-node@v4
@@ -224,7 +224,7 @@ jobs:
           path: target/release
       - name: mark binary as executable
         run: chmod +x target/release/fnm
-      - uses: pnpm/action-setup@v4.0.0
+      - uses: pnpm/action-setup@v4.1.0
         with:
           run_install: false
       - uses: actions/setup-node@v4
@@ -352,7 +352,7 @@ jobs:
         run: |
           sudo install target/release/fnm /bin
           fnm --version
-      - uses: pnpm/action-setup@v4.0.0
+      - uses: pnpm/action-setup@v4.1.0
         with:
           run_install: false
       - uses: actions/setup-node@v4
