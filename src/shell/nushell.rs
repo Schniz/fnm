@@ -48,7 +48,7 @@ impl Shell for Nushell {
                     | upsert hooks.env_change.PWD {{ default [] }}
                   )
                   $env.config.hooks.env_change.PWD = ($env.config.hooks.env_change.PWD | append {{
-                    __fmt_hook: {{|_, after| {autoload_hook}}},
+                    condition: {{|_, after| {autoload_hook}}},
                     code: {{|_, _| fnm use --silent-if-unchanged}}
                   }})
             ",
