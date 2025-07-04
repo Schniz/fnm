@@ -51,7 +51,4 @@ impl Shell for PowerShell {
             autoload_hook = autoload_hook
         ))
     }
-    fn to_clap_shell(&self) -> clap_complete::Shell {
-        clap_complete::Shell::PowerShell
-    }
 }

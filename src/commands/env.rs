@@ -10,19 +10,19 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 use thiserror::Error;
 
-#[derive(clap::Parser, Debug, Default)]
+#[derive(clap::Args, Debug, Default)]
 pub struct Env {
     /// The shell syntax to use. Infers when missing.
-    #[clap(long)]
+    #[arg(long)]
     shell: Option<Shells>,
     /// Print JSON instead of shell commands.
-    #[clap(long, conflicts_with = "shell")]
+    #[arg(long, conflicts_with = "shell")]
     json: bool,
     /// Deprecated. This is the default now.
-    #[clap(long, hide = true)]
+    #[arg(long, hide = true)]
     multi: bool,
     /// Print the script to change Node versions every directory change
-    #[clap(long)]
+    #[arg(long)]
     use_on_cd: bool,
 }
 
@@ -101,9 +101,9 @@ impl Command for Env {
 
         let shell: Box<dyn Shell> = self
             .shell
-            .map(Into::into)
             .or_else(infer_shell)
-            .ok_or(Error::CantInferShell)?;
+            .ok_or(Error::CantInferShell)
+            .map(Into::into)?;
 
         let binary_path = if cfg!(windows) {
             shell.path(&multishell_path)

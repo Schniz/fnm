@@ -6,7 +6,7 @@ use colored::Colorize;
 use std::collections::HashMap;
 use thiserror::Error;
 
-#[derive(clap::Parser, Debug)]
+#[derive(clap::Args, Debug)]
 pub struct LsLocal {}
 
 impl super::command::Command for LsLocal {

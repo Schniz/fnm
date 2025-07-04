@@ -5,7 +5,7 @@ use crate::user_version::UserVersion;
 use colored::Colorize;
 use thiserror::Error;
 
-#[derive(clap::Parser, Debug)]
+#[derive(clap::Args, Debug)]
 pub struct LsRemote {
     /// Filter versions by a user-defined version or a semver range
     #[arg(long)]

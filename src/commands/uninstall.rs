@@ -10,7 +10,7 @@ use colored::Colorize;
 use log::debug;
 use thiserror::Error;
 
-#[derive(clap::Parser, Debug)]
+#[derive(clap::Args, Debug)]
 pub struct Uninstall {
     version: Option<UserVersion>,
 }

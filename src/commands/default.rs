@@ -3,7 +3,7 @@ use super::command::Command;
 use crate::config::FnmConfig;
 use crate::user_version::UserVersion;
 
-#[derive(clap::Parser, Debug)]
+#[derive(clap::Args, Debug)]
 pub struct Default {
     version: UserVersion,
 }

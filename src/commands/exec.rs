@@ -10,14 +10,14 @@ use colored::Colorize;
 use std::process::{Command, Stdio};
 use thiserror::Error;
 
-#[derive(Debug, clap::Parser)]
+#[derive(Debug, clap::Args)]
 #[clap(trailing_var_arg = true)]
 pub struct Exec {
     /// Either an explicit version, or a filename with the version written in it
-    #[clap(long = "using")]
+    #[arg(long = "using")]
     version: Option<UserVersionReader>,
     /// Deprecated. This is the default now.
-    #[clap(long = "using-file", hide = true)]
+    #[arg(long = "using-file", hide = true)]
     using_file: bool,
     /// The command to run
     arguments: Vec<String>,

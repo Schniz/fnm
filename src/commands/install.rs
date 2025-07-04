@@ -14,22 +14,22 @@ use colored::Colorize;
 use log::debug;
 use thiserror::Error;
 
-#[derive(clap::Parser, Debug, Default)]
+#[derive(clap::Args, Debug, Default)]
 pub struct Install {
     /// A version string. Can be a partial semver or a LTS version name by the format lts/NAME
     pub version: Option<UserVersion>,
 
     /// Install latest LTS
-    #[clap(long, conflicts_with_all = &["version", "latest"])]
+    #[arg(long, conflicts_with_all = &["version", "latest"])]
     pub lts: bool,
 
     /// Install latest version
-    #[clap(long, conflicts_with_all = &["version", "lts"])]
+    #[arg(long, conflicts_with_all = &["version", "lts"])]
     pub latest: bool,
 
     /// Show an interactive progress bar for the download
     /// status.
-    #[clap(long, default_value_t)]
+    #[arg(long, default_value_t)]
     #[arg(value_enum)]
     pub progress: ProgressConfig,
 }

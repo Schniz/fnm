@@ -7,7 +7,7 @@ use crate::config::FnmConfig;
 use crate::user_version::UserVersion;
 use thiserror::Error;
 
-#[derive(clap::Parser, Debug)]
+#[derive(clap::Args, Debug)]
 pub struct Alias {
     pub(crate) to_version: UserVersion,
     pub(crate) name: String,
