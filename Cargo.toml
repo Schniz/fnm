@@ -16,7 +16,7 @@ chrono = { version = "0.4.38", features = ["serde", "now"], default-features = f
 tar = "0.4.40"
 xz2 = "0.1.7"
 node-semver = "2.1.0"
-etcetera = "0.8.0"
+etcetera = "0.10.0"
 colored = "2.1.0"
 zip = "2.1.0"
 tempfile = "3.10.1"
@@ -26,11 +26,11 @@ env_logger = "0.11.3"
 encoding_rs_io = "0.1.7"
 reqwest = { version = "0.12.4", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
 url = "2.5.0"
-sysinfo = "0.30.12"
+sysinfo = "0.36.0"
 thiserror = "1.0.61"
 clap_complete = "4.5.2"
 anyhow = "1.0.86"
-indicatif = { version = "0.17.8", features = ["improved_unicode"] }
+indicatif = { version = "0.18.0", features = ["improved_unicode"] }
 flate2 = "1.0.30"
 miette = { version = "7.2.0", features = ["fancy"] }
 
