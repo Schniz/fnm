@@ -54,8 +54,6 @@ Runs [`corepack enable`](https://nodejs.org/api/corepack.html#enabling-the-featu
 
 ### `--resolve-engines`
 
-**🧪 Experimental**
-
 Treats `package.json#engines#node` as a valid Node.js version file ("dotfile"). So, if you have a package.json with the following content:
 
 ```json
