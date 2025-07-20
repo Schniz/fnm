@@ -262,6 +262,9 @@ Options:
           [default: info]
           [possible values: quiet, error, info]
 
+      --use
+          Use the installed version immediately after installation
+
       --arch <ARCH>
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 

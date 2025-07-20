@@ -16,15 +16,15 @@ use thiserror::Error;
 
 #[derive(clap::Parser, Debug)]
 pub struct Use {
-    version: Option<UserVersionReader>,
+    pub version: Option<UserVersionReader>,
     /// Install the version if it isn't installed yet
     #[clap(long)]
-    install_if_missing: bool,
+    pub install_if_missing: bool,
 
     /// Don't output a message identifying the version being used
     /// if it will not change due to execution of this command
     #[clap(long)]
-    silent_if_unchanged: bool,
+    pub silent_if_unchanged: bool,
 }
 
 impl Command for Use {
