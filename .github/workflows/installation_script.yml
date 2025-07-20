@@ -1,5 +1,6 @@
 name: Installation script
-on: 
+on:
+  workflow_dispatch:
   pull_request:
     paths:
       - .ci/install.sh
