@@ -8,6 +8,7 @@ use clap::ValueEnum;
 use colored::Colorize;
 use std::collections::HashMap;
 use std::fmt::Debug;
+use std::path::PathBuf;
 use thiserror::Error;
 
 #[derive(clap::Parser, Debug, Default)]
@@ -34,7 +35,7 @@ fn generate_symlink_path() -> String {
     )
 }
 
-fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
+fn make_symlink(config: &FnmConfig) -> Result<PathBuf, Error> {
     let base_dir = config.multishell_storage().ensure_exists_silently();
     let mut temp_dir = base_dir.join(generate_symlink_path());
 
@@ -71,8 +72,20 @@ impl Command for Env {
             );
         }
 
-        let multishell_path = make_symlink(config)?;
+        // Look for fnm_multishell in $PATH
+        let path_env = std::env::var_os("PATH").ok_or(Error::CantReadPathVariable)?;
+        let multishell_loaded =
+            std::env::split_paths(&path_env).find(|p| p.starts_with(config.multishell_storage()));
+
         let base_dir = config.base_dir_with_default();
+        let multishell_path = match &multishell_loaded {
+            Some(p) => {
+                let path_str = p.to_str().unwrap();
+                let path_str = path_str.strip_suffix("/bin").unwrap_or(path_str);
+                PathBuf::from(path_str)
+            },
+            None => make_symlink(config)?,
+        };
 
         let env_vars = [
             ("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap()),
@@ -111,7 +124,9 @@ impl Command for Env {
             shell.path(&multishell_path.join("bin"))
         };
 
-        println!("{}", binary_path?);
+        if multishell_loaded.is_none() {
+            println!("{}", binary_path?);
+        }
 
         for (name, value) in &env_vars {
             println!("{}", shell.set_env_var(name, value));
@@ -142,8 +157,10 @@ pub enum Error {
     CantCreateSymlink {
         #[source]
         source: std::io::Error,
-        temp_dir: std::path::PathBuf,
+        temp_dir: PathBuf,
     },
+    #[error("Can't read path environment variable")]
+    CantReadPathVariable,
     #[error(transparent)]
     ShellError {
         #[from]
