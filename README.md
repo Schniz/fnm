@@ -179,7 +179,7 @@ fnm env --use-on-cd --shell fish | source
 Add the following to the end of your profile file:
 
 ```powershell
-fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
+fnm env --use-on-cd --shell power-shell | Out-String | Invoke-Expression
 ```
 
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
