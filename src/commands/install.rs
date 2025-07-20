@@ -1,4 +1,5 @@
 use super::command::Command;
+use super::default::Default;
 use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
@@ -32,6 +33,10 @@ pub struct Install {
     #[clap(long, default_value_t)]
     #[arg(value_enum)]
     pub progress: ProgressConfig,
+
+    /// Set the installed version as the default version
+    #[clap(long)]
+    pub default: bool,
 }
 
 impl Install {
@@ -66,6 +71,7 @@ impl Command for Install {
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
         let current_dir = std::env::current_dir().unwrap();
         let show_progress = self.progress.enabled(config);
+        let set_default = self.default;
 
         let current_version = self
             .version()?
@@ -156,6 +162,10 @@ impl Command for Install {
             create_alias(config, "default", &version)?;
         }
 
+        if set_default {
+            set_as_default_version(config, &version)?;
+        }
+
         if let Some(tagged_alias) = current_version.inferred_alias() {
             tag_alias(config, &version, &tagged_alias)?;
         }
@@ -167,6 +177,21 @@ impl Command for Install {
 
         Ok(())
     }
+}
+
+fn set_as_default_version(config: &FnmConfig, version: &Version) -> Result<(), Error> {
+    outln!(
+        config,
+        Info,
+        "Setting {} as the default version",
+        version.v_str().cyan()
+    );
+    Default {
+        version: UserVersion::Full(version.clone()),
+    }
+    .apply(config)
+    .map_err(|source| Error::DefaultError { source })?;
+    Ok(())
 }
 
 fn tag_alias(config: &FnmConfig, matched_version: &Version, alias: &Version) -> Result<(), Error> {
@@ -208,6 +233,8 @@ pub enum Error {
         #[from]
         source: super::exec::Error,
     },
+    #[error(transparent)]
+    DefaultError { source: <Default as Command>::Error },
     #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,
     #[error(transparent)]
@@ -244,6 +271,7 @@ mod tests {
             lts: false,
             latest: false,
             progress: ProgressConfig::Never,
+            default: false,
         }
         .apply(&config)
         .expect("Can't install");
@@ -270,6 +298,7 @@ mod tests {
             lts: false,
             latest: true,
             progress: ProgressConfig::Never,
+            default: false,
         }
         .apply(&config)
         .expect("Can't install");
