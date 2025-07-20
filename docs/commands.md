@@ -8,6 +8,7 @@ Usage: fnm [OPTIONS] <COMMAND>
 Commands:
   list-remote  List all remote Node.js versions [aliases: ls-remote]
   list         List all locally installed Node.js versions [aliases: ls]
+  info         Print information about the current, lts and latest Node.js versions
   install      Install a new Node.js version [aliases: i]
   use          Change Node.js version
   env          Print and set up required environment variables for fnm
@@ -213,6 +214,86 @@ Options:
                   In the future, disabling it might be a no-op, so it's worth knowing any reason to
                   do that.
 
+          [env: FNM_RESOLVE_ENGINES]
+          [possible values: true, false]
+
+  -h, --help
+          Print help (see a summary with '-h')
+```
+
+# `fnm info`
+
+```
+Print information about the current, lts and latest Node.js versions
+
+Usage: fnm info [OPTIONS]
+
+Options:
+      --filter <FILTER>
+          Filter versions by a user-defined version or a semver range
+
+      --node-dist-mirror <NODE_DIST_MIRROR>
+          <https://nodejs.org/dist/> mirror
+          
+          [env: FNM_NODE_DIST_MIRROR]
+          [default: https://nodejs.org/dist]
+
+      --fnm-dir <BASE_DIR>
+          The root directory of fnm installations
+          
+          [env: FNM_DIR]
+
+      --lts [<LTS>]
+          Show only LTS versions (optionally filter by LTS codename)
+
+      --sort <SORT>
+          Version sorting order
+          
+          [default: asc]
+
+          Possible values:
+          - desc: Sort versions in descending order (latest to earliest)
+          - asc:  Sort versions in ascending order (earliest to latest)
+
+      --latest
+          Only show the latest matching version
+
+      --log-level <LOG_LEVEL>
+          The log level of fnm commands
+          
+          [env: FNM_LOGLEVEL]
+          [default: info]
+          [possible values: quiet, error, info]
+
+      --arch <ARCH>
+          Override the architecture of the installed Node binary. Defaults to arch of fnm binary
+          
+          [env: FNM_ARCH]
+
+      --version-file-strategy <VERSION_FILE_STRATEGY>
+          A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
+          
+          [env: FNM_VERSION_FILE_STRATEGY]
+          [default: local]
+
+          Possible values:
+          - local:     Use the local version of Node defined within the current directory
+          - recursive: Use the version of Node defined within the current directory and all parent directories
+
+      --corepack-enabled
+          Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
+          
+          [env: FNM_COREPACK_ENABLED]
+
+      --resolve-engines [<RESOLVE_ENGINES>]
+          Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
+          
+          Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: If you disable it, please open an issue on GitHub describing _why_ you disabled it.
+                  In the future, disabling it might be a no-op, so it's worth knowing any reason to
+                  do that.
+          
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
 

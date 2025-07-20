@@ -13,6 +13,10 @@ pub enum SubCommand {
     #[clap(name = "list", bin_name = "list", visible_aliases = &["ls"])]
     LsLocal(commands::ls_local::LsLocal),
 
+    /// Print information about the current, lts and latest Node.js versions
+    #[clap(name = "info", bin_name = "info")]
+    Info(commands::info::Info),
+
     /// Install a new Node.js version
     #[clap(name = "install", bin_name = "install", visible_aliases = &["i"])]
     Install(commands::install::Install),
@@ -76,6 +80,7 @@ impl SubCommand {
         match self {
             Self::LsLocal(cmd) => cmd.call(config),
             Self::LsRemote(cmd) => cmd.call(config),
+            Self::Info(cmd) => cmd.call(config),
             Self::Install(cmd) => cmd.call(config),
             Self::Env(cmd) => cmd.call(config),
             Self::Use(cmd) => cmd.call(config),
