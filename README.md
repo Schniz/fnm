@@ -171,7 +171,7 @@ eval "$(fnm env --use-on-cd --shell zsh)"
 Create `~/.config/fish/conf.d/fnm.fish` and add this line to it:
 
 ```fish
-fnm env --use-on-cd --shell fish | source
+status is-interactive && fnm env --use-on-cd --shell fish | source
 ```
 
 #### PowerShell
