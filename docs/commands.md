@@ -59,6 +59,16 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
+
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
           This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
@@ -142,6 +152,16 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
+
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
           This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
@@ -203,6 +223,16 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
 
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
@@ -285,6 +315,16 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
+
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
           This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
@@ -356,6 +396,16 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
 
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
@@ -434,6 +484,16 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
+
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
           This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
@@ -500,6 +560,16 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
 
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
@@ -570,6 +640,16 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
+
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
           This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
@@ -635,6 +715,16 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
 
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
@@ -704,6 +794,16 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
+
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
           This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
@@ -765,6 +865,16 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
 
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
@@ -840,6 +950,16 @@ Options:
 
           [env: FNM_COREPACK_ENABLED]
 
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
+
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
           This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
@@ -907,6 +1027,16 @@ Options:
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
           [env: FNM_COREPACK_ENABLED]
+
+      --resolve-dev-engines [<RESOLVE_DEV_ENGINES>]
+          Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+          This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+
+          Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+          Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+
+          [env: FNM_RESOLVE_DEV_ENGINES]
+          [possible values: true, false]
 
       --resolve-engines [<RESOLVE_ENGINES>]
           Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
