@@ -5,11 +5,6 @@ use std::path::Path;
 pub struct WindowsCmd;
 
 impl Shell for WindowsCmd {
-    fn to_clap_shell(&self) -> clap_complete::Shell {
-        // TODO: move to Option
-        panic!("Shell completion is not supported for Windows Command Prompt. Maybe try using PowerShell for a better experience?");
-    }
-
     fn path(&self, path: &Path) -> anyhow::Result<String> {
         let current_path =
             std::env::var_os("path").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;

@@ -14,16 +14,16 @@ use colored::Colorize;
 use std::path::Path;
 use thiserror::Error;
 
-#[derive(clap::Parser, Debug)]
+#[derive(clap::Args, Debug)]
 pub struct Use {
     version: Option<UserVersionReader>,
     /// Install the version if it isn't installed yet
-    #[clap(long)]
+    #[arg(long)]
     install_if_missing: bool,
 
     /// Don't output a message identifying the version being used
     /// if it will not change due to execution of this command
-    #[clap(long)]
+    #[arg(long)]
     silent_if_unchanged: bool,
 }
 
