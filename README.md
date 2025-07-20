@@ -207,6 +207,7 @@ if not defined FNM_AUTORUN_GUARD (
     FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z
 )
 ```
+  > MSBuild Targets that require node to be available via WinCMD will fail as MSBuild blocks loading AutoRun entries from the Registry. Set `MSBUILDUSERAUTORUNINCMD=1` in your user account's environment variables to override this.
 
 #### Usage with Cmder
 
