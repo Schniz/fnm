@@ -149,7 +149,7 @@ impl Command for Install {
             }
             Err(source) => Err(Error::DownloadError { source })?,
             Ok(()) => {}
-        };
+        }
 
         if !config.default_version_dir().exists() {
             debug!("Tagging {} as the default version", version.v_str().cyan());
@@ -210,8 +210,8 @@ pub enum Error {
     },
     #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
     CantInferVersion,
-    #[error("Having a hard time listing the remote versions: {}", source)]
-    CantListRemoteVersions { source: crate::http::Error },
+    #[error(transparent)]
+    CantListRemoteVersions { source: remote_node_index::Error },
     #[error(
         "Can't find a Node version that matches {} in remote",
         requested_version

@@ -13,7 +13,10 @@ pub struct LsRemote {
 
     /// Show only LTS versions (optionally filter by LTS codename)  
     #[arg(long)]
-    #[allow(clippy::option_option)]
+    #[expect(
+        clippy::option_option,
+        reason = "clap Option<Option<T>> supports --x and --x=value syntaxes"
+    )]
     lts: Option<Option<String>>,
 
     /// Version sorting order
@@ -58,7 +61,7 @@ impl super::command::Command for LsRemote {
                         .is_some_and(|v_lts| v_lts.eq_ignore_ascii_case(codename))
                 }),
                 None => all_versions.retain(|v| v.lts.is_some()),
-            };
+            }
         }
 
         if let Some(filter) = &self.filter {
@@ -93,9 +96,9 @@ impl super::command::Command for LsRemote {
 #[derive(Debug, Error)]
 pub enum Error {
     #[error(transparent)]
-    HttpError {
+    RemoteListing {
         #[from]
-        source: crate::http::Error,
+        source: remote_node_index::Error,
     },
 }
 

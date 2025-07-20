@@ -32,7 +32,7 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
             .command
             .trim_start_matches('-')
             .split('/')
-            .last()?;
+            .next_back()?;
 
         if let Some(shell) = super::shell_from_string(binary) {
             return Some(shell);
