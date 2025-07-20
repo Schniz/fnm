@@ -19,15 +19,13 @@ impl Command for Default {
                 to_version: version,
             }
             .apply(config),
-            None => {
-                match get_alias_by_name(config, "default") {
-                    Some(alias) => {
-                        println!("{}", alias.s_ver());
-                        return Ok(());
-                    }
-                    None => Err(Self::Error::DefaultAliasDoesNotExist),
+            None => match get_alias_by_name(config, "default") {
+                Some(alias) => {
+                    println!("{}", alias.s_ver());
+                    Ok(())
                 }
-            }
+                None => Err(Self::Error::DefaultAliasDoesNotExist),
+            },
         }
     }
 
