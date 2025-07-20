@@ -95,7 +95,7 @@ impl Command for Use {
             }
         };
 
-        if !self.silent_if_unchanged || will_version_change(&version_path, config) {
+        if !config.silent() && (!self.silent_if_unchanged || will_version_change(&version_path, config)) {
             outln!(config, Info, "{}", message);
         }
 

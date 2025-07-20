@@ -46,6 +46,10 @@ repo/packages/my-package$ fnm use
 error: Can't find version in dotfiles. Please provide a version manually to the command.
 ```
 
+### `--silent`
+
+Suppress "Using Node Version..." message when changing versions with --use-on-cd
+
 ### `--corepack-enabled`
 
 **🧪 Experimental**
