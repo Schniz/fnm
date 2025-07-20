@@ -404,6 +404,9 @@ Options:
       --json
           Print JSON instead of shell commands
 
+      --global
+          Have a single Node.js version defined globally. This opts out of the "multishell" solution which allows a Node.js version per shell session. All your shell sessions will share a global Node.js version, and calling `fnm use` will update the global pointer
+
       --log-level <LOG_LEVEL>
           The log level of fnm commands
 
@@ -411,13 +414,13 @@ Options:
           [default: info]
           [possible values: quiet, error, info]
 
-      --use-on-cd
-          Print the script to change Node versions every directory change
-
       --arch <ARCH>
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+
+      --use-on-cd
+          Print the script to change Node versions every directory change
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
