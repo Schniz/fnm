@@ -36,7 +36,7 @@ miette = { version = "7.2.0", features = ["fancy"] }
 
 [dev-dependencies]
 pretty_assertions = "1.4.0"
-duct = "0.13.7"
+duct = "1.0.0"
 test-log = "0.2.16"
 http = "1.1.0"
 
