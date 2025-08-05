@@ -44,7 +44,7 @@
     "ts-jest": "^29.0.3",
     "typescript": "^5.0.0",
     "which": "^3.0.1",
-    "zod": "^3.19.1"
+    "zod": "^4.0.0"
   },
   "prettier": {
     "semi": false
