@@ -157,15 +157,15 @@ impl<'a> HooksManager<'a> {
                 .stderr(Stdio::inherit());
 
             // Execute the hook
-            let status = command.status()?;
+            let output = command.output()?;
             
-            if status.success() {
+            if output.status.success() {
                 debug!("Hook {} executed successfully", hook_type.name());
                 Ok(())
             } else {
                 Err(HookError::HookExecutionFailed {
                     hook_name: hook_type.name().to_string(),
-                    exit_code: status.code(),
+                    exit_code: output.status.code(),
                 })
             }
         } else {
