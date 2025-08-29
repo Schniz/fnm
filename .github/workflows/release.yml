@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - main
+      - dev
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -20,14 +21,14 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - uses: pnpm/action-setup@v4.2.0
+      - uses: pnpm/action-setup@v4.0.0
         with:
           run_install: false
 
       # pnpm
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18.x,20.x,22.x
           cache: "pnpm"
 
       - name: Get pnpm store directory
@@ -35,7 +36,7 @@ jobs:
         run: |
           echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
