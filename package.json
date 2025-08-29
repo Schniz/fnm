@@ -35,7 +35,7 @@
     "lerna-changelog": "2.2.0",
     "node-fetch": "^3.3.0",
     "p-retry": "^6.2.0",
-    "prettier": "3.5.3",
+    "prettier": "3.6.2",
     "pv": "1.0.1",
     "shell-escape": "^0.2.0",
     "svg-term-cli": "2.1.1",
