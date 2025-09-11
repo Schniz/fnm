@@ -136,9 +136,11 @@ download_fnm() {
     DOWNLOAD_DIR=$(mktempdir) || { echo "Unable to create a temporary directory under ${TMPDIR:-/tmp}."; exit 1; }
     trap "rm -rf '$DOWNLOAD_DIR'" EXIT INT HUP TERM
 
-    echo "Downloading $URL..."
+    echo "Installing fnm to $INSTALL_DIR"
 
     mkdir -p "$INSTALL_DIR" >/dev/null 2>&1
+
+    echo "Downloading $URL..."
 
     if ! curl --progress-bar --fail -L "$URL" -o "$DOWNLOAD_DIR/$FILENAME.zip"; then
       echo "Download failed.  Check that the release/filename are correct."
