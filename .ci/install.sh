@@ -263,7 +263,11 @@ setup_shell() {
   echo ""
   echo "In order to apply the changes, open a new terminal or run the following command:"
   echo ""
-  echo "  source $CONF_FILE"
+  if [ "$CURRENT_SHELL" = "fish" ]; then
+    echo "  source $CONF_FILE"
+  else
+    echo "  . $CONF_FILE"
+  fi
 }
 
 parse_args "$@"
