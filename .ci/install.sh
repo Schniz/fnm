@@ -88,40 +88,6 @@ set_filename() {
   fi
 }
 
-# Portable temp dir creator (uses mktemp if available, with a fallback)
-mktempdir() {
-  # Prefer mktemp if available; try common variants
-  if command -v mktemp >/dev/null 2>&1; then
-    if tmp=$(mktemp -d "${TMPDIR:-/tmp}/fnm.XXXXXXXX" 2>/dev/null); then
-      printf '%s\n' "$tmp"
-      return 0
-    fi
-    if tmp=$(TMPDIR="${TMPDIR:-/tmp}" mktemp -d -t fnm 2>/dev/null); then
-      printf '%s\n' "$tmp"
-      return 0
-    fi
-    if tmp=$(mktemp -d 2>/dev/null); then
-      printf '%s\n' "$tmp"
-      return 0
-    fi
-  fi
-
-  # Fallback: predictable, but private-perms directory creation loop
-  base="${TMPDIR:-/tmp}/fnm.$$"
-  i=0
-  while [ "$i" -lt 1000 ]; do
-    dir="${base}.${i}"
-    if (umask 077; mkdir "$dir" 2>/dev/null); then
-      printf '%s\n' "$dir"
-      return 0
-    fi
-    i=$((i + 1))
-  done
-
-  printf '%s\n' "mktempdir: could not create a temp directory under ${TMPDIR:-/tmp}" >&2
-  return 1
-}
-
 download_fnm() {
   if [ "$USE_HOMEBREW" = "true" ]; then
     brew install fnm
@@ -133,14 +99,11 @@ download_fnm() {
       URL="https://github.com/Schniz/fnm/releases/download/$RELEASE/$FILENAME.zip"
     fi
 
-    DOWNLOAD_DIR=$(mktempdir) || { echo "Unable to create a temporary directory under ${TMPDIR:-/tmp}."; exit 1; }
-    trap "rm -rf '$DOWNLOAD_DIR'" EXIT INT HUP TERM
-
-    echo "Installing fnm to $INSTALL_DIR"
-
-    mkdir -p "$INSTALL_DIR" >/dev/null 2>&1
+    DOWNLOAD_DIR=$(mktemp -d)
 
     echo "Downloading $URL..."
+
+    mkdir -p "$INSTALL_DIR" >/dev/null 2>&1
 
     if ! curl --progress-bar --fail -L "$URL" -o "$DOWNLOAD_DIR/$FILENAME.zip"; then
       echo "Download failed.  Check that the release/filename are correct."
@@ -265,11 +228,7 @@ setup_shell() {
   echo ""
   echo "In order to apply the changes, open a new terminal or run the following command:"
   echo ""
-  if [ "$CURRENT_SHELL" = "fish" ]; then
-    echo "  source $CONF_FILE"
-  else
-    echo "  . $CONF_FILE"
-  fi
+  echo "  source $CONF_FILE"
 }
 
 parse_args "$@"
