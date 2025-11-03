@@ -28,7 +28,7 @@
     "@types/node": "^24.1.0",
     "@types/shell-escape": "^0.2.1",
     "chalk": "^5.1.2",
-    "cmd-ts": "0.13.0",
+    "cmd-ts": "0.14.1",
     "cross-env": "^10.0.0",
     "execa": "7.2.0",
     "jest": "^30.0.0",
