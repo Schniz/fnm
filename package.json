@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.1",
-    "@changesets/cli": "2.29.6",
+    "@changesets/cli": "^2.29.7",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
     "@types/shell-escape": "^0.2.1",
