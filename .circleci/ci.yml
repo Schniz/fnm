@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: cimg/rust:1.89.0
+      - image: cimg/rust:1.88.0
     steps:
       - checkout
       - restore_cache:
