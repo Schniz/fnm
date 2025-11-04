@@ -4,7 +4,6 @@ on:
     branches:
       - master
       - main
-      - dev
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -28,7 +27,7 @@ jobs:
       # pnpm
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x,20.x,22.x
+          node-version: 22
           cache: "pnpm"
 
       - name: Get pnpm store directory
