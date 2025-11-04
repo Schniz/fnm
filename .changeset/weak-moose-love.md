@@ -2,4 +2,4 @@
 "fnm": patch
 ---
 
-chore: Update actions/setup-node action to v4.x
+Renovate/actions setup node 4.x
