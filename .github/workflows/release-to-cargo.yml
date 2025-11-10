@@ -1,10 +1,13 @@
 name: release to cargo
+
 permissions:
   contents: read
+  
 on:
   workflow_dispatch:
   push:
     tags: ['*']
+    
 jobs:
   publish_to_crates_io:
     runs-on: ubuntu-latest
