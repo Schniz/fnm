@@ -1,13 +1,8 @@
 name: release to cargo
-
-permissions:
-  contents: read
-  
 on:
   workflow_dispatch:
   push:
     tags: ['*']
-    
 jobs:
   publish_to_crates_io:
     runs-on: ubuntu-latest
@@ -27,7 +22,7 @@ jobs:
           run_install: false
 
       - name: Publish to crates.io
-        run: cargo publish --dry-run
+        run: cargo publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
