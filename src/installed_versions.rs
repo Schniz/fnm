@@ -9,7 +9,7 @@ pub fn list<P: AsRef<Path>>(installations_dir: P) -> Result<Vec<Version>, Error>
         if entry
             .file_name()
             .to_str()
-            .map_or(false, |s| s.starts_with('.'))
+            .is_some_and(|s| s.starts_with('.'))
         {
             continue;
         }

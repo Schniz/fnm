@@ -37,17 +37,17 @@ impl Shell for Zsh {
         };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
-                r#"
+                r"
                     if [[ {version_file_exists_condition} ]]; then
                         fnm use --silent-if-unchanged
                     fi
-                "#,
+                ",
                 version_file_exists_condition = version_file_exists_condition,
             ),
             VersionFileStrategy::Recursive => String::from(r"fnm use --silent-if-unchanged"),
         };
         Ok(formatdoc!(
-            r#"
+            r"
                 autoload -U add-zsh-hook
                 _fnm_autoload_hook () {{
                     {autoload_hook}
@@ -55,7 +55,7 @@ impl Shell for Zsh {
 
                 add-zsh-hook chpwd _fnm_autoload_hook \
                     && _fnm_autoload_hook
-            "#,
+            ",
             autoload_hook = autoload_hook
         ))
     }

@@ -34,14 +34,14 @@ impl LtsType {
         versions: &'vec [IndexedNodeVersion],
     ) -> Option<&'vec IndexedNodeVersion> {
         match self {
-            Self::Latest => versions.iter().filter(|x| x.lts.is_some()).last(),
+            Self::Latest => versions.iter().filter(|x| x.lts.is_some()).next_back(),
             Self::CodeName(s) => versions
                 .iter()
                 .filter(|x| match &x.lts {
                     None => false,
                     Some(x) => s.to_lowercase() == x.to_lowercase(),
                 })
-                .last(),
+                .next_back(),
         }
     }
 }

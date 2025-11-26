@@ -33,21 +33,21 @@ impl Shell for PowerShell {
         };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
-                r#"
+                r"
                     If ({version_file_exists_condition}) {{ & fnm use --silent-if-unchanged }}
-                "#,
+                ",
                 version_file_exists_condition = version_file_exists_condition,
             ),
             VersionFileStrategy::Recursive => String::from(r"fnm use --silent-if-unchanged"),
         };
         Ok(formatdoc!(
-            r#"
+            r"
                 function global:Set-FnmOnLoad {{ {autoload_hook} }}
                 function global:Set-LocationWithFnm {{ param($path); if ($path -eq $null) {{Set-Location}} else {{Set-Location $path}}; Set-FnmOnLoad }}
                 Set-Alias -Scope global cd_with_fnm Set-LocationWithFnm
                 Set-Alias -Option AllScope -Scope global cd Set-LocationWithFnm
                 Set-FnmOnLoad
-            "#,
+            ",
             autoload_hook = autoload_hook
         ))
     }

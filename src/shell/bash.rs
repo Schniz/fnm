@@ -33,11 +33,11 @@ impl Shell for Bash {
         };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
-                r#"
+                r"
                     if [[ {version_file_exists_condition} ]]; then
                         fnm use --silent-if-unchanged
                     fi
-                "#,
+                ",
                 version_file_exists_condition = version_file_exists_condition,
             ),
             VersionFileStrategy::Recursive => String::from(r"fnm use --silent-if-unchanged"),

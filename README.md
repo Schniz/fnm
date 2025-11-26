@@ -26,7 +26,7 @@
 
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh).
 
-First ensure that `curl` and `unzip` are already installed on you operating system. Then execute:
+First ensure that `curl` and `unzip` are already installed on your operating system. Then execute:
 
 ```sh
 curl -fsSL https://fnm.vercel.app/install | bash
@@ -47,6 +47,8 @@ curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
 `--install-dir`
 
 Set a custom directory for fnm to be installed. The default is `$XDG_DATA_HOME/fnm` (if `$XDG_DATA_HOME` is not defined it falls back to `$HOME/.local/share/fnm` on linux and `$HOME/Library/Application Support/fnm` on MacOS).
+
+> **Note:** On macOS, this option is only meaningful when using `--force-install` since Homebrew is the default installation method.
 
 `--skip-shell`
 

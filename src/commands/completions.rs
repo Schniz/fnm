@@ -21,7 +21,7 @@ impl Command for Completions {
         let shell: Box<dyn Shell> = self
             .shell
             .map(Into::into)
-            .or_else(|| infer_shell().map(Into::into))
+            .or_else(|| infer_shell())
             .ok_or(Error::CantInferShell)?;
         let shell: ClapShell = shell.into();
         let mut app = Cli::command();

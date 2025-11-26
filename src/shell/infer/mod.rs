@@ -16,6 +16,6 @@ fn shell_from_string(shell: &str) -> Option<Box<dyn super::Shell>> {
         "pwsh" | "powershell" => return Some(Box::from(PowerShell)),
         "cmd" => return Some(Box::from(WindowsCmd)),
         cmd_name => log::debug!("binary is not a supported shell: {:?}", cmd_name),
-    };
+    }
     None
 }

@@ -11,28 +11,28 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  RUST_VERSION: "1.81"
+  RUST_VERSION: "1.88"
 
 jobs:
   fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: actions/checkout@v4
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/checkout@v4
       - name: cargo fmt
         run: cargo fmt -- --check
 
   clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: actions/checkout@v4
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/checkout@v4
       - name: cargo clippy
         run: cargo clippy -- -D warnings
 
@@ -42,11 +42,11 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: actions/checkout@v4
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/checkout@v4
       - name: Run tests
         run: cargo test
 
@@ -54,11 +54,11 @@ jobs:
     runs-on: windows-latest
     name: "Release build for Windows"
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: actions/checkout@v4
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/checkout@v4
       - name: Build release binary
         run: cargo build --release
         env:
@@ -72,19 +72,26 @@ jobs:
     runs-on: macos-latest
     name: "Release build for macOS"
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: actions/checkout@v4
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
           targets: x86_64-apple-darwin,aarch64-apple-darwin
       - uses: Swatinem/rust-cache@v2
-      - uses: mlugg/setup-zig@v1
-      - run: cargo install --locked cargo-zigbuild
-      - uses: actions/checkout@v4
       - name: Build release binary
         run: |
-          cargo zigbuild --release --target=universal2-apple-darwin
+          cargo build --release --target x86_64-apple-darwin
+          strip target/x86_64-apple-darwin/release/fnm
+          cargo build --release --target aarch64-apple-darwin
+          strip target/aarch64-apple-darwin/release/fnm
+
           mkdir -p target/release
-          cp target/universal2-apple-darwin/release/fnm target/release/fnm
+
+          # create a universal binary
+          lipo -create \
+            target/x86_64-apple-darwin/release/fnm \
+            target/aarch64-apple-darwin/release/fnm \
+            -output target/release/fnm
         env:
           LZMA_API_STATIC: "true"
       - name: Strip binary from debug symbols
@@ -101,9 +108,9 @@ jobs:
     needs: [build_macos_release]
     name: "e2e/macos"
     steps:
+      - uses: actions/checkout@v4
       - name: install necessary shells
         run: brew install fish zsh bash
-      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: fnm-macos
@@ -208,9 +215,9 @@ jobs:
     needs: [build_static_linux_binary]
     name: "e2e/linux"
     steps:
+      - uses: actions/checkout@v4
       - name: install necessary shells
         run: sudo apt-get update && sudo apt-get install -y fish zsh bash
-      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: fnm-linux
@@ -245,7 +252,8 @@ jobs:
     name: "Build static Linux binary"
     runs-on: ubuntu-latest
     steps:
-      - uses: hecrj/setup-rust-action@v1
+      - uses: actions/checkout@v4
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
           targets: x86_64-unknown-linux-musl
@@ -256,7 +264,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends musl-tools
-      - uses: actions/checkout@v4
       - name: Build release binary
         run: cargo build --release --target x86_64-unknown-linux-musl
       - name: Strip binary from debug symbols
@@ -283,10 +290,11 @@ jobs:
     env:
       RUST_TARGET: ${{ matrix.rust_target }}
     steps:
+      - uses: actions/checkout@v4
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v3
-      - uses: hecrj/setup-rust-action@v1
+      - uses: hecrj/setup-rust-action@v2
         with:
           rust-version: ${{env.RUST_VERSION}}
       - uses: Swatinem/rust-cache@v2
@@ -294,7 +302,6 @@ jobs:
           key: arm-binary-${{ matrix.arch }}
       - name: "Download `cross` crate"
         run: cargo install cross
-      - uses: actions/checkout@v4
       - name: "Build release"
         run: cross build --target $RUST_TARGET --release
       - uses: uraimo/run-on-arch-action@v2.1.2
@@ -332,9 +339,9 @@ jobs:
     name: Ensure command docs are up-to-date
     needs: [build_static_linux_binary]
     steps:
+      - uses: actions/checkout@v4
       - name: install necessary shells
         run: sudo apt-get update && sudo apt-get install -y fish zsh bash
-      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: fnm-linux
