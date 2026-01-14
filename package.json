@@ -2,8 +2,8 @@
   "name": "fnm",
   "version": "1.39.0",
   "private": true,
-  "repository": "git@github.com:Schniz/fnm.git",
-  "author": "Gal Schlezinger <gal@spitfire.co.il>",
+  "repository": "github:Dargon789/fnm",
+  "author": "Dargon789 <dargon789.uni.eth>",
   "type": "module",
   "packageManager": "pnpm@9.1.4",
   "license": "GPLv3",
@@ -13,7 +13,7 @@
     "generate-command-docs": "./.ci/print-command-docs.js"
   },
   "changelog": {
-    "repo": "Schniz/fnm",
+    "repo": "Dargon789/fnm",
     "labels": {
       "PR: New Feature": "New Feature 🎉",
       "PR: Bugfix": "Bugfix 🐛",
