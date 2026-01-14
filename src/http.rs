@@ -10,10 +10,17 @@ use reqwest::{blocking::Client, IntoUrl};
 pub struct Error(#[from] reqwest::Error);
 pub type Response = reqwest::blocking::Response;
 
-pub fn get(url: impl IntoUrl) -> Result<Response, Error> {
-    Ok(Client::new()
+pub fn get(url: impl IntoUrl, token: Option<&str>) -> Result<Response, Error> {
+    let mut client = Client::new()
         .get(url)
         // Some sites require a user agent.
-        .header("User-Agent", concat!("fnm ", env!("CARGO_PKG_VERSION")))
-        .send()?)
+        .header("User-Agent", concat!("fnm ", env!("CARGO_PKG_VERSION")));
+
+    if let Some(token) = token {
+        if !token.is_empty() {
+            client = client.header("Authorization", format!("Bearer {}", token));
+        }
+    }
+
+    Ok(client.send()?)
 }
