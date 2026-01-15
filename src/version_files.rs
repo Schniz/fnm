@@ -1,7 +1,9 @@
 use crate::config::FnmConfig;
 use crate::default_version;
+use crate::nvmrc::Nvmrc;
 use crate::package_json::PackageJson;
 use crate::user_version::UserVersion;
+use crate::version_file_format::VersionFileFormat;
 use crate::version_file_strategy::VersionFileStrategy;
 use encoding_rs_io::DecodeReaderBytes;
 use log::info;
@@ -67,10 +69,7 @@ pub fn get_user_version_for_file(
     path: impl AsRef<Path>,
     config: &FnmConfig,
 ) -> Option<UserVersion> {
-    let is_pkg_json = match path.as_ref().file_name() {
-        Some(name) => name == "package.json",
-        None => false,
-    };
+    let format = VersionFileFormat::infer_from_path(path.as_ref());
     let file = std::fs::File::open(path).ok()?;
     let file = {
         let mut reader = DecodeReaderBytes::new(file);
@@ -78,17 +77,16 @@ pub fn get_user_version_for_file(
         reader.read_to_string(&mut version).map(|_| version)
     };
 
-    match (file, is_pkg_json, config.resolve_engines()) {
-        (_, true, false) => None,
-        (Err(err), _, _) => {
+    match (file, format) {
+        (Err(err), _) => {
             info!("Can't read file: {}", err);
             None
         }
-        (Ok(version), false, _) => {
-            info!("Found string {:?} in version file", version);
-            UserVersion::from_str(version.trim()).ok()
-        }
-        (Ok(pkg_json), true, true) => {
+        (Ok(pkg_json), VersionFileFormat::PackageJson) => {
+            if !config.resolve_engines() {
+                return None;
+            }
+
             let pkg_json = serde_json::from_str::<PackageJson>(&pkg_json).ok();
             let range: Option<node_semver::Range> =
                 pkg_json.as_ref().and_then(PackageJson::node_range).cloned();
@@ -100,6 +98,20 @@ pub fn get_user_version_for_file(
                 info!("No engines.node range found in package.json");
                 None
             }
+        }
+        (Ok(nvmrc), VersionFileFormat::Nvmrc) => {
+            let version = Nvmrc::parse(nvmrc).and_then(Nvmrc::version);
+
+            if let Some(version) = &version {
+                info!("Parsed {:?} from .nvmrc", version);
+            } else {
+                info!("Could not parse .nvmrc");
+            }
+            version
+        }
+        (Ok(content), VersionFileFormat::Other) => {
+            info!("Found string {:?} in version file", content);
+            UserVersion::from_str(content.trim()).ok()
         }
     }
 }
