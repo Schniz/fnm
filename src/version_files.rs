@@ -101,11 +101,9 @@ pub fn get_user_version_for_file(
         }
         (Ok(nvmrc), VersionFileFormat::Nvmrc) => {
             let version = Nvmrc::parse(nvmrc).and_then(Nvmrc::version);
-
-            if let Some(version) = &version {
-                info!("Parsed {:?} from .nvmrc", version);
-            } else {
-                info!("Could not parse .nvmrc");
+            match &version {
+                Some(v) => info!("Parsed {:?} from .nvmrc", v),
+                None => info!("Could not parse .nvmrc"),
             }
             version
         }
