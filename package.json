@@ -5,7 +5,7 @@
   "repository": "github:Dargon789/fnm",
   "author": "Dargon789 <dargon789.uni.eth>",
   "type": "module",
-  "packageManager": "pnpm@9.1.4",
+  "packageManager": "pnpm@9.15.9",
   "license": "GPLv3",
   "scripts": {
     "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest",
