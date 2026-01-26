@@ -20,7 +20,7 @@ etcetera = "0.11.0"
 colored = "2.1.0"
 zip = "6.0.0"
 tempfile = "3.10.1"
-indoc = "2.0.5"
+indoc = "2.0.7"
 log = "0.4.21"
 env_logger = "0.11.3"
 encoding_rs_io = "0.1.7"
@@ -31,7 +31,7 @@ thiserror = "1.0.61"
 clap_complete = "4.5.2"
 anyhow = "1.0.86"
 indicatif = { version = "0.18.0", features = ["improved_unicode"] }
-flate2 = "1.0.30"
+flate2 = "1.1.5"
 miette = { version = "7.2.0", features = ["fancy"] }
 
 [dev-dependencies]
