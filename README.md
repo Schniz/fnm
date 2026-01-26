@@ -33,7 +33,7 @@ curl -fsSL https://fnm.vercel.app/install | bash
 ```
 Then, [set up your shell for fnm](#shell-setup)
 
-### Using a script Windows (Git Bash):
+### Using a script on Windows (Git Bash):
 
 ```sh
 curl -fsSL https://fnm.vercel.app/install | bash
