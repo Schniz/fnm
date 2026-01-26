@@ -31,7 +31,7 @@ thiserror = "1.0.61"
 clap_complete = "4.5.2"
 anyhow = "1.0.86"
 indicatif = { version = "0.18.0", features = ["improved_unicode"] }
-flate2 = "1.0.30"
+flate2 = "1.1.5"
 miette = { version = "7.2.0", features = ["fancy"] }
 
 [dev-dependencies]
