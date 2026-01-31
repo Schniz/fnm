@@ -62,10 +62,9 @@ echo "Note: This will attempt to install Node.js 18.0.0 to demonstrate hooks"
 echo ""
 
 # Build fnm if not already built
-FNM_BINARY="$(dirname "$0")"/../target/release/fnm
+FNM_BINARY="./target/release/fnm"
 if [ ! -f "$FNM_BINARY" ]; then
     echo "Building fnm..."
-    cd /Users/andy/Developer/fnm
     cargo build --release
 fi
 
