@@ -65,7 +65,7 @@ echo ""
 FNM_BINARY="./target/release/fnm"
 if [ ! -f "$FNM_BINARY" ]; then
     echo "Building fnm..."
-    cargo build --release
+    (cd "$(dirname "$0")" && cargo build --release)
 fi
 
 # Test the hooks by attempting an install
