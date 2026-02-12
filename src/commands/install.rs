@@ -201,7 +201,8 @@ fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
     } else {
         corepack_path.join("bin").join("corepack")
     };
-    super::exec::Exec::new_for_version(version, corepack_path.to_str().unwrap(), &["enable"])
+    let corepack_path_str = corepack_path.to_string_lossy();
+    super::exec::Exec::new_for_version(version, &corepack_path_str, &["enable"])
         .apply(config)
         .map_err(|source| Error::CorepackError { source })?;
     Ok(())
@@ -244,12 +245,11 @@ fn install_default_packages(version: &Version, config: &FnmConfig) -> Result<(),
     args.push("install");
     args.push("--global");
     for package_spec in &packages {
-        for arg in package_spec.split_whitespace() {
-            args.push(arg);
-        }
+        args.push(package_spec.as_str());
     }
 
-    super::exec::Exec::new_for_version(version, npm_path.to_str().unwrap(), &args)
+    let npm_path_str = npm_path.to_string_lossy();
+    super::exec::Exec::new_for_version(version, &npm_path_str, &args)
         .apply(config)
         .map_err(|source| Error::DefaultPackagesError { source })?;
 
@@ -285,7 +285,7 @@ pub enum Error {
         #[from]
         source: super::exec::Error,
     },
-    #[error(transparent)]
+    #[error("Can't install default packages: {source}")]
     DefaultPackagesError { source: super::exec::Error },
     #[error(transparent)]
     UseError {

@@ -4,7 +4,7 @@ exports[`Bash installs default packages: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
 fnm install 18
-(fnm exec --using=18 npm list -g --depth=0) | grep 'is-odd' || (echo "Expected output to contain 'is-odd'" && exit 1)"
+(fnm exec --using=18 npm list -g --depth=0) | grep 'fnm-default-packages-test' || (echo "Expected output to contain 'fnm-default-packages-test'" && exit 1)"
 `;
 
 exports[`Bash missing default-packages file does not error: Bash 1`] = `
@@ -17,7 +17,7 @@ exports[`PowerShell installs default packages: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
 fnm install 18
-$($__out__ = $(fnm exec --using=18 npm list -g --depth=0 | Select-String 'is-odd'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+$($__out__ = $(fnm exec --using=18 npm list -g --depth=0 | Select-String 'fnm-default-packages-test'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
 
 exports[`PowerShell missing default-packages file does not error: PowerShell 1`] = `

@@ -10,7 +10,20 @@ for (const shell of [Bash, PowerShell]) {
     test(`installs default packages`, async () => {
       const fnmDir = path.join(testTmpDir(), "fnm")
       fs.mkdirSync(fnmDir, { recursive: true })
-      fs.writeFileSync(path.join(fnmDir, "default-packages"), "is-odd\n")
+      const pkgDir = path.join(testTmpDir(), "default-packages-pkg")
+      fs.mkdirSync(pkgDir, { recursive: true })
+      fs.writeFileSync(
+        path.join(pkgDir, "package.json"),
+        JSON.stringify(
+          {
+            name: "fnm-default-packages-test",
+            version: "1.0.0",
+          },
+          null,
+          2
+        )
+      )
+      fs.writeFileSync(path.join(fnmDir, "default-packages"), `${pkgDir}\n`)
 
       await script(shell)
         .then(shell.env({}))
@@ -25,7 +38,7 @@ for (const shell of [Bash, PowerShell]) {
               "-g",
               "--depth=0",
             ]),
-            "'is-odd'"
+            "'fnm-default-packages-test'"
           )
         )
         .takeSnapshot(shell)
@@ -41,4 +54,3 @@ for (const shell of [Bash, PowerShell]) {
     })
   })
 }
-
