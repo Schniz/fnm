@@ -33,11 +33,15 @@ impl Shell for Fish {
         };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
-                r"
+                r#"
                     if {version_file_exists_condition}
                         fnm use --silent-if-unchanged
+                    else
+                        if test -e "$FNM_DIR/aliases/default"
+                            fnm use default --silent-if-unchanged
+                        end
                     end
-                ",
+                "#,
                 version_file_exists_condition = version_file_exists_condition,
             ),
             VersionFileStrategy::Recursive => String::from(r"fnm use --silent-if-unchanged"),

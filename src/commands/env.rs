@@ -22,6 +22,11 @@ pub struct Env {
     #[clap(long, hide = true)]
     multi: bool,
     /// Print the script to change Node versions every directory change
+    ///
+    /// When entering a directory with a version file, fnm switches to that version.
+    /// When entering a directory without a version file, fnm switches to the default version.
+    ///
+    /// This applies to both `local` and `recursive` version file strategies.
     #[clap(long)]
     use_on_cd: bool,
 }

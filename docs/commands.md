@@ -414,6 +414,10 @@ Options:
       --use-on-cd
           Print the script to change Node versions every directory change
 
+          When entering a directory with a version file, fnm switches to that version. When entering a directory without a version file, fnm switches to the default version.
+
+          This applies to both `local` and `recursive` version file strategies.
+
       --arch <ARCH>
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
