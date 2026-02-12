@@ -38,7 +38,7 @@ impl Shell for Fish {
                         fnm use --silent-if-unchanged
                     else
                         if test -e "$FNM_DIR/aliases/default"
-                            fnm use default --silent-if-unchanged
+                            fnm use (fnm default) --silent-if-unchanged
                         end
                     end
                 "#,

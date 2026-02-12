@@ -42,7 +42,7 @@ impl Shell for Zsh {
                         fnm use --silent-if-unchanged
                     else
                         if [[ -e "$FNM_DIR/aliases/default" ]]; then
-                            fnm use default --silent-if-unchanged
+                            fnm use "$(fnm default)" --silent-if-unchanged
                         fi
                     fi
                 "#,

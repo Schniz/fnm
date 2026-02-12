@@ -62,12 +62,12 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
       const captureCdOutput = (() => {
         const outputFile = "cd-output.txt"
         if (shell === Fish) {
-          return `begin\n  cd noversion\nend > ${outputFile} 2>&1`
+          return `begin\n  cd noversion\n  cd ..\nend > ${outputFile} 2>&1`
         }
         if (shell === PowerShell) {
-          return `cd noversion *> ${outputFile}`
+          return `& { cd noversion; cd .. } *> ${outputFile}`
         }
-        return `{ cd noversion; } > ${outputFile} 2>&1`
+        return `{ cd noversion; cd ..; } > ${outputFile} 2>&1`
       })()
 
       await script(shell)
@@ -82,4 +82,3 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
     })
   })
 }
-
