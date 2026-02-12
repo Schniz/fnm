@@ -172,6 +172,8 @@ impl Command for Install {
             enable_corepack(&version, config)?;
         }
 
+        install_default_packages(&version, config)?;
+
         if use_installed {
             use_installed_version(&version, config)?;
         }
@@ -205,6 +207,55 @@ fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
     Ok(())
 }
 
+fn parse_default_packages_file(file_path: &std::path::Path) -> Result<Vec<String>, std::io::Error> {
+    let contents = match std::fs::read_to_string(file_path) {
+        Ok(contents) => contents,
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => return Ok(vec![]),
+        Err(err) => return Err(err),
+    };
+
+    Ok(contents
+        .lines()
+        .filter_map(|line| {
+            let trimmed = line.trim();
+            if trimmed.is_empty() || trimmed.starts_with('#') {
+                None
+            } else {
+                Some(trimmed.to_string())
+            }
+        })
+        .collect())
+}
+
+fn install_default_packages(version: &Version, config: &FnmConfig) -> Result<(), Error> {
+    let packages = parse_default_packages_file(&config.default_packages_file())?;
+    if packages.is_empty() {
+        return Ok(());
+    }
+
+    let npm_path = version.installation_path(config);
+    let npm_path = if cfg!(windows) {
+        npm_path.join("npm.cmd")
+    } else {
+        npm_path.join("bin").join("npm")
+    };
+
+    let mut args: Vec<&str> = Vec::with_capacity(2 + packages.len());
+    args.push("install");
+    args.push("--global");
+    for package_spec in &packages {
+        for arg in package_spec.split_whitespace() {
+            args.push(arg);
+        }
+    }
+
+    super::exec::Exec::new_for_version(version, npm_path.to_str().unwrap(), &args)
+        .apply(config)
+        .map_err(|source| Error::DefaultPackagesError { source })?;
+
+    Ok(())
+}
+
 fn use_installed_version(version: &Version, config: &FnmConfig) -> Result<(), Error> {
     Use {
         version: Some(UserVersionReader::Direct(UserVersion::Full(
@@ -234,6 +285,8 @@ pub enum Error {
         #[from]
         source: super::exec::Error,
     },
+    #[error(transparent)]
+    DefaultPackagesError { source: super::exec::Error },
     #[error(transparent)]
     UseError {
         source: Box<<Use as Command>::Error>,
@@ -318,5 +371,41 @@ mod tests {
             .canonicalize()
             .unwrap()
             .exists());
+    }
+
+    #[test]
+    fn test_parse_default_packages_file() {
+        let base_dir = tempfile::tempdir().unwrap();
+        let file_path = base_dir.path().join("default-packages");
+        std::fs::write(
+            &file_path,
+            r"
+# this is a comment
+
+typescript
+prettier@3
+@scope/name
+",
+        )
+        .unwrap();
+
+        let packages = parse_default_packages_file(&file_path).unwrap();
+        assert_eq!(
+            packages,
+            vec![
+                "typescript".to_string(),
+                "prettier@3".to_string(),
+                "@scope/name".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn test_parse_default_packages_file_missing() {
+        let base_dir = tempfile::tempdir().unwrap();
+        let file_path = base_dir.path().join("default-packages");
+
+        let packages = parse_default_packages_file(&file_path).unwrap();
+        assert_eq!(packages, Vec::<String>::new());
     }
 }

@@ -270,6 +270,9 @@ Options:
 
           [env: FNM_ARCH]
 
+      --reinstall-packages-from <version>
+          Reinstall global packages from a specified Node version after installing. Analogous to nvm's --reinstall-packages-from flag
+
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
 
@@ -413,6 +416,10 @@ Options:
 
       --use-on-cd
           Print the script to change Node versions every directory change
+
+          When entering a directory with a version file, fnm switches to that version. When entering a directory without a version file, fnm switches to the default version.
+
+          This applies to both `local` and `recursive` version file strategies.
 
       --arch <ARCH>
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
