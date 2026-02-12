@@ -265,6 +265,12 @@ Options:
       --use
           Use the installed version immediately after installation
 
+      --reinstall-packages-from <version>
+          After installing, reinstall global npm packages from the specified
+          Node version. Packages are installed with their current versions.
+          The source version must already be installed.
+          Analogous to nvm's --reinstall-packages-from flag.
+
       --arch <ARCH>
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 

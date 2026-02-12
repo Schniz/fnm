@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash errors when source version is not installed: Bash 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+(fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1) | grep 'Version v18.20.0 is not installed' || (echo "Expected output to contain 'Version v18.20.0 is not installed'" && exit 1)"
+`;
+
+exports[`Bash reinstall packages from another version: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v18.20.0
+fnm use v18.20.0
+npm install -g is-odd
+(npm list -g --depth=0) | grep 'is-odd' || (echo "Expected output to contain 'is-odd'" && exit 1)
+__out__="$(fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1)"
+echo "$__out__" | grep 'is-odd@' || (echo "Expected output to contain 'is-odd@'" && exit 1)
+if echo "$__out__" | grep -q '  - npm@'; then
+  echo "Expected output to not contain 'npm@'"
+  exit 1
+fi
+if echo "$__out__" | grep -q '  - corepack@'; then
+  echo "Expected output to not contain 'corepack@'"
+  exit 1
+fi
+echo "$__out__" | grep 'Successfully reinstalled' || (echo "Expected output to contain 'Successfully reinstalled'" && exit 1)
+
+fnm use v20.11.0
+(npm list -g --depth=0) | grep 'is-odd' || (echo "Expected output to contain 'is-odd'" && exit 1)"
+`;
+
+exports[`Bash source has no global packages: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v18.20.0
+(fnm install v20.11.0 --reinstall-packages-from=v18.20.0) | grep 'No global packages found in' || (echo "Expected output to contain 'No global packages found in'" && exit 1)"
+`;
+
+exports[`PowerShell errors when source version is not installed: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --log-level=error | Out-String | Invoke-Expression
+$($__out__ = $(fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1 | Select-String 'Version v18.20.0 is not installed'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell reinstall packages from another version: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install v18.20.0
+fnm use v18.20.0
+npm install -g is-odd
+$($__out__ = $(npm list -g --depth=0 | Select-String 'is-odd'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+$__out__ = fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1 | Out-String
+if ($__out__ -notmatch "is-odd@") { exit 1 }
+if ($__out__ -match "  - npm@") { exit 1 }
+if ($__out__ -match "  - corepack@") { exit 1 }
+if ($__out__ -notmatch "Successfully reinstalled") { exit 1 }
+
+fnm use v20.11.0
+$($__out__ = $(npm list -g --depth=0 | Select-String 'is-odd'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell source has no global packages: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install v18.20.0
+$($__out__ = $(fnm install v20.11.0 --reinstall-packages-from=v18.20.0 | Select-String 'No global packages found in'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
