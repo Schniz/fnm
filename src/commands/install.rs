@@ -229,29 +229,52 @@ fn parse_default_packages_file(file_path: &std::path::Path) -> Result<Vec<String
 }
 
 fn install_default_packages(version: &Version, config: &FnmConfig) -> Result<(), Error> {
+    use std::process::{Command as StdCommand, Stdio};
+
     let packages = parse_default_packages_file(&config.default_packages_file())?;
     if packages.is_empty() {
         return Ok(());
     }
 
-    let npm_path = version.installation_path(config);
     let npm_path = if cfg!(windows) {
-        npm_path.join("npm.cmd")
+        version.installation_path(config).join("npm.cmd")
     } else {
-        npm_path.join("bin").join("npm")
+        version.installation_path(config).join("bin").join("npm")
     };
 
-    let mut args: Vec<&str> = Vec::with_capacity(2 + packages.len());
-    args.push("install");
-    args.push("--global");
-    for package_spec in &packages {
-        args.push(package_spec.as_str());
-    }
+    let bin_path = if cfg!(windows) {
+        version.installation_path(config)
+    } else {
+        version.installation_path(config).join("bin")
+    };
 
-    let npm_path_str = npm_path.to_string_lossy();
-    super::exec::Exec::new_for_version(version, &npm_path_str, &args)
-        .apply(config)
-        .map_err(|source| Error::DefaultPackagesError { source })?;
+    let path_env = {
+        let mut paths: Vec<_> = std::env::var_os("PATH")
+            .map(|paths_env| std::env::split_paths(&paths_env).collect())
+            .unwrap_or_default();
+        paths.insert(0, bin_path);
+        std::env::join_paths(paths).map_err(|source| Error::DefaultPackagesError {
+            source: Box::new(source),
+        })?
+    };
+
+    let status = StdCommand::new(&npm_path)
+        .args(["install", "--global"])
+        .args(&packages)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .env("PATH", path_env)
+        .status()
+        .map_err(|source| Error::DefaultPackagesError {
+            source: Box::new(source),
+        })?;
+
+    if !status.success() {
+        return Err(Error::DefaultPackagesError {
+            source: std::io::Error::other(format!("npm install exited with {status:?}")).into(),
+        });
+    }
 
     Ok(())
 }
@@ -286,7 +309,10 @@ pub enum Error {
         source: super::exec::Error,
     },
     #[error("Can't install default packages: {source}")]
-    DefaultPackagesError { source: super::exec::Error },
+    DefaultPackagesError {
+        #[source]
+        source: Box<dyn std::error::Error>,
+    },
     #[error(transparent)]
     UseError {
         source: Box<<Use as Command>::Error>,
