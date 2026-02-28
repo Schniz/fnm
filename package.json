@@ -1,14 +1,11 @@
 {
   "name": "fnm",
-  "version": "1.39.0",
+  "version": "1.38.1",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Dargon789/fnm.git"
-  },
-  "author": "Dargon789 <dargon789.uni.eth>",
+  "repository": "git@github.com:Schniz/fnm.git",
+  "author": "Gal Schlezinger <gal@spitfire.co.il>",
   "type": "module",
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "pnpm@9.1.4",
   "license": "GPLv3",
   "scripts": {
     "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest",
@@ -16,7 +13,7 @@
     "generate-command-docs": "./.ci/print-command-docs.js"
   },
   "changelog": {
-    "repo": "Dargon789/fnm",
+    "repo": "Schniz/fnm",
     "labels": {
       "PR: New Feature": "New Feature 🎉",
       "PR: Bugfix": "Bugfix 🐛",
@@ -26,19 +23,19 @@
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.1",
-    "@changesets/cli": "^2.29.7",
+    "@changesets/cli": "2.28.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.1.0",
+    "@types/node": "^24.0.0",
     "@types/shell-escape": "^0.2.1",
     "chalk": "^5.1.2",
-    "cmd-ts": "0.14.1",
+    "cmd-ts": "0.13.0",
     "cross-env": "^10.0.0",
-    "execa": "7.2.0",
+    "execa": "9.6.1",
     "jest": "^30.0.0",
     "lerna-changelog": "2.2.0",
     "node-fetch": "^3.3.0",
     "p-retry": "^7.0.0",
-    "prettier": "3.6.2",
+    "prettier": "3.5.1",
     "pv": "1.0.1",
     "shell-escape": "^0.2.0",
     "svg-term-cli": "2.1.1",
@@ -46,21 +43,10 @@
     "ts-dedent": "^2.2.0",
     "ts-jest": "^29.0.3",
     "typescript": "^5.0.0",
-    "which": "^3.0.1",
+    "which": "^6.0.0",
     "zod": "^4.0.0"
   },
   "prettier": {
     "semi": false
-  },
-  "description": "<h1 align=\"center\">\r   Fast Node Manager (<code>fnm</code>)\r   <img alt=\"Amount of downloads\" src=\"https://img.shields.io/github/downloads/Schniz/fnm/total.svg?style=flat\" />\r   <a href=\"https://github.com/Schniz/fnm/actions\"><img src=\"https://img.shields.io/github/actions/workflow/status/Schniz/fnm/rust.yml?branch=master&label=workflow\" alt=\"GitHub Actions workflow status\" /></a>\r </h1>",
-  "bugs": {
-    "url": "https://github.com/dargon789/fnm/issues"
-  },
-  "homepage": "https://github.com/dargon789/fnm#readme",
-  "main": "jest.global-setup.js",
-  "directories": {
-    "doc": "docs",
-    "test": "tests"
-  },
-  "keywords": []
+  }
 }
