@@ -4,7 +4,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dargon789/fnm.git"
+    "url": "git+https://github.com/Dargon789/fnm.git"
   },
   "author": "Dargon789 <dargon789.uni.eth>",
   "type": "module",
