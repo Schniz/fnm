@@ -1,5 +1,4 @@
 // @ts-check
-
 import { createServer } from "node:http"
 import path from "node:path"
 import fs from "node:fs"
@@ -23,18 +22,28 @@ const cache = new Map()
  * @param {string} opts.filename
  */
 const download = async ({ pathname, filename, headersFilename }) => {
+  const allowedPaths = [
+    "/v18.17.0/node-v18.17.0-linux-x64.tar.gz",
+    "/v18.17.0/node-v18.17.0-win-x64.zip",
+    "/v18.17.0/node-v18.17.0-darwin-x64.tar.gz",
+  ];
+
+  if (!allowedPaths.includes(pathname)) {
+    throw new Error(`Invalid pathname: ${pathname}`);
+  }
+
   const response = await fetch(
     "https://nodejs.org/dist/" + pathname.replace(/^\/+/, ""),
     {
       compress: false,
     },
-  )
-  const headers = Object.fromEntries(response.headers.entries())
-  headers.__status__ = String(response.status)
-  const body = await response.arrayBuffer()
-  fs.writeFileSync(headersFilename, JSON.stringify(headers))
-  fs.writeFileSync(filename, Buffer.from(body))
-  return { headers, body }
+  );
+  const headers = Object.fromEntries(response.headers.entries());
+  headers.__status__ = String(response.status);
+  const body = await response.arrayBuffer();
+  fs.writeFileSync(headersFilename, JSON.stringify(headers));
+  fs.writeFileSync(filename, Buffer.from(body));
+  return { headers, body };
 }
 
 export const server = createServer((req, res) => {
@@ -60,7 +69,14 @@ export const server = createServer((req, res) => {
     if (!promise) {
       console.log(chalk.red.dim(`[proxy] miss: ${pathname} -> ${filename}`))
       promise = pRetry(
-        () => download({ pathname, headersFilename, filename }),
+        async () => {
+          try {
+            return await download({ pathname, headersFilename, filename });
+          } catch (error) {
+            console.error(chalk.red(`[proxy] ${chalk.bold("error")}: ${error.message}`));
+            throw error;
+          }
+        },
         {
           retries: 5,
           maxTimeout: 5000,

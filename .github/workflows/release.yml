@@ -20,14 +20,14 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - uses: pnpm/action-setup@v4.0.0
+      - uses: pnpm/action-setup@v4.2.0
         with:
           run_install: false
 
       # pnpm
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 20
           cache: "pnpm"
 
       - name: Get pnpm store directory
@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}

@@ -1,0 +1,236 @@
+name: Publish NPM
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        type: string
+        required: false
+        description: The run id of the release to publish
+  workflow_run:
+    types: [completed]
+    workflows: [release]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  NPM_CONFIG_PROVENANCE: true
+
+jobs:
+  publish-arch:
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    name: ${{ matrix.os }}-${{ matrix.arch }}
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        include:
+          - os: linux
+            arch: amd64
+          - os: linux
+            arch: arm64
+          - os: darwin
+            arch: amd64
+          - os: darwin
+            arch: arm64
+          - os: win32
+            arch: amd64
+    # Run automatically after a successful 'release' workflow, or manually if a run_id is provided
+    if: >-
+      ${{
+        (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+        (github.event_name == 'workflow_dispatch' && inputs.run_id != '')
+      }}
+    outputs:
+      RELEASE_VERSION: ${{ steps.release-version.outputs.RELEASE_VERSION }}
+    env:
+      NPM_REGISTRY_URL: "https://registry.npmjs.org"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Prepare temp artifact directory
+        run: mkdir -p ${{ runner.temp }}/foundry_artifacts
+
+      - name: Download Release Assets
+        uses: actions/download-artifact@v5
+        with:
+          merge-multiple: true
+          # Download all foundry artifacts from the triggering release run
+          pattern: "foundry_*"
+          path: ${{ runner.temp }}/foundry_artifacts
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id || inputs.run_id }}
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@main
+        with:
+          bun-version: latest
+          registries: |
+            https://registry.npmjs.org
+
+      - name: Setup Node (for npm publish auth)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install Dependencies
+        working-directory: ./npm
+        run: bun install --frozen-lockfile
+
+      - name: Transpile TS -> JS
+        working-directory: ./npm
+        run: bun run build
+
+      - name: Derive RELEASE_VERSION
+        id: release-version
+        working-directory: ./npm
+        env:
+          PROVENANCE: true
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_REGISTRY_URL: ${{ env.NPM_REGISTRY_URL }}
+        run: |
+          set -euo pipefail
+
+          echo "Artifacts in foundry_artifacts:"
+          ls -la ${{ runner.temp }}/foundry_artifacts || true
+
+          # Derive RELEASE_VERSION from any foundry artifact we downloaded
+          # Expected names: foundry_<VERSION>_<platform>_<arch>.{tar.gz,zip}
+          first_file=$(ls ${{ runner.temp }}/foundry_artifacts/foundry_* 2>/dev/null | head -n1 || true)
+          if [[ -z "${first_file}" ]]; then
+            echo "No foundry artifacts found to publish" >&2
+            exit 1
+          fi
+          version_part=$(basename "$first_file")
+          version_part=${version_part#foundry_}
+          export RELEASE_VERSION=${version_part%%_*}
+          echo "Detected RELEASE_VERSION=$RELEASE_VERSION"
+
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Stage Binary Into Package
+        working-directory: ./npm
+        env:
+          RELEASE_VERSION: ${{ steps.release-version.outputs.RELEASE_VERSION }}
+        run: |
+          set -euo pipefail
+          mkdir -p tmp
+
+          FILE_PREFIX="../foundry_artifacts/foundry_${RELEASE_VERSION}_${{ matrix.os }}_${{ matrix.arch }}"
+          if [[ -f "${FILE_PREFIX}.zip" ]]; then
+            echo "Extracting ${FILE_PREFIX}.zip"
+            if ! command -v unzip >/dev/null 2>&1; then
+              sudo apt-get update -y && sudo apt-get install -y unzip
+            fi
+            unzip -o "${FILE_PREFIX}.zip" -d ./tmp
+            BIN=./tmp/forge.exe
+          else
+            echo "Extracting ${FILE_PREFIX}.tar.gz"
+            tar -xzf "${FILE_PREFIX}.tar.gz" -C ./tmp
+            BIN=./tmp/forge
+          fi
+
+          echo "Staging binary $BIN into @foundry-rs/forge-${{ matrix.os }}-${{ matrix.arch }}"
+          PLATFORM_NAME=${{ matrix.os }} ARCH=${{ matrix.arch }} FORGE_BIN_PATH="$BIN" bun ./scripts/prepublish.ts
+
+      - name: Sanity Check Binary
+        working-directory: ./npm
+        run: |
+          set -euo pipefail
+          PKG_DIR="./@foundry-rs/forge-${{ matrix.os }}-${{ matrix.arch }}"
+          BIN="$PKG_DIR/bin/forge"
+          if [[ "${{ matrix.os }}" == "win32" ]]; then
+            BIN="$PKG_DIR/bin/forge.exe"
+          fi
+          echo "Verifying binary at: $BIN"
+          ls -la "$BIN"
+          if [[ ! -f "$BIN" ]]; then
+            echo "ERROR: Binary not found at $BIN" >&2
+            exit 1
+          fi
+
+          if [[ "${{ matrix.os }}" != "win32" ]]; then
+            if [[ ! -x "$BIN" ]]; then
+              echo "ERROR: Binary not marked executable" >&2
+              exit 1
+            fi
+          fi
+
+      - name: Publish ${{ matrix.os }}-${{ matrix.arch }} Binary
+        working-directory: ./npm
+        env:
+          PROVENANCE: true
+          VERSION_NAME: ${{ steps.release-version.outputs.RELEASE_VERSION }}
+          RELEASE_VERSION: ${{ steps.release-version.outputs.RELEASE_VERSION }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          ls -la ./@foundry-rs/forge-${{ matrix.os }}-${{ matrix.arch }}
+
+          bun ./scripts/publish.ts ./@foundry-rs/forge-${{ matrix.os }}-${{ matrix.arch }}
+
+          echo "Published @foundry-rs/forge-${{ matrix.os }}-${{ matrix.arch }}"
+
+  publish-meta:
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    needs: publish-arch
+    name: Publish Meta Package
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION: ${{ needs.publish-arch.outputs.RELEASE_VERSION }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NPM_REGISTRY_URL: "https://registry.npmjs.org"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@main
+        with:
+          bun-version: latest
+          registries: |
+            https://registry.npmjs.org
+
+      - name: Setup Node (for npm publish auth)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install Dependencies
+        working-directory: ./npm
+        run: bun install --frozen-lockfile
+
+      - name: Transpile TS -> JS
+        working-directory: ./npm
+        run: bun run build
+
+      - name: Publish Meta
+        working-directory: ./npm
+        run: bun run ./scripts/publish.ts ./@foundry-rs/forge
+        env:
+          PROVENANCE: true
+          VERSION_NAME: ${{ env.RELEASE_VERSION }}
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          NPM_TOKEN: ${{ env.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
+          NPM_REGISTRY_URL: ${{ env.NPM_REGISTRY_URL }}
