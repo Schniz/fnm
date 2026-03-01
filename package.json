@@ -52,7 +52,7 @@
   "prettier": {
     "semi": false
   },
-  "description": "<h1 align=\"center\">\r   Fast Node Manager (<code>fnm</code>)\r   <img alt=\"Amount of downloads\" src=\"https://img.shields.io/github/downloads/Schniz/fnm/total.svg?style=flat\" />\r   <a href=\"https://github.com/Schniz/fnm/actions\"><img src=\"https://img.shields.io/github/actions/workflow/status/Schniz/fnm/rust.yml?branch=master&label=workflow\" alt=\"GitHub Actions workflow status\" /></a>\r </h1>",
+  "description": "<h1 align=\"center\">\r   Fast Node Manager (<code>fnm</code>)\r   <img alt=\"Amount of downloads\" src=\"https://img.shields.io/github/downloads/Dargon789/fnm/total.svg?style=flat\" />\r   <a href=\"https://github.com/Dargon789/fnm/actions\"><img src=\"https://img.shields.io/github/actions/workflow/status/Dargon789/fnm/rust.yml?branch=master&label=workflow\" alt=\"GitHub Actions workflow status\" /></a>\r </h1>",
   "bugs": {
     "url": "https://github.com/dargon789/fnm/issues"
   },
