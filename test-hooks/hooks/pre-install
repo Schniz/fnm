@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "🪝 Pre-install hook executed!"
+echo "Installing Node.js version: $FNM_VERSION"
+echo "Architecture: $FNM_ARCH"
+echo "Installation directory: $FNM_INSTALLATION_DIR"
+echo "FNM directory: $FNM_DIR"
