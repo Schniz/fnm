@@ -27,7 +27,7 @@ jobs:
       # pnpm
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18.x,20.x,22.x,24.x 
           cache: "pnpm"
 
       - name: Get pnpm store directory
