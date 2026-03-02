@@ -5,6 +5,23 @@
   "author": "Gal Schlezinger",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf public; mkdir public; cp ../.ci/install.sh ./public/install.txt"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.6.1",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.3",
+    "@types/node": "^25.1.0",
+    "@types/react": "^19.2.10",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.6",
+    "typescript": "^5.9.3"
   }
 }
