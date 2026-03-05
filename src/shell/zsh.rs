@@ -53,8 +53,7 @@ impl Shell for Zsh {
                     {autoload_hook}
                 }}
 
-                add-zsh-hook chpwd _fnm_autoload_hook \
-                    && _fnm_autoload_hook
+                add-zsh-hook chpwd _fnm_autoload_hook
             ",
             autoload_hook = autoload_hook
         ))
