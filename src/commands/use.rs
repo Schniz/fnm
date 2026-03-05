@@ -25,6 +25,10 @@ pub struct Use {
     /// if it will not change due to execution of this command
     #[clap(long)]
     pub silent_if_unchanged: bool,
+
+    /// Print informational output to stderr (used internally by `fnm env`)
+    #[clap(skip)]
+    pub info_to_stderr: bool,
 }
 
 impl Command for Use {
@@ -96,7 +100,11 @@ impl Command for Use {
         };
 
         if !self.silent_if_unchanged || will_version_change(&version_path, config) {
-            outln!(config, Info, "{}", message);
+            if self.info_to_stderr {
+                outln!(config, Error, "{}", message);
+            } else {
+                outln!(config, Info, "{}", message);
+            }
         }
 
         if let Some(multishells_path) = multishell_path.parent() {
@@ -144,6 +152,7 @@ fn install_new_version(
         version: Some(UserVersionReader::Direct(requested_version)),
         install_if_missing: true,
         silent_if_unchanged: false,
+        info_to_stderr: false,
     }
     .apply(config)?;
 
