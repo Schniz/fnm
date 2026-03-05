@@ -5,7 +5,7 @@ use crate::path_ext::PathExt;
 use crate::version_file_strategy::VersionFileStrategy;
 use url::Url;
 
-#[derive(clap::Parser, Debug)]
+#[derive(clap::Parser, Debug, Clone)]
 pub struct FnmConfig {
     /// <https://nodejs.org/dist/> mirror
     #[clap(
@@ -179,6 +179,11 @@ impl FnmConfig {
     #[cfg(test)]
     pub fn with_base_dir(mut self, base_dir: Option<std::path::PathBuf>) -> Self {
         self.base_dir = base_dir;
+        self
+    }
+
+    pub fn with_multishell_path(mut self, multishell_path: std::path::PathBuf) -> Self {
+        self.multishell_path = Some(multishell_path);
         self
     }
 }

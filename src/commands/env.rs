@@ -1,4 +1,5 @@
 use super::command::Command;
+use super::r#use::Use;
 use crate::config::FnmConfig;
 use crate::fs::symlink_dir;
 use crate::outln;
@@ -8,6 +9,7 @@ use clap::ValueEnum;
 use colored::Colorize;
 use std::collections::HashMap;
 use std::fmt::Debug;
+use std::io::IsTerminal;
 use thiserror::Error;
 
 #[allow(clippy::struct_excessive_bools)]
@@ -60,6 +62,23 @@ fn bool_as_str(value: bool) -> &'static str {
         "true"
     } else {
         "false"
+    }
+}
+
+fn set_path_for_multishell(multishell_path: &std::path::Path) {
+    let path_for_node = if cfg!(windows) {
+        multishell_path.to_path_buf()
+    } else {
+        multishell_path.join("bin")
+    };
+
+    let current_path = std::env::var_os("PATH").unwrap_or_default();
+    let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
+    split_paths.insert(0, path_for_node);
+    if let Ok(new_path) = std::env::join_paths(split_paths) {
+        unsafe {
+            std::env::set_var("PATH", new_path);
+        }
     }
 }
 
@@ -136,6 +155,29 @@ impl Command for Env {
         }
 
         if self.use_on_cd {
+            // Call `use` internally for the initial directory, so the shell doesn't
+            // need to spawn a subprocess after evaluating the env output.
+            set_path_for_multishell(&multishell_path);
+            let config_with_multishell =
+                config.clone().with_multishell_path(multishell_path.clone());
+            let use_cmd = Use {
+                version: None,
+                install_if_missing: false,
+                silent_if_unchanged: true,
+                info_to_stderr: true,
+            };
+            let should_force_stderr_color = !std::io::stdout().is_terminal()
+                && std::io::stderr().is_terminal()
+                && std::env::var_os("NO_COLOR").is_none();
+            if should_force_stderr_color {
+                colored::control::set_override(true);
+            }
+            // Ignore errors - if there's no version file, that's fine
+            let _ = use_cmd.apply(&config_with_multishell);
+            if should_force_stderr_color {
+                colored::control::unset_override();
+            }
+
             println!("{}", shell.use_on_cd(config)?);
         }
         if let Some(v) = shell.rehash() {
