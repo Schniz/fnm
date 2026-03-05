@@ -53,6 +53,19 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         .execute(shell)
     })
 
+    test(`works after sourcing env twice`, async () => {
+      await mkdir(join(testCwd(), "subdir"), { recursive: true })
+      await writeFile(join(testCwd(), "subdir", ".node-version"), "v12.22.12")
+      await script(shell)
+        .then(shell.env({ useOnCd: true }))
+        .then(shell.env({ useOnCd: true }))
+        .then(shell.call("fnm", ["install", "v8.11.3"]))
+        .then(shell.call("fnm", ["install", "v12.22.12"]))
+        .then(shell.call("cd", ["subdir"]))
+        .then(testNodeVersion(shell, "v12.22.12"))
+        .execute(shell)
+    })
+
     test(`doesn't throw on missing env data`, async () => {
       await mkdir(join(testCwd(), "subdir"), { recursive: true })
       await writeFile(
