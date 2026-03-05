@@ -4,11 +4,15 @@
 
 ### Minor Changes
 
+- [#1516](https://github.com/Schniz/fnm/pull/1516) [`10c68cb`](https://github.com/Schniz/fnm/commit/10c68cb6630be811799afdccf212a399e08bef99) Thanks [@Schniz](https://github.com/Schniz)! - Reduce shell startup overhead for `env --use-on-cd` by applying the initial version during `fnm env`, instead of requiring an immediate extra `fnm use` subprocess from shell hook output.
+
 - [#1435](https://github.com/Schniz/fnm/pull/1435) [`1ebc90d`](https://github.com/Schniz/fnm/commit/1ebc90decf58c2176dcbd4f8ac00ecb3adb1de12) Thanks [@SunsetTechuila](https://github.com/SunsetTechuila)! - add `use` flag to the `install` command
 
 ### Patch Changes
 
 - [#1268](https://github.com/Schniz/fnm/pull/1268) [`ddab191`](https://github.com/Schniz/fnm/commit/ddab1911dc33a24aeec9d2b8139df1916c518d64) Thanks [@isaacl](https://github.com/isaacl)! - Make `fnm default` with no trailing positional argument to return the default version
+
+- [#1517](https://github.com/Schniz/fnm/pull/1517) [`d3747af`](https://github.com/Schniz/fnm/commit/d3747affd604223c752171c14944bd5773096b09) Thanks [@Schniz](https://github.com/Schniz)! - Improve `--use-on-cd` shell hook robustness by de-duplicating the zsh hook on re-source and fixing Windows CMD hook behavior for paths with spaces and drive changes.
 
 - [#1441](https://github.com/Schniz/fnm/pull/1441) [`bc4d19a`](https://github.com/Schniz/fnm/commit/bc4d19a481c11b4182f51683f03a8d366f1208d2) Thanks [@Schniz](https://github.com/Schniz)! - bump Rust toolchain to 1.88
 
