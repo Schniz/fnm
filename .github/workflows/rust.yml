@@ -84,9 +84,7 @@ jobs:
           strip target/x86_64-apple-darwin/release/fnm
           cargo build --release --target aarch64-apple-darwin
           strip target/aarch64-apple-darwin/release/fnm
-
           mkdir -p target/release
-
           # create a universal binary
           lipo -create \
             target/x86_64-apple-darwin/release/fnm \
@@ -316,10 +314,8 @@ jobs:
 
           env: |
             RUST_LOG: fnm=debug
-
           dockerRunArgs: |
             --volume "${PWD}/target/${{matrix.rust_target}}/release:/artifacts"
-
           # Set an output parameter `uname` for use in subsequent steps
           run: |
             echo "Hello from $(uname -a)"
@@ -328,7 +324,6 @@ jobs:
             /artifacts/fnm install 12.0.0
             echo "fnm exec --using=12 -- node --version"
             /artifacts/fnm exec --using=12 -- node --version
-
       - uses: actions/upload-artifact@v4
         with:
           name: fnm-${{ matrix.arch }}
@@ -374,7 +369,6 @@ jobs:
       - name: Generate command markdown
         run: |
           pnpm run generate-command-docs --check --binary-path=$(which fnm)
-
       # TODO: use bnz
       # run_e2e_benchmarks:
       #   runs-on: ubuntu-latest

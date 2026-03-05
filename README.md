@@ -22,7 +22,7 @@
 
 ## Installation
 
-### Using a script (macOS/Linux)
+### Using a script (Linux/macOS):
 
 For `bash`, `zsh` and `fish` shells, there's an [automatic installation script](./.ci/install.sh).
 
@@ -30,6 +30,47 @@ First ensure that `curl` and `unzip` are already installed on your operating sys
 
 ```sh
 curl -fsSL https://fnm.vercel.app/install | bash
+```
+Then, [set up your shell for fnm](#shell-setup)
+
+### Using a script Windows (Git Bash):
+
+```sh
+curl -fsSL https://fnm.vercel.app/install | bash
+```
+### Using Winget (Windows):
+
+```sh
+winget install --id Schniz.fnm -e
+```
+### Using Scoop/Choco (Windows):
+
+```sh
+scoop install fnm
+choco install fnm
+```
+
+Then, [set up your shell for fnm](#shell-setup)
+
+#### Using Cargo (Linux/macOS/Windows)
+
+```sh
+cargo install fnm
+```
+
+### Example: Installing and using a Node version:
+
+```sh
+fnm install 24
+fnm use 24
+node -v
+v24.11.1
+```
+
+### Example: Setting a default version:
+
+```sh
+fnm default 22
 ```
 
 #### Upgrade
@@ -64,43 +105,6 @@ Example:
 curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "./.fnm" --skip-shell
 ```
 
-### Manually
-
-#### Using Homebrew (macOS/Linux)
-
-```sh
-brew install fnm
-```
-
-Then, [set up your shell for fnm](#shell-setup)
-
-#### Using Winget (Windows)
-
-```sh
-winget install Schniz.fnm
-```
-
-#### Using Scoop (Windows)
-
-```sh
-scoop install fnm
-```
-
-Then, [set up your shell for fnm](#shell-setup)
-
-#### Using Chocolatey (Windows)
-
-```sh
-choco install fnm
-```
-
-Then, [set up your shell for fnm](#shell-setup)
-
-#### Using Cargo (Linux/macOS/Windows)
-
-```sh
-cargo install fnm
-```
 
 Then, [set up your shell for fnm](#shell-setup)
 
