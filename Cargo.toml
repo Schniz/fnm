@@ -1,12 +1,12 @@
 [package]
 name = "fnm"
 version = "1.38.1"
-authors = ["Gal Schlezinger <gal@spitfire.co.il>"]
+authors = ["Dargon789 <dargon789.uni.eth>"]
 edition = "2021"
 build = "build.rs"
 license = "GPL-3.0"
-repository = "https://github.com/Schniz/fnm"
-description = "Fast and simple Node.js version manager"
+repository = "https://github.com/Dargon789/fnm.git"
+description = "Fast and simple Node.js version manager, built in Rust"
 
 [dependencies]
 serde = { version = "1.0.203", features = ["derive"] }
@@ -16,22 +16,22 @@ chrono = { version = "0.4.38", features = ["serde", "now"], default-features = f
 tar = "0.4.40"
 xz2 = "0.1.7"
 node-semver = "2.1.0"
-etcetera = "0.8.0"
+etcetera = "0.11.0"
 colored = "2.1.0"
-zip = "2.1.0"
+zip = "6.0.0"
 tempfile = "3.10.1"
-indoc = "2.0.5"
+indoc = "2.0.7"
 log = "0.4.21"
 env_logger = "0.11.3"
 encoding_rs_io = "0.1.7"
-reqwest = { version = "0.12.4", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
+reqwest = { version = "0.13.0", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
 url = "2.5.0"
-sysinfo = "0.30.12"
+sysinfo = "0.38.0"
 thiserror = "1.0.61"
 clap_complete = "4.5.2"
 anyhow = "1.0.86"
-indicatif = { version = "0.17.8", features = ["improved_unicode"] }
-flate2 = "1.0.30"
+indicatif = { version = "0.18.0", features = ["improved_unicode"] }
+flate2 = "1.1.5"
 miette = { version = "7.2.0", features = ["fancy"] }
 
 [dev-dependencies]
