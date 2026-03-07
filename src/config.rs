@@ -172,6 +172,10 @@ impl FnmConfig {
         self.directories.multishell_storage()
     }
 
+    pub fn current_global_version_path(&self) -> std::path::PathBuf {
+        self.base_dir_with_default().join("current")
+    }
+
     #[cfg(test)]
     pub fn with_base_dir(mut self, base_dir: Option<std::path::PathBuf>) -> Self {
         self.base_dir = base_dir;

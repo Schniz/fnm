@@ -6,7 +6,7 @@ use std::str::FromStr;
 
 #[derive(Debug, PartialEq, PartialOrd, Eq, Ord, Clone)]
 pub enum Version {
-    Semver(node_semver::Version),
+    Semver(semver::Version),
     Lts(LtsType),
     Alias(String),
     Latest,
@@ -14,11 +14,11 @@ pub enum Version {
 }
 
 fn first_letter_is_number(s: &str) -> bool {
-    s.chars().next().is_some_and(|x| x.is_ascii_digit())
+    s.chars().next().map_or(false, |x| x.is_ascii_digit())
 }
 
 impl Version {
-    pub fn parse<S: AsRef<str>>(version_str: S) -> Result<Self, node_semver::SemverError> {
+    pub fn parse<S: AsRef<str>>(version_str: S) -> Result<Self, semver::Error> {
         let lowercased = version_str.as_ref().to_lowercase();
         if lowercased == system_version::display_name() {
             Ok(Self::Bypassed)
@@ -27,7 +27,7 @@ impl Version {
             Ok(Self::Lts(lts_type))
         } else if first_letter_is_number(lowercased.trim_start_matches('v')) {
             let version_plain = lowercased.trim_start_matches('v');
-            let sver = node_semver::Version::parse(version_plain)?;
+            let sver = semver::Version::parse(version_plain)?;
             Ok(Self::Semver(sver))
         } else {
             Ok(Self::Alias(lowercased))
@@ -53,7 +53,7 @@ impl Version {
     }
 
     pub fn v_str(&self) -> String {
-        format!("{self}")
+        format!("{}", self)
     }
 
     pub fn installation_path(&self, config: &config::FnmConfig) -> std::path::PathBuf {
@@ -77,9 +77,6 @@ impl Version {
     }
 }
 
-// TODO: add a trait called BinPath that &Path and PathBuf implements
-// which adds the `.bin_path()` which works both on windows and unix :)
-
 impl<'de> serde::Deserialize<'de> for Version {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -94,23 +91,23 @@ impl std::fmt::Display for Version {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Bypassed => write!(f, "{}", system_version::display_name()),
-            Self::Lts(lts) => write!(f, "lts-{lts}"),
-            Self::Semver(semver) => write!(f, "v{semver}"),
-            Self::Alias(alias) => write!(f, "{alias}"),
+            Self::Lts(lts) => write!(f, "lts-{}", lts),
+            Self::Semver(semver) => write!(f, "v{}", semver),
+            Self::Alias(alias) => write!(f, "{}", alias),
             Self::Latest => write!(f, "latest"),
         }
     }
 }
 
 impl FromStr for Version {
-    type Err = node_semver::SemverError;
+    type Err = semver::Error;
     fn from_str(s: &str) -> Result<Version, Self::Err> {
         Self::parse(s)
     }
 }
 
-impl PartialEq<node_semver::Version> for Version {
-    fn eq(&self, other: &node_semver::Version) -> bool {
+impl PartialEq<semver::Version> for Version {
+    fn eq(&self, other: &semver::Version) -> bool {
         match self {
             Self::Bypassed | Self::Lts(_) | Self::Alias(_) | Self::Latest => false,
             Self::Semver(v) => v == other,
