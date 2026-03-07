@@ -83,4 +83,32 @@ mod tests {
         std::fs::remove_dir_all(base_dir).unwrap();
     }
 
+    #[test]
+    fn use_on_cd_without_install_if_missing() {
+        let base_dir = std::env::temp_dir().join("fnm cmd test no install");
+        std::fs::create_dir_all(&base_dir).unwrap();
+        let config = crate::config::FnmConfig::default().with_base_dir(Some(base_dir.clone()));
+        WindowsCmd.use_on_cd(&config, false).unwrap();
+
+        let cd_cmd = std::fs::read_to_string(base_dir.join("cd.cmd")).unwrap();
+        assert!(cd_cmd.contains("fnm use --silent-if-unchanged"));
+        assert!(!cd_cmd.contains("--install-if-missing"));
+
+        std::fs::remove_file(base_dir.join("cd.cmd")).unwrap();
+        std::fs::remove_dir_all(base_dir).unwrap();
+    }
+
+    #[test]
+    fn use_on_cd_with_install_if_missing() {
+        let base_dir = std::env::temp_dir().join("fnm cmd test install");
+        std::fs::create_dir_all(&base_dir).unwrap();
+        let config = crate::config::FnmConfig::default().with_base_dir(Some(base_dir.clone()));
+        WindowsCmd.use_on_cd(&config, true).unwrap();
+
+        let cd_cmd = std::fs::read_to_string(base_dir.join("cd.cmd")).unwrap();
+        assert!(cd_cmd.contains("fnm use --silent-if-unchanged --install-if-missing"));
+
+        std::fs::remove_file(base_dir.join("cd.cmd")).unwrap();
+        std::fs::remove_dir_all(base_dir).unwrap();
+    }
 }

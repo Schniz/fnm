@@ -64,3 +64,25 @@ impl Shell for PowerShell {
         clap_complete::Shell::PowerShell
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn use_on_cd_without_install_if_missing() {
+        let output = PowerShell
+            .use_on_cd(&crate::config::FnmConfig::default(), false)
+            .unwrap();
+        assert!(output.contains("fnm use --silent-if-unchanged"));
+        assert!(!output.contains("--install-if-missing"));
+    }
+
+    #[test]
+    fn use_on_cd_with_install_if_missing() {
+        let output = PowerShell
+            .use_on_cd(&crate::config::FnmConfig::default(), true)
+            .unwrap();
+        assert!(output.contains("fnm use --silent-if-unchanged --install-if-missing"));
+    }
+}
