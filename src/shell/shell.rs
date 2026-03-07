@@ -6,7 +6,11 @@ use clap::ValueEnum;
 pub trait Shell: Debug {
     fn path(&self, path: &Path) -> anyhow::Result<String>;
     fn set_env_var(&self, name: &str, value: &str) -> String;
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String>;
+    fn use_on_cd(
+        &self,
+        config: &crate::config::FnmConfig,
+        install_if_missing: bool,
+    ) -> anyhow::Result<String>;
     fn rehash(&self) -> Option<&'static str> {
         None
     }

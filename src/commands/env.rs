@@ -26,6 +26,9 @@ pub struct Env {
     /// Print the script to change Node versions every directory change
     #[clap(long)]
     use_on_cd: bool,
+    /// Install the target version if missing (only relevant with --use-on-cd)
+    #[clap(long, requires = "use_on_cd")]
+    install_if_missing: bool,
 }
 
 fn generate_symlink_path() -> String {
@@ -144,7 +147,7 @@ impl Command for Env {
                 config.clone().with_multishell_path(multishell_path.clone());
             let use_cmd = Use {
                 version: None,
-                install_if_missing: false,
+                install_if_missing: self.install_if_missing,
                 silent_if_unchanged: true,
                 info_to_stderr: true,
             };
@@ -160,7 +163,7 @@ impl Command for Env {
                 colored::control::unset_override();
             }
 
-            println!("{}", shell.use_on_cd(config)?);
+            println!("{}", shell.use_on_cd(config, self.install_if_missing)?);
         }
         if let Some(v) = shell.rehash() {
             println!("{v}");

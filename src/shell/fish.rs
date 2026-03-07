@@ -25,22 +25,32 @@ impl Shell for Fish {
         format!("set -gx {name} {value:?};")
     }
 
-    fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+    fn use_on_cd(
+        &self,
+        config: &crate::config::FnmConfig,
+        install_if_missing: bool,
+    ) -> anyhow::Result<String> {
         let version_file_exists_condition = if config.resolve_engines() {
             "test -f .node-version -o -f .nvmrc -o -f package.json"
         } else {
             "test -f .node-version -o -f .nvmrc"
         };
+        let fnm_use_cmd = if install_if_missing {
+            "fnm use --silent-if-unchanged --install-if-missing"
+        } else {
+            "fnm use --silent-if-unchanged"
+        };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
                 r"
                     if {version_file_exists_condition}
-                        fnm use --silent-if-unchanged
+                        {fnm_use_cmd}
                     end
                 ",
                 version_file_exists_condition = version_file_exists_condition,
+                fnm_use_cmd = fnm_use_cmd,
             ),
-            VersionFileStrategy::Recursive => String::from(r"fnm use --silent-if-unchanged"),
+            VersionFileStrategy::Recursive => String::from(fnm_use_cmd),
         };
         Ok(formatdoc!(
             r"
