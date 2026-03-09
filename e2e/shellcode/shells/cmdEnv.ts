@@ -5,6 +5,7 @@ type EnvConfig = {
   useOnCd: boolean
   logLevel: string
   corepackEnabled: boolean
+  resolveDevEngines: boolean
   resolveEngines: boolean
   nodeDistMirror: string
 }
@@ -15,6 +16,7 @@ function stringify(envConfig: Partial<EnvConfig> = {}) {
     useOnCd,
     logLevel,
     corepackEnabled,
+    resolveDevEngines,
     resolveEngines,
     executableName = "fnm",
     nodeDistMirror,
@@ -24,6 +26,7 @@ function stringify(envConfig: Partial<EnvConfig> = {}) {
     useOnCd && "--use-on-cd",
     logLevel && `--log-level=${logLevel}`,
     corepackEnabled && "--corepack-enabled",
+    resolveDevEngines && `--resolve-dev-engines`,
     resolveEngines && `--resolve-engines`,
     nodeDistMirror && `--node-dist-mirror=${JSON.stringify(nodeDistMirror)}`,
   ]

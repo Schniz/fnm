@@ -76,6 +76,24 @@ pub struct FnmConfig {
     )]
     corepack_enabled: bool,
 
+    /// Resolve `devEngines.runtime` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
+    /// This feature is enabled by default. To disable it, provide `--resolve-dev-engines=false`.
+    ///
+    /// Note: The Node version in `devEngines.runtime` can be any semver range, with the latest satisfying version being resolved.
+    /// Note 2: The `devEngines.runtime` field has priority over the `engines.node` field.
+    #[clap(
+        long,
+        env = "FNM_RESOLVE_DEV_ENGINES",
+        global = true,
+        hide_env_values = true,
+        verbatim_doc_comment
+    )]
+    #[expect(
+        clippy::option_option,
+        reason = "clap Option<Option<T>> supports --x and --x=value syntaxes"
+    )]
+    resolve_dev_engines: Option<Option<bool>>,
+
     /// Resolve `engines.node` field in `package.json` whenever a `.node-version` or `.nvmrc` file is not present.
     /// This feature is enabled by default. To disable it, provide `--resolve-engines=false`.
     ///
@@ -110,6 +128,7 @@ impl Default for FnmConfig {
             arch: Arch::default(),
             version_file_strategy: VersionFileStrategy::default(),
             corepack_enabled: false,
+            resolve_dev_engines: None,
             resolve_engines: None,
             directories: Directories::default(),
         }
@@ -123,6 +142,10 @@ impl FnmConfig {
 
     pub fn corepack_enabled(&self) -> bool {
         self.corepack_enabled
+    }
+
+    pub fn resolve_dev_engines(&self) -> bool {
+        self.resolve_dev_engines.flatten().unwrap_or(true)
     }
 
     pub fn resolve_engines(&self) -> bool {
