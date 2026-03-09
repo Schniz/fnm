@@ -190,9 +190,7 @@ setup_shell() {
       echo '# fnm'
       echo 'set FNM_PATH "'"$INSTALL_DIR"'"'
       echo 'if [ -d "$FNM_PATH" ]'
-      if [ "$USE_HOMEBREW" != "true" ]; then
-        echo '  set PATH "$FNM_PATH" $PATH'
-      fi
+      echo '  set PATH "$FNM_PATH" $PATH'
       echo '  fnm env | source'
       echo 'end'
     } | tee -a "$CONF_FILE"
