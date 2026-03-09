@@ -54,7 +54,6 @@ impl Shell for Bash {
                 }}
 
                 alias cd=__fnmcd
-                __fnm_use_if_file_found
             "#,
             autoload_hook = autoload_hook
         ))
