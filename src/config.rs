@@ -17,6 +17,16 @@ pub struct FnmConfig {
     )]
     pub node_dist_mirror: Url,
 
+    /// Authentication header for Node.js distribution mirror (e.g., "Bearer token123").
+    /// Only use with HTTPS mirrors you trust.
+    #[clap(
+        long,
+        env = "FNM_AUTH_HEADER",
+        global = true,
+        hide_env_values = true
+    )]
+    auth_header: Option<String>,
+
     /// The root directory of fnm installations.
     #[clap(
         long = "fnm-dir",
@@ -104,6 +114,7 @@ impl Default for FnmConfig {
     fn default() -> Self {
         Self {
             node_dist_mirror: Url::parse("https://nodejs.org/dist/").unwrap(),
+            auth_header: None,
             base_dir: None,
             multishell_path: None,
             log_level: LogLevel::Info,
@@ -127,6 +138,10 @@ impl FnmConfig {
 
     pub fn resolve_engines(&self) -> bool {
         self.resolve_engines.flatten().unwrap_or(true)
+    }
+
+    pub fn auth_header(&self) -> Option<&str> {
+        self.auth_header.as_deref()
     }
 
     pub fn multishell_path(&self) -> Option<&std::path::Path> {
