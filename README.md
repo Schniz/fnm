@@ -140,6 +140,9 @@ Please follow your shell instructions to install them.
 Environment variables need to be setup before you can start using fnm.
 This is done by evaluating the output of `fnm env`.
 
+> [!TIP]
+> Prefer passing an explicit shell (for example `fnm env --shell bash`) instead of relying on shell inference at runtime. It is a bit faster and avoids process tree detection.
+
 > [!NOTE]
 > Check out the [Configuration](./docs/configuration.md) section to enable highly
 > recommended features, like automatic version switching.
@@ -201,7 +204,7 @@ fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
-fnm is also supported but is not entirely covered. You can set up a startup script for [cmd.exe]( https://superuser.com/a/144348) or [Windows Terminal](https://superuser.com/a/1855283) and append the following lines:
+fnm is also supported but is not entirely covered. You can set up a startup script for [cmd.exe](https://superuser.com/a/144348) or [Windows Terminal](https://superuser.com/a/1855283) and append the following lines:
 
 ```batch
 @echo off
