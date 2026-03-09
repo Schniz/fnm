@@ -374,6 +374,7 @@ jobs:
       - name: Generate command markdown
         run: |
           pnpm run generate-command-docs --check --binary-path=$(which fnm)
+          pnpm run generate-man-page --check --binary-path=$(which fnm)
 
       # TODO: use bnz
       # run_e2e_benchmarks:
