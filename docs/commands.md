@@ -225,6 +225,8 @@ Options:
 ```
 Install a new Node.js version
 
+When a `default-packages` file exists at `$FNM_DIR/default-packages`, fnm will install the listed packages globally (via `npm install -g`) after each `fnm install`.
+
 Usage: fnm install [OPTIONS] [VERSION]
 
 Arguments:
