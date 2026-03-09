@@ -131,6 +131,27 @@ Where `<SHELL>` can be one of the supported shells:
 
 Please follow your shell instructions to install them.
 
+## Man page
+
+`fnm` ships generated man pages under `man/*.1` (`fnm.1` and command-specific pages such as `fnm-install.1`).
+
+You can open it directly from the repository:
+
+```sh
+man ./man/fnm.1
+```
+
+Or install all pages under your manpath, for example:
+
+```sh
+mkdir -p "$HOME/.local/share/man/man1"
+cp ./man/*.1 "$HOME/.local/share/man/man1/"
+man fnm
+man fnm-install
+```
+
+If you install fnm via a package manager (for example Homebrew), the man page may already be installed for you.
+
 ### Shell Setup
 
 Environment variables need to be setup before you can start using fnm.

@@ -29,6 +29,7 @@ url = "2.5.0"
 sysinfo = "0.30.12"
 thiserror = "1.0.61"
 clap_complete = "4.5.2"
+clap_mangen = "0.2.24"
 anyhow = "1.0.86"
 indicatif = { version = "0.17.8", features = ["improved_unicode"] }
 flate2 = "1.0.30"
