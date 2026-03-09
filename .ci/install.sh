@@ -177,7 +177,7 @@ setup_shell() {
       if [ "$USE_HOMEBREW" != "true" ]; then
         echo '  export PATH="$FNM_PATH:$PATH"'
       fi
-      echo '  eval "`fnm env`"'
+      echo '  eval "$(fnm env --shell zsh)"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
 
@@ -193,7 +193,7 @@ setup_shell() {
       if [ "$USE_HOMEBREW" != "true" ]; then
         echo '  set PATH "$FNM_PATH" $PATH'
       fi
-      echo '  fnm env | source'
+      echo '  fnm env --shell fish | source'
       echo 'end'
     } | tee -a "$CONF_FILE"
 
@@ -213,7 +213,7 @@ setup_shell() {
       if [ "$USE_HOMEBREW" != "true" ]; then
         echo '  export PATH="$FNM_PATH:$PATH"'
       fi
-      echo '  eval "`fnm env`"'
+      echo '  eval "$(fnm env --shell bash)"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
 
