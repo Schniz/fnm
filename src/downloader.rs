@@ -70,6 +70,7 @@ fn download_url(base_url: &Url, version: &Version, arch: Arch, ext: &str) -> Url
 pub fn install_node_dist<P: AsRef<Path>>(
     version: &Version,
     node_dist_mirror: &Url,
+    node_dist_mirror_token: &str,
     installations_dir: P,
     arch: Arch,
     show_progress: bool,
@@ -93,7 +94,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
         let ext = extract.file_extension();
         let url = download_url(node_dist_mirror, version, arch, ext);
         debug!("Going to call for {}", &url);
-        let response = crate::http::get(url.as_str())?;
+        let response = crate::http::get(url.as_str(), Some(node_dist_mirror_token))?;
 
         if !response.status().is_success() {
             continue;
@@ -175,7 +176,7 @@ mod tests {
         let version = Version::parse("12.0.0").unwrap();
         let arch = Arch::X64;
         let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
-        install_node_dist(&version, &node_dist_mirror, path, arch, false)
+        install_node_dist(&version, &node_dist_mirror, "", path, arch, false)
             .expect("Can't install Node 12");
 
         let mut location_path = path.join(version.v_str()).join("installation");

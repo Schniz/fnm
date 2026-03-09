@@ -17,6 +17,15 @@ pub struct FnmConfig {
     )]
     pub node_dist_mirror: Url,
 
+    #[clap(
+        long,
+        env = "FNM_NODE_DIST_MIRROR_TOKEN",
+        default_value_t,
+        global = true,
+        hide_env_values = true
+    )]
+    pub node_dist_mirror_token: String,
+
     /// The root directory of fnm installations.
     #[clap(
         long = "fnm-dir",
@@ -104,6 +113,7 @@ impl Default for FnmConfig {
     fn default() -> Self {
         Self {
             node_dist_mirror: Url::parse("https://nodejs.org/dist/").unwrap(),
+            node_dist_mirror_token: String::new(),
             base_dir: None,
             multishell_path: None,
             log_level: LogLevel::Info,
