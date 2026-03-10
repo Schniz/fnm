@@ -46,6 +46,12 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
         .then(shell.call("fnm", ["use", "18"]))
         .then(shell.call("npm", ["install", "-g", "cowsay"]))
         .then(shell.call("fnm", ["use", "16"]))
+        .then(
+          shell.scriptOutputContains(
+            shell.call("node", ["check-cowsay-in-path.js"]),
+            "found",
+          ),
+        )
         .then(shell.call("npm", ["uninstall", "-g", "cowsay"]))
         .then(
           shell.scriptOutputContains(
