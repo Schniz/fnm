@@ -4,6 +4,7 @@ use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
+use crate::installed_versions;
 use crate::lts::LtsType;
 use crate::outln;
 use crate::progress::ProgressConfig;
@@ -38,6 +39,11 @@ pub struct Install {
     /// Use the installed version immediately after installation
     #[clap(long)]
     pub r#use: bool,
+
+    /// Reinstall global packages from a specified Node version after installing.
+    /// Analogous to nvm's --reinstall-packages-from flag.
+    #[clap(long, value_name = "version")]
+    pub reinstall_packages_from: Option<UserVersion>,
 }
 
 impl Install {
@@ -73,6 +79,7 @@ impl Command for Install {
         let current_dir = std::env::current_dir().unwrap();
         let show_progress = self.progress.enabled(config);
         let use_installed = self.r#use;
+        let reinstall_packages_from = self.reinstall_packages_from.clone();
 
         let current_version = self
             .version()?
@@ -172,6 +179,10 @@ impl Command for Install {
             enable_corepack(&version, config)?;
         }
 
+        if let Some(source_version_str) = reinstall_packages_from {
+            reinstall_packages_from_version(&source_version_str, &version, config)?;
+        }
+
         if use_installed {
             use_installed_version(&version, config)?;
         }
@@ -203,6 +214,196 @@ fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
         .apply(config)
         .map_err(|source| Error::CorepackError { source })?;
     Ok(())
+}
+
+fn reinstall_packages_from_version(
+    source_version_str: &UserVersion,
+    target_version: &Version,
+    config: &FnmConfig,
+) -> Result<(), Error> {
+    let all_versions = installed_versions::list(config.installations_dir()).map_err(|source| {
+        Error::ReinstallPackagesError {
+            source: Box::new(source),
+        }
+    })?;
+    let source_version = source_version_str
+        .to_version(&all_versions, config)
+        .ok_or_else(|| Error::ReinstallPackagesFromVersionNotInstalled {
+            version: source_version_str.clone(),
+        })?
+        .clone();
+
+    let packages = list_global_packages(&source_version, config)?;
+    let source_version_display = format!("Node {source_version}");
+    if packages.is_empty() {
+        outln!(
+            config,
+            Info,
+            "No global packages found in {}.",
+            source_version_display.cyan()
+        );
+        return Ok(());
+    }
+
+    outln!(
+        config,
+        Info,
+        "Reinstalling global packages from {}...",
+        source_version_display.cyan()
+    );
+    for package in &packages {
+        outln!(config, Info, "  - {}", package);
+    }
+    reinstall_packages(&packages, target_version, config)?;
+    outln!(
+        config,
+        Info,
+        "Successfully reinstalled {} packages.",
+        packages.len()
+    );
+
+    Ok(())
+}
+
+fn list_global_packages(version: &Version, config: &FnmConfig) -> Result<Vec<String>, Error> {
+    use std::process::Command as StdCommand;
+
+    let npm_path = if cfg!(windows) {
+        version.installation_path(config).join("npm.cmd")
+    } else {
+        version.installation_path(config).join("bin").join("npm")
+    };
+
+    let bin_dir = if cfg!(windows) {
+        version.installation_path(config)
+    } else {
+        version.installation_path(config).join("bin")
+    };
+
+    let path_env =
+        prepend_to_path_env(bin_dir).map_err(|source| Error::ReinstallPackagesError {
+            source: Box::new(source),
+        })?;
+
+    let output = StdCommand::new(&npm_path)
+        .args([
+            "ls",
+            "--global",
+            "--parseable",
+            "--long",
+            "--loglevel=error",
+        ])
+        .env("PATH", path_env)
+        .output()
+        .map_err(|source| Error::ReinstallPackagesError {
+            source: Box::new(source),
+        })?;
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    if !output.status.success() && stdout.trim().is_empty() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(Error::ReinstallPackagesError {
+            source: std::io::Error::other(format!(
+                "npm ls exited with {:?}: {}",
+                output.status,
+                stderr.trim()
+            ))
+            .into(),
+        });
+    }
+
+    Ok(parse_npm_ls_global_parseable_long_output(&stdout))
+}
+
+fn reinstall_packages(
+    packages: &[String],
+    target_version: &Version,
+    config: &FnmConfig,
+) -> Result<(), Error> {
+    use std::process::{Command as StdCommand, Stdio};
+
+    if packages.is_empty() {
+        return Ok(());
+    }
+
+    let npm_path = if cfg!(windows) {
+        target_version.installation_path(config).join("npm.cmd")
+    } else {
+        target_version
+            .installation_path(config)
+            .join("bin")
+            .join("npm")
+    };
+
+    let bin_dir = if cfg!(windows) {
+        target_version.installation_path(config)
+    } else {
+        target_version.installation_path(config).join("bin")
+    };
+
+    let path_env =
+        prepend_to_path_env(bin_dir).map_err(|source| Error::ReinstallPackagesError {
+            source: Box::new(source),
+        })?;
+
+    let status = StdCommand::new(&npm_path)
+        .args(["install", "--global"])
+        .args(packages)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .env("PATH", path_env)
+        .status()
+        .map_err(|source| Error::ReinstallPackagesError {
+            source: Box::new(source),
+        })?;
+
+    if !status.success() {
+        return Err(Error::ReinstallPackagesError {
+            source: std::io::Error::other(format!("npm install exited with {status:?}")).into(),
+        });
+    }
+
+    Ok(())
+}
+
+fn prepend_to_path_env(
+    bin_dir: std::path::PathBuf,
+) -> Result<std::ffi::OsString, std::env::JoinPathsError> {
+    let mut paths: Vec<std::path::PathBuf> = std::env::var_os("PATH")
+        .map(|paths_env| std::env::split_paths(&paths_env).collect())
+        .unwrap_or_default();
+    paths.insert(0, bin_dir);
+    std::env::join_paths(paths)
+}
+
+fn parse_npm_ls_global_parseable_long_output(output: &str) -> Vec<String> {
+    output
+        .lines()
+        .filter_map(|line| {
+            let line = line.trim();
+            if line.is_empty() {
+                return None;
+            }
+
+            let (_path, package_spec) = line.trim_end_matches(':').rsplit_once(':')?;
+            let package_spec = package_spec.trim();
+            if package_spec.is_empty() {
+                return None;
+            }
+
+            if package_spec.starts_with("npm@") || package_spec.starts_with("corepack@") {
+                return None;
+            }
+
+            let version_separator_index = package_spec.rfind('@')?;
+            if version_separator_index == 0 || version_separator_index == package_spec.len() - 1 {
+                return None;
+            }
+
+            Some(package_spec.to_string())
+        })
+        .collect()
 }
 
 fn use_installed_version(version: &Version, config: &FnmConfig) -> Result<(), Error> {
@@ -256,6 +457,13 @@ pub enum Error {
     UninstallableVersion { version: Version },
     #[error("Too many versions provided. Please don't use --lts with a version string.")]
     TooManyVersionsProvided,
+    #[error("Version {version} is not installed. Install it first with 'fnm install {version}'.")]
+    ReinstallPackagesFromVersionNotInstalled { version: UserVersion },
+    #[error("Failed to reinstall packages: {source}")]
+    ReinstallPackagesError {
+        #[source]
+        source: Box<dyn std::error::Error>,
+    },
 }
 
 #[cfg(test)]
@@ -276,6 +484,7 @@ mod tests {
             latest: false,
             progress: ProgressConfig::Never,
             r#use: false,
+            reinstall_packages_from: None,
         }
         .apply(&config)
         .expect("Can't install");
@@ -303,6 +512,7 @@ mod tests {
             latest: true,
             progress: ProgressConfig::Never,
             r#use: false,
+            reinstall_packages_from: None,
         }
         .apply(&config)
         .expect("Can't install");
@@ -319,5 +529,56 @@ mod tests {
             .canonicalize()
             .unwrap()
             .exists());
+    }
+
+    #[test]
+    fn test_parse_npm_ls_global_parseable_long_output() {
+        let output = r"
+/path/to/lib
+/path/to/node_modules/typescript:typescript@5.4.2:
+/path/to/node_modules/eslint:eslint@9.0.0:
+C:\Users\me\node_modules\prettier:prettier@3.2.5:
+/path/to/node_modules/@openai/codex:@openai/codex@0.99.0:
+        ";
+
+        let result = parse_npm_ls_global_parseable_long_output(output);
+        assert_eq!(
+            result,
+            vec![
+                "typescript@5.4.2".to_string(),
+                "eslint@9.0.0".to_string(),
+                "prettier@3.2.5".to_string(),
+                "@openai/codex@0.99.0".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn test_parse_npm_ls_global_parseable_long_output_filters_builtins() {
+        let output = r"
+/path/to/node_modules/npm:npm@10.0.0:
+/path/to/node_modules/corepack:corepack@0.28.0:
+/path/to/node_modules/is-odd:is-odd@3.0.1:
+        ";
+
+        let result = parse_npm_ls_global_parseable_long_output(output);
+        assert_eq!(result, vec!["is-odd@3.0.1".to_string()]);
+    }
+
+    #[test]
+    fn test_parse_npm_ls_global_parseable_long_output_empty() {
+        let result = parse_npm_ls_global_parseable_long_output("");
+        assert_eq!(result, Vec::<String>::new());
+    }
+
+    #[test]
+    fn test_parse_npm_ls_global_parseable_long_output_skips_malformed_lines() {
+        let output = r"
+this is not parseable output
+/path/to/node_modules/is-odd:is-odd@3.0.1:
+        ";
+
+        let result = parse_npm_ls_global_parseable_long_output(output);
+        assert_eq!(result, vec!["is-odd@3.0.1".to_string()]);
     }
 }
