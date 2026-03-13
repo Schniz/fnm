@@ -1,4 +1,5 @@
 mod bash;
+mod elvish;
 mod fish;
 mod infer;
 mod powershell;
@@ -10,6 +11,7 @@ mod shell;
 mod windows_compat;
 
 pub use bash::Bash;
+pub use elvish::Elvish;
 pub use fish::Fish;
 pub use infer::infer_shell;
 pub use powershell::PowerShell;
