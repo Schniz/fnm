@@ -12,7 +12,6 @@ use std::fmt::Debug;
 use std::io::IsTerminal;
 use thiserror::Error;
 
-#[allow(clippy::struct_excessive_bools)]
 #[derive(clap::Parser, Debug, Default)]
 pub struct Env {
     /// The shell syntax to use. Infers when missing.
@@ -24,11 +23,6 @@ pub struct Env {
     /// Deprecated. This is the default now.
     #[clap(long, hide = true)]
     multi: bool,
-    /// Have a single Node.js version defined globally. This opts out of the "multishell" solution
-    /// which allows a Node.js version per shell session. All your shell sessions will share a
-    /// global Node.js version, and calling `fnm use` will update the global pointer.
-    #[clap(long, conflicts_with = "multi")]
-    global: bool,
     /// Print the script to change Node versions every directory change
     #[clap(long)]
     use_on_cd: bool,
@@ -44,15 +38,15 @@ fn generate_symlink_path() -> String {
 
 fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
     let base_dir = config.multishell_storage().ensure_exists_silently();
-    let mut path = base_dir.join(generate_symlink_path());
+    let mut temp_dir = base_dir.join(generate_symlink_path());
 
-    while path.exists() {
-        path = base_dir.join(generate_symlink_path());
+    while temp_dir.exists() {
+        temp_dir = base_dir.join(generate_symlink_path());
     }
 
-    match symlink_dir(config.default_version_dir(), &path) {
-        Ok(()) => Ok(path),
-        Err(source) => Err(Error::CantCreateSymlink { source, path }),
+    match symlink_dir(config.default_version_dir(), &temp_dir) {
+        Ok(()) => Ok(temp_dir),
+        Err(source) => Err(Error::CantCreateSymlink { source, temp_dir }),
     }
 }
 
@@ -76,9 +70,7 @@ fn set_path_for_multishell(multishell_path: &std::path::Path) {
     let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
     split_paths.insert(0, path_for_node);
     if let Ok(new_path) = std::env::join_paths(split_paths) {
-        unsafe {
-            std::env::set_var("PATH", new_path);
-        }
+        std::env::set_var("PATH", new_path);
     }
 }
 
@@ -96,19 +88,7 @@ impl Command for Env {
             );
         }
 
-        let multishell_path = if self.global {
-            let current_path = config.current_global_version_path();
-            crate::fs::two_phase_symlink(&config.default_version_dir(), &current_path).map_err(
-                |source| Error::SettingGlobalVersionSymlink {
-                    source,
-                    path: current_path.clone(),
-                },
-            )?;
-            current_path
-        } else {
-            make_symlink(config)?
-        };
-
+        let multishell_path = make_symlink(config)?;
         let base_dir = config.base_dir_with_default();
 
         let env_vars = [
@@ -198,17 +178,11 @@ pub enum Error {
         shells_as_string()
     )]
     CantInferShell,
-    #[error("Can't create the symlink for multishells at {path:?}. Maybe there are some issues with permissions for the directory? {source}")]
+    #[error("Can't create the symlink for multishells at {temp_dir:?}. Maybe there are some issues with permissions for the directory? {source}")]
     CantCreateSymlink {
         #[source]
         source: std::io::Error,
-        path: std::path::PathBuf,
-    },
-    #[error("Can't assign global version symlink at {path:?}. Maybe there are some issues with permissions for the directory? {source}")]
-    SettingGlobalVersionSymlink {
-        #[source]
-        source: crate::fs::TwoPhaseSymlinkError,
-        path: std::path::PathBuf,
+        temp_dir: std::path::PathBuf,
     },
     #[error(transparent)]
     ShellError {
