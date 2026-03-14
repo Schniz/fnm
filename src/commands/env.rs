@@ -70,9 +70,7 @@ fn set_path_for_multishell(multishell_path: &std::path::Path) {
     let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
     split_paths.insert(0, path_for_node);
     if let Ok(new_path) = std::env::join_paths(split_paths) {
-        unsafe {
-            std::env::set_var("PATH", new_path);
-        }
+        std::env::set_var("PATH", new_path);
     }
 }
 
