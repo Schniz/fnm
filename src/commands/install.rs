@@ -172,6 +172,8 @@ impl Command for Install {
             enable_corepack(&version, config)?;
         }
 
+        install_default_packages(&version, config)?;
+
         if use_installed {
             use_installed_version(&version, config)?;
         }
@@ -199,9 +201,81 @@ fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
     } else {
         corepack_path.join("bin").join("corepack")
     };
-    super::exec::Exec::new_for_version(version, corepack_path.to_str().unwrap(), &["enable"])
+    let corepack_path_str = corepack_path.to_string_lossy();
+    super::exec::Exec::new_for_version(version, &corepack_path_str, &["enable"])
         .apply(config)
         .map_err(|source| Error::CorepackError { source })?;
+    Ok(())
+}
+
+fn parse_default_packages_file(file_path: &std::path::Path) -> Result<Vec<String>, std::io::Error> {
+    let contents = match std::fs::read_to_string(file_path) {
+        Ok(contents) => contents,
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => return Ok(vec![]),
+        Err(err) => return Err(err),
+    };
+
+    Ok(contents
+        .lines()
+        .filter_map(|line| {
+            let trimmed = line.trim();
+            if trimmed.is_empty() || trimmed.starts_with('#') {
+                None
+            } else {
+                Some(trimmed.to_string())
+            }
+        })
+        .collect())
+}
+
+fn install_default_packages(version: &Version, config: &FnmConfig) -> Result<(), Error> {
+    use std::process::{Command as StdCommand, Stdio};
+
+    let packages = parse_default_packages_file(&config.default_packages_file())?;
+    if packages.is_empty() {
+        return Ok(());
+    }
+
+    let npm_path = if cfg!(windows) {
+        version.installation_path(config).join("npm.cmd")
+    } else {
+        version.installation_path(config).join("bin").join("npm")
+    };
+
+    let bin_path = if cfg!(windows) {
+        version.installation_path(config)
+    } else {
+        version.installation_path(config).join("bin")
+    };
+
+    let path_env = {
+        let mut paths: Vec<_> = std::env::var_os("PATH")
+            .map(|paths_env| std::env::split_paths(&paths_env).collect())
+            .unwrap_or_default();
+        paths.insert(0, bin_path);
+        std::env::join_paths(paths).map_err(|source| Error::DefaultPackagesError {
+            source: Box::new(source),
+        })?
+    };
+
+    let status = StdCommand::new(&npm_path)
+        .args(["install", "--global"])
+        .args(&packages)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .env("PATH", path_env)
+        .status()
+        .map_err(|source| Error::DefaultPackagesError {
+            source: Box::new(source),
+        })?;
+
+    if !status.success() {
+        return Err(Error::DefaultPackagesError {
+            source: std::io::Error::other(format!("npm install exited with {status:?}")).into(),
+        });
+    }
+
     Ok(())
 }
 
@@ -234,6 +308,11 @@ pub enum Error {
     CorepackError {
         #[from]
         source: super::exec::Error,
+    },
+    #[error("Can't install default packages: {source}")]
+    DefaultPackagesError {
+        #[source]
+        source: Box<dyn std::error::Error>,
     },
     #[error(transparent)]
     UseError {
@@ -319,5 +398,41 @@ mod tests {
             .canonicalize()
             .unwrap()
             .exists());
+    }
+
+    #[test]
+    fn test_parse_default_packages_file() {
+        let base_dir = tempfile::tempdir().unwrap();
+        let file_path = base_dir.path().join("default-packages");
+        std::fs::write(
+            &file_path,
+            r"
+# this is a comment
+
+typescript
+prettier@3
+@scope/name
+",
+        )
+        .unwrap();
+
+        let packages = parse_default_packages_file(&file_path).unwrap();
+        assert_eq!(
+            packages,
+            vec![
+                "typescript".to_string(),
+                "prettier@3".to_string(),
+                "@scope/name".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn test_parse_default_packages_file_missing() {
+        let base_dir = tempfile::tempdir().unwrap();
+        let file_path = base_dir.path().join("default-packages");
+
+        let packages = parse_default_packages_file(&file_path).unwrap();
+        assert_eq!(packages, Vec::<String>::new());
     }
 }
