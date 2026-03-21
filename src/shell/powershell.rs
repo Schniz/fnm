@@ -42,8 +42,10 @@ impl Shell for PowerShell {
         };
         Ok(formatdoc!(
             r"
+                $global:cd_before_fnm = (Get-Command 'cd' -ErrorAction Ignore)
+                if (-not $global:cd_before_fnm) {{ $global:cd_before_fnm = 'Set-Location' }}
                 function global:Set-FnmOnLoad {{ {autoload_hook} }}
-                function global:Set-LocationWithFnm {{ param($path); if ($path -eq $null) {{Set-Location}} else {{Set-Location $path}}; Set-FnmOnLoad }}
+                function global:Set-LocationWithFnm {{ & $global:cd_before_fnm @args; Set-FnmOnLoad }}
                 Set-Alias -Scope global cd_with_fnm Set-LocationWithFnm
                 Set-Alias -Option AllScope -Scope global cd Set-LocationWithFnm
             ",
