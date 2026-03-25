@@ -30,9 +30,10 @@ pub struct Env {
 
 fn generate_symlink_path() -> String {
     format!(
-        "{}_{}",
+        "{}_{}_{:010}",
         std::process::id(),
         chrono::Utc::now().timestamp_millis(),
+        fastrand::u64(..10_000_000_000),
     )
 }
 
