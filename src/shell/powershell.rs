@@ -42,10 +42,12 @@ impl Shell for PowerShell {
         };
         Ok(formatdoc!(
             r"
-                $global:cd_before_fnm = (Get-Command 'cd' -ErrorAction Ignore)
-                if (-not $global:cd_before_fnm) {{ $global:cd_before_fnm = 'Set-Location' }}
                 function global:Set-FnmOnLoad {{ {autoload_hook} }}
-                function global:Set-LocationWithFnm {{ & $global:cd_before_fnm @args; Set-FnmOnLoad }}
+                & {{
+                    $cd = (Get-Command 'cd' -ErrorAction Ignore)
+                    if (-not $cd) {{ $cd = 'Set-Location' }}
+                    Set-Item Function:\global:Set-LocationWithFnm {{ & $cd @args; Set-FnmOnLoad }}.GetNewClosure()
+                }}
                 Set-Alias -Scope global cd_with_fnm Set-LocationWithFnm
                 Set-Alias -Option AllScope -Scope global cd Set-LocationWithFnm
             ",
