@@ -14,9 +14,9 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
     while let Some(pid) = current_pid {
         if let Some(process) = system.process(pid) {
             current_pid = process.parent();
-            debug!("pid {pid} parent process is {current_pid:?}");
-            let process_name = process
-                .exe()
+            let exe = process.exe();
+            debug!("pid {pid} parent process is {current_pid:?}: {exe:?}");
+            let process_name = exe
                 .and_then(|x| {
                     tap_none(x.file_stem(), || {
                         warn!("failed to get file stem from {:?}", x);
@@ -33,6 +33,7 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
                 .map(|x| &x[..])
                 .and_then(super::shell_from_string)
             {
+                debug!("Found supported shell: {:?}", shell);
                 return Some(shell);
             }
         } else {
