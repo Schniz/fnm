@@ -13,10 +13,7 @@ pub struct LsRemote {
 
     /// Show only LTS versions (optionally filter by LTS codename)  
     #[arg(long)]
-    #[expect(
-        clippy::option_option,
-        reason = "clap Option<Option<T>> supports --x and --x=value syntaxes"
-    )]
+    #[allow(clippy::option_option)]
     lts: Option<Option<String>>,
 
     /// Version sorting order
@@ -38,15 +35,6 @@ pub enum SortingMethod {
     Ascending,
 }
 
-/// Drain all elements but the last one
-fn truncate_except_latest<T>(list: &mut Vec<T>) {
-    let len = list.len();
-    if len > 1 {
-        list.swap(0, len - 1);
-        list.truncate(1);
-    }
-}
-
 impl super::command::Command for LsRemote {
     type Error = Error;
 
@@ -61,7 +49,7 @@ impl super::command::Command for LsRemote {
                         .is_some_and(|v_lts| v_lts.eq_ignore_ascii_case(codename))
                 }),
                 None => all_versions.retain(|v| v.lts.is_some()),
-            }
+            };
         }
 
         if let Some(filter) = &self.filter {
@@ -69,9 +57,10 @@ impl super::command::Command for LsRemote {
         }
 
         if self.latest {
-            truncate_except_latest(&mut all_versions);
+            all_versions.truncate(1);
         }
 
+        all_versions.sort_by_key(|v| v.version.clone());
         if let SortingMethod::Descending = self.sort {
             all_versions.reverse();
         }
@@ -96,28 +85,8 @@ impl super::command::Command for LsRemote {
 #[derive(Debug, Error)]
 pub enum Error {
     #[error(transparent)]
-    RemoteListing {
+    HttpError {
         #[from]
-        source: remote_node_index::Error,
+        source: crate::http::Error,
     },
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn test_truncate_except_latest() {
-        let mut list = vec![1, 2, 3, 4, 5];
-        truncate_except_latest(&mut list);
-        assert_eq!(list, vec![5]);
-
-        let mut list: Vec<()> = vec![];
-        truncate_except_latest(&mut list);
-        assert_eq!(list, vec![]);
-
-        let mut list = vec![1];
-        truncate_except_latest(&mut list);
-        assert_eq!(list, vec![1]);
-    }
 }

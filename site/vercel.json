@@ -4,7 +4,7 @@
     "silent": true
   },
   "redirects": [
-    { "source": "/", "destination": "https://github.com/Schniz/fnm" }
+    { "source": "/", "destination": "https://github.com/Dargon789/fnm" }
   ],
   "rewrites": [{ "source": "/install", "destination": "/install.txt" }],
   "headers": [
