@@ -2,4 +2,4 @@
 "fnm": patch
 ---
 
-Dargon789 patch 9
+Use command.status() instead of command.output() for hook execution to avoid unnecessary output buffering.
