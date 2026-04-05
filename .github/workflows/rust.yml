@@ -6,6 +6,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.head_ref }}
   cancel-in-progress: true
