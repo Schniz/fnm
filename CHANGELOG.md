@@ -1,5 +1,15 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.39.1
+
+### Patch Changes
+
+- [#1361](https://github.com/Schniz/fnm/pull/1361) [`168e51f`](https://github.com/Schniz/fnm/commit/168e51f1b00daf2693ebd142c34a6b5d22c12149) Thanks [@kaaax0815](https://github.com/kaaax0815)! - support `x64-glibc-217` arch by adding a `--arch x64-glibc-217` to fnm env
+
+- [#1525](https://github.com/Schniz/fnm/pull/1525) [`bfb1860`](https://github.com/Schniz/fnm/commit/bfb186034978b1ddaf87501eb1633bdc42a5c0a6) Thanks [@Schniz](https://github.com/Schniz)! - prefer explicit shell flags in installer-generated shell setup and fix ARM installer CI platform selection
+
+- [#1523](https://github.com/Schniz/fnm/pull/1523) [`dc8c54a`](https://github.com/Schniz/fnm/commit/dc8c54aaeb23b7dd0a76670a17133ac2b8326ad8) Thanks [@Schniz](https://github.com/Schniz)! - Clarify the interactive `fnm use` missing-version prompt by prefixing the message with `fnm` so it is obvious which tool is asking to install Node.
+
 ## 1.39.0
 
 ### Minor Changes
@@ -10,7 +20,7 @@
 
 ### Patch Changes
 
-- [#1268](https://github.com/Schniz/fnm/pull/1268) [`ddab191`](https://github.com/Schniz/fnm/commit/ddab1911dc33a24aeec9d2b8139df1916c518d64) Thanks [@isaacl](https://github.com/isaacl)! - Make `fnm default` with no trailing positional argument to return the default version
+- [#1268](https://github.com/Schniz/fnm/pull/1268) [`ddab191`](https://github.com/Schniz/fnm/commit/ddab1911dc33a24aeec9d2b8139df1916c518d64) Thanks [@isaacl](https://github.com/isaacl)! - Make `fnm default` with no trailing positional argument return the default version
 
 - [#1517](https://github.com/Schniz/fnm/pull/1517) [`d3747af`](https://github.com/Schniz/fnm/commit/d3747affd604223c752171c14944bd5773096b09) Thanks [@Schniz](https://github.com/Schniz)! - Improve `--use-on-cd` shell hook robustness by de-duplicating the zsh hook on re-source and fixing Windows CMD hook behavior for paths with spaces and drive changes.
 
