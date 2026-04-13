@@ -2,4 +2,4 @@
 "fnm": patch
 ---
 
-Main
+chore: Update dependencies and fix project configuration
