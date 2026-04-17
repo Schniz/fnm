@@ -38,16 +38,16 @@ if ($__out__ -notmatch "Successfully reinstalled") { exit 1 }
         .then(
           shell.scriptOutputContains(
             shell.call("npm", ["list", "-g", "--depth=0"]),
-            "'is-odd'"
-          )
+            "'is-odd'",
+          ),
         )
         .then(installTargetWithReinstall)
         .then(shell.call("fnm", ["use", TARGET_VERSION]))
         .then(
           shell.scriptOutputContains(
             shell.call("npm", ["list", "-g", "--depth=0"]),
-            "'is-odd'"
-          )
+            "'is-odd'",
+          ),
         )
         .takeSnapshot(shell)
         .execute(shell)
@@ -63,10 +63,28 @@ if ($__out__ -notmatch "Successfully reinstalled") { exit 1 }
                 "install",
                 TARGET_VERSION,
                 `--reinstall-packages-from=${SOURCE_VERSION}`,
-              ])
+              ]),
             ),
             "'Version v18.20.0 is not installed'",
-          )
+          ),
+        )
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
+
+    test(`skips reinstall when source and target are the same version`, async () => {
+      await script(shell)
+        .then(shell.env({}))
+        .then(shell.call("fnm", ["install", SOURCE_VERSION]))
+        .then(
+          shell.scriptOutputContains(
+            shell.call("fnm", [
+              "install",
+              SOURCE_VERSION,
+              `--reinstall-packages-from=${SOURCE_VERSION}`,
+            ]),
+            "'Skipping package reinstallation'",
+          ),
         )
         .takeSnapshot(shell)
         .execute(shell)
@@ -84,11 +102,10 @@ if ($__out__ -notmatch "Successfully reinstalled") { exit 1 }
               `--reinstall-packages-from=${SOURCE_VERSION}`,
             ]),
             "'No global packages found in'",
-          )
+          ),
         )
         .takeSnapshot(shell)
         .execute(shell)
     })
   })
 }
-

@@ -29,6 +29,13 @@ fnm use v20.11.0
 (npm list -g --depth=0) | grep 'is-odd' || (echo "Expected output to contain 'is-odd'" && exit 1)"
 `;
 
+exports[`Bash skips reinstall when source and target are the same version: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v18.20.0
+(fnm install v18.20.0 --reinstall-packages-from=v18.20.0) | grep 'Skipping package reinstallation' || (echo "Expected output to contain 'Skipping package reinstallation'" && exit 1)"
+`;
+
 exports[`Bash source has no global packages: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
@@ -57,6 +64,13 @@ if ($__out__ -notmatch "Successfully reinstalled") { exit 1 }
 
 fnm use v20.11.0
 $($__out__ = $(npm list -g --depth=0 | Select-String 'is-odd'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`PowerShell skips reinstall when source and target are the same version: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install v18.20.0
+$($__out__ = $(fnm install v18.20.0 --reinstall-packages-from=v18.20.0 | Select-String 'Skipping package reinstallation'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
 
 exports[`PowerShell source has no global packages: PowerShell 1`] = `

@@ -233,6 +233,16 @@ fn reinstall_packages_from_version(
         })?
         .clone();
 
+    if source_version == *target_version {
+        outln!(
+            config,
+            Info,
+            "Source and target versions are the same ({}). Skipping package reinstallation.",
+            format!("Node {source_version}").cyan()
+        );
+        return Ok(());
+    }
+
     let packages = list_global_packages(&source_version, config)?;
     let source_version_display = format!("Node {source_version}");
     if packages.is_empty() {
