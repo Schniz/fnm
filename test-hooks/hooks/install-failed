@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "❌ Install-failed hook executed!"
+echo "Installation of Node.js version $FNM_VERSION failed!"
+echo "Please check the error messages above."
