@@ -70,3 +70,37 @@ Then:
 
 - `fnm install` will install the latest satisfying Node.js 20.x version available in the Node.js dist server
 - `fnm use` will use the latest satisfying Node.js 20.x version available on your system, or prompt to install if no version matched.
+
+### `--auth-header` / `FNM_AUTH_HEADER`
+
+Provides an HTTP `Authorization` header for requests to the Node.js distribution mirror. This is useful when downloading from private mirrors that require authentication.
+
+**Note:** Unlike other `FNM_*` variables, `FNM_AUTH_HEADER` is intentionally excluded from `fnm env` output to prevent credentials from being propagated to child processes.
+
+**Usage:**
+
+```bash
+# Bearer token authentication
+export FNM_AUTH_HEADER="Bearer YOUR_TOKEN_HERE"
+
+# Basic authentication
+export FNM_AUTH_HEADER="Basic $(echo -n 'user:password' | base64)"
+```
+
+**Security Recommendations:**
+
+- **Only use with HTTPS mirrors you know and trust.** Always verify your `FNM_NODE_DIST_MIRROR` uses `https://`.
+- Never commit credentials to version control.
+- Handle tokens securely and rotate regularly.
+- Source credentials securely from outside your shell config:
+
+  ```bash
+  # Example: Read from a protected file (chmod 600)
+  export FNM_AUTH_HEADER="Bearer $(cat ~/.secrets/fnm-token)"
+
+  # Example: Use a secrets manager
+  export FNM_AUTH_HEADER="Bearer $(vault kv get -field=token secret/fnm)"
+
+  # Example: Use system keychain (macOS)
+  export FNM_AUTH_HEADER="Bearer $(security find-generic-password -s fnm-token -w)"
+  ```

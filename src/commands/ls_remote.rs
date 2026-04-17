@@ -51,7 +51,8 @@ impl super::command::Command for LsRemote {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
-        let mut all_versions = remote_node_index::list(&config.node_dist_mirror)?;
+        let mut all_versions =
+            remote_node_index::list(&config.node_dist_mirror, config.auth_header())?;
 
         if let Some(lts) = &self.lts {
             match lts {
