@@ -36,8 +36,26 @@ fn generate_symlink_path() -> String {
     )
 }
 
+fn cleanup_stale_multishells(base_dir: &std::path::Path) {
+    if let Ok(entries) = std::fs::read_dir(base_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            // Check if it's a symlink and if the target exists
+            if path.is_symlink() {
+                if let Ok(target) = std::fs::read_link(&path) {
+                    // If target doesn't exist, it's stale - remove it
+                    if !target.exists() {
+                        let _ = std::fs::remove_file(&path);
+                    }
+                }
+            }
+        }
+    }
+}
+
 fn make_symlink(config: &FnmConfig) -> Result<std::path::PathBuf, Error> {
     let base_dir = config.multishell_storage().ensure_exists_silently();
+        cleanup_stale_multishells(&base_dir);
     let mut temp_dir = base_dir.join(generate_symlink_path());
 
     while temp_dir.exists() {
