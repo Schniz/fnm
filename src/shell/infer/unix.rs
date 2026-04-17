@@ -8,6 +8,7 @@ use thiserror::Error;
 #[derive(Debug)]
 struct ProcessInfo {
     parent_pid: Option<u32>,
+    parent_pid_str: String,
     command: String,
 }
 
@@ -28,13 +29,24 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
                 err
             })
             .ok()?;
-        let binary = process_info
-            .command
-            .trim_start_matches('-')
-            .split('/')
-            .next_back()?;
+
+        debug!(
+            "pid {current_pid} parent process {} : {}",
+            process_info.parent_pid_str, process_info.command
+        );
+
+        let mut parts = process_info.command.trim_start_matches('-').split('/');
+
+        let mut binary = "";
+        while let Some(b) = parts.next_back() {
+            if !b.is_empty() {
+                binary = b;
+                break;
+            }
+        }
 
         if let Some(shell) = super::shell_from_string(binary) {
+            debug!("Found supported shell: {:?}", shell);
             return Some(shell);
         }
 
@@ -69,18 +81,15 @@ fn get_process_info(pid: u32) -> Result<ProcessInfo, ProcessInfoError> {
         .next()
         .ok_or_else(|| Error::from(ErrorKind::NotFound))??;
 
-    let mut parts = line.split_whitespace();
-    let ppid = parts.next().ok_or_else(|| ProcessInfoError::Parse {
-        expectation: "Can't read the ppid from ps, should be the first item in the table",
+    let (ppid, command_raw) = line.trim().split_once(char::is_whitespace).ok_or_else(|| ProcessInfoError::Parse {
+        expectation: "Can't split the ppid and program from ps, should be first and second items in the table",
         got: line.to_string(),
     })?;
-    let command = parts.next().ok_or_else(|| ProcessInfoError::Parse {
-        expectation: "Can't read the command from ps, should be the second item in the table",
-        got: line.to_string(),
-    })?;
+    let command = command_raw.trim_start();
 
     Ok(ProcessInfo {
         parent_pid: ppid.parse().ok(),
+        parent_pid_str: ppid.into(),
         command: command.into(),
     })
 }
