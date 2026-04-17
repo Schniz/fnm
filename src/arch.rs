@@ -1,6 +1,7 @@
 use crate::version::Version;
+use clap::ValueEnum;
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, ValueEnum)]
 pub enum Arch {
     X86,
     X64,
