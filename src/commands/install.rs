@@ -14,7 +14,7 @@ use crate::user_version_reader::UserVersionReader;
 use crate::version::Version;
 use crate::version_files::get_user_version_for_directory;
 use colored::Colorize;
-use log::debug;
+use log::{debug, warn};
 use thiserror::Error;
 
 #[derive(clap::Parser, Debug, Default)]
@@ -328,6 +328,13 @@ fn list_global_packages(version: &Version, config: &FnmConfig) -> Result<Vec<Str
         });
     }
 
+    if !output.status.success() {
+        warn!(
+            "npm ls exited with {:?} but produced output; proceeding with partial package list",
+            output.status
+        );
+    }
+
     Ok(parse_npm_ls_global_parseable_long_output(&stdout))
 }
 
@@ -394,6 +401,8 @@ fn parse_npm_ls_global_parseable_long_output(output: &str) -> Vec<String> {
                 return None;
             }
 
+            // rfind('@') returns the last '@'. For scoped packages like "@scope/pkg@1.0",
+            // position 0 is the scope prefix, not a version separator — skip those.
             let version_separator_index = package_spec.rfind('@')?;
             if version_separator_index == 0 || version_separator_index == package_spec.len() - 1 {
                 return None;
