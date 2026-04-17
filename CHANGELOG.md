@@ -1,5 +1,30 @@
 ## 1.31.0 (2022-02-16)
 
+## 1.39.1
+
+### Patch Changes
+
+- [#1529](https://github.com/Schniz/fnm/pull/1529) [`b24c183`](https://github.com/Schniz/fnm/commit/b24c183bd0b4cd544b9518509d8dc7f77fd1a7db) Thanks [@Schniz](https://github.com/Schniz)! - the title of the change in a few words.
+
+  If necessary, you can add examples, links to related issues, or any other information that would be helpful for the maintainers and users of the project:
+
+  ```sh-session
+  $ fnm whatever --hello world
+  the output
+  ```
+
+- [#1361](https://github.com/Schniz/fnm/pull/1361) [`168e51f`](https://github.com/Schniz/fnm/commit/168e51f1b00daf2693ebd142c34a6b5d22c12149) Thanks [@kaaax0815](https://github.com/kaaax0815)! - support `x64-glibc-217` arch by adding a `--arch x64-glibc-217` to fnm env
+
+- [#1525](https://github.com/Schniz/fnm/pull/1525) [`bfb1860`](https://github.com/Schniz/fnm/commit/bfb186034978b1ddaf87501eb1633bdc42a5c0a6) Thanks [@Schniz](https://github.com/Schniz)! - prefer explicit shell flags in installer-generated shell setup and fix ARM installer CI platform selection
+
+- [#1523](https://github.com/Schniz/fnm/pull/1523) [`dc8c54a`](https://github.com/Schniz/fnm/commit/dc8c54aaeb23b7dd0a76670a17133ac2b8326ad8) Thanks [@Schniz](https://github.com/Schniz)! - Clarify the interactive `fnm use` missing-version prompt by prefixing the message with `fnm` so it is obvious which tool is asking to install Node.
+
+- [#1529](https://github.com/Schniz/fnm/pull/1529) [`b24c183`](https://github.com/Schniz/fnm/commit/b24c183bd0b4cd544b9518509d8dc7f77fd1a7db) Thanks [@Schniz](https://github.com/Schniz)! - Document contributor guidance for e2e tests and changesets in `AGENTS.md`.
+
+- [`a53186d`](https://github.com/Schniz/fnm/commit/a53186d1df9b93487f28744e6ff54c7b7e6cd41e) Thanks [@joliss](https://github.com/joliss)! - Add random number to multishell symlinks to avoid clashing
+
+- [#1533](https://github.com/Schniz/fnm/pull/1533) [`b3d190b`](https://github.com/Schniz/fnm/commit/b3d190b52abec56f970de532c44c6c8e2d21e9f9) Thanks [@theborowski](https://github.com/theborowski)! - feat: add possible values to the arch help docs.
+
 ## 1.39.0
 
 ### Minor Changes
