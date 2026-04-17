@@ -43,6 +43,39 @@ fnm install v18.20.0
 (fnm install v20.11.0 --reinstall-packages-from=v18.20.0) | grep 'No global packages found in' || (echo "Expected output to contain 'No global packages found in'" && exit 1)"
 `;
 
+exports[`Fish errors when source version is not installed: Fish 1`] = `
+"fnm env --log-level=error | source
+begin; fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1; end | grep 'Version v18.20.0 is not installed'; or echo "Expected output to contain 'Version v18.20.0 is not installed'" && exit 1"
+`;
+
+exports[`Fish reinstall packages from another version: Fish 1`] = `
+"fnm env | source
+fnm install v18.20.0
+fnm use v18.20.0
+npm install -g is-odd
+begin; npm list -g --depth=0; end | grep 'is-odd'; or echo "Expected output to contain 'is-odd'" && exit 1
+set __out__ (fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1)
+echo $__out__ | grep 'is-odd@'; or begin; echo "Expected output to contain 'is-odd@'"; exit 1; end
+echo $__out__ | grep '  - npm@'; and begin; echo "Expected output to not contain 'npm@'"; exit 1; end
+echo $__out__ | grep '  - corepack@'; and begin; echo "Expected output to not contain 'corepack@'"; exit 1; end
+echo $__out__ | grep 'Successfully reinstalled'; or begin; echo "Expected output to contain 'Successfully reinstalled'"; exit 1; end
+
+fnm use v20.11.0
+begin; npm list -g --depth=0; end | grep 'is-odd'; or echo "Expected output to contain 'is-odd'" && exit 1"
+`;
+
+exports[`Fish skips reinstall when source and target are the same version: Fish 1`] = `
+"fnm env | source
+fnm install v18.20.0
+begin; fnm install v18.20.0 --reinstall-packages-from=v18.20.0; end | grep 'Skipping package reinstallation'; or echo "Expected output to contain 'Skipping package reinstallation'" && exit 1"
+`;
+
+exports[`Fish source has no global packages: Fish 1`] = `
+"fnm env | source
+fnm install v18.20.0
+begin; fnm install v20.11.0 --reinstall-packages-from=v18.20.0; end | grep 'No global packages found in'; or echo "Expected output to contain 'No global packages found in'" && exit 1"
+`;
+
 exports[`PowerShell errors when source version is not installed: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env --log-level=error | Out-String | Invoke-Expression
@@ -78,4 +111,47 @@ exports[`PowerShell source has no global packages: PowerShell 1`] = `
 fnm env | Out-String | Invoke-Expression
 fnm install v18.20.0
 $($__out__ = $(fnm install v20.11.0 --reinstall-packages-from=v18.20.0 | Select-String 'No global packages found in'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
+exports[`Zsh errors when source version is not installed: Zsh 1`] = `
+"set -e
+eval "$(fnm env --log-level=error)"
+(fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1) | grep 'Version v18.20.0 is not installed' || (echo "Expected output to contain 'Version v18.20.0 is not installed'" && exit 1)"
+`;
+
+exports[`Zsh reinstall packages from another version: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v18.20.0
+fnm use v18.20.0
+npm install -g is-odd
+(npm list -g --depth=0) | grep 'is-odd' || (echo "Expected output to contain 'is-odd'" && exit 1)
+__out__="$(fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1)"
+echo "$__out__" | grep 'is-odd@' || (echo "Expected output to contain 'is-odd@'" && exit 1)
+if echo "$__out__" | grep -q '  - npm@'; then
+  echo "Expected output to not contain 'npm@'"
+  exit 1
+fi
+if echo "$__out__" | grep -q '  - corepack@'; then
+  echo "Expected output to not contain 'corepack@'"
+  exit 1
+fi
+echo "$__out__" | grep 'Successfully reinstalled' || (echo "Expected output to contain 'Successfully reinstalled'" && exit 1)
+
+fnm use v20.11.0
+(npm list -g --depth=0) | grep 'is-odd' || (echo "Expected output to contain 'is-odd'" && exit 1)"
+`;
+
+exports[`Zsh skips reinstall when source and target are the same version: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v18.20.0
+(fnm install v18.20.0 --reinstall-packages-from=v18.20.0) | grep 'Skipping package reinstallation' || (echo "Expected output to contain 'Skipping package reinstallation'" && exit 1)"
+`;
+
+exports[`Zsh source has no global packages: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install v18.20.0
+(fnm install v20.11.0 --reinstall-packages-from=v18.20.0) | grep 'No global packages found in' || (echo "Expected output to contain 'No global packages found in'" && exit 1)"
 `;
