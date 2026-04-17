@@ -460,7 +460,7 @@ pub enum Error {
     #[error("Failed to reinstall packages: {source}")]
     ReinstallPackagesError {
         #[source]
-        source: Box<dyn std::error::Error>,
+        source: Box<dyn std::error::Error + Send + Sync>,
     },
 }
 
