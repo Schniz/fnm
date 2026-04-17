@@ -81,10 +81,10 @@ pub enum Error {
 /// ```rust
 /// use crate::remote_node_index::list;
 /// ```
-pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, Error> {
+pub fn list(base_url: &Url, token: &str) -> Result<Vec<IndexedNodeVersion>, Error> {
     let base_url = base_url.as_str().trim_end_matches('/');
     let index_json_url = format!("{base_url}/index.json");
-    let resp = crate::http::get(&index_json_url)?
+    let resp = crate::http::get(&index_json_url, Some(token))?
         .error_for_status()
         .map_err(crate::http::Error::from)?;
     let text = resp.text().map_err(crate::http::Error::from)?;
@@ -103,7 +103,7 @@ mod tests {
     fn test_list() {
         let base_url = Url::parse("https://nodejs.org/dist").unwrap();
         let expected_version = Version::parse("12.0.0").unwrap();
-        let mut versions = list(&base_url).expect("Can't get HTTP data");
+        let mut versions = list(&base_url, "").expect("Can't get HTTP data");
         assert_eq!(
             versions
                 .drain(..)
