@@ -18,6 +18,7 @@ const command = cmd.command({
     updateCargoToml(await getPackageVersion())
     exec("cargo build --release")
     exec("pnpm generate-command-docs --binary-path=./target/release/fnm")
+    exec("pnpm generate-man-page --binary-path=./target/release/fnm")
     exec("./.ci/record_screen.sh")
   },
 })
@@ -34,7 +35,7 @@ cmd.run(cmd.binary(command), process.argv)
 async function getPackageVersion() {
   const pkgJson = await fs.promises.readFile(
     new URL("../package.json", import.meta.url),
-    "utf8"
+    "utf8",
   )
   const version = JSON.parse(pkgJson).version
   assert(version, "package.json version is not set")
@@ -48,7 +49,7 @@ function updateCargoToml(nextVersion) {
 
   const newToml = cargoToml.replace(
     `version = "${currentVersion}"`,
-    `version = "${nextVersion}"`
+    `version = "${nextVersion}"`,
   )
 
   if (newToml === cargoToml) {

@@ -1,0 +1,79 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH fnm-current 1  "current " 
+.SH NAME
+fnm\-current \- Print the current Node.js version
+.SH SYNOPSIS
+\fBcurrent\fR [\fB\-\-node\-dist\-mirror\fR] [\fB\-\-fnm\-dir\fR] [\fB\-\-log\-level\fR] [\fB\-\-arch\fR] [\fB\-\-version\-file\-strategy\fR] [\fB\-\-corepack\-enabled\fR] [\fB\-\-resolve\-engines\fR] [\fB\-h\fR|\fB\-\-help\fR] 
+.SH DESCRIPTION
+Print the current Node.js version
+.SH OPTIONS
+.TP
+\fB\-\-node\-dist\-mirror\fR \fI<NODE_DIST_MIRROR>\fR [default: https://nodejs.org/dist]
+<https://nodejs.org/dist/> mirror
+.RS
+May also be specified with the \fBFNM_NODE_DIST_MIRROR\fR environment variable. 
+.RE
+.TP
+\fB\-\-fnm\-dir\fR \fI<BASE_DIR>\fR
+The root directory of fnm installations
+.RS
+May also be specified with the \fBFNM_DIR\fR environment variable. 
+.RE
+.TP
+\fB\-\-log\-level\fR \fI<LOG_LEVEL>\fR [default: info]
+The log level of fnm commands
+.br
+
+.br
+[\fIpossible values: \fRquiet, error, info]
+.RS
+May also be specified with the \fBFNM_LOGLEVEL\fR environment variable. 
+.RE
+.TP
+\fB\-\-arch\fR \fI<ARCH>\fR
+Override the architecture of the installed Node binary. Defaults to arch of fnm binary
+.RS
+May also be specified with the \fBFNM_ARCH\fR environment variable. 
+.RE
+.TP
+\fB\-\-version\-file\-strategy\fR \fI<VERSION_FILE_STRATEGY>\fR [default: local]
+A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `\-\-use\-on\-cd` is configured on evaluation
+.br
+
+.br
+\fIPossible values:\fR
+.RS 14
+.IP \(bu 2
+local: Use the local version of Node defined within the current directory
+.IP \(bu 2
+recursive: Use the version of Node defined within the current directory and all parent directories
+.RE
+.RS
+May also be specified with the \fBFNM_VERSION_FILE_STRATEGY\fR environment variable. 
+.RE
+.TP
+\fB\-\-corepack\-enabled\fR
+Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
+.RS
+May also be specified with the \fBFNM_COREPACK_ENABLED\fR environment variable. 
+.RE
+.TP
+\fB\-\-resolve\-engines\fR [\fI<RESOLVE_ENGINES>\fR]
+Resolve `engines.node` field in `package.json` whenever a `.node\-version` or `.nvmrc` file is not present.
+This feature is enabled by default. To disable it, provide `\-\-resolve\-engines=false`.
+
+Note: `engines.node` can be any semver range, with the latest satisfying version being resolved.
+Note 2: If you disable it, please open an issue on GitHub describing _why_ you disabled it.
+        In the future, disabling it might be a no\-op, so it\*(Aqs worth knowing any reason to
+        do that.
+.br
+
+.br
+[\fIpossible values: \fRtrue, false]
+.RS
+May also be specified with the \fBFNM_RESOLVE_ENGINES\fR environment variable. 
+.RE
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)

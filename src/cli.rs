@@ -69,6 +69,10 @@ pub enum SubCommand {
     /// > is pointing to, along with the other aliases that point to the same version.
     #[clap(name = "uninstall", bin_name = "uninstall", visible_aliases = &["uni"])]
     Uninstall(commands::uninstall::Uninstall),
+
+    /// Print man page to stdout
+    #[clap(name = "man", bin_name = "man", hide = true)]
+    Man(commands::man::ManPage),
 }
 
 impl SubCommand {
@@ -86,6 +90,7 @@ impl SubCommand {
             Self::Exec(cmd) => cmd.call(config),
             Self::Uninstall(cmd) => cmd.call(config),
             Self::Unalias(cmd) => cmd.call(config),
+            Self::Man(cmd) => cmd.call(config),
         }
     }
 }
