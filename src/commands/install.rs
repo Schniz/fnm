@@ -275,25 +275,31 @@ fn reinstall_packages_from_version(
     Ok(())
 }
 
-fn list_global_packages(version: &Version, config: &FnmConfig) -> Result<Vec<String>, Error> {
-    use std::process::Command as StdCommand;
-
-    let npm_path = if cfg!(windows) {
-        version.installation_path(config).join("npm.cmd")
+/// Returns the npm binary path and a PATH env value with the version's bin dir prepended.
+fn npm_env_for_version(
+    version: &Version,
+    config: &FnmConfig,
+) -> Result<(std::path::PathBuf, std::ffi::OsString), Error> {
+    let installation_path = version.installation_path(config);
+    let (npm_path, bin_dir) = if cfg!(windows) {
+        (installation_path.join("npm.cmd"), installation_path)
     } else {
-        version.installation_path(config).join("bin").join("npm")
+        (
+            installation_path.join("bin").join("npm"),
+            installation_path.join("bin"),
+        )
     };
-
-    let bin_dir = if cfg!(windows) {
-        version.installation_path(config)
-    } else {
-        version.installation_path(config).join("bin")
-    };
-
     let path_env =
         prepend_to_path_env(bin_dir).map_err(|source| Error::ReinstallPackagesError {
             source: Box::new(source),
         })?;
+    Ok((npm_path, path_env))
+}
+
+fn list_global_packages(version: &Version, config: &FnmConfig) -> Result<Vec<String>, Error> {
+    use std::process::Command as StdCommand;
+
+    let (npm_path, path_env) = npm_env_for_version(version, config)?;
 
     let output = StdCommand::new(&npm_path)
         .args([
@@ -336,25 +342,7 @@ fn reinstall_packages(
         return Ok(());
     }
 
-    let npm_path = if cfg!(windows) {
-        target_version.installation_path(config).join("npm.cmd")
-    } else {
-        target_version
-            .installation_path(config)
-            .join("bin")
-            .join("npm")
-    };
-
-    let bin_dir = if cfg!(windows) {
-        target_version.installation_path(config)
-    } else {
-        target_version.installation_path(config).join("bin")
-    };
-
-    let path_env =
-        prepend_to_path_env(bin_dir).map_err(|source| Error::ReinstallPackagesError {
-            source: Box::new(source),
-        })?;
+    let (npm_path, path_env) = npm_env_for_version(target_version, config)?;
 
     let status = StdCommand::new(&npm_path)
         .args(["install", "--global"])
