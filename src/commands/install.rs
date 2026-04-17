@@ -413,6 +413,7 @@ fn use_installed_version(version: &Version, config: &FnmConfig) -> Result<(), Er
         ))),
         install_if_missing: false,
         silent_if_unchanged: false,
+        info_to_stderr: false,
     }
     .apply(config)
     .map_err(|source| Error::UseError {

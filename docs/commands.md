@@ -386,7 +386,7 @@ Print and set up required environment variables for fnm
 
 This command generates a series of shell commands that should be evaluated by your shell to create a fnm-ready environment.
 
-Each shell has its own syntax of evaluating a dynamic expression. For example, evaluating fnm on Bash and Zsh would look like `eval "$(fnm env)"`. In Fish, evaluating would look like `fnm env | source`
+Each shell has its own syntax of evaluating a dynamic expression. For example, evaluating fnm on Bash and Zsh would look like `eval "$(fnm env --shell bash)"`. In Fish, evaluating would look like `fnm env --shell fish | source`
 
 Usage: fnm env [OPTIONS]
 
