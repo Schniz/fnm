@@ -1,0 +1,247 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash .node-version should not strip comments: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash .nvmrc with comment on first line: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash .nvmrc with empty lines and comments: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash .nvmrc with inline comment after version: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash .nvmrc with multiple comment lines: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash .nvmrc with whitespace and inline comments: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Fish .node-version should not strip comments: Fish 1`] = `
+"fnm env | source
+fnm install
+fnm use
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish .nvmrc with comment on first line: Fish 1`] = `
+"fnm env | source
+fnm install
+fnm use
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish .nvmrc with empty lines and comments: Fish 1`] = `
+"fnm env | source
+fnm install
+fnm use
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish .nvmrc with inline comment after version: Fish 1`] = `
+"fnm env | source
+fnm install
+fnm use
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish .nvmrc with multiple comment lines: Fish 1`] = `
+"fnm env | source
+fnm install
+fnm use
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish .nvmrc with whitespace and inline comments: Fish 1`] = `
+"fnm env | source
+fnm install
+fnm use
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`PowerShell .node-version should not strip comments: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell .nvmrc with comment on first line: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell .nvmrc with empty lines and comments: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell .nvmrc with inline comment after version: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell .nvmrc with multiple comment lines: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell .nvmrc with whitespace and inline comments: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+fnm install
+fnm use
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`Zsh .node-version should not strip comments: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh .nvmrc with comment on first line: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh .nvmrc with empty lines and comments: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh .nvmrc with inline comment after version: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh .nvmrc with multiple comment lines: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh .nvmrc with whitespace and inline comments: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+fnm install
+fnm use
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
