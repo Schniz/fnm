@@ -22,10 +22,33 @@ pub fn list_for_version(version: &Version, config: &FnmConfig) -> std::io::Resul
         let package_name = entry.file_name();
         let package_name = package_name.to_string_lossy();
 
+        if is_symlink(&path)? {
+            warn!(
+                "Skipping symlinked global package entry {} at {}",
+                package_name,
+                path.to_string_lossy()
+            );
+            continue;
+        }
+
         if package_name.starts_with('@') {
             for scoped_entry in std::fs::read_dir(&path)? {
                 let scoped_entry = scoped_entry?;
-                if let Some(spec) = package_spec_from_dir(&scoped_entry.path())? {
+                let scoped_path = scoped_entry.path();
+                let scoped_package_name = scoped_entry.file_name();
+                let scoped_package_name = scoped_package_name.to_string_lossy();
+
+                if is_symlink(&scoped_path)? {
+                    warn!(
+                        "Skipping symlinked global package entry {}/{} at {}",
+                        package_name,
+                        scoped_package_name,
+                        scoped_path.to_string_lossy()
+                    );
+                    continue;
+                }
+
+                if let Some(spec) = package_spec_from_dir(&scoped_path)? {
                     packages.push(spec);
                 }
             }
@@ -41,6 +64,10 @@ pub fn list_for_version(version: &Version, config: &FnmConfig) -> std::io::Resul
     packages.dedup();
 
     Ok(packages)
+}
+
+fn is_symlink(path: &Path) -> std::io::Result<bool> {
+    Ok(std::fs::symlink_metadata(path)?.file_type().is_symlink())
 }
 
 pub fn node_modules_dir_for_version(version: &Version, config: &FnmConfig) -> std::path::PathBuf {
@@ -192,5 +219,37 @@ mod tests {
 
         let result = list_for_version(&version, &config).unwrap();
         assert_eq!(result, Vec::<String>::new());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_list_for_version_skips_symlinked_packages() {
+        use std::os::unix::fs::symlink;
+
+        let base_dir = tempfile::tempdir().unwrap();
+        let config = FnmConfig::default().with_base_dir(Some(base_dir.path().to_path_buf()));
+        let version = Version::parse("20.11.0").unwrap();
+
+        write_global_package(
+            &config,
+            &version,
+            "is-odd",
+            r#"{"name":"is-odd","version":"3.0.1"}"#,
+        );
+
+        let external_package = base_dir.path().join("linked-package");
+        std::fs::create_dir_all(&external_package).unwrap();
+        std::fs::write(
+            external_package.join("package.json"),
+            r#"{"name":"linked-only","version":"1.0.0"}"#,
+        )
+        .unwrap();
+
+        let node_modules_dir = node_modules_dir_for_version(&version, &config);
+        std::fs::create_dir_all(&node_modules_dir).unwrap();
+        symlink(&external_package, node_modules_dir.join("linked-only")).unwrap();
+
+        let result = list_for_version(&version, &config).unwrap();
+        assert_eq!(result, vec!["is-odd@3.0.1"]);
     }
 }
