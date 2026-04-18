@@ -4,6 +4,7 @@ use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
+use crate::global_packages;
 use crate::installed_versions;
 use crate::lts::LtsType;
 use crate::outln;
@@ -14,7 +15,7 @@ use crate::user_version_reader::UserVersionReader;
 use crate::version::Version;
 use crate::version_files::get_user_version_for_directory;
 use colored::Colorize;
-use log::{debug, warn};
+use log::debug;
 use thiserror::Error;
 
 #[derive(clap::Parser, Debug, Default)]
@@ -243,7 +244,12 @@ fn reinstall_packages_from_version(
         return Ok(());
     }
 
-    let packages = list_global_packages(&source_version, config)?;
+    let packages =
+        global_packages::list_for_version(&source_version, config).map_err(|source| {
+            Error::ReinstallPackagesError {
+                source: Box::new(source),
+            }
+        })?;
     let source_version_display = format!("Node {source_version}");
     if packages.is_empty() {
         outln!(
@@ -296,48 +302,6 @@ fn npm_env_for_version(
     Ok((npm_path, path_env))
 }
 
-fn list_global_packages(version: &Version, config: &FnmConfig) -> Result<Vec<String>, Error> {
-    use std::process::Command as StdCommand;
-
-    let (npm_path, path_env) = npm_env_for_version(version, config)?;
-
-    let output = StdCommand::new(&npm_path)
-        .args([
-            "ls",
-            "--global",
-            "--parseable",
-            "--long",
-            "--loglevel=error",
-        ])
-        .env("PATH", path_env)
-        .output()
-        .map_err(|source| Error::ReinstallPackagesError {
-            source: Box::new(source),
-        })?;
-
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    if !output.status.success() && stdout.trim().is_empty() {
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        return Err(Error::ReinstallPackagesError {
-            source: std::io::Error::other(format!(
-                "npm ls exited with {:?}: {}",
-                output.status,
-                stderr.trim()
-            ))
-            .into(),
-        });
-    }
-
-    if !output.status.success() {
-        warn!(
-            "npm ls exited with {:?} but produced output; proceeding with partial package list",
-            output.status
-        );
-    }
-
-    Ok(parse_npm_ls_global_parseable_long_output(&stdout))
-}
-
 fn reinstall_packages(
     packages: &[String],
     target_version: &Version,
@@ -380,37 +344,6 @@ fn prepend_to_path_env(
         .unwrap_or_default();
     paths.insert(0, bin_dir);
     std::env::join_paths(paths)
-}
-
-fn parse_npm_ls_global_parseable_long_output(output: &str) -> Vec<String> {
-    output
-        .lines()
-        .filter_map(|line| {
-            let line = line.trim();
-            if line.is_empty() {
-                return None;
-            }
-
-            let (_path, package_spec) = line.trim_end_matches(':').rsplit_once(':')?;
-            let package_spec = package_spec.trim();
-            if package_spec.is_empty() {
-                return None;
-            }
-
-            if package_spec.starts_with("npm@") || package_spec.starts_with("corepack@") {
-                return None;
-            }
-
-            // rfind('@') returns the last '@'. For scoped packages like "@scope/pkg@1.0",
-            // position 0 is the scope prefix, not a version separator — skip those.
-            let version_separator_index = package_spec.rfind('@')?;
-            if version_separator_index == 0 || version_separator_index == package_spec.len() - 1 {
-                return None;
-            }
-
-            Some(package_spec.to_string())
-        })
-        .collect()
 }
 
 fn use_installed_version(version: &Version, config: &FnmConfig) -> Result<(), Error> {
@@ -536,56 +469,5 @@ mod tests {
             .canonicalize()
             .unwrap()
             .exists());
-    }
-
-    #[test]
-    fn test_parse_npm_ls_global_parseable_long_output() {
-        let output = r"
-/path/to/lib
-/path/to/node_modules/typescript:typescript@5.4.2:
-/path/to/node_modules/eslint:eslint@9.0.0:
-C:\Users\me\node_modules\prettier:prettier@3.2.5:
-/path/to/node_modules/@openai/codex:@openai/codex@0.99.0:
-        ";
-
-        let result = parse_npm_ls_global_parseable_long_output(output);
-        assert_eq!(
-            result,
-            vec![
-                "typescript@5.4.2".to_string(),
-                "eslint@9.0.0".to_string(),
-                "prettier@3.2.5".to_string(),
-                "@openai/codex@0.99.0".to_string(),
-            ]
-        );
-    }
-
-    #[test]
-    fn test_parse_npm_ls_global_parseable_long_output_filters_builtins() {
-        let output = r"
-/path/to/node_modules/npm:npm@10.0.0:
-/path/to/node_modules/corepack:corepack@0.28.0:
-/path/to/node_modules/is-odd:is-odd@3.0.1:
-        ";
-
-        let result = parse_npm_ls_global_parseable_long_output(output);
-        assert_eq!(result, vec!["is-odd@3.0.1".to_string()]);
-    }
-
-    #[test]
-    fn test_parse_npm_ls_global_parseable_long_output_empty() {
-        let result = parse_npm_ls_global_parseable_long_output("");
-        assert_eq!(result, Vec::<String>::new());
-    }
-
-    #[test]
-    fn test_parse_npm_ls_global_parseable_long_output_skips_malformed_lines() {
-        let output = r"
-this is not parseable output
-/path/to/node_modules/is-odd:is-odd@3.0.1:
-        ";
-
-        let result = parse_npm_ls_global_parseable_long_output(output);
-        assert_eq!(result, vec!["is-odd@3.0.1".to_string()]);
     }
 }
