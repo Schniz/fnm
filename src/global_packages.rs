@@ -10,13 +10,26 @@ struct NpmPackageManifest {
 }
 
 pub fn list_for_version(version: &Version, config: &FnmConfig) -> std::io::Result<Vec<String>> {
-    let node_modules_dir = node_modules_dir_for_version(version, config);
-    if !node_modules_dir.is_dir() {
-        return Ok(Vec::new());
+    let mut packages = Vec::new();
+    for node_modules_dir in node_modules_dirs_for_version(version, config) {
+        collect_packages_from_node_modules_dir(&node_modules_dir, &mut packages)?;
     }
 
-    let mut packages = Vec::new();
-    for entry in std::fs::read_dir(&node_modules_dir)? {
+    packages.sort_unstable();
+    packages.dedup();
+
+    Ok(packages)
+}
+
+fn collect_packages_from_node_modules_dir(
+    node_modules_dir: &Path,
+    packages: &mut Vec<String>,
+) -> std::io::Result<()> {
+    if !node_modules_dir.is_dir() {
+        return Ok(());
+    }
+
+    for entry in std::fs::read_dir(node_modules_dir)? {
         let entry = entry?;
         let path = entry.path();
         let package_name = entry.file_name();
@@ -60,14 +73,27 @@ pub fn list_for_version(version: &Version, config: &FnmConfig) -> std::io::Resul
         }
     }
 
-    packages.sort_unstable();
-    packages.dedup();
-
-    Ok(packages)
+    Ok(())
 }
 
 fn is_symlink(path: &Path) -> std::io::Result<bool> {
     Ok(std::fs::symlink_metadata(path)?.file_type().is_symlink())
+}
+
+fn node_modules_dirs_for_version(version: &Version, config: &FnmConfig) -> Vec<std::path::PathBuf> {
+    let mut node_modules_dirs = vec![node_modules_dir_for_version(version, config)];
+
+    if cfg!(windows) {
+        if let Some(app_data) = std::env::var_os("APPDATA") {
+            node_modules_dirs.push(
+                std::path::PathBuf::from(app_data)
+                    .join("npm")
+                    .join("node_modules"),
+            );
+        }
+    }
+
+    node_modules_dirs
 }
 
 pub fn node_modules_dir_for_version(version: &Version, config: &FnmConfig) -> std::path::PathBuf {
@@ -251,5 +277,43 @@ mod tests {
 
         let result = list_for_version(&version, &config).unwrap();
         assert_eq!(result, vec!["is-odd@3.0.1"]);
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn test_list_for_version_reads_packages_from_appdata_npm_node_modules() {
+        let base_dir = tempfile::tempdir().unwrap();
+        let config = FnmConfig::default().with_base_dir(Some(base_dir.path().to_path_buf()));
+        let version = Version::parse("20.11.0").unwrap();
+
+        write_global_package(
+            &config,
+            &version,
+            "is-odd",
+            r#"{"name":"is-odd","version":"3.0.1"}"#,
+        );
+
+        let app_data = base_dir.path().join("appdata");
+        let app_data_node_modules = app_data.join("npm").join("node_modules");
+        std::fs::create_dir_all(app_data_node_modules.join("from-appdata")).unwrap();
+        std::fs::write(
+            app_data_node_modules
+                .join("from-appdata")
+                .join("package.json"),
+            r#"{"name":"from-appdata","version":"1.0.0"}"#,
+        )
+        .unwrap();
+
+        unsafe {
+            std::env::set_var("APPDATA", &app_data);
+        }
+
+        let result = list_for_version(&version, &config).unwrap();
+
+        unsafe {
+            std::env::remove_var("APPDATA");
+        }
+
+        assert_eq!(result, vec!["from-appdata@1.0.0", "is-odd@3.0.1"]);
     }
 }
