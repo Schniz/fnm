@@ -4,6 +4,8 @@ use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
 use crate::downloader::{install_node_dist, Error as DownloaderError};
+use crate::global_packages;
+use crate::installed_versions;
 use crate::lts::LtsType;
 use crate::outln;
 use crate::progress::ProgressConfig;
@@ -38,6 +40,11 @@ pub struct Install {
     /// Use the installed version immediately after installation
     #[clap(long)]
     pub r#use: bool,
+
+    /// Reinstall global packages from a specified Node version after installing.
+    /// Analogous to nvm's --reinstall-packages-from flag.
+    #[clap(long, value_name = "version")]
+    pub reinstall_packages_from: Option<UserVersion>,
 }
 
 impl Install {
@@ -73,6 +80,7 @@ impl Command for Install {
         let current_dir = std::env::current_dir().unwrap();
         let show_progress = self.progress.enabled(config);
         let use_installed = self.r#use;
+        let reinstall_packages_from = self.reinstall_packages_from.clone();
 
         let current_version = self
             .version()?
@@ -172,6 +180,10 @@ impl Command for Install {
             enable_corepack(&version, config)?;
         }
 
+        if let Some(source_version_str) = reinstall_packages_from {
+            reinstall_packages_from_version(&source_version_str, &version, config)?;
+        }
+
         if use_installed {
             use_installed_version(&version, config)?;
         }
@@ -203,6 +215,135 @@ fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
         .apply(config)
         .map_err(|source| Error::CorepackError { source })?;
     Ok(())
+}
+
+fn reinstall_packages_from_version(
+    source_version_str: &UserVersion,
+    target_version: &Version,
+    config: &FnmConfig,
+) -> Result<(), Error> {
+    let all_versions = installed_versions::list(config.installations_dir()).map_err(|source| {
+        Error::ReinstallPackagesError {
+            source: Box::new(source),
+        }
+    })?;
+    let source_version = source_version_str
+        .to_version(&all_versions, config)
+        .ok_or_else(|| Error::ReinstallPackagesFromVersionNotInstalled {
+            version: source_version_str.clone(),
+        })?
+        .clone();
+
+    if source_version == *target_version {
+        outln!(
+            config,
+            Info,
+            "Source and target versions are the same ({}). Skipping package reinstallation.",
+            format!("Node {source_version}").cyan()
+        );
+        return Ok(());
+    }
+
+    let packages =
+        global_packages::list_for_version(&source_version, config).map_err(|source| {
+            Error::ReinstallPackagesError {
+                source: Box::new(source),
+            }
+        })?;
+    let source_version_display = format!("Node {source_version}");
+    if packages.is_empty() {
+        outln!(
+            config,
+            Info,
+            "No global packages found in {}.",
+            source_version_display.cyan()
+        );
+        return Ok(());
+    }
+
+    outln!(
+        config,
+        Info,
+        "Reinstalling global packages from {}...",
+        source_version_display.cyan()
+    );
+    for package in &packages {
+        outln!(config, Info, "  - {}", package);
+    }
+    reinstall_packages(&packages, target_version, config)?;
+    outln!(
+        config,
+        Info,
+        "Successfully reinstalled {} packages.",
+        packages.len()
+    );
+
+    Ok(())
+}
+
+/// Returns the npm binary path and a PATH env value with the version's bin dir prepended.
+fn npm_env_for_version(
+    version: &Version,
+    config: &FnmConfig,
+) -> Result<(std::path::PathBuf, std::ffi::OsString), Error> {
+    let installation_path = version.installation_path(config);
+    let (npm_path, bin_dir) = if cfg!(windows) {
+        (installation_path.join("npm.cmd"), installation_path)
+    } else {
+        (
+            installation_path.join("bin").join("npm"),
+            installation_path.join("bin"),
+        )
+    };
+    let path_env =
+        prepend_to_path_env(bin_dir).map_err(|source| Error::ReinstallPackagesError {
+            source: Box::new(source),
+        })?;
+    Ok((npm_path, path_env))
+}
+
+fn reinstall_packages(
+    packages: &[String],
+    target_version: &Version,
+    config: &FnmConfig,
+) -> Result<(), Error> {
+    use std::process::{Command as StdCommand, Stdio};
+
+    if packages.is_empty() {
+        return Ok(());
+    }
+
+    let (npm_path, path_env) = npm_env_for_version(target_version, config)?;
+
+    let status = StdCommand::new(&npm_path)
+        .args(["install", "--global"])
+        .args(packages)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .env("PATH", path_env)
+        .status()
+        .map_err(|source| Error::ReinstallPackagesError {
+            source: Box::new(source),
+        })?;
+
+    if !status.success() {
+        return Err(Error::ReinstallPackagesError {
+            source: std::io::Error::other(format!("npm install exited with {status:?}")).into(),
+        });
+    }
+
+    Ok(())
+}
+
+fn prepend_to_path_env(
+    bin_dir: std::path::PathBuf,
+) -> Result<std::ffi::OsString, std::env::JoinPathsError> {
+    let mut paths: Vec<std::path::PathBuf> = std::env::var_os("PATH")
+        .map(|paths_env| std::env::split_paths(&paths_env).collect())
+        .unwrap_or_default();
+    paths.insert(0, bin_dir);
+    std::env::join_paths(paths)
 }
 
 fn use_installed_version(version: &Version, config: &FnmConfig) -> Result<(), Error> {
@@ -256,6 +397,13 @@ pub enum Error {
     UninstallableVersion { version: Version },
     #[error("Too many versions provided. Please don't use --lts with a version string.")]
     TooManyVersionsProvided,
+    #[error("Version {version} is not installed. Install it first with 'fnm install {version}'.")]
+    ReinstallPackagesFromVersionNotInstalled { version: UserVersion },
+    #[error("Failed to reinstall packages: {source}")]
+    ReinstallPackagesError {
+        #[source]
+        source: Box<dyn std::error::Error + Send + Sync>,
+    },
 }
 
 #[cfg(test)]
@@ -276,6 +424,7 @@ mod tests {
             latest: false,
             progress: ProgressConfig::Never,
             r#use: false,
+            reinstall_packages_from: None,
         }
         .apply(&config)
         .expect("Can't install");
@@ -303,6 +452,7 @@ mod tests {
             latest: true,
             progress: ProgressConfig::Never,
             r#use: false,
+            reinstall_packages_from: None,
         }
         .apply(&config)
         .expect("Can't install");

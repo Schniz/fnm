@@ -43,6 +43,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -126,6 +127,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -188,6 +190,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -269,6 +272,10 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
+
+      --reinstall-packages-from <version>
+          Reinstall global packages from a specified Node version after installing. Analogous to nvm's --reinstall-packages-from flag
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -341,6 +348,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -418,6 +426,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -485,6 +494,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -554,6 +564,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -620,6 +631,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -688,6 +700,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -750,6 +763,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -824,6 +838,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
@@ -892,6 +907,7 @@ Options:
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
           [env: FNM_ARCH]
+          [possible values: x86, x64, x64-musl, x64-glibc217, arm64, armv7l, ppc64le, ppc64, s390x]
 
       --version-file-strategy <VERSION_FILE_STRATEGY>
           A strategy for how to resolve the Node version. Used whenever `fnm use` or `fnm install` is called without a version, or when `--use-on-cd` is configured on evaluation
