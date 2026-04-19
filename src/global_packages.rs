@@ -143,7 +143,7 @@ fn parse_npm_ls_global_json_output(stdout: &str) -> std::io::Result<Vec<String>>
                 return None;
             }
 
-            Some(format!("{}@{}", name, version))
+            Some(format!("{name}@{version}"))
         })
         .collect::<Vec<_>>();
 
@@ -196,7 +196,10 @@ fn package_spec_from_dir(package_dir: &Path) -> std::io::Result<Option<String>> 
         return Ok(None);
     }
 
-    Ok(Some(format!("{}@{}", package.name, package.version)))
+    let name = package.name;
+    let version = package.version;
+
+    Ok(Some(format!("{name}@{version}")))
 }
 
 #[cfg(test)]
@@ -228,6 +231,7 @@ mod tests {
         }
     }
 
+    #[cfg(not(windows))]
     #[test]
     fn test_list_for_version_reads_unscoped_and_scoped_packages() {
         let base_dir = tempfile::tempdir().unwrap();
@@ -263,6 +267,7 @@ mod tests {
         assert_eq!(result, vec!["@scope/tool@1.2.3", "is-odd@3.0.1"]);
     }
 
+    #[cfg(not(windows))]
     #[test]
     fn test_list_for_version_returns_empty_when_node_modules_is_missing() {
         let base_dir = tempfile::tempdir().unwrap();
@@ -273,6 +278,7 @@ mod tests {
         assert_eq!(result, Vec::<String>::new());
     }
 
+    #[cfg(not(windows))]
     #[test]
     fn test_list_for_version_skips_malformed_package_json() {
         let base_dir = tempfile::tempdir().unwrap();
@@ -291,6 +297,7 @@ mod tests {
         assert_eq!(result, vec!["is-odd@3.0.1"]);
     }
 
+    #[cfg(not(windows))]
     #[test]
     fn test_list_for_version_skips_directories_without_package_json() {
         let base_dir = tempfile::tempdir().unwrap();

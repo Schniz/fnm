@@ -9,6 +9,7 @@ eval "$(fnm env --log-level=error)"
 exports[`Bash reinstall packages from another version: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
+npm config set prefix ./npm-global --location=user
 fnm install v18.20.0
 fnm use v18.20.0
 npm install -g is-odd
@@ -32,6 +33,7 @@ fnm use v20.11.0
 exports[`Bash skips reinstall when source and target are the same version: Bash 1`] = `
 "set -e
 eval "$(fnm env)"
+npm config set prefix ./npm-global --location=user
 fnm install v18.20.0
 (fnm install v18.20.0 --reinstall-packages-from=v18.20.0) | grep 'Skipping package reinstallation' || (echo "Expected output to contain 'Skipping package reinstallation'" && exit 1)"
 `;
@@ -50,6 +52,7 @@ begin; fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1; end | grep 
 
 exports[`Fish reinstall packages from another version: Fish 1`] = `
 "fnm env | source
+npm config set prefix ./npm-global --location=user
 fnm install v18.20.0
 fnm use v18.20.0
 npm install -g is-odd
@@ -66,6 +69,7 @@ begin; npm list -g --depth=0; end | grep 'is-odd'; or echo "Expected output to c
 
 exports[`Fish skips reinstall when source and target are the same version: Fish 1`] = `
 "fnm env | source
+npm config set prefix ./npm-global --location=user
 fnm install v18.20.0
 begin; fnm install v18.20.0 --reinstall-packages-from=v18.20.0; end | grep 'Skipping package reinstallation'; or echo "Expected output to contain 'Skipping package reinstallation'" && exit 1"
 `;
@@ -85,6 +89,7 @@ $($__out__ = $(fnm install v20.11.0 --reinstall-packages-from=v18.20.0 2>&1 | Se
 exports[`PowerShell reinstall packages from another version: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
+npm config set prefix ./npm-global --location=user
 fnm install v18.20.0
 fnm use v18.20.0
 npm install -g is-odd
@@ -102,6 +107,7 @@ $($__out__ = $(npm list -g --depth=0 | Select-String 'is-odd'); if ($__out__ -eq
 exports[`PowerShell skips reinstall when source and target are the same version: PowerShell 1`] = `
 "$ErrorActionPreference = "Stop"
 fnm env | Out-String | Invoke-Expression
+npm config set prefix ./npm-global --location=user
 fnm install v18.20.0
 $($__out__ = $(fnm install v18.20.0 --reinstall-packages-from=v18.20.0 | Select-String 'Skipping package reinstallation'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
@@ -122,6 +128,7 @@ eval "$(fnm env --log-level=error)"
 exports[`Zsh reinstall packages from another version: Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
+npm config set prefix ./npm-global --location=user
 fnm install v18.20.0
 fnm use v18.20.0
 npm install -g is-odd
@@ -145,6 +152,7 @@ fnm use v20.11.0
 exports[`Zsh skips reinstall when source and target are the same version: Zsh 1`] = `
 "set -e
 eval "$(fnm env)"
+npm config set prefix ./npm-global --location=user
 fnm install v18.20.0
 (fnm install v18.20.0 --reinstall-packages-from=v18.20.0) | grep 'Skipping package reinstallation' || (echo "Expected output to contain 'Skipping package reinstallation'" && exit 1)"
 `;

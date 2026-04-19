@@ -3,6 +3,8 @@ import { script } from "./shellcode/script.js"
 import { Bash, Fish, PowerShell, Zsh } from "./shellcode/shells.js"
 import describe from "./describe.js"
 
+const GLOBAL_PREFIX = "./npm-global"
+
 const SOURCE_VERSION = "v18.20.0"
 const TARGET_VERSION = "v20.11.0"
 
@@ -49,6 +51,15 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
     test(`reinstall packages from another version`, async () => {
       await script(shell)
         .then(shell.env({}))
+        .then(
+          shell.call("npm", [
+            "config",
+            "set",
+            "prefix",
+            GLOBAL_PREFIX,
+            "--location=user",
+          ]),
+        )
         .then(shell.call("fnm", ["install", SOURCE_VERSION]))
         .then(shell.call("fnm", ["use", SOURCE_VERSION]))
         .then(shell.call("npm", ["install", "-g", "is-odd"]))
@@ -92,6 +103,15 @@ for (const shell of [Bash, Zsh, Fish, PowerShell]) {
     test(`skips reinstall when source and target are the same version`, async () => {
       await script(shell)
         .then(shell.env({}))
+        .then(
+          shell.call("npm", [
+            "config",
+            "set",
+            "prefix",
+            GLOBAL_PREFIX,
+            "--location=user",
+          ]),
+        )
         .then(shell.call("fnm", ["install", SOURCE_VERSION]))
         .then(
           shell.scriptOutputContains(
