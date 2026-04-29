@@ -39,7 +39,7 @@ impl Shell for WindowsCmd {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read path to cd.cmd"))?;
-        Ok(format!("doskey cd={path} $*",))
+        Ok(format!("doskey cd=\"{path}\" $*",))
     }
 }
 
@@ -49,4 +49,25 @@ fn create_cd_file_at(path: &std::path::Path) -> std::io::Result<()> {
     let mut file = std::fs::File::create(path)?;
     file.write_all(cmd_contents)?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn use_on_cd_quotes_macro_path() {
+        let base_dir = std::env::temp_dir().join("fnm cmd test with spaces");
+        std::fs::create_dir_all(&base_dir).unwrap();
+        let config = crate::config::FnmConfig::default().with_base_dir(Some(base_dir.clone()));
+        let output = WindowsCmd.use_on_cd(&config).unwrap();
+
+        assert!(output.starts_with("doskey cd=\""));
+        assert!(output.ends_with("\" $*"));
+        assert!(output.contains("with spaces"));
+        assert!(output.contains("cd.cmd"));
+
+        std::fs::remove_file(base_dir.join("cd.cmd")).unwrap();
+        std::fs::remove_dir_all(base_dir).unwrap();
+    }
 }

@@ -1,10 +1,12 @@
 use crate::version::Version;
+use clap::ValueEnum;
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, ValueEnum)]
 pub enum Arch {
     X86,
     X64,
     X64Musl,
+    X64Glibc217,
     Arm64,
     Armv7l,
     Ppc64le,
@@ -18,6 +20,7 @@ impl Arch {
             Arch::X86 => "x86",
             Arch::X64 => "x64",
             Arch::X64Musl => "x64-musl",
+            Arch::X64Glibc217 => "x64-glibc-217",
             Arch::Arm64 => "arm64",
             Arch::Armv7l => "armv7l",
             Arch::Ppc64le => "ppc64le",
@@ -60,6 +63,7 @@ impl std::str::FromStr for Arch {
             "x86" => Ok(Arch::X86),
             "x64" => Ok(Arch::X64),
             "x64-musl" => Ok(Arch::X64Musl),
+            "x64-glibc-217" => Ok(Arch::X64Glibc217),
             "arm64" => Ok(Arch::Arm64),
             "armv7l" => Ok(Arch::Armv7l),
             "ppc64le" => Ok(Arch::Ppc64le),

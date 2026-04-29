@@ -1,5 +1,5 @@
 name: Installation script
-on: 
+on:
   pull_request:
     paths:
       - .ci/install.sh
@@ -13,9 +13,11 @@ jobs:
   test_against_latest_release_arm:
     strategy:
       matrix:
-        docker_image:
-          - arm64v8/ubuntu
-          - arm32v7/ubuntu
+        include:
+          - docker_image: arm64v8/ubuntu
+            docker_platform: linux/arm64/v8
+          - docker_image: arm32v7/ubuntu
+            docker_platform: linux/arm/v7
     name: Test against latest release (ARM)
     runs-on: ubuntu-latest
     steps:
@@ -25,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run installation script in Docker
         run: |
-          docker run --rm -v $(pwd):$(pwd) -e "RUST_LOG=fnm=debug" --workdir $(pwd) ${{matrix.docker_image}} bash -c '
+          docker run --rm --platform ${{ matrix.docker_platform }} -v $(pwd):$(pwd) -e "RUST_LOG=fnm=debug" --workdir $(pwd) ${{matrix.docker_image}} bash -c '
             set -e
 
             apt update && apt install -y unzip curl libatomic1
@@ -53,13 +55,13 @@ jobs:
     strategy:
       matrix:
         shell: [fish, zsh, bash]
-        setup: 
+        setup:
           - os: ubuntu
-            script_arguments: ''
+            script_arguments: ""
           - os: macos
-            script_arguments: ''
+            script_arguments: ""
           - os: macos
-            script_arguments: '--force-no-brew'
+            script_arguments: "--force-no-brew"
     runs-on: ${{ matrix.setup.os }}-latest
     steps:
       - uses: actions/checkout@v4
@@ -84,4 +86,4 @@ jobs:
       - run: "env SHELL=$(which ${{ matrix.shell }}) bash ./.ci/install.sh ${{ matrix.setup.script_arguments }}"
         name: Run the installation script
       - run: ./.ci/test_installation_script.sh ${{ matrix.shell }}
-        name: 'Test installation script'
+        name: "Test installation script"

@@ -53,10 +53,21 @@ impl Shell for Zsh {
                     {autoload_hook}
                 }}
 
-                add-zsh-hook chpwd _fnm_autoload_hook \
-                    && _fnm_autoload_hook
+                add-zsh-hook -D chpwd _fnm_autoload_hook
+                add-zsh-hook chpwd _fnm_autoload_hook
             ",
             autoload_hook = autoload_hook
         ))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn use_on_cd_removes_existing_hook_before_adding() {
+        let output = Zsh.use_on_cd(&crate::config::FnmConfig::default()).unwrap();
+        assert!(output.contains("add-zsh-hook -D chpwd _fnm_autoload_hook"));
     }
 }

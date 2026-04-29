@@ -48,8 +48,6 @@ impl Shell for Fish {
                     status --is-command-substitution; and return
                     {autoload_hook}
                 end
-
-                _fnm_autoload_hook
             ",
             autoload_hook = autoload_hook
         ))

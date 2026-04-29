@@ -46,7 +46,6 @@ impl Shell for PowerShell {
                 function global:Set-LocationWithFnm {{ param($path); if ($path -eq $null) {{Set-Location}} else {{Set-Location $path}}; Set-FnmOnLoad }}
                 Set-Alias -Scope global cd_with_fnm Set-LocationWithFnm
                 Set-Alias -Option AllScope -Scope global cd Set-LocationWithFnm
-                Set-FnmOnLoad
             ",
             autoload_hook = autoload_hook
         ))

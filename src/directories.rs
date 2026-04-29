@@ -27,7 +27,7 @@ fn cache_dir(basedirs: &impl BaseStrategy) -> PathBuf {
 
 /// A helper struct for directories in fnm that uses XDG Base Directory Specification
 /// if applicable for the platform.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Directories(
     #[cfg(windows)] etcetera::base_strategy::Windows,
     #[cfg(not(windows))] etcetera::base_strategy::Xdg,
