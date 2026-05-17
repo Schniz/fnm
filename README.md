@@ -245,15 +245,15 @@ Install the **current** LTS release (the newest LTS line on nodejs.org):
 fnm install --lts
 ```
 
-Install a **specific** LTS line by codename (see names with `fnm list-remote --lts`):
+Install a **specific** LTS line by codename (list codenames with `fnm list-remote --lts`):
 
 ```sh
-fnm install lts/iron
+fnm install lts/jod
 # equivalent:
-fnm install --lts iron
+fnm install --lts jod
 ```
 
-You can also use the `lts-*` form, e.g. `fnm install lts-iron`.
+You can also use the `lts-*` form, e.g. `fnm install lts-jod`.
 
 ### Latest stable
 
