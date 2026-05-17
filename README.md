@@ -233,6 +233,58 @@ call "%CMDER_ROOT%\bin\fnm_init.cmd"
 
 You can replace `%CMDER_ROOT%` with any other convenient path too.
 
+## Installing Node.js versions
+
+After [shell setup](#shell-setup), install the Node.js versions you need. `fnm` does not ship with Node.js; you choose what to install.
+
+### LTS (Long-Term Support)
+
+Install the **current** LTS release (the newest LTS line on nodejs.org):
+
+```sh
+fnm install --lts
+```
+
+Install a **specific** LTS line by codename (see names with `fnm list-remote --lts`):
+
+```sh
+fnm install lts/iron
+# equivalent:
+fnm install --lts iron
+```
+
+You can also use the `lts-*` form, e.g. `fnm install lts-iron`.
+
+### Latest stable
+
+Install the newest Node.js release (not necessarily LTS):
+
+```sh
+fnm install --latest
+# or:
+fnm install latest
+```
+
+### Other version strings
+
+- **Partial semver** — `fnm install 22` installs the latest 22.x release.
+- **Exact version** — `fnm install 22.11.0`.
+- **Browse remote versions** — `fnm list-remote` (add `--lts` to filter).
+
+Use `fnm use <version>` in the current shell, or `fnm install <version> --use` right after installing.
+
+### Default version
+
+The **default** version is what `fnm` uses in new shells when no `.node-version` / `.nvmrc` is found (and no other resolution applies). It is separate from LTS or `latest`:
+
+```sh
+fnm install 22
+fnm default 22          # use Node 22 in new shells
+fnm default             # print the current default
+```
+
+Set the default after installing, or pass `--use` on `fnm install` to switch the current shell only.
+
 ## [Configuration](./docs/configuration.md)
 
 [See the available configuration options for an extended configuration documentation](./docs/configuration.md)
