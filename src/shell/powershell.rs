@@ -9,16 +9,10 @@ pub struct PowerShell;
 
 impl Shell for PowerShell {
     fn path(&self, path: &Path) -> anyhow::Result<String> {
-        let current_path =
-            std::env::var_os("PATH").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;
-        let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
-        split_paths.insert(0, path.to_path_buf());
-        let new_path = std::env::join_paths(split_paths)
-            .map_err(|source| anyhow::anyhow!("Can't join paths: {}", source))?;
-        let new_path = new_path
+        let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read PATH"))?;
-        Ok(self.set_env_var("PATH", new_path))
+        Ok(format!(r#"$env:PATH = "{path};$env:PATH""#))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
