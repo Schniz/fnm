@@ -120,7 +120,7 @@ echo :: FNM >> %userprofile%\profile.cmd
 echo :: for /F will launch a new instance of cmd so we create a guard to prevent an infnite loop >> %userprofile%\profile.cmd
 echo if not defined FNM_AUTORUN_GUARD ( >> %userprofile%\profile.cmd
 echo     set "FNM_AUTORUN_GUARD=AutorunGuard" >> %userprofile%\profile.cmd
-echo     FOR /f "tokens=*" %%z IN ('fnm env --use-on-cd') DO CALL %%z >> %userprofile%\profile.cmd
+echo     FOR /f "tokens=*" %%%%z IN ('fnm env --use-on-cd') DO CALL %%%%z >> %userprofile%\profile.cmd
 echo ) >> %userprofile%\profile.cmd
 
 echo Setting up powershell
