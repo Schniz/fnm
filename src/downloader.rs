@@ -92,7 +92,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
     for extract in Archive::supported() {
         let ext = extract.file_extension();
         let url = download_url(node_dist_mirror, version, arch, ext);
-        debug!("Going to call for {}", url);
+        debug!("Going to call for {url}");
         let response = crate::http::get(url.as_str())?;
 
         if !response.status().is_success() {

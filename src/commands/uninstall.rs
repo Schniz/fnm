@@ -58,7 +58,10 @@ impl Command for Uninstall {
                 version: version.clone(),
             })?;
 
-        debug!("Removing Node version from {root_path:?}");
+        debug!(
+            "Removing Node version from {root_path}",
+            root_path = root_path.display()
+        );
         std::fs::remove_dir_all(root_path)
             .map_err(|source| Error::CantDeleteNodeVersion { source })?;
         outln!(
@@ -69,7 +72,7 @@ impl Command for Uninstall {
         );
 
         for alias in matching_aliases {
-            debug!("Removing alias from {:?}", alias.path());
+            debug!("Removing alias from {}", alias.path().display());
             remove_symlink_dir(alias.path())
                 .map_err(|source| Error::CantDeleteSymlink { source })?;
             outln!(

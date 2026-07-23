@@ -18,15 +18,15 @@ impl<P: AsRef<Path>> DirectoryPortal<P> {
     #[must_use]
     pub fn new_in(parent_dir: impl AsRef<Path>, target: P) -> Self {
         let temp_dir = TempDir::new_in(parent_dir).expect("Can't generate a temp directory");
-        debug!("Created a temp directory in {:?}", temp_dir.path());
+        debug!("Created a temp directory in {}", temp_dir.path().display());
         Self { temp_dir, target }
     }
 
     pub fn teleport(self) -> std::io::Result<P> {
         debug!(
-            "Moving directory {:?} into {:?}",
-            self.temp_dir.path(),
-            self.target.as_ref()
+            "Moving directory {} into {}",
+            self.temp_dir.path().display(),
+            self.target.as_ref().display()
         );
         std::fs::rename(&self.temp_dir, &self.target)?;
         Ok(self.target)

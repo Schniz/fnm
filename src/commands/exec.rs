@@ -88,7 +88,10 @@ impl Cmd for Exec {
                 .map_err(|source| Error::CantAddPathToEnvironment { source })?
         };
 
-        log::debug!("Running {binary} with PATH={path_env:?}");
+        log::debug!(
+            "Running {binary} with PATH={path_env}",
+            path_env = path_env.display()
+        );
 
         let exit_status = Command::new(binary)
             .args(arguments)
