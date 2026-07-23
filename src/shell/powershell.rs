@@ -14,7 +14,7 @@ impl Shell for PowerShell {
         let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
         split_paths.insert(0, path.to_path_buf());
         let new_path = std::env::join_paths(split_paths)
-            .map_err(|source| anyhow::anyhow!("Can't join paths: {}", source))?;
+            .map_err(|source| anyhow::anyhow!("Can't join paths: {source}"))?;
         let new_path = new_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read PATH"))?;

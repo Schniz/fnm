@@ -34,7 +34,7 @@ impl LtsType {
         versions: &'vec [IndexedNodeVersion],
     ) -> Option<&'vec IndexedNodeVersion> {
         match self {
-            Self::Latest => versions.iter().filter(|x| x.lts.is_some()).next_back(),
+            Self::Latest => versions.iter().rfind(|x| x.lts.is_some()),
             Self::CodeName(s) => versions
                 .iter()
                 .filter(|x| match &x.lts {

@@ -37,7 +37,7 @@ impl<R: Read> Extract for Zip<R> {
             {
                 let comment = file.comment();
                 if !comment.is_empty() {
-                    debug!("File {} comment: {}", i, comment);
+                    debug!("File {i} comment: {comment}");
                 }
             }
 

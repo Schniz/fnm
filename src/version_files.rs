@@ -81,11 +81,11 @@ pub fn get_user_version_for_file(
     match (file, is_pkg_json, config.resolve_engines()) {
         (_, true, false) => None,
         (Err(err), _, _) => {
-            info!("Can't read file: {}", err);
+            info!("Can't read file: {err}");
             None
         }
         (Ok(version), false, _) => {
-            info!("Found string {:?} in version file", version);
+            info!("Found string {version:?} in version file");
             UserVersion::from_str(version.trim()).ok()
         }
         (Ok(pkg_json), true, true) => {
@@ -94,7 +94,7 @@ pub fn get_user_version_for_file(
                 pkg_json.as_ref().and_then(PackageJson::node_range).cloned();
 
             if let Some(range) = range {
-                info!("Found package.json with {:?} in engines.node field", range);
+                info!("Found package.json with {range:?} in engines.node field");
                 Some(UserVersion::SemverRange(range))
             } else {
                 info!("No engines.node range found in package.json");

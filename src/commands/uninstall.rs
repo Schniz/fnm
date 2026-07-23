@@ -58,7 +58,7 @@ impl Command for Uninstall {
                 version: version.clone(),
             })?;
 
-        debug!("Removing Node version from {:?}", root_path);
+        debug!("Removing Node version from {root_path:?}");
         std::fs::remove_dir_all(root_path)
             .map_err(|source| Error::CantDeleteNodeVersion { source })?;
         outln!(

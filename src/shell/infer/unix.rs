@@ -24,7 +24,7 @@ pub fn infer_shell() -> Option<Box<dyn Shell>> {
 
         let process_info = get_process_info(current_pid)
             .map_err(|err| {
-                debug!("{}", err);
+                debug!("{err}");
                 err
             })
             .ok()?;
@@ -72,11 +72,11 @@ fn get_process_info(pid: u32) -> Result<ProcessInfo, ProcessInfoError> {
     let mut parts = line.split_whitespace();
     let ppid = parts.next().ok_or_else(|| ProcessInfoError::Parse {
         expectation: "Can't read the ppid from ps, should be the first item in the table",
-        got: line.to_string(),
+        got: line.clone(),
     })?;
     let command = parts.next().ok_or_else(|| ProcessInfoError::Parse {
         expectation: "Can't read the command from ps, should be the second item in the table",
-        got: line.to_string(),
+        got: line.clone(),
     })?;
 
     Ok(ProcessInfo {
