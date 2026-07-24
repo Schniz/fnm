@@ -14,6 +14,10 @@ pub enum SubCommand {
     LsLocal(commands::ls_local::LsLocal),
 
     /// Install a new Node.js version
+    ///
+    /// When a `default-packages` file exists at `$FNM_DIR/default-packages`,
+    /// fnm will install the listed packages globally (via `npm install -g`)
+    /// after each `fnm install`.
     #[clap(name = "install", bin_name = "install", visible_aliases = &["i"])]
     Install(commands::install::Install),
 
