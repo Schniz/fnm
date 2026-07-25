@@ -148,6 +148,10 @@ impl FnmConfig {
         self.directories.default_base_dir()
     }
 
+    pub fn base_dir(&self) -> std::path::PathBuf {
+        self.base_dir_with_default()
+    }
+
     pub fn installations_dir(&self) -> std::path::PathBuf {
         self.base_dir_with_default()
             .join("node-versions")
