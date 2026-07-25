@@ -32,6 +32,15 @@ First ensure that `curl` and `unzip` are already installed on your operating sys
 curl -fsSL https://fnm.vercel.app/install | bash
 ```
 
+### Using a script (Windows)
+
+If you are running >= Windows 10, curl is pre-installed and PowerShell 5 has
+`Expand-Archive` cmdlet.
+
+```cmd
+curl -fsSLO https://fnm.vercel.app/install.cmd && install.cmd
+```
+
 #### Upgrade
 
 On macOS, it is as simple as `brew upgrade fnm`.
