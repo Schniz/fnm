@@ -7,10 +7,21 @@ fnm install 18
 fnm exec --using=18 node test-pnpm-corepack.js"
 `;
 
+exports[`Bash skips enabling Corepack if it's not bundled with Node.js: Bash 1`] = `
+"set -e
+eval "$(fnm env --corepack-enabled)"
+(fnm install 14.18.0) | grep "npm install -g corepack" || (echo "Expected output to contain "npm install -g corepack"" && exit 1)"
+`;
+
 exports[`Fish installs corepack: Fish 1`] = `
 "fnm env --corepack-enabled | source
 fnm install 18
 fnm exec --using=18 node test-pnpm-corepack.js"
+`;
+
+exports[`Fish skips enabling Corepack if it's not bundled with Node.js: Fish 1`] = `
+"fnm env --corepack-enabled | source
+begin; fnm install 14.18.0; end | grep "npm install -g corepack"; or echo "Expected output to contain "npm install -g corepack"" && exit 1"
 `;
 
 exports[`PowerShell installs corepack: PowerShell 1`] = `
@@ -20,9 +31,21 @@ fnm install 18
 fnm exec --using=18 node test-pnpm-corepack.js"
 `;
 
+exports[`PowerShell skips enabling Corepack if it's not bundled with Node.js: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env --corepack-enabled | Out-String | Invoke-Expression
+$($__out__ = $(fnm install 14.18.0 | Select-String "npm install -g corepack"); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+`;
+
 exports[`Zsh installs corepack: Zsh 1`] = `
 "set -e
 eval "$(fnm env --corepack-enabled)"
 fnm install 18
 fnm exec --using=18 node test-pnpm-corepack.js"
+`;
+
+exports[`Zsh skips enabling Corepack if it's not bundled with Node.js: Zsh 1`] = `
+"set -e
+eval "$(fnm env --corepack-enabled)"
+(fnm install 14.18.0) | grep "npm install -g corepack" || (echo "Expected output to contain "npm install -g corepack"" && exit 1)"
 `;

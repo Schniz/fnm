@@ -193,6 +193,23 @@ fn tag_alias(config: &FnmConfig, matched_version: &Version, alias: &Version) -> 
 }
 
 fn enable_corepack(version: &Version, config: &FnmConfig) -> Result<(), Error> {
+    let Version::Semver(nodejs_version) = version else {
+        return Ok(());
+    };
+
+    let corepack_range: node_semver::Range = "^14.19.0 || 16.9.0 - 24.x.x".parse().unwrap();
+
+    if !nodejs_version.satisfies(&corepack_range) {
+        let message = format!(
+            "Note: Corepack is not bundled with Node.js {nodejs_version}, \
+                            so you have to manually install and enable it by running:\
+                            \nnpm install -g corepack && corepack enable"
+        );
+        outln!(config, Info, "{}", message.yellow());
+
+        return Ok(());
+    }
+
     let corepack_path = version.installation_path(config);
     let corepack_path = if cfg!(windows) {
         corepack_path.join("corepack.cmd")
