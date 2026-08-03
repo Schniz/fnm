@@ -7,15 +7,16 @@ use url::Url;
 
 #[derive(clap::Parser, Debug, Clone)]
 pub struct FnmConfig {
-    /// <https://nodejs.org/dist/> mirror
+    /// <https://nodejs.org/dist/> mirror.
+    /// Defaults to <https://unofficial-builds.nodejs.org/download/release/> on musl
+    /// architectures, since the official mirror does not ship musl builds.
     #[clap(
         long,
         env = "FNM_NODE_DIST_MIRROR",
-        default_value = "https://nodejs.org/dist",
         global = true,
         hide_env_values = true
     )]
-    pub node_dist_mirror: Url,
+    node_dist_mirror: Option<Url>,
 
     /// The root directory of fnm installations.
     #[clap(
@@ -103,7 +104,7 @@ pub struct FnmConfig {
 impl Default for FnmConfig {
     fn default() -> Self {
         Self {
-            node_dist_mirror: Url::parse("https://nodejs.org/dist/").unwrap(),
+            node_dist_mirror: None,
             base_dir: None,
             multishell_path: None,
             log_level: LogLevel::Info,
@@ -117,6 +118,19 @@ impl Default for FnmConfig {
 }
 
 impl FnmConfig {
+    pub fn node_dist_mirror(&self) -> Url {
+        if let Some(mirror) = &self.node_dist_mirror {
+            return mirror.clone();
+        }
+
+        match self.arch {
+            Arch::X64Musl | Arch::Arm64Musl => {
+                Url::parse("https://unofficial-builds.nodejs.org/download/release/").unwrap()
+            }
+            _ => Url::parse("https://nodejs.org/dist/").unwrap(),
+        }
+    }
+
     pub fn version_file_strategy(&self) -> VersionFileStrategy {
         self.version_file_strategy
     }
