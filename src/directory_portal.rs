@@ -28,7 +28,7 @@ impl<P: AsRef<Path>> DirectoryPortal<P> {
             self.temp_dir.path().display(),
             self.target.as_ref().display()
         );
-        std::fs::rename(&self.temp_dir, &self.target)?;
+        crate::fs_retry::rename_with_retry(self.temp_dir.path(), self.target.as_ref())?;
         Ok(self.target)
     }
 }

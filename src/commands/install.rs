@@ -154,6 +154,9 @@ impl Command for Install {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
             }
+            Err(source @ DownloaderError::CantMoveIntoPlace { .. }) => {
+                Err(Error::CantMoveIntoPlace { source })?;
+            }
             Err(source) => Err(Error::DownloadError { source })?,
             Ok(()) => {}
         }
@@ -225,6 +228,8 @@ fn use_installed_version(version: &Version, config: &FnmConfig) -> Result<(), Er
 pub enum Error {
     #[error("Can't download the requested binary: {}", source)]
     DownloadError { source: DownloaderError },
+    #[error(transparent)]
+    CantMoveIntoPlace { source: DownloaderError },
     #[error(transparent)]
     IoError {
         #[from]
