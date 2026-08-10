@@ -33,6 +33,8 @@ pub enum Error {
     VersionNotFound { version: Version, arch: Arch },
     #[error("Version already installed at {:?}", path)]
     VersionAlreadyInstalled { path: PathBuf },
+    #[error("Can't move the extracted files into place: {}", source)]
+    CantMoveIntoPlace { source: std::io::Error },
 }
 
 #[cfg(unix)]
@@ -110,15 +112,20 @@ pub fn install_node_dist<P: AsRef<Path>>(
         }
         debug!("Extraction completed");
 
-        let installed_directory = std::fs::read_dir(&portal)?
+        let installed_directory = std::fs::read_dir(&portal)
+            .map_err(|source| Error::CantMoveIntoPlace { source })?
             .next()
-            .ok_or(Error::TarIsEmpty)??;
+            .ok_or(Error::TarIsEmpty)?
+            .map_err(|source| Error::CantMoveIntoPlace { source })?;
         let installed_directory = installed_directory.path();
 
         let renamed_installation_dir = portal.join("installation");
-        std::fs::rename(installed_directory, renamed_installation_dir)?;
+        crate::fs_retry::rename_with_retry(&installed_directory, &renamed_installation_dir)
+            .map_err(|source| Error::CantMoveIntoPlace { source })?;
 
-        portal.teleport()?;
+        portal
+            .teleport()
+            .map_err(|source| Error::CantMoveIntoPlace { source })?;
 
         return Ok(());
     }
