@@ -77,7 +77,7 @@ Then, [set up your shell for fnm](#shell-setup)
 #### Using Winget (Windows)
 
 ```sh
-winget install Schniz.fnm
+winget install --id Schniz.fnm -e --source winget
 ```
 
 #### Using Scoop (Windows)
