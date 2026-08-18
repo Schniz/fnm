@@ -8,6 +8,17 @@ license = "GPL-3.0"
 repository = "https://github.com/Schniz/fnm"
 description = "Fast and simple Node.js version manager"
 
+[package.metadata.deb]
+maintainer = "Gal Schlezinger <gal@spitfire.co.il>"
+section = "utils"
+depends = ""
+license-file = ["LICENSE", "0"]
+assets = [["target/release/fnm", "usr/bin/", "755"]]
+extended-description = """\
+fnm is a fast and simple Node.js version manager. It works with .node-version
+and .nvmrc files, and is enabled in your shell by evaluating the output of
+`fnm env`. See https://github.com/Schniz/fnm for shell setup instructions."""
+
 [dependencies]
 serde = { version = "1.0.203", features = ["derive"] }
 clap = { version = "4.5.4", features = ["derive", "env"] }
