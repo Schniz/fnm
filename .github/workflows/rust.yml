@@ -367,13 +367,15 @@ jobs:
       - name: Sanity test amd64 package
         run: |
           set -- target/debian/fnm_*_amd64.deb
-          test "$#" -eq 1 && test -f "$1"
+          test "$#" -eq 1
+          test -f "$1"
           sudo dpkg -i "$1"
           test "$(fnm --version)" = "fnm $(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')"
       - name: Verify arm64 package
         run: |
           set -- target/debian/fnm_*_arm64.deb
-          test "$#" -eq 1 && test -f "$1"
+          test "$#" -eq 1
+          test -f "$1"
           deb="$1"
           test "$(dpkg-deb -f "$deb" Package)" = "fnm"
           test "$(dpkg-deb -f "$deb" Architecture)" = "arm64"
