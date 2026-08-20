@@ -10,7 +10,7 @@ Here’s a list of these features and capabilities:
 
 **✅ Highly recommended**
 
-`--use-on-cd` appends output to `fnm env`'s output that will hook into your shell upon changing directories, and will switch the Node.js version based on the requirements of the current directory, based on `.node-version` or `.nvmrc` (or `packages.json#engines#node` if `--resolve-engines` was enabled).
+`--use-on-cd` appends output to `fnm env`'s output that will hook into your shell upon changing directories, and will switch the Node.js version based on the requirements of the current directory, based on `.node-version` or `.nvmrc` (or `packages.json#devEngines#runtime` if `--resolve-dev-engines` was enabled and `packages.json#engines#node` if `--resolve-engines` was enabled).
 
 This allows you do avoid thinking about `fnm use`, and only `cd <DIR>` to make it work.
 
@@ -51,6 +51,41 @@ error: Can't find version in dotfiles. Please provide a version manually to the 
 **🧪 Experimental**
 
 Runs [`corepack enable`](https://nodejs.org/api/corepack.html#enabling-the-feature) when a new version of Node.js is installed. Experimental due to the fact Corepack itself is experimental.
+
+### `--resolve-dev-engines`
+
+Treats Node version in `packages.json#devEngines#runtime` as a valid Node.js version file ("dotfile"). So, if you have a package.json with the following content:
+
+```json
+{
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=20 <21"
+    }
+  }
+}
+```
+
+or:
+
+```json
+{
+  "devEngines": {
+    "runtime": [
+      {
+        "name": "node",
+        "version": ">=20 <21"
+      }
+    ]
+  }
+}
+```
+
+Then:
+
+- `fnm install` will install the latest satisfying Node.js 20.x version available in the Node.js dist server
+- `fnm use` will use the latest satisfying Node.js 20.x version available on your system, or prompt to install if no version matched.
 
 ### `--resolve-engines`
 
