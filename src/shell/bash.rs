@@ -26,15 +26,17 @@ impl Shell for Bash {
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+        // Use POSIX `[ ]` tests (not bash `[[ ]]`) so the hook still works when
+        // eval'd under dash/sh — see https://github.com/Schniz/fnm/issues/1591
         let version_file_exists_condition = if config.resolve_engines() {
-            "-f .node-version || -f .nvmrc || -f package.json"
+            "[ -f .node-version ] || [ -f .nvmrc ] || [ -f package.json ]"
         } else {
-            "-f .node-version || -f .nvmrc"
+            "[ -f .node-version ] || [ -f .nvmrc ]"
         };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
                 r"
-                    if [[ {version_file_exists_condition} ]]; then
+                    if {version_file_exists_condition}; then
                         fnm use --silent-if-unchanged
                     fi
                 ",
@@ -57,5 +59,23 @@ impl Shell for Bash {
             "#,
             autoload_hook = autoload_hook
         ))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn use_on_cd_emits_posix_file_tests() {
+        let output = Bash.use_on_cd(&crate::config::FnmConfig::default()).unwrap();
+        assert!(
+            output.contains("[ -f .node-version ] || [ -f .nvmrc ]"),
+            "expected POSIX [ -f ] tests, got:\n{output}"
+        );
+        assert!(
+            !output.contains("[["),
+            "bash use-on-cd hook must not emit [[ for dash/sh compatibility"
+        );
     }
 }
