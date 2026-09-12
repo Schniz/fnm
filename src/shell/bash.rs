@@ -27,14 +27,14 @@ impl Shell for Bash {
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
         let version_file_exists_condition = if config.resolve_engines() {
-            "-f .node-version || -f .nvmrc || -f package.json"
+            "-f .node-version ] || [ -f .nvmrc ] || [ -f package.json"
         } else {
-            "-f .node-version || -f .nvmrc"
+            "-f .node-version ] || [ -f .nvmrc"
         };
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
                 r"
-                    if [[ {version_file_exists_condition} ]]; then
+                    if [ {version_file_exists_condition} ]; then
                         fnm use --silent-if-unchanged
                     fi
                 ",
