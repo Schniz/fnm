@@ -30,6 +30,14 @@ impl Shell for Zsh {
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+        let executable = super::shell::hook_executable()?;
+        let executable = executable
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("Can't convert executable path to string"))?;
+        let executable = super::windows_compat::maybe_fix_windows_path(executable)
+            .unwrap_or_else(|| executable.to_owned());
+        let executable = format!("'{}'", executable.replace('\'', "'\\''"));
+        let use_command = format!("if command -v fnm >/dev/null 2>&1; then fnm use --silent-if-unchanged; else {executable} use --silent-if-unchanged; fi");
         let version_file_exists_condition = if config.resolve_engines() {
             "-f .node-version || -f .nvmrc || -f package.json"
         } else {
@@ -39,12 +47,12 @@ impl Shell for Zsh {
             VersionFileStrategy::Local => formatdoc!(
                 r"
                     if [[ {version_file_exists_condition} ]]; then
-                        fnm use --silent-if-unchanged
+                        {use_command}
                     fi
                 ",
                 version_file_exists_condition = version_file_exists_condition,
             ),
-            VersionFileStrategy::Recursive => String::from(r"fnm use --silent-if-unchanged"),
+            VersionFileStrategy::Recursive => use_command.clone(),
         };
         Ok(formatdoc!(
             r"
