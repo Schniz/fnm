@@ -4,7 +4,7 @@ use crate::config::FnmConfig;
 use crate::fs::symlink_dir;
 use crate::outln;
 use crate::path_ext::PathExt;
-use crate::shell::{infer_shell, Shell, Shells};
+use crate::shell::{infer_shell, PathOrder, Shell, Shells};
 use clap::ValueEnum;
 use colored::Colorize;
 use std::collections::HashMap;
@@ -12,6 +12,7 @@ use std::fmt::Debug;
 use std::io::IsTerminal;
 use thiserror::Error;
 
+#[allow(clippy::struct_excessive_bools)]
 #[derive(clap::Parser, Debug, Default)]
 pub struct Env {
     /// The shell syntax to use. Infers when missing.
@@ -26,6 +27,9 @@ pub struct Env {
     /// Print the script to change Node versions every directory change
     #[clap(long)]
     use_on_cd: bool,
+    /// Add the Node.js version to the end of PATH instead of the beginning
+    #[clap(long)]
+    append: bool,
 }
 
 fn generate_symlink_path() -> String {
@@ -60,17 +64,19 @@ fn bool_as_str(value: bool) -> &'static str {
     }
 }
 
-fn set_path_for_multishell(multishell_path: &std::path::Path) {
+fn set_path_for_multishell(
+    multishell_path: &std::path::Path,
+    order: PathOrder,
+    multishell_storage: &std::path::Path,
+) {
     let path_for_node = if cfg!(windows) {
         multishell_path.to_path_buf()
     } else {
         multishell_path.join("bin")
     };
 
-    let current_path = std::env::var_os("PATH").unwrap_or_default();
-    let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
-    split_paths.insert(0, path_for_node);
-    if let Ok(new_path) = std::env::join_paths(split_paths) {
+    let path_entries = crate::shell::path_entries(&path_for_node, order, multishell_storage);
+    if let Ok(new_path) = std::env::join_paths(path_entries) {
         unsafe {
             std::env::set_var("PATH", new_path);
         }
@@ -93,6 +99,12 @@ impl Command for Env {
 
         let multishell_path = make_symlink(config)?;
         let base_dir = config.base_dir_with_default();
+        let multishell_storage = config.multishell_storage();
+        let path_order = if self.append {
+            PathOrder::Append
+        } else {
+            PathOrder::Prepend
+        };
 
         let env_vars = [
             ("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap()),
@@ -126,9 +138,13 @@ impl Command for Env {
             .ok_or(Error::CantInferShell)?;
 
         let binary_path = if cfg!(windows) {
-            shell.path(&multishell_path)
+            shell.path(&multishell_path, path_order, &multishell_storage)
         } else {
-            shell.path(&multishell_path.join("bin"))
+            shell.path(
+                &multishell_path.join("bin"),
+                path_order,
+                &multishell_storage,
+            )
         };
 
         println!("{}", binary_path?);
@@ -140,7 +156,7 @@ impl Command for Env {
         if self.use_on_cd {
             // Call `use` internally for the initial directory, so the shell doesn't
             // need to spawn a subprocess after evaluating the env output.
-            set_path_for_multishell(&multishell_path);
+            set_path_for_multishell(&multishell_path, path_order, &multishell_storage);
             let config_with_multishell =
                 config.clone().with_multishell_path(multishell_path.clone());
             let use_cmd = Use {

@@ -1,6 +1,6 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
-use super::shell::Shell;
+use super::shell::{quote_posix, PathOrder, Shell};
 use indoc::formatdoc;
 use std::path::Path;
 
@@ -12,13 +12,27 @@ impl Shell for Bash {
         clap_complete::Shell::Bash
     }
 
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
+    fn path(
+        &self,
+        path: &Path,
+        order: PathOrder,
+        multishell_storage: &Path,
+    ) -> anyhow::Result<String> {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't convert path to string"))?;
         let path =
             super::windows_compat::maybe_fix_windows_path(path).unwrap_or_else(|| path.to_string());
-        Ok(format!("export PATH={path:?}:\"$PATH\""))
+        if order == PathOrder::Prepend {
+            return Ok(format!("export PATH={path:?}:\"$PATH\""));
+        }
+
+        let storage = multishell_storage
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("Can't convert multishell storage path to string"))?;
+        let storage = super::windows_compat::maybe_fix_windows_path(storage)
+            .unwrap_or_else(|| storage.to_string());
+        Ok(append_path_script(&path, &storage))
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
@@ -58,4 +72,55 @@ impl Shell for Bash {
             autoload_hook = autoload_hook
         ))
     }
+}
+
+pub(super) fn append_path_script(path: &str, multishell_storage: &str) -> String {
+    let layout_check = if cfg!(windows) {
+        r#"
+                case "$__fnm_relative" in
+                    ""|*/*) ;;
+                    *) continue ;;
+                esac"#
+    } else {
+        r#"
+                case "$__fnm_relative" in
+                    */bin)
+                        __fnm_session=${__fnm_relative%/bin}
+                        case "$__fnm_session" in
+                            ""|*/*) ;;
+                            *) continue ;;
+                        esac
+                        ;;
+                esac"#
+    };
+
+    format!(
+        r#"export PATH="$({{
+    __fnm_remaining="${{PATH-}}:"
+    __fnm_has_entry=
+    __fnm_new_path=
+    while [ -n "$__fnm_remaining" ]; do
+        __fnm_entry=${{__fnm_remaining%%:*}}
+        __fnm_remaining=${{__fnm_remaining#*:}}
+        case "$__fnm_entry" in
+            {storage}/*)
+                __fnm_relative=${{__fnm_entry#{storage}/}}{layout_check}
+                ;;
+        esac
+        if [ -n "$__fnm_has_entry" ]; then
+            __fnm_new_path="$__fnm_new_path:$__fnm_entry"
+        else
+            __fnm_new_path=$__fnm_entry
+            __fnm_has_entry=1
+        fi
+    done
+    if [ -n "$__fnm_has_entry" ]; then
+        printf '%s:%s' "$__fnm_new_path" {path}
+    else
+        printf '%s' {path}
+    fi
+}})"#,
+        storage = quote_posix(multishell_storage),
+        path = quote_posix(path),
+    )
 }

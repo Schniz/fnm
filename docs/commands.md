@@ -419,6 +419,9 @@ Options:
       --use-on-cd
           Print the script to change Node versions every directory change
 
+      --append
+          Add the Node.js version to the end of PATH instead of the beginning
+
       --arch <ARCH>
           Override the architecture of the installed Node binary. Defaults to arch of fnm binary
 
