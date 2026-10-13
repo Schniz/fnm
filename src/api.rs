@@ -231,6 +231,48 @@ impl Fnm {
         Ok(self.describe(&version, &aliases))
     }
 
+    /// The installed version that `directory` selects through its `.nvmrc`,
+    /// `.node-version` or `package.json`. `None` when it asks for nothing.
+    ///
+    /// Unlike passing [`Self::requested_version`] to [`Self::resolve`], this
+    /// also works for a `package.json` version range such as `>=20`, which
+    /// can't be written as a single version to ask for.
+    ///
+    /// # Errors
+    ///
+    /// [`Error::NotInstalled`] when nothing installed satisfies what the
+    /// directory asks for, and [`Error::ListInstalled`] when the installed
+    /// versions can't be read.
+    pub fn resolve_for(
+        &self,
+        directory: impl AsRef<Path>,
+    ) -> Result<Option<InstalledVersion>, Error> {
+        let Some(requested) = get_user_version_for_directory(directory, &self.config) else {
+            return Ok(None);
+        };
+        let version = self.installed_version_for(&requested.to_string(), &requested)?;
+        let aliases = list_aliases(&self.config).unwrap_or_default();
+        Ok(Some(self.describe(&version, &aliases)))
+    }
+
+    /// Downloads and unpacks the newest version satisfying what `directory`
+    /// asks for, as [`Self::install`] does for a version given by name.
+    /// `None` when the directory asks for nothing.
+    ///
+    /// # Errors
+    ///
+    /// The same as [`Self::install`].
+    pub fn install_for(
+        &self,
+        directory: impl AsRef<Path>,
+    ) -> Result<Option<InstalledVersion>, Error> {
+        let Some(requested) = get_user_version_for_directory(directory, &self.config) else {
+            return Ok(None);
+        };
+        self.install_requested(&requested.to_string(), &requested)
+            .map(Some)
+    }
+
     /// Downloads and unpacks the newest version matching `request`, and
     /// returns it. A version that is already installed is returned as it is.
     ///
@@ -246,7 +288,15 @@ impl Fnm {
     /// and [`Error::Install`] when the download or unpacking fails.
     pub fn install(&self, request: &str) -> Result<InstalledVersion, Error> {
         let requested = parse_install_request(request)?;
-        let version = self.downloadable_version_for(request, &requested)?;
+        self.install_requested(request, &requested)
+    }
+
+    fn install_requested(
+        &self,
+        request: &str,
+        requested: &UserVersion,
+    ) -> Result<InstalledVersion, Error> {
+        let version = self.downloadable_version_for(request, requested)?;
 
         let arch = get_safe_arch(self.config.arch, &version);
         match install_node_dist(
@@ -615,6 +665,34 @@ mod tests {
         assert_eq!(fnm.requested_version(&nested), None);
         let fnm = fnm.search_parent_directories(true);
         assert_eq!(fnm.requested_version(&nested).as_deref(), Some("v20.11.x"));
+    }
+
+    /// A `package.json` range can't be asked for by name, so a directory is
+    /// resolved from the request itself.
+    #[test]
+    fn resolves_what_a_directory_asks_for_including_a_range() {
+        let (_dir, fnm) = installation(&["v18.20.4", "v20.11.1", "v22.3.0"]);
+        let project = tempfile::tempdir().unwrap();
+        assert_eq!(fnm.resolve_for(project.path()).unwrap(), None);
+
+        std::fs::write(
+            project.path().join("package.json"),
+            r#"{"engines": {"node": ">=18 <22"}}"#,
+        )
+        .unwrap();
+        let chosen = fnm.resolve_for(project.path()).unwrap().unwrap();
+        assert_eq!(chosen.version, "v20.11.1");
+
+        // A version file takes precedence over `package.json`.
+        std::fs::write(project.path().join(".nvmrc"), "18\n").unwrap();
+        let chosen = fnm.resolve_for(project.path()).unwrap().unwrap();
+        assert_eq!(chosen.version, "v18.20.4");
+
+        std::fs::write(project.path().join(".nvmrc"), "16\n").unwrap();
+        assert!(matches!(
+            fnm.resolve_for(project.path()),
+            Err(Error::NotInstalled(_))
+        ));
     }
 
     #[test]
