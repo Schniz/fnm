@@ -1,8 +1,10 @@
 use crate::arch::Arch;
 use crate::archive::{Archive, Error as ExtractError};
 use crate::directory_portal::DirectoryPortal;
+#[cfg(feature = "cli")]
 use crate::progress::ResponseProgress;
 use crate::version::Version;
+#[cfg(feature = "cli")]
 use indicatif::ProgressDrawTarget;
 use log::debug;
 use std::path::Path;
@@ -100,12 +102,20 @@ pub fn install_node_dist<P: AsRef<Path>>(
         }
 
         debug!("Extracting response...");
+        // The progress bar draws on the terminal, so it only exists with the
+        // command-line program. Without it there is nothing to draw on.
+        #[cfg(feature = "cli")]
         if show_progress {
             extract.extract_archive_into(
                 portal.as_ref(),
                 ResponseProgress::new(response, ProgressDrawTarget::stderr()),
             )?;
         } else {
+            extract.extract_archive_into(portal.as_ref(), response)?;
+        }
+        #[cfg(not(feature = "cli"))]
+        {
+            let _ = show_progress;
             extract.extract_archive_into(portal.as_ref(), response)?;
         }
         debug!("Extraction completed");

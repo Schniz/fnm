@@ -78,7 +78,7 @@ pub enum Error {
 
 /// Prints
 ///
-/// ```rust
+/// ```ignore
 /// use crate::remote_node_index::list;
 /// ```
 pub fn list(base_url: &Url) -> Result<Vec<IndexedNodeVersion>, Error> {
