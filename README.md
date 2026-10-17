@@ -134,7 +134,16 @@ Please follow your shell instructions to install them.
 ### Shell Setup
 
 Environment variables need to be setup before you can start using fnm.
-This is done by evaluating the output of `fnm env`.
+> [!IMPORTANT]
+> `fnm env` creates a temporary, per-shell directory (`$XDG_RUNTIME_DIR/fnm_multishells`
+> on Linux) and exposes it as `FNM_MULTISHELL_PATH`. That directory is what keeps
+> `fnm use` local to one shell, so the value only makes sense for the lifetime of the
+> shell that created it. Some tools capture your shell environment into a longer-lived
+> one; a display manager assembling the graphical session does exactly this, and the
+> value then reaches the systemd user manager. The exported `PATH` entry then outlives
+> its shell and can point at a directory that is gone by the time it is used. If
+> non-interactive shells read your shell config, gate the `fnm env` call so it only runs
+> interactively.
 
 > [!TIP]
 > Prefer passing an explicit shell (for example `fnm env --shell bash`) instead of relying on shell inference at runtime. It is a bit faster and avoids process tree detection.
