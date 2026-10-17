@@ -134,6 +134,8 @@ Please follow your shell instructions to install them.
 ### Shell Setup
 
 Environment variables need to be setup before you can start using fnm.
+This is done by evaluating the output of `fnm env`.
+
 > [!IMPORTANT]
 > `fnm env` creates a temporary, per-shell directory (`$XDG_RUNTIME_DIR/fnm_multishells`
 > on Linux) and exposes it as `FNM_MULTISHELL_PATH`. That directory is what keeps
