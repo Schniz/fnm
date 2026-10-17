@@ -182,10 +182,12 @@ eval "$(fnm env --use-on-cd --shell zsh)"
 
 #### Fish shell
 
-Create `~/.config/fish/conf.d/fnm.fish` and add this line to it:
+Create `~/.config/fish/conf.d/fnm.fish` and add this to it. `conf.d` is read by every fish instance, so only run `fnm env` in interactive shells:
 
 ```fish
-fnm env --use-on-cd --shell fish | source
+if status is-interactive
+    fnm env --use-on-cd --shell fish | source
+end
 ```
 
 #### PowerShell
