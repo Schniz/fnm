@@ -197,6 +197,7 @@ fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
   ```powershell
   Invoke-Item $profile
   ```
+- If you haven't already (like in a fresh install), [set the execution policy](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies). Make sure to use the correct version of the docs that matches your powershell install.
 
 #### Windows Command Prompt aka Batch aka WinCMD
 
