@@ -52,6 +52,12 @@ error: Can't find version in dotfiles. Please provide a version manually to the 
 
 Runs [`corepack enable`](https://nodejs.org/api/corepack.html#enabling-the-feature) when a new version of Node.js is installed. Experimental due to the fact Corepack itself is experimental.
 
+> [!NOTE]
+> Corepack is only bundled with Node.js v14.19.0+, v16.9.0+ and up to, but not including v25.0.0+, i.e. `^14.19.0 || 16.9.0 - 24.x.x`.
+>
+> When installing Node.js versions outside the range,
+> you will see a hint that you need to manually install and enable Corepack via `npm install -g corepack && corepack enable`.
+
 ### `--resolve-engines`
 
 **🧪 Experimental**

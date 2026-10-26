@@ -50,5 +50,18 @@ for (const shell of [Bash, Fish, PowerShell, Zsh]) {
         // .addExtraEnvVar("RUST_LOG", "fnm=debug")
         .execute(shell)
     })
+
+    test(`skips enabling Corepack if it's not bundled with Node.js`, async () => {
+      await script(shell)
+        .then(shell.env({ corepackEnabled: true }))
+        .then(
+          shell.scriptOutputContains(
+            shell.call("fnm", ["install", "14.18.0"]),
+            `"npm install -g corepack"`,
+          )
+        )
+        .takeSnapshot(shell)
+        .execute(shell)
+    })
   })
 }
