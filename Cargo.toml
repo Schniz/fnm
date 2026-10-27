@@ -24,7 +24,7 @@ xz2 = "0.1.7"
 node-semver = "2.1.0"
 etcetera = "0.8.0"
 colored = "2.1.0"
-zip = "2.1.0"
+zip = { version = "9", default-features = false, features = ["deflate"] }
 tempfile = "3.10.1"
 fastrand = "2.1.1"
 indoc = "2.0.5"
