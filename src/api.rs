@@ -93,6 +93,16 @@ pub enum Error {
         /// Why it failed.
         message: String,
     },
+    /// The download couldn't be checked against the SHA-256 the mirror
+    /// publishes for it (it doesn't match, or none is published), so nothing
+    /// was installed.
+    #[error("can't verify the download of Node.js {version}: {detail}")]
+    Unverified {
+        /// The version being installed.
+        version: String,
+        /// What the check found.
+        detail: String,
+    },
     /// The download mirror isn't a URL.
     #[error("\"{0}\" isn't a valid URL for a Node.js download mirror")]
     InvalidMirror(String),
@@ -285,7 +295,8 @@ impl Fnm {
     /// [`Error::InvalidVersion`] or [`Error::NotInstallable`] when `request`
     /// isn't a release that can be downloaded, [`Error::ListAvailable`] and
     /// [`Error::NotAvailable`] when it can't be matched against the mirror,
-    /// and [`Error::Install`] when the download or unpacking fails.
+    /// [`Error::Unverified`] when the download fails its checksum check, and
+    /// [`Error::Install`] when the download or unpacking fails.
     pub fn install(&self, request: &str) -> Result<InstalledVersion, Error> {
         let requested = parse_install_request(request)?;
         self.install_requested(request, &requested)
@@ -307,6 +318,15 @@ impl Fnm {
             false,
         ) {
             Ok(()) | Err(DownloadError::VersionAlreadyInstalled { .. }) => {}
+            Err(
+                error @ (DownloadError::ChecksumMismatch { .. }
+                | DownloadError::ChecksumMissing { .. }),
+            ) => {
+                return Err(Error::Unverified {
+                    version: version.v_str(),
+                    detail: error.to_string(),
+                });
+            }
             Err(error) => {
                 return Err(Error::Install {
                     version: version.v_str(),
