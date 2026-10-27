@@ -1,10 +1,14 @@
 use crate::arch::Arch;
 use crate::archive::{Archive, Error as ExtractError};
 use crate::directory_portal::DirectoryPortal;
+#[cfg(feature = "cli")]
 use crate::progress::ResponseProgress;
 use crate::version::Version;
+#[cfg(feature = "cli")]
 use indicatif::ProgressDrawTarget;
 use log::debug;
+use sha2::{Digest, Sha256};
+use std::io::{Read, Seek, SeekFrom, Write};
 use std::path::Path;
 use std::path::PathBuf;
 use thiserror::Error;
@@ -33,6 +37,84 @@ pub enum Error {
     VersionNotFound { version: Version, arch: Arch },
     #[error("Version already installed at {:?}", path)]
     VersionAlreadyInstalled { path: PathBuf },
+    #[error("Can't verify {file}: {url} has no checksum for it, so it wasn't installed")]
+    ChecksumMissing { file: String, url: Url },
+    #[error("{file} doesn't match its published checksum, so it wasn't installed.\nExpected SHA-256 {expected}, got {actual}.")]
+    ChecksumMismatch {
+        file: String,
+        expected: String,
+        actual: String,
+    },
+}
+
+/// The mirror's list of checksums for `version`'s files. Node.js publishes
+/// one per release, and mirrors copy it with the release.
+fn checksums_url(base_url: &Url, version: &Version) -> Url {
+    Url::parse(&format!(
+        "{}/{}/SHASUMS256.txt",
+        base_url.as_str().trim_end_matches('/'),
+        version
+    ))
+    .unwrap()
+}
+
+/// The published SHA-256 of `file_name`, from the release's `SHASUMS256.txt`
+/// at `url`. An error when the list can't be fetched or doesn't name the
+/// file: with nothing to check against, the download isn't trusted.
+fn published_checksum(url: &Url, file_name: &str) -> Result<String, Error> {
+    let missing = || Error::ChecksumMissing {
+        file: file_name.to_string(),
+        url: url.clone(),
+    };
+    let response = crate::http::get(url.as_str())?;
+    if !response.status().is_success() {
+        return Err(missing());
+    }
+    let sums = response.text().map_err(crate::http::Error::from)?;
+    checksum_for(&sums, file_name).ok_or_else(missing)
+}
+
+/// The checksum `sums` (the `sha256sum` format: a hex digest, white space,
+/// a file name) gives `file_name`, lowercased.
+fn checksum_for(sums: &str, file_name: &str) -> Option<String> {
+    sums.lines().find_map(|line| {
+        let mut fields = line.split_whitespace();
+        let digest = fields.next()?;
+        let name = fields.next()?.trim_start_matches('*');
+        (name == file_name && digest.len() == 64 && digest.chars().all(|c| c.is_ascii_hexdigit()))
+            .then(|| digest.to_ascii_lowercase())
+    })
+}
+
+/// Reads the whole download into a temporary file while hashing it, and
+/// hands the file back, rewound, only when the hash is `expected`. Nothing
+/// is unpacked from a download that hasn't been checked.
+fn download_verified(
+    mut download: impl Read,
+    file_name: &str,
+    expected: &str,
+) -> Result<std::fs::File, Error> {
+    let mut file = tempfile::tempfile()?;
+    let mut hasher = Sha256::new();
+    let mut buffer = vec![0; 64 * 1024];
+    loop {
+        let read = download.read(&mut buffer)?;
+        if read == 0 {
+            break;
+        }
+        hasher.update(&buffer[..read]);
+        file.write_all(&buffer[..read])?;
+    }
+    let actual = format!("{:x}", hasher.finalize());
+    if !actual.eq_ignore_ascii_case(expected) {
+        return Err(Error::ChecksumMismatch {
+            file: file_name.to_string(),
+            expected: expected.to_string(),
+            actual,
+        });
+    }
+    file.seek(SeekFrom::Start(0))?;
+    Ok(file)
 }
 
 #[cfg(unix)]
@@ -99,15 +181,34 @@ pub fn install_node_dist<P: AsRef<Path>>(
             continue;
         }
 
-        debug!("Extracting response...");
-        if show_progress {
-            extract.extract_archive_into(
-                portal.as_ref(),
+        // What the mirror publishes for this file, before anything is
+        // downloaded or unpacked: a file without a published checksum isn't
+        // installed.
+        let file_name = filename_for_version(version, arch, ext);
+        let checksums_url = checksums_url(node_dist_mirror, version);
+        let expected = published_checksum(&checksums_url, &file_name)?;
+
+        debug!("Downloading and checking {file_name}...");
+        // The progress bar draws on the terminal, so it only exists with the
+        // command-line program. Without it there is nothing to draw on.
+        #[cfg(feature = "cli")]
+        let archive = if show_progress {
+            download_verified(
                 ResponseProgress::new(response, ProgressDrawTarget::stderr()),
-            )?;
+                &file_name,
+                &expected,
+            )?
         } else {
-            extract.extract_archive_into(portal.as_ref(), response)?;
-        }
+            download_verified(response, &file_name, &expected)?
+        };
+        #[cfg(not(feature = "cli"))]
+        let archive = {
+            let _ = show_progress;
+            download_verified(response, &file_name, &expected)?
+        };
+
+        debug!("Extracting {file_name}...");
+        extract.extract_archive_into(portal.as_ref(), archive)?;
         debug!("Extraction completed");
 
         let installed_directory = std::fs::read_dir(&portal)?
@@ -169,6 +270,54 @@ mod tests {
         let result = String::from_utf8(stdout).expect("Can't read npm output");
 
         assert_eq!(result.trim(), "6.9.0");
+    }
+
+    #[test]
+    fn checksums_are_looked_up_by_exact_file_name() {
+        let sums = "\
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  node-v20.0.0-win-x64.zip
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB *node-v20.0.0-linux-x64.tar.xz
+cccc  node-v20.0.0-darwin-arm64.tar.gz
+";
+        assert_eq!(
+            checksum_for(sums, "node-v20.0.0-win-x64.zip").as_deref(),
+            Some("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        );
+        // Binary-mode marker and upper case are accepted; lowercased.
+        assert_eq!(
+            checksum_for(sums, "node-v20.0.0-linux-x64.tar.xz").as_deref(),
+            Some("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+        );
+        // A malformed digest is no checksum.
+        assert_eq!(checksum_for(sums, "node-v20.0.0-darwin-arm64.tar.gz"), None);
+        assert_eq!(checksum_for(sums, "node-v20.0.0-win-x64.zip.sig"), None);
+        assert_eq!(checksum_for(sums, "node-v20.0.0-win-x64"), None);
+    }
+
+    #[test]
+    fn only_a_download_that_matches_its_checksum_is_handed_on() {
+        let content = b"pretend archive";
+        // sha256 of "pretend archive"
+        let digest = format!("{:x}", Sha256::digest(content));
+
+        let mut file = download_verified(&content[..], "x.zip", &digest).unwrap();
+        let mut read_back = Vec::new();
+        file.read_to_end(&mut read_back).unwrap();
+        assert_eq!(read_back, content, "rewound and complete");
+
+        let wrong = "0".repeat(64);
+        let error = download_verified(&content[..], "x.zip", &wrong).unwrap_err();
+        assert!(matches!(error, Error::ChecksumMismatch { .. }), "{error}");
+    }
+
+    #[test]
+    fn the_checksum_list_sits_beside_the_release() {
+        let mirror = Url::parse("https://nodejs.org/dist/").unwrap();
+        let version = Version::parse("20.0.0").unwrap();
+        assert_eq!(
+            checksums_url(&mirror, &version).as_str(),
+            "https://nodejs.org/dist/v20.0.0/SHASUMS256.txt"
+        );
     }
 
     fn install_in(path: &Path) -> PathBuf {

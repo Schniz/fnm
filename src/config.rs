@@ -174,6 +174,11 @@ impl FnmConfig {
         self
     }
 
+    pub fn with_version_file_strategy(mut self, strategy: VersionFileStrategy) -> Self {
+        self.version_file_strategy = strategy;
+        self
+    }
+
     pub fn with_multishell_path(mut self, multishell_path: std::path::PathBuf) -> Self {
         self.multishell_path = Some(multishell_path);
         self

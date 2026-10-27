@@ -32,7 +32,7 @@ impl<R: Read> Extract for Zip<R> {
 
         for i in 0..archive.len() {
             let mut file = archive.by_index(i)?;
-            let outpath = path.join(file.mangled_name());
+            let outpath = path.join(file.mangled_name()?);
 
             {
                 let comment = file.comment();
@@ -41,7 +41,7 @@ impl<R: Read> Extract for Zip<R> {
                 }
             }
 
-            if file.name().ends_with('/') {
+            if file.name()?.ends_with('/') {
                 debug!(
                     "File {} extracted to \"{}\"",
                     i,
