@@ -3,7 +3,7 @@ use super::r#use::Use;
 use crate::alias::create_alias;
 use crate::arch::get_safe_arch;
 use crate::config::FnmConfig;
-use crate::downloader::{install_node_dist, Error as DownloaderError};
+use crate::downloader::{install_node_dist, Error as DownloaderError, Verification};
 use crate::lts::LtsType;
 use crate::outln;
 use crate::progress::ProgressConfig;
@@ -150,6 +150,7 @@ impl Command for Install {
             config.installations_dir(),
             safe_arch,
             show_progress,
+            &verification(config),
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
@@ -177,6 +178,15 @@ impl Command for Install {
         }
 
         Ok(())
+    }
+}
+
+fn verification(config: &FnmConfig) -> Verification {
+    Verification {
+        mode: config.download_verification(),
+        release_keys_dir: config.release_keys_dir(),
+        user_keys: config.node_release_keys().map(Into::into),
+        log_level: config.log_level(),
     }
 }
 

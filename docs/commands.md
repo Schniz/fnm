@@ -72,6 +72,22 @@ Options:
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
 
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
+
   -h, --help
           Print help (see a summary with '-h')
 
@@ -156,6 +172,22 @@ Options:
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
 
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -218,6 +250,22 @@ Options:
 
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
+
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -301,6 +349,22 @@ Options:
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
 
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -373,6 +437,22 @@ Options:
 
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
+
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -452,6 +532,22 @@ Options:
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
 
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -519,6 +615,22 @@ Options:
 
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
+
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -590,6 +702,22 @@ Options:
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
 
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -656,6 +784,22 @@ Options:
 
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
+
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -726,6 +870,22 @@ Options:
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
 
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -788,6 +948,22 @@ Options:
 
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
+
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
 
   -h, --help
           Print help (see a summary with '-h')
@@ -864,6 +1040,22 @@ Options:
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
 
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
+
   -h, --help
           Print help (see a summary with '-h')
 ```
@@ -932,6 +1124,22 @@ Options:
 
           [env: FNM_RESOLVE_ENGINES]
           [possible values: true, false]
+
+      --download-verification <DOWNLOAD_VERIFICATION>
+          How to check Node.js downloads before installing them
+
+          Possible values:
+          - signature: Check the download against `SHASUMS256.txt`, and check that file's signature by a Node.js releaser
+          - checksum:  Check the download against `SHASUMS256.txt` only, without its signature
+          - none:      Don't check the download
+
+          [env: FNM_DOWNLOAD_VERIFICATION]
+          [default: signature]
+
+      --node-release-keys <NODE_RELEASE_KEYS>
+          An armored `.asc` file of more Node.js release signing keys to trust, like the ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js download for you
+
+          [env: FNM_NODE_RELEASE_KEYS]
 
   -h, --help
           Print help (see a summary with '-h')

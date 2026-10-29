@@ -1,5 +1,6 @@
 use crate::arch::Arch;
 use crate::directories::Directories;
+use crate::download_verification::DownloadVerification;
 use crate::log_level::LogLevel;
 use crate::path_ext::PathExt;
 use crate::version_file_strategy::VersionFileStrategy;
@@ -96,6 +97,27 @@ pub struct FnmConfig {
     )]
     resolve_engines: Option<Option<bool>>,
 
+    /// How to check Node.js downloads before installing them.
+    #[clap(
+        long,
+        env = "FNM_DOWNLOAD_VERIFICATION",
+        default_value_t,
+        global = true,
+        hide_env_values = true
+    )]
+    download_verification: DownloadVerification,
+
+    /// An armored `.asc` file of more Node.js release signing keys to trust, like the
+    /// ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js
+    /// download for you.
+    #[clap(
+        long,
+        env = "FNM_NODE_RELEASE_KEYS",
+        global = true,
+        hide_env_values = true
+    )]
+    node_release_keys: Option<std::ffi::OsString>,
+
     #[clap(skip)]
     directories: Directories,
 }
@@ -111,6 +133,8 @@ impl Default for FnmConfig {
             version_file_strategy: VersionFileStrategy::default(),
             corepack_enabled: false,
             resolve_engines: None,
+            download_verification: DownloadVerification::default(),
+            node_release_keys: None,
             directories: Directories::default(),
         }
     }
@@ -127,6 +151,16 @@ impl FnmConfig {
 
     pub fn resolve_engines(&self) -> bool {
         self.resolve_engines.flatten().unwrap_or(true)
+    }
+
+    pub fn download_verification(&self) -> DownloadVerification {
+        self.download_verification
+    }
+
+    /// `fnm env` exports it empty when it isn't set.
+    pub fn node_release_keys(&self) -> Option<&std::path::Path> {
+        let path = self.node_release_keys.as_deref()?;
+        (!path.is_empty()).then(|| std::path::Path::new(path))
     }
 
     pub fn multishell_path(&self) -> Option<&std::path::Path> {
@@ -152,6 +186,11 @@ impl FnmConfig {
         self.base_dir_with_default()
             .join("node-versions")
             .ensure_exists_silently()
+    }
+
+    /// Node.js release keys refreshed from GitHub, created on first refresh.
+    pub fn release_keys_dir(&self) -> std::path::PathBuf {
+        self.base_dir_with_default().join("release-keys")
     }
 
     pub fn default_version_dir(&self) -> std::path::PathBuf {
