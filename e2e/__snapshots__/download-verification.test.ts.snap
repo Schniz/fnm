@@ -1,0 +1,235 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bash does not install a download that doesn't match its checksum: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm --node-dist-mirror=http://localhost:8080/__test__/corrupt install v8.11.3 2>&1) | grep 'match its published checksum' || (echo "Expected output to contain 'match its published checksum'" && exit 1)
+if [ "$(fnm ls)" != "* system" ]; then
+  echo "Expected fnm ls to be * system. Got $(fnm ls)"
+  exit 1
+fi"
+`;
+
+exports[`Bash does not install from a mirror without signatures: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm --node-dist-mirror=http://localhost:8080/__test__/no-signature install v8.11.3 2>&1) | grep 'FNM_DOWNLOAD_VERIFICATION=checksum' || (echo "Expected output to contain 'FNM_DOWNLOAD_VERIFICATION=checksum'" && exit 1)
+if [ "$(fnm ls)" != "* system" ]; then
+  echo "Expected fnm ls to be * system. Got $(fnm ls)"
+  exit 1
+fi"
+`;
+
+exports[`Bash fails when the release keys file is missing: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm install v8.11.3 2>&1) | grep 'missing-release-keys.asc can.t be used' || (echo "Expected output to contain 'missing-release-keys.asc can.t be used'" && exit 1)
+if [ "$(fnm ls)" != "* system" ]; then
+  echo "Expected fnm ls to be * system. Got $(fnm ls)"
+  exit 1
+fi"
+`;
+
+exports[`Bash installs from a mirror without checksums with verification off: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm --node-dist-mirror=http://localhost:8080/__test__/bare --download-verification=none install v8.11.3 2>&1) | grep 'the download is not checked' || (echo "Expected output to contain 'the download is not checked'" && exit 1)
+fnm use v8.11.3
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash installs from a mirror without signatures with checksum verification: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm --node-dist-mirror=http://localhost:8080/__test__/no-signature --download-verification=checksum install v8.11.3 2>&1) | grep 'no signature is checked' || (echo "Expected output to contain 'no signature is checked'" && exit 1)
+fnm use v8.11.3
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Bash verifies the signature of a download: Bash 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm install v8.11.3) | grep 'Verified signature by' || (echo "Expected output to contain 'Verified signature by'" && exit 1)
+fnm use v8.11.3
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Fish does not install a download that doesn't match its checksum: Fish 1`] = `
+"fnm env | source
+begin; fnm --node-dist-mirror=http://localhost:8080/__test__/corrupt install v8.11.3 2>&1; end | grep 'match its published checksum'; or echo "Expected output to contain 'match its published checksum'" && exit 1
+set ____test____ (fnm ls)
+if test "$____test____" != "* system"
+  echo "Expected fnm ls to be * system. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish does not install from a mirror without signatures: Fish 1`] = `
+"fnm env | source
+begin; fnm --node-dist-mirror=http://localhost:8080/__test__/no-signature install v8.11.3 2>&1; end | grep 'FNM_DOWNLOAD_VERIFICATION=checksum'; or echo "Expected output to contain 'FNM_DOWNLOAD_VERIFICATION=checksum'" && exit 1
+set ____test____ (fnm ls)
+if test "$____test____" != "* system"
+  echo "Expected fnm ls to be * system. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish fails when the release keys file is missing: Fish 1`] = `
+"fnm env | source
+begin; fnm install v8.11.3 2>&1; end | grep 'missing-release-keys.asc can.t be used'; or echo "Expected output to contain 'missing-release-keys.asc can.t be used'" && exit 1
+set ____test____ (fnm ls)
+if test "$____test____" != "* system"
+  echo "Expected fnm ls to be * system. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish installs from a mirror without checksums with verification off: Fish 1`] = `
+"fnm env | source
+begin; fnm --node-dist-mirror=http://localhost:8080/__test__/bare --download-verification=none install v8.11.3 2>&1; end | grep 'the download is not checked'; or echo "Expected output to contain 'the download is not checked'" && exit 1
+fnm use v8.11.3
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish installs from a mirror without signatures with checksum verification: Fish 1`] = `
+"fnm env | source
+begin; fnm --node-dist-mirror=http://localhost:8080/__test__/no-signature --download-verification=checksum install v8.11.3 2>&1; end | grep 'no signature is checked'; or echo "Expected output to contain 'no signature is checked'" && exit 1
+fnm use v8.11.3
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`Fish verifies the signature of a download: Fish 1`] = `
+"fnm env | source
+begin; fnm install v8.11.3; end | grep 'Verified signature by'; or echo "Expected output to contain 'Verified signature by'" && exit 1
+fnm use v8.11.3
+set ____test____ (node --version)
+if test "$____test____" != "v8.11.3"
+  echo "Expected node version to be v8.11.3. Got $____test____"
+  exit 1
+end"
+`;
+
+exports[`PowerShell does not install a download that doesn't match its checksum: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+$($__out__ = $(fnm --node-dist-mirror=http://localhost:8080/__test__/corrupt install v8.11.3 2>&1 | Select-String 'match its published checksum'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+if ( "$(fnm ls)" -ne "* system" ) { echo "Expected fnm ls to be * system. Got $(fnm ls)"; exit 1 }"
+`;
+
+exports[`PowerShell does not install from a mirror without signatures: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+$($__out__ = $(fnm --node-dist-mirror=http://localhost:8080/__test__/no-signature install v8.11.3 2>&1 | Select-String 'FNM_DOWNLOAD_VERIFICATION=checksum'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+if ( "$(fnm ls)" -ne "* system" ) { echo "Expected fnm ls to be * system. Got $(fnm ls)"; exit 1 }"
+`;
+
+exports[`PowerShell fails when the release keys file is missing: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+$($__out__ = $(fnm install v8.11.3 2>&1 | Select-String 'missing-release-keys.asc can.t be used'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+if ( "$(fnm ls)" -ne "* system" ) { echo "Expected fnm ls to be * system. Got $(fnm ls)"; exit 1 }"
+`;
+
+exports[`PowerShell installs from a mirror without checksums with verification off: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+$($__out__ = $(fnm --node-dist-mirror=http://localhost:8080/__test__/bare --download-verification=none install v8.11.3 2>&1 | Select-String 'the download is not checked'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm use v8.11.3
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell installs from a mirror without signatures with checksum verification: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+$($__out__ = $(fnm --node-dist-mirror=http://localhost:8080/__test__/no-signature --download-verification=checksum install v8.11.3 2>&1 | Select-String 'no signature is checked'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm use v8.11.3
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`PowerShell verifies the signature of a download: PowerShell 1`] = `
+"$ErrorActionPreference = "Stop"
+fnm env | Out-String | Invoke-Expression
+$($__out__ = $(fnm install v8.11.3 | Select-String 'Verified signature by'); if ($__out__ -eq $null) { exit 1 } else { $__out__ })
+fnm use v8.11.3
+if ( "$(node --version)" -ne "v8.11.3" ) { echo "Expected node version to be v8.11.3. Got $(node --version)"; exit 1 }"
+`;
+
+exports[`Zsh does not install a download that doesn't match its checksum: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm --node-dist-mirror=http://localhost:8080/__test__/corrupt install v8.11.3 2>&1) | grep 'match its published checksum' || (echo "Expected output to contain 'match its published checksum'" && exit 1)
+if [ "$(fnm ls)" != "* system" ]; then
+  echo "Expected fnm ls to be * system. Got $(fnm ls)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh does not install from a mirror without signatures: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm --node-dist-mirror=http://localhost:8080/__test__/no-signature install v8.11.3 2>&1) | grep 'FNM_DOWNLOAD_VERIFICATION=checksum' || (echo "Expected output to contain 'FNM_DOWNLOAD_VERIFICATION=checksum'" && exit 1)
+if [ "$(fnm ls)" != "* system" ]; then
+  echo "Expected fnm ls to be * system. Got $(fnm ls)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh fails when the release keys file is missing: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm install v8.11.3 2>&1) | grep 'missing-release-keys.asc can.t be used' || (echo "Expected output to contain 'missing-release-keys.asc can.t be used'" && exit 1)
+if [ "$(fnm ls)" != "* system" ]; then
+  echo "Expected fnm ls to be * system. Got $(fnm ls)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh installs from a mirror without checksums with verification off: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm --node-dist-mirror=http://localhost:8080/__test__/bare --download-verification=none install v8.11.3 2>&1) | grep 'the download is not checked' || (echo "Expected output to contain 'the download is not checked'" && exit 1)
+fnm use v8.11.3
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh installs from a mirror without signatures with checksum verification: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm --node-dist-mirror=http://localhost:8080/__test__/no-signature --download-verification=checksum install v8.11.3 2>&1) | grep 'no signature is checked' || (echo "Expected output to contain 'no signature is checked'" && exit 1)
+fnm use v8.11.3
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;
+
+exports[`Zsh verifies the signature of a download: Zsh 1`] = `
+"set -e
+eval "$(fnm env)"
+(fnm install v8.11.3) | grep 'Verified signature by' || (echo "Expected output to contain 'Verified signature by'" && exit 1)
+fnm use v8.11.3
+if [ "$(node --version)" != "v8.11.3" ]; then
+  echo "Expected node version to be v8.11.3. Got $(node --version)"
+  exit 1
+fi"
+`;

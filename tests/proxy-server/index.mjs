@@ -37,8 +37,45 @@ const download = async ({ pathname, filename, headersFilename }) => {
   return { headers, body }
 }
 
+/**
+ * Test-only path prefixes that make the proxy misbehave like a broken mirror.
+ * `/__test__/corrupt/` flips a byte in every archive,
+ * `/__test__/no-signature/` has no `SHASUMS256.txt.asc`, and
+ * `/__test__/bare/` has neither `SHASUMS256.txt` nor its signature.
+ * @param {string} url
+ */
+const parseTestMode = (url) => {
+  const match = url.match(/^\/__test__\/(corrupt|no-signature|bare)(\/.*)$/)
+  return match
+    ? { mode: match[1], pathname: match[2] }
+    : { mode: null, pathname: url }
+}
+
+/** @param {string | null} mode @param {string} pathname */
+const isMissingInMode = (mode, pathname) =>
+  (mode === "no-signature" && pathname.endsWith("/SHASUMS256.txt.asc")) ||
+  (mode === "bare" && /\/SHASUMS256\.txt(\.asc)?$/.test(pathname))
+
+/** @param {string | null} mode @param {string} pathname */
+const isCorruptedInMode = (mode, pathname) =>
+  mode === "corrupt" && /\.(tar\.xz|tar\.gz|zip)$/.test(pathname)
+
+/** @param {Buffer} body */
+const corrupt = (body) => {
+  const copy = Buffer.from(body)
+  copy[copy.length >> 1] ^= 0xff
+  return copy
+}
+
 export const server = createServer((req, res) => {
-  const pathname = req.url ?? "/"
+  const { mode, pathname } = parseTestMode(req.url ?? "/")
+  if (isMissingInMode(mode, pathname)) {
+    console.log(chalk.yellow.dim(`[proxy] ${mode}: 404 for ${pathname}`))
+    res.writeHead(404)
+    res.end()
+    return
+  }
+  const shouldCorrupt = isCorruptedInMode(mode, pathname)
   const hash = crypto
     .createHash("sha1")
     .update(pathname ?? "/")
@@ -51,8 +88,14 @@ export const server = createServer((req, res) => {
       fs.readFileSync(headersFilename, "utf-8"),
     )
     const status = parseInt(__status__, 10)
-    const body = fs.createReadStream(filename)
     console.log(chalk.green.dim(`[proxy] hit: ${pathname} -> ${filename}`))
+    if (shouldCorrupt) {
+      const body = corrupt(fs.readFileSync(filename))
+      res.writeHead(status, headers)
+      res.end(body)
+      return
+    }
+    const body = fs.createReadStream(filename)
     res.writeHead(status, headers)
     body.pipe(res)
   } catch {
@@ -80,7 +123,8 @@ export const server = createServer((req, res) => {
     promise.then(
       ({ headers: { __status__ = "200", ...headers }, body }) => {
         res.writeHead(parseInt(__status__, 10), headers)
-        res.end(Buffer.from(body))
+        const buffer = Buffer.from(body)
+        res.end(shouldCorrupt ? corrupt(buffer) : buffer)
       },
       (err) => {
         console.error(err)
