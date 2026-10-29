@@ -26,6 +26,14 @@ E2E tests validate real-shell user behavior (`fnm env`, `fnm use`, PATH updates,
 - Run one file: `pnpm test -- e2e/repros/issue-1527.test.ts`
 - Run all e2e: `pnpm test -- e2e`
 
+## Node.js release keys
+
+`release-keys/keys.asc` is the snapshot of https://github.com/nodejs/release-keys that verifies Node.js downloads. When a new releaser joins, regenerate it:
+
+- Run `.ci/update-release-keys.sh`. It records the source commit and the key count in the file header.
+- Review the diff: every new fingerprint should match the nodejs/release-keys README and the Node.js README.
+- Run `cargo test release_keys` and add a changeset.
+
 ## Features, Bugfixes and Changes
 
 Every code change requires a changeset in <repo_root>/.changeset/some-random-name.md
