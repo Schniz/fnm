@@ -5,6 +5,7 @@ use crate::download_verification::{self, Check, DownloadVerification, WhenMissin
 use crate::log_level::LogLevel;
 use crate::outln;
 use crate::progress::ResponseProgress;
+use crate::release_keys::{self, Keyring};
 use crate::version::Version;
 use colored::Colorize;
 use indicatif::ProgressDrawTarget;
@@ -45,6 +46,12 @@ pub enum Error {
         status: u16,
         when_missing: WhenMissing,
     },
+    #[error("Can't verify {url}, so nothing was installed: {source}")]
+    SignatureNotVerified {
+        url: Url,
+        #[source]
+        source: Box<release_keys::Error>,
+    },
     #[error("Can't verify {file}: {url} has no checksum for it, so it wasn't installed")]
     ChecksumMissing { file: String, url: Url },
     #[error("{url} doesn't match its published checksum, so it wasn't installed.\nExpected SHA-256 {expected}, got {actual}.")]
@@ -61,11 +68,12 @@ pub enum Error {
 const MAX_CHECKSUMS_SIZE: u64 = 1024 * 1024;
 const MAX_ARCHIVE_SIZE: u64 = 512 * 1024 * 1024;
 
-/// The mirror's list of checksums for `version`'s files. Node.js publishes
-/// one per release, and mirrors copy it with the release.
-fn checksums_url(base_url: &Url, version: &Version) -> Url {
+/// A file the mirror publishes beside `version`'s archives, such as its
+/// list of checksums. Node.js publishes one per release, and mirrors copy it
+/// with the release.
+fn release_file_url(base_url: &Url, version: &Version, file_name: &str) -> Url {
     Url::parse(&format!(
-        "{}/{}/SHASUMS256.txt",
+        "{}/{}/{file_name}",
         base_url.as_str().trim_end_matches('/'),
         version
     ))
@@ -84,7 +92,7 @@ impl Verification {
     }
 }
 
-/// The release's `SHASUMS256.txt` at `url`. An error when it can't be
+/// The release's `SHASUMS256.txt(.asc)` at `url`. An error when it can't be
 /// fetched: with nothing to check against, no download is trusted.
 fn fetch_checksums(url: &Url, when_missing: WhenMissing) -> Result<String, Error> {
     let response = crate::http::get(url.as_str())?;
@@ -106,6 +114,31 @@ fn fetch_checksums(url: &Url, when_missing: WhenMissing) -> Result<String, Error
         });
     }
     Ok(String::from_utf8_lossy(&body).into_owned())
+}
+
+/// The checksums in the clearsigned `signed`, fetched from `url`: only the
+/// signed text, never what the file has around it.
+fn verified_checksums(
+    url: &Url,
+    signed: &str,
+    verification: &Verification,
+) -> Result<String, Error> {
+    let verified =
+        Keyring::bundled()
+            .verify(signed)
+            .map_err(|source| Error::SignatureNotVerified {
+                url: url.clone(),
+                source: Box::new(source),
+            })?;
+    debug!("Signed with key {}", verified.signing_key);
+    outln!(
+        verification,
+        Info,
+        "Verified signature by {} ({})",
+        verified.signer,
+        verified.fingerprint
+    );
+    Ok(verified.signed_text)
 }
 
 /// The checksum `sums` (the `sha256sum` format: a hex digest, white space,
@@ -229,11 +262,21 @@ pub fn install_node_dist<P: AsRef<Path>>(
     }
 
     // One checksum list per release, fetched before any archive.
-    let checksums_url = checksums_url(node_dist_mirror, version);
-    let checksums = match policy.check {
-        Check::None => None,
-        Check::Checksum { .. } | Check::Signature => {
-            Some(fetch_checksums(&checksums_url, policy.when_missing)?)
+    let (checksums_url, checksums) = match policy.check {
+        Check::None => (
+            release_file_url(node_dist_mirror, version, "SHASUMS256.txt"),
+            None,
+        ),
+        Check::Checksum { .. } => {
+            let url = release_file_url(node_dist_mirror, version, "SHASUMS256.txt");
+            let checksums = fetch_checksums(&url, policy.when_missing)?;
+            (url, Some(checksums))
+        }
+        Check::Signature => {
+            let url = release_file_url(node_dist_mirror, version, "SHASUMS256.txt.asc");
+            let signed = fetch_checksums(&url, policy.when_missing)?;
+            let checksums = verified_checksums(&url, &signed, verification)?;
+            (url, Some(checksums))
         }
     };
 
@@ -380,11 +423,36 @@ cccc  node-v20.0.0-darwin-arm64.tar.gz
     }
 
     #[test]
+    fn test_checksums_come_only_from_the_signed_text() {
+        let path = concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/tests/fixtures/release-signatures/v20.0.0/SHASUMS256.txt.asc"
+        );
+        // Armor headers aren't signed, so this one passes the signature check,
+        // and reads as a checksum line.
+        let forged = format!("{}  node-v20.0.0-forged.tar.xz : x", "0".repeat(64));
+        let signed = std::fs::read_to_string(path).unwrap().replace(
+            "-----BEGIN PGP SIGNATURE-----\n",
+            &format!("-----BEGIN PGP SIGNATURE-----\n{forged}\n"),
+        );
+        assert!(checksum_for(&signed, "node-v20.0.0-forged.tar.xz").is_some());
+
+        let url = Url::parse("https://nodejs.org/dist/v20.0.0/SHASUMS256.txt.asc").unwrap();
+        let verification = Verification {
+            mode: DownloadVerification::Signature,
+            log_level: LogLevel::Quiet,
+        };
+        let checksums = verified_checksums(&url, &signed, &verification).unwrap();
+        assert_eq!(checksum_for(&checksums, "node-v20.0.0-forged.tar.xz"), None);
+        assert!(checksum_for(&checksums, "node-v20.0.0-linux-x64.tar.xz").is_some());
+    }
+
+    #[test]
     fn the_checksum_list_sits_beside_the_release() {
         let mirror = Url::parse("https://nodejs.org/dist/").unwrap();
         let version = Version::parse("20.0.0").unwrap();
         assert_eq!(
-            checksums_url(&mirror, &version).as_str(),
+            release_file_url(&mirror, &version, "SHASUMS256.txt").as_str(),
             "https://nodejs.org/dist/v20.0.0/SHASUMS256.txt"
         );
     }

@@ -24,6 +24,7 @@ mod lts;
 mod package_json;
 mod path_ext;
 mod progress;
+mod release_keys;
 mod remote_node_index;
 mod shell;
 mod system_info;
