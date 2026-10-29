@@ -15,6 +15,7 @@ mod commands;
 mod config;
 mod current_version;
 mod directory_portal;
+mod download_verification;
 mod downloader;
 mod fs;
 mod http;

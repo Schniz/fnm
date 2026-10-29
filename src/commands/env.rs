@@ -109,6 +109,10 @@ impl Command for Env {
             ),
             ("FNM_RESOLVE_ENGINES", bool_as_str(config.resolve_engines())),
             ("FNM_ARCH", config.arch.as_str()),
+            (
+                "FNM_DOWNLOAD_VERIFICATION",
+                config.download_verification().as_str(),
+            ),
         ];
 
         if self.json {

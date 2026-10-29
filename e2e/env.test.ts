@@ -23,6 +23,7 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
         expect(JSON.parse(file)).toEqual({
           FNM_ARCH: expect.any(String),
           FNM_DIR: expect.any(String),
+          FNM_DOWNLOAD_VERIFICATION: "signature",
           FNM_LOGLEVEL: "info",
           FNM_MULTISHELL_PATH: expect.any(String),
           FNM_NODE_DIST_MIRROR: expect.any(String),

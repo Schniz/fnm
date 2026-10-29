@@ -1,8 +1,12 @@
 use crate::arch::Arch;
 use crate::archive::{Archive, Error as ExtractError};
 use crate::directory_portal::DirectoryPortal;
+use crate::download_verification::{self, Check, DownloadVerification, WhenMissing};
+use crate::log_level::LogLevel;
+use crate::outln;
 use crate::progress::ResponseProgress;
 use crate::version::Version;
+use colored::Colorize;
 use indicatif::ProgressDrawTarget;
 use log::debug;
 use sha2::{Digest, Sha256};
@@ -35,8 +39,12 @@ pub enum Error {
     VersionNotFound { version: Version, arch: Arch },
     #[error("Version already installed at {:?}", path)]
     VersionAlreadyInstalled { path: PathBuf },
-    #[error("Can't verify the download: {url} is missing, so nothing was installed")]
-    ChecksumsMissing { url: Url },
+    #[error("Can't verify the download: {url} returned HTTP {status}, so nothing was installed.\n{when_missing}")]
+    ChecksumsMissing {
+        url: Url,
+        status: u16,
+        when_missing: WhenMissing,
+    },
     #[error("Can't verify {file}: {url} has no checksum for it, so it wasn't installed")]
     ChecksumMissing { file: String, url: Url },
     #[error("{url} doesn't match its published checksum, so it wasn't installed.\nExpected SHA-256 {expected}, got {actual}.")]
@@ -64,12 +72,28 @@ fn checksums_url(base_url: &Url, version: &Version) -> Url {
     .unwrap()
 }
 
+/// How `install_node_dist` checks what it downloads.
+pub struct Verification {
+    pub mode: DownloadVerification,
+    pub log_level: LogLevel,
+}
+
+impl Verification {
+    fn log_level(&self) -> LogLevel {
+        self.log_level
+    }
+}
+
 /// The release's `SHASUMS256.txt` at `url`. An error when it can't be
 /// fetched: with nothing to check against, no download is trusted.
-fn fetch_checksums(url: &Url) -> Result<String, Error> {
+fn fetch_checksums(url: &Url, when_missing: WhenMissing) -> Result<String, Error> {
     let response = crate::http::get(url.as_str())?;
     if !response.status().is_success() {
-        return Err(Error::ChecksumsMissing { url: url.clone() });
+        return Err(Error::ChecksumsMissing {
+            url: url.clone(),
+            status: response.status().as_u16(),
+            when_missing,
+        });
     }
     let mut body = vec![];
     response
@@ -176,6 +200,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
     installations_dir: P,
     arch: Arch,
     show_progress: bool,
+    verification: &Verification,
 ) -> Result<(), Error> {
     let installation_dir = PathBuf::from(installations_dir.as_ref()).join(version.v_str());
 
@@ -192,9 +217,25 @@ pub fn install_node_dist<P: AsRef<Path>>(
 
     let portal = DirectoryPortal::new_in(&temp_installations_dir, installation_dir);
 
+    let policy = download_verification::policy(verification.mode, node_dist_mirror, version);
+    if let Some(warning) = policy.warning() {
+        outln!(
+            verification,
+            Error,
+            "{} {}",
+            "warning:".bold().yellow(),
+            warning
+        );
+    }
+
     // One checksum list per release, fetched before any archive.
     let checksums_url = checksums_url(node_dist_mirror, version);
-    let checksums = fetch_checksums(&checksums_url)?;
+    let checksums = match policy.check {
+        Check::None => None,
+        Check::Checksum { .. } | Check::Signature => {
+            Some(fetch_checksums(&checksums_url, policy.when_missing)?)
+        }
+    };
 
     for extract in Archive::supported() {
         let ext = extract.file_extension();
@@ -206,28 +247,31 @@ pub fn install_node_dist<P: AsRef<Path>>(
             continue;
         }
 
-        // A file without a published checksum isn't installed.
         let file_name = filename_for_version(version, arch, ext);
-        let expected =
-            checksum_for(&checksums, &file_name).ok_or_else(|| Error::ChecksumMissing {
-                file: file_name.clone(),
-                url: checksums_url.clone(),
-            })?;
-
-        debug!("Downloading and checking {file_name}...");
-        let archive = if show_progress {
-            download_verified(
-                ResponseProgress::new(response, ProgressDrawTarget::stderr()),
-                &url,
-                &expected,
-                MAX_ARCHIVE_SIZE,
-            )?
+        let response: Box<dyn Read> = if show_progress {
+            Box::new(ResponseProgress::new(
+                response,
+                ProgressDrawTarget::stderr(),
+            ))
         } else {
-            download_verified(response, &url, &expected, MAX_ARCHIVE_SIZE)?
+            Box::new(response)
         };
 
-        debug!("Extracting {file_name}...");
-        extract.extract_archive_into(portal.as_ref(), archive)?;
+        if let Some(checksums) = &checksums {
+            // A file without a published checksum isn't installed.
+            let expected =
+                checksum_for(checksums, &file_name).ok_or_else(|| Error::ChecksumMissing {
+                    file: file_name.clone(),
+                    url: checksums_url.clone(),
+                })?;
+            debug!("Downloading and checking {file_name}...");
+            let archive = download_verified(response, &url, &expected, MAX_ARCHIVE_SIZE)?;
+            debug!("Extracting {file_name}...");
+            extract.extract_archive_into(portal.as_ref(), archive)?;
+        } else {
+            debug!("Extracting {file_name} unchecked...");
+            extract.extract_archive_into(portal.as_ref(), response)?;
+        }
         debug!("Extraction completed");
 
         let installed_directory = std::fs::read_dir(&portal)?
@@ -349,8 +393,19 @@ cccc  node-v20.0.0-darwin-arm64.tar.gz
         let version = Version::parse("12.0.0").unwrap();
         let arch = Arch::X64;
         let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
-        install_node_dist(&version, &node_dist_mirror, path, arch, false)
-            .expect("Can't install Node 12");
+        let verification = Verification {
+            mode: DownloadVerification::default(),
+            log_level: LogLevel::Info,
+        };
+        install_node_dist(
+            &version,
+            &node_dist_mirror,
+            path,
+            arch,
+            false,
+            &verification,
+        )
+        .expect("Can't install Node 12");
 
         let mut location_path = path.join(version.v_str()).join("installation");
 

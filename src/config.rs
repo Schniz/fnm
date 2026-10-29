@@ -1,5 +1,6 @@
 use crate::arch::Arch;
 use crate::directories::Directories;
+use crate::download_verification::DownloadVerification;
 use crate::log_level::LogLevel;
 use crate::path_ext::PathExt;
 use crate::version_file_strategy::VersionFileStrategy;
@@ -96,6 +97,16 @@ pub struct FnmConfig {
     )]
     resolve_engines: Option<Option<bool>>,
 
+    /// How to check Node.js downloads before installing them.
+    #[clap(
+        long,
+        env = "FNM_DOWNLOAD_VERIFICATION",
+        default_value_t,
+        global = true,
+        hide_env_values = true
+    )]
+    download_verification: DownloadVerification,
+
     #[clap(skip)]
     directories: Directories,
 }
@@ -111,6 +122,7 @@ impl Default for FnmConfig {
             version_file_strategy: VersionFileStrategy::default(),
             corepack_enabled: false,
             resolve_engines: None,
+            download_verification: DownloadVerification::default(),
             directories: Directories::default(),
         }
     }
@@ -127,6 +139,10 @@ impl FnmConfig {
 
     pub fn resolve_engines(&self) -> bool {
         self.resolve_engines.flatten().unwrap_or(true)
+    }
+
+    pub fn download_verification(&self) -> DownloadVerification {
+        self.download_verification
     }
 
     pub fn multishell_path(&self) -> Option<&std::path::Path> {
