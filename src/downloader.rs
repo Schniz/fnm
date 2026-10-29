@@ -35,15 +35,23 @@ pub enum Error {
     VersionNotFound { version: Version, arch: Arch },
     #[error("Version already installed at {:?}", path)]
     VersionAlreadyInstalled { path: PathBuf },
+    #[error("Can't verify the download: {url} is missing, so nothing was installed")]
+    ChecksumsMissing { url: Url },
     #[error("Can't verify {file}: {url} has no checksum for it, so it wasn't installed")]
     ChecksumMissing { file: String, url: Url },
-    #[error("{file} doesn't match its published checksum, so it wasn't installed.\nExpected SHA-256 {expected}, got {actual}.")]
+    #[error("{url} doesn't match its published checksum, so it wasn't installed.\nExpected SHA-256 {expected}, got {actual}.")]
     ChecksumMismatch {
-        file: String,
+        url: String,
         expected: String,
         actual: String,
     },
+    #[error("{url} is larger than {limit} bytes, so nothing was installed")]
+    TooLarge { url: Url, limit: u64 },
 }
+
+/// Far above what Node.js publishes, so a hostile mirror can't fill the disk.
+const MAX_CHECKSUMS_SIZE: u64 = 1024 * 1024;
+const MAX_ARCHIVE_SIZE: u64 = 512 * 1024 * 1024;
 
 /// The mirror's list of checksums for `version`'s files. Node.js publishes
 /// one per release, and mirrors copy it with the release.
@@ -56,20 +64,24 @@ fn checksums_url(base_url: &Url, version: &Version) -> Url {
     .unwrap()
 }
 
-/// The published SHA-256 of `file_name`, from the release's `SHASUMS256.txt`
-/// at `url`. An error when the list can't be fetched or doesn't name the
-/// file: with nothing to check against, the download isn't trusted.
-fn published_checksum(url: &Url, file_name: &str) -> Result<String, Error> {
-    let missing = || Error::ChecksumMissing {
-        file: file_name.to_string(),
-        url: url.clone(),
-    };
+/// The release's `SHASUMS256.txt` at `url`. An error when it can't be
+/// fetched: with nothing to check against, no download is trusted.
+fn fetch_checksums(url: &Url) -> Result<String, Error> {
     let response = crate::http::get(url.as_str())?;
     if !response.status().is_success() {
-        return Err(missing());
+        return Err(Error::ChecksumsMissing { url: url.clone() });
     }
-    let sums = response.text().map_err(crate::http::Error::from)?;
-    checksum_for(&sums, file_name).ok_or_else(missing)
+    let mut body = vec![];
+    response
+        .take(MAX_CHECKSUMS_SIZE + 1)
+        .read_to_end(&mut body)?;
+    if body.len() as u64 > MAX_CHECKSUMS_SIZE {
+        return Err(Error::TooLarge {
+            url: url.clone(),
+            limit: MAX_CHECKSUMS_SIZE,
+        });
+    }
+    Ok(String::from_utf8_lossy(&body).into_owned())
 }
 
 /// The checksum `sums` (the `sha256sum` format: a hex digest, white space,
@@ -86,19 +98,30 @@ fn checksum_for(sums: &str, file_name: &str) -> Option<String> {
 
 /// Reads the whole download into a temporary file while hashing it, and
 /// hands the file back, rewound, only when the hash is `expected`. Nothing
-/// is unpacked from a download that hasn't been checked.
+/// is unpacked from a download that hasn't been checked, or that is larger
+/// than `limit`.
 fn download_verified(
-    mut download: impl Read,
-    file_name: &str,
+    download: impl Read,
+    url: &Url,
     expected: &str,
+    limit: u64,
 ) -> Result<std::fs::File, Error> {
     let mut file = tempfile::tempfile()?;
     let mut hasher = Sha256::new();
     let mut buffer = vec![0; 64 * 1024];
+    let mut download = download.take(limit + 1);
+    let mut total = 0;
     loop {
         let read = download.read(&mut buffer)?;
         if read == 0 {
             break;
+        }
+        total += read as u64;
+        if total > limit {
+            return Err(Error::TooLarge {
+                url: url.clone(),
+                limit,
+            });
         }
         hasher.update(&buffer[..read]);
         file.write_all(&buffer[..read])?;
@@ -106,7 +129,7 @@ fn download_verified(
     let actual = format!("{:x}", hasher.finalize());
     if !actual.eq_ignore_ascii_case(expected) {
         return Err(Error::ChecksumMismatch {
-            file: file_name.to_string(),
+            url: url.to_string(),
             expected: expected.to_string(),
             actual,
         });
@@ -169,6 +192,10 @@ pub fn install_node_dist<P: AsRef<Path>>(
 
     let portal = DirectoryPortal::new_in(&temp_installations_dir, installation_dir);
 
+    // One checksum list per release, fetched before any archive.
+    let checksums_url = checksums_url(node_dist_mirror, version);
+    let checksums = fetch_checksums(&checksums_url)?;
+
     for extract in Archive::supported() {
         let ext = extract.file_extension();
         let url = download_url(node_dist_mirror, version, arch, ext);
@@ -179,22 +206,24 @@ pub fn install_node_dist<P: AsRef<Path>>(
             continue;
         }
 
-        // What the mirror publishes for this file, before anything is
-        // downloaded or unpacked: a file without a published checksum isn't
-        // installed.
+        // A file without a published checksum isn't installed.
         let file_name = filename_for_version(version, arch, ext);
-        let checksums_url = checksums_url(node_dist_mirror, version);
-        let expected = published_checksum(&checksums_url, &file_name)?;
+        let expected =
+            checksum_for(&checksums, &file_name).ok_or_else(|| Error::ChecksumMissing {
+                file: file_name.clone(),
+                url: checksums_url.clone(),
+            })?;
 
         debug!("Downloading and checking {file_name}...");
         let archive = if show_progress {
             download_verified(
                 ResponseProgress::new(response, ProgressDrawTarget::stderr()),
-                &file_name,
+                &url,
                 &expected,
+                MAX_ARCHIVE_SIZE,
             )?
         } else {
-            download_verified(response, &file_name, &expected)?
+            download_verified(response, &url, &expected, MAX_ARCHIVE_SIZE)?
         };
 
         debug!("Extracting {file_name}...");
@@ -290,14 +319,20 @@ cccc  node-v20.0.0-darwin-arm64.tar.gz
         // sha256 of "pretend archive"
         let digest = format!("{:x}", Sha256::digest(content));
 
-        let mut file = download_verified(&content[..], "x.zip", &digest).unwrap();
+        let url = Url::parse("https://example.com/x.zip").unwrap();
+        let mut file = download_verified(&content[..], &url, &digest, 1024).unwrap();
         let mut read_back = Vec::new();
         file.read_to_end(&mut read_back).unwrap();
         assert_eq!(read_back, content, "rewound and complete");
 
         let wrong = "0".repeat(64);
-        let error = download_verified(&content[..], "x.zip", &wrong).unwrap_err();
+        let error = download_verified(&content[..], &url, &wrong, 1024).unwrap_err();
         assert!(matches!(error, Error::ChecksumMismatch { .. }), "{error}");
+        assert!(error.to_string().starts_with("https://example.com/x.zip "));
+
+        let limit = content.len() as u64 - 1;
+        let error = download_verified(&content[..], &url, &digest, limit).unwrap_err();
+        assert!(matches!(error, Error::TooLarge { .. }), "{error}");
     }
 
     #[test]
