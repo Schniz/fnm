@@ -120,15 +120,17 @@ fn fetch_checksums(url: &Url, when_missing: WhenMissing) -> Result<String, Error
     Ok(String::from_utf8_lossy(&body).into_owned())
 }
 
-/// The checksums in the clearsigned `signed`, fetched from `url`: only the
-/// signed text, never what the file has around it.
+/// The checksums in the clearsigned `signed` of `version`, fetched from `url`:
+/// only the signed text, never what the file has around it.
 fn verified_checksums(
     url: &Url,
     signed: &str,
+    version: &Version,
     verification: &Verification,
 ) -> Result<String, Error> {
     let verified = release_keys::verify(
         signed,
+        &version.v_str(),
         &verification.release_keys_dir,
         verification.user_keys.as_deref(),
         &release_keys::fetch_from_github,
@@ -283,7 +285,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
         Check::Signature => {
             let url = release_file_url(node_dist_mirror, version, "SHASUMS256.txt.asc");
             let signed = fetch_checksums(&url, policy.when_missing)?;
-            let checksums = verified_checksums(&url, &signed, verification)?;
+            let checksums = verified_checksums(&url, &signed, version, verification)?;
             Some((url, checksums))
         }
     };
@@ -453,7 +455,8 @@ cccc  node-v20.0.0-darwin-arm64.tar.gz
             user_keys: None,
             log_level: LogLevel::Quiet,
         };
-        let checksums = verified_checksums(&url, &signed, &verification).unwrap();
+        let version = Version::parse("20.0.0").unwrap();
+        let checksums = verified_checksums(&url, &signed, &version, &verification).unwrap();
         assert_eq!(checksum_for(&checksums, "node-v20.0.0-forged.tar.xz"), None);
         assert!(checksum_for(&checksums, "node-v20.0.0-linux-x64.tar.xz").is_some());
     }

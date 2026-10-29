@@ -28,10 +28,16 @@ E2E tests validate real-shell user behavior (`fnm env`, `fnm use`, PATH updates,
 
 ## Node.js release keys
 
-`release-keys/keys.asc` is the snapshot of https://github.com/nodejs/release-keys that verifies Node.js downloads. When a new releaser joins, regenerate it:
+`release-keys/` holds the data that verifies Node.js downloads, from https://github.com/nodejs/release-keys:
 
-- Run `.ci/update-release-keys.sh`. It records the source commit and the key count in the file header.
-- Review the diff: every new fingerprint should match the nodejs/release-keys README and the Node.js README.
+- `keys.asc`: every releaser key, retired ones included.
+- `active.txt`: the active releasers' primary keys, from the README markers.
+- `signers.txt`: the primary key that signed each release. A release in it is accepted only from that key; a release not in it only from an active key.
+
+When a new releaser joins, or before an fnm release, update them:
+
+- Run `.ci/update-release-keys.sh` (it needs network and `cargo`). It regenerates `keys.asc` and `active.txt`, and adds the releases that `signers.txt` lacks, each checked with the keys like a download. It warns about a retired key that signs no release in the table.
+- Review the diff: every new fingerprint should match the nodejs/release-keys README and the Node.js README, and each new release should name the releaser who published it.
 - Run `cargo test release_keys` and add a changeset.
 
 ## Features, Bugfixes and Changes

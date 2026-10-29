@@ -15,6 +15,10 @@ use url::Url;
 /// A snapshot of <https://github.com/nodejs/release-keys>, made by `.ci/update-release-keys.sh`.
 const BUNDLED_KEYS: &str = include_str!("../release-keys/keys.asc");
 
+/// The primary key that signed each release, and the active releasers' keys.
+const SIGNERS: &str = include_str!("../release-keys/signers.txt");
+const ACTIVE_KEYS: &str = include_str!("../release-keys/active.txt");
+
 /// Node.js releases carry one signature; more than this is not worth hashing for.
 const MAX_SIGNATURES: usize = 8;
 
@@ -50,6 +54,14 @@ pub enum Error {
     RefreshFailed { issuer: String, reason: String },
     #[error("the release keys in {} can't be used: {reason}", path.display())]
     UserKeys { path: PathBuf, reason: String },
+    #[error("it is signed by {fingerprint}, but {version} was signed by {expected}")]
+    WrongSigner {
+        fingerprint: String,
+        version: String,
+        expected: String,
+    },
+    #[error("it is signed by retired key {fingerprint} ({name}); upgrade fnm")]
+    RetiredKey { fingerprint: String, name: String },
 }
 
 fn signed_by(fingerprint: &str, signing_key: &str) -> String {
@@ -93,15 +105,68 @@ struct TrustedKey {
     /// New signing subkeys a refresh found for `key`, which is never changed.
     refreshed: Vec<SignedPublicSubKey>,
     user_keys: Option<PathBuf>,
+    /// An active releaser's key, or a user key; retired keys only sign
+    /// the releases they signed before.
+    active: bool,
+}
+
+/// Which keys may sign a release.
+struct Pin {
+    version: String,
+    /// The primary key that signed it, if the table of signers has it.
+    signer: Option<String>,
 }
 
 struct Keyring {
     keys: Vec<TrustedKey>,
+    pin: Option<Pin>,
 }
 
 impl Keyring {
     fn bundled() -> Self {
-        Self::from_keys(parse_keys(BUNDLED_KEYS))
+        let mut keyring = Self::from_keys(parse_keys(BUNDLED_KEYS));
+        let active: Vec<_> = data_lines(ACTIVE_KEYS).collect();
+        for trusted in &mut keyring.keys {
+            trusted.active = active.contains(&format!("{:X}", trusted.key.fingerprint()).as_str());
+        }
+        keyring
+    }
+
+    /// Only the key that signed `version` before may sign it, or, for a
+    /// release `signers` doesn't have, an active releaser's key.
+    fn pin_to(&mut self, version: &str, signers: &str) {
+        let signer = data_lines(signers).find_map(|line| {
+            let (release, fingerprint) = line.split_once(' ')?;
+            (release == version).then(|| fingerprint.to_string())
+        });
+        self.pin = Some(Pin {
+            version: version.to_string(),
+            signer,
+        });
+    }
+
+    fn check_pin(&self, trusted: &TrustedKey) -> Result<(), Error> {
+        let fingerprint = format!("{:X}", trusted.key.fingerprint());
+        match &self.pin {
+            None => Ok(()),
+            Some(Pin {
+                signer: Some(expected),
+                ..
+            }) if *expected == fingerprint => Ok(()),
+            Some(Pin {
+                version,
+                signer: Some(expected),
+            }) => Err(Error::WrongSigner {
+                fingerprint,
+                version: version.clone(),
+                expected: expected.clone(),
+            }),
+            Some(Pin { signer: None, .. }) if trusted.active => Ok(()),
+            Some(Pin { signer: None, .. }) => Err(Error::RetiredKey {
+                fingerprint,
+                name: trusted.name.clone(),
+            }),
+        }
     }
 
     fn from_keys(keys: Vec<SignedPublicKey>) -> Self {
@@ -113,8 +178,10 @@ impl Keyring {
                     key,
                     refreshed: vec![],
                     user_keys: None,
+                    active: true,
                 })
                 .collect(),
+            pin: None,
         }
     }
 
@@ -175,7 +242,7 @@ impl Keyring {
                 let Some(trusted) = self
                     .keys
                     .iter_mut()
-                    .find(|k| k.key.fingerprint() == key.fingerprint())
+                    .find(|k| k.active && k.key.fingerprint() == key.fingerprint())
                 else {
                     continue;
                 };
@@ -220,17 +287,20 @@ impl Keyring {
                 signature.typ(),
                 Some(SignatureType::Binary | SignatureType::Text)
             ) {
-                failure.get_or_insert_with(|| "it is not a document signature".to_string());
+                failure.get_or_insert_with(|| invalid("it is not a document signature"));
                 continue;
             }
             let (candidates, unusable) = self.candidates(signature);
             if candidates.is_empty() {
-                match unusable {
-                    Some(key) => failure.get_or_insert_with(|| {
-                        format!("it is signed by key {key}, which is revoked or may not sign")
-                    }),
-                    None => unknown_issuer.get_or_insert_with(|| issuer(signature)),
-                };
+                if let Some(key) = unusable {
+                    failure.get_or_insert_with(|| {
+                        invalid(&format!(
+                            "it is signed by key {key}, which is revoked or may not sign"
+                        ))
+                    });
+                } else {
+                    unknown_issuer.get_or_insert_with(|| issuer(signature));
+                }
                 continue;
             }
             for (trusted, key) in candidates {
@@ -243,6 +313,10 @@ impl Keyring {
                     Key::Subkey(key) => signature.verify(key, signed_text.as_bytes()),
                 };
                 if checked.is_ok() {
+                    if let Err(pinned) = self.check_pin(trusted) {
+                        failure.get_or_insert(pinned);
+                        break;
+                    }
                     return Ok(Verified {
                         signer: trusted.name.clone(),
                         fingerprint: format!("{:X}", trusted.key.fingerprint()),
@@ -253,18 +327,16 @@ impl Keyring {
                 }
             }
             if has_issuer(signature) {
-                failure.get_or_insert_with(|| "it doesn't match the signed text".to_string());
+                failure.get_or_insert_with(|| invalid("it doesn't match the signed text"));
             } else {
                 unknown_issuer.get_or_insert_with(|| issuer(signature));
             }
         }
 
         match (failure, unknown_issuer) {
-            (Some(reason), _) => Err(Error::InvalidSignature { reason }),
+            (Some(failure), _) => Err(failure),
             (None, Some(issuer)) => Err(Error::UnknownIssuer { issuer }),
-            (None, None) => Err(Error::InvalidSignature {
-                reason: "it has no signature".to_string(),
-            }),
+            (None, None) => Err(invalid("it has no signature")),
         }
     }
 
@@ -329,6 +401,19 @@ impl Keyring {
             .retain(|k| format!("{:X}", k.key.fingerprint()) != fingerprint);
         self
     }
+}
+
+fn invalid(reason: &str) -> Error {
+    Error::InvalidSignature {
+        reason: reason.to_string(),
+    }
+}
+
+/// The lines of a release-keys data file, without comments.
+fn data_lines(text: &str) -> impl Iterator<Item = &str> {
+    text.lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
 }
 
 fn has_issuer(signature: &Signature) -> bool {
@@ -450,17 +535,19 @@ fn user_name(key: &SignedPublicKey) -> String {
         .unwrap_or_default()
 }
 
-/// Checks the clearsigned `asc` against the bundled keys, the ones in
-/// `user_keys`, and the subkeys refreshed for them before. A signature by an
-/// unknown key refreshes the keys from [`RELEASE_KEYS_URL`] with `fetch`
-/// once, then checks again.
+/// Checks the clearsigned `asc` of `version` against the bundled keys, the
+/// ones in `user_keys`, and the subkeys refreshed for them before, pinned to
+/// the key that signed `version`. A signature by an unknown key refreshes the
+/// keys from [`RELEASE_KEYS_URL`] with `fetch` once, then checks again.
 pub fn verify(
     asc: &str,
+    version: &str,
     cache_dir: &Path,
     user_keys: Option<&Path>,
     fetch: Fetch<'_>,
 ) -> Result<Verified, Error> {
     let mut keyring = Keyring::bundled();
+    keyring.pin_to(version, SIGNERS);
     if let Some(path) = user_keys {
         if same_file(path, &cache_dir.join(CACHE_FILE)) {
             return Err(Error::UserKeys {
@@ -853,6 +940,9 @@ mod tests {
         KeyVersion, PacketHeaderVersion, Password, PlainSecretParams, PublicParams, SecretParams,
         SignedUser, SigningKey, Timestamp,
     };
+
+    /// A release the table of signers doesn't have.
+    const UNKNOWN_RELEASE: &str = "v99.0.0";
 
     /// Signed with by the tests below, after the signer's keys were made.
     const TEXT: &str = "3f4b5c0a2b1e7d9c8a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b  node-v99.0.0-linux-x64.tar.xz\r\n";
@@ -1561,16 +1651,23 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("user-keys.asc");
         std::fs::write(&path, armored(&public)).unwrap();
-        let verified = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap();
+        let verified = verify(&asc, UNKNOWN_RELEASE, dir.path(), Some(&path), &no_fetch).unwrap();
         assert_eq!(verified.user_keys.as_deref(), Some(path.as_path()));
         assert_eq!(verified.signer, "Test Signer <signer@example.com>");
-        let bundled = verify(&fixture("v20.0.0"), dir.path(), Some(&path), &no_fetch).unwrap();
+        let bundled = verify(
+            &fixture("v20.0.0"),
+            "v20.0.0",
+            dir.path(),
+            Some(&path),
+            &no_fetch,
+        )
+        .unwrap();
         assert_eq!(bundled.user_keys, None);
 
         let mut revoked = public.clone();
         revoke_subkey(&signer, &mut revoked, RevocationCode::KeyCompromised);
         std::fs::write(&path, armored(&revoked)).unwrap();
-        let error = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap_err();
+        let error = verify(&asc, UNKNOWN_RELEASE, dir.path(), Some(&path), &no_fetch).unwrap_err();
         assert!(error.to_string().contains("revoked"), "{error}");
 
         // A refresh may add a new signing subkey to a user key too.
@@ -1578,7 +1675,7 @@ mod tests {
         let mut keyring = Keyring::bundled();
         keyring.add_user_keys(&path).unwrap();
         refresh_with(keyring, dir.path(), &public);
-        let verified = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap();
+        let verified = verify(&asc, UNKNOWN_RELEASE, dir.path(), Some(&path), &no_fetch).unwrap();
         assert_eq!(verified.user_keys.as_deref(), Some(path.as_path()));
     }
 
@@ -1592,8 +1689,14 @@ mod tests {
         )
         .unwrap();
         for path in [dir.path().join("missing.asc"), garbage] {
-            let error =
-                verify(&fixture("v20.0.0"), dir.path(), Some(&path), &no_fetch).unwrap_err();
+            let error = verify(
+                &fixture("v20.0.0"),
+                "v20.0.0",
+                dir.path(),
+                Some(&path),
+                &no_fetch,
+            )
+            .unwrap_err();
             assert!(matches!(error, Error::UserKeys { .. }), "{error}");
             assert!(
                 error.to_string().contains(&path.display().to_string()),
@@ -1634,7 +1737,8 @@ mod tests {
             // The same key twice in the user file.
             let both = format!("{}\n{}", armored(&public), armored(&revoked));
             let path = user_keys_file(dir.path(), &both);
-            let error = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap_err();
+            let error =
+                verify(&asc, UNKNOWN_RELEASE, dir.path(), Some(&path), &no_fetch).unwrap_err();
             assert!(error.to_string().contains("revoked"), "{error}");
         }
     }
@@ -1657,7 +1761,7 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let path = user_keys_file(dir.path(), &block);
         let asc = clearsigned_by_subkey(&secret);
-        let verified = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap();
+        let verified = verify(&asc, UNKNOWN_RELEASE, dir.path(), Some(&path), &no_fetch).unwrap();
         assert_eq!(verified.signer, "Test Signer <signer@example.com>");
     }
 
@@ -1670,8 +1774,14 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         for second in [truncated, &corrupted] {
             let path = user_keys_file(dir.path(), &format!("{valid}\n{second}"));
-            let error =
-                verify(&fixture("v20.0.0"), dir.path(), Some(&path), &no_fetch).unwrap_err();
+            let error = verify(
+                &fixture("v20.0.0"),
+                "v20.0.0",
+                dir.path(),
+                Some(&path),
+                &no_fetch,
+            )
+            .unwrap_err();
             assert!(matches!(error, Error::UserKeys { .. }), "{error}");
         }
     }
@@ -1687,8 +1797,223 @@ mod tests {
         // Also through another spelling of the same path.
         let other = cache.join("..").join("release-keys").join(CACHE_FILE);
         for path in [path, other] {
-            let error = verify(&fixture("v20.0.0"), &cache, Some(&path), &no_fetch).unwrap_err();
+            let error = verify(
+                &fixture("v20.0.0"),
+                "v20.0.0",
+                &cache,
+                Some(&path),
+                &no_fetch,
+            )
+            .unwrap_err();
             assert!(error.to_string().contains("fnm's cache"), "{error}");
         }
+    }
+
+    fn signers() -> Vec<(&'static str, &'static str)> {
+        data_lines(SIGNERS)
+            .map(|line| line.split_once(' ').unwrap())
+            .collect()
+    }
+
+    fn version_key(version: &str) -> Vec<u64> {
+        version[1..]
+            .split('.')
+            .map(|n| n.parse().unwrap())
+            .collect()
+    }
+
+    #[test]
+    fn test_a_release_in_the_table_needs_the_key_that_signed_it() {
+        let cache = tempfile::tempdir().unwrap();
+        verify(
+            &fixture("v20.0.0"),
+            "v20.0.0",
+            cache.path(),
+            None,
+            &no_fetch,
+        )
+        .unwrap();
+        // Signed by another active releaser, Antoine du Hamel.
+        let error = verify(
+            &fixture("v25.2.0"),
+            "v20.0.0",
+            cache.path(),
+            None,
+            &no_fetch,
+        )
+        .unwrap_err();
+        assert_eq!(
+            error.to_string(),
+            "it is signed by 5BE8A3F6C8A5C01D106C0AD820B1A390B168D356, but v20.0.0 was signed by 890C08DB8579162FEE0DF9DB8BEAB4DFCF555EF4"
+        );
+    }
+
+    #[test]
+    fn test_a_release_not_in_the_table_needs_an_active_key() {
+        let cache = tempfile::tempdir().unwrap();
+        let verified = verify(
+            &fixture("v25.2.0"),
+            UNKNOWN_RELEASE,
+            cache.path(),
+            None,
+            &no_fetch,
+        )
+        .unwrap();
+        assert_eq!(
+            verified.fingerprint,
+            "5BE8A3F6C8A5C01D106C0AD820B1A390B168D356"
+        );
+        // The DSA-1024 key from 2014 vouches only for the releases it signed.
+        let error = verify(
+            &fixture("v0.10.30"),
+            UNKNOWN_RELEASE,
+            cache.path(),
+            None,
+            &no_fetch,
+        )
+        .unwrap_err();
+        assert_eq!(
+            error.to_string(),
+            "it is signed by retired key 7937DFD2AB06298B2293C3187D33FF9D0246406D (Timothy J Fontaine (OFTC) <tjfontaine@oftc.net>); upgrade fnm"
+        );
+        verify(
+            &fixture("v0.10.30"),
+            "v0.10.30",
+            cache.path(),
+            None,
+            &no_fetch,
+        )
+        .unwrap();
+    }
+
+    #[test]
+    fn test_the_table_of_signers() {
+        let bundled = Keyring::bundled();
+        let signers = signers();
+        assert!(signers.len() >= 730);
+        for pair in signers.windows(2) {
+            assert!(version_key(pair[0].0) < version_key(pair[1].0), "{pair:?}");
+        }
+        for (version, fingerprint) in &signers {
+            assert!(
+                bundled
+                    .keys
+                    .iter()
+                    .any(|k| format!("{:X}", k.key.fingerprint()) == *fingerprint),
+                "{version} {fingerprint}"
+            );
+        }
+        for version in ["v0.10.30", "v6.0.0", "v20.0.0", "v24.12.0", "v25.2.0"] {
+            let signer = signers.iter().find(|(v, _)| *v == version).unwrap().1;
+            let verified = bundled.verify(&fixture(version)).unwrap();
+            assert_eq!(verified.fingerprint, signer, "{version}");
+        }
+    }
+
+    #[test]
+    fn test_every_retired_key_signed_a_release_in_the_table() {
+        // Chris Dickinson signed io.js releases only, not nodejs.org ones.
+        const IO_JS_ONLY: &str = "9554F04D7259F04124DE6B476D5A82AC7E37093B";
+        let keyring = Keyring::bundled();
+        let signers = signers();
+        let active: Vec<_> = data_lines(ACTIVE_KEYS).collect();
+        assert_eq!(
+            keyring.keys.iter().filter(|k| k.active).count(),
+            active.len()
+        );
+        for trusted in keyring.keys.iter().filter(|k| !k.active) {
+            let fingerprint = format!("{:X}", trusted.key.fingerprint());
+            assert!(
+                fingerprint == IO_JS_ONLY || signers.iter().any(|(_, f)| *f == fingerprint),
+                "{fingerprint} ({}) signs no release in the table",
+                trusted.name
+            );
+        }
+    }
+
+    #[test]
+    fn test_a_refresh_adds_no_subkey_to_a_retired_key() {
+        let (_, public) = test_signer();
+        for active in [false, true] {
+            let mut keyring = keyring_of(without_subkeys(&public));
+            keyring.keys[0].active = active;
+            keyring.add_refreshed(std::slice::from_ref(&public));
+            assert_eq!(keyring.refreshed().count(), usize::from(active));
+        }
+    }
+}
+
+/// Run by `.ci/update-release-keys.sh`, over the network.
+#[cfg(test)]
+mod update {
+    use super::*;
+    use std::fmt::Write as _;
+
+    /// Adds the releases that `release-keys/signers.txt` lacks, with the
+    /// primary key their checked `SHASUMS256.txt.asc` is signed by.
+    #[test]
+    #[ignore = "fetches from nodejs.org and rewrites release-keys/signers.txt"]
+    fn update_signers() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/release-keys/signers.txt");
+        let table = std::fs::read_to_string(path).unwrap();
+        let mut signers: Vec<(String, String)> = data_lines(&table)
+            .filter_map(|line| line.split_once(' '))
+            .map(|(version, fingerprint)| (version.to_string(), fingerprint.to_string()))
+            .collect();
+        let index: Vec<serde_json::Value> = crate::http::get("https://nodejs.org/dist/index.json")
+            .unwrap()
+            .json()
+            .unwrap();
+        let keyring = Keyring::bundled();
+        for version in index
+            .iter()
+            .filter_map(|release| release["version"].as_str())
+        {
+            let unsigned = crate::version::Version::parse(version)
+                .is_ok_and(|v| crate::download_verification::predates_signed_checksums(&v));
+            if unsigned || signers.iter().any(|(known, _)| known == version) {
+                continue;
+            }
+            let url = format!("https://nodejs.org/dist/{version}/SHASUMS256.txt.asc");
+            let response = crate::http::get(&url).unwrap();
+            if !response.status().is_success() {
+                continue; // From before signed checksums.
+            }
+            match keyring.verify(&response.text().unwrap()) {
+                Ok(verified) => signers.push((version.to_string(), verified.fingerprint)),
+                Err(e) => eprintln!("warning: {version} is not added: {e}"),
+            }
+        }
+        let number = |version: &str| -> Vec<u64> {
+            let numbers = version.trim_start_matches('v').split('.');
+            numbers.map(|n| n.parse().unwrap_or(0)).collect()
+        };
+        signers.sort_by_key(|(version, _)| number(version));
+
+        let source = BUNDLED_KEYS
+            .lines()
+            .find_map(|line| line.strip_prefix("# Source commit: "))
+            .unwrap_or("unknown");
+        let date = chrono::Utc::now().format("%Y-%m-%d");
+        let mut text = format!(
+            "# The primary key that signed each Node.js release's SHASUMS256.txt.asc.\n\
+             # Generated: {date}, from nodejs/release-keys@{source}\n\
+             # Extended by .ci/update-release-keys.sh. Do not edit by hand.\n"
+        );
+        for (version, fingerprint) in &signers {
+            writeln!(text, "{version} {fingerprint}").unwrap();
+        }
+        std::fs::write(path, text).unwrap();
+
+        for trusted in keyring.keys.iter().filter(|k| !k.active) {
+            let fingerprint = format!("{:X}", trusted.key.fingerprint());
+            if !signers.iter().any(|(_, f)| *f == fingerprint) {
+                eprintln!(
+                    "warning: retired key {fingerprint} ({}) signs no release in the table",
+                    trusted.name
+                );
+            }
+        }
+        println!("release-keys/signers.txt: {} releases", signers.len());
     }
 }

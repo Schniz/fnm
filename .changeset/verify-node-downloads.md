@@ -10,7 +10,7 @@ Verify Node.js downloads before installing them ([#1609](https://github.com/Schn
 - `checksum`: checksum only, for private mirrors without signatures. unofficial-builds.nodejs.org gets this automatically.
 - `none`: no checks.
 
-New releaser keys and revocations take effect with fnm releases. Until then, a new releaser's key can be trusted with the new `--node-release-keys` / `FNM_NODE_RELEASE_KEYS` option.
+Each release is pinned to the releaser key that signed it, from a bundled table; a release newer than the table is accepted only from an active releaser's key. New releaser keys and revocations take effect with fnm releases. Until then, a new releaser's key can be trusted with the new `--node-release-keys` / `FNM_NODE_RELEASE_KEYS` option.
 
 ```sh-session
 $ fnm install 24
