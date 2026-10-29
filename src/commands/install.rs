@@ -152,6 +152,7 @@ impl Command for Install {
             show_progress,
             &Verification {
                 mode: config.download_verification(),
+                release_keys_dir: config.release_keys_dir(),
                 log_level: config.log_level(),
             },
         ) {

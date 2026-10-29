@@ -2,9 +2,15 @@
 //! `SHASUMS256.txt.asc` against them.
 
 use log::debug;
-use pgp::composed::{CleartextSignedMessage, Deserializable, SignedPublicKey, SignedPublicSubKey};
+use pgp::composed::{
+    CleartextSignedMessage, Deserializable, SignedKeyDetails, SignedPublicKey, SignedPublicSubKey,
+};
 use pgp::packet::{KeyFlags, Signature, SignatureType, SubpacketData};
 use pgp::types::{Fingerprint, KeyDetails, Tag};
+use std::io::{Read, Write};
+use std::path::{Component, Path};
+use std::sync::OnceLock;
+use url::Url;
 
 /// A snapshot of <https://github.com/nodejs/release-keys>, made by `.ci/update-release-keys.sh`.
 const BUNDLED_KEYS: &str = include_str!("../release-keys/keys.asc");
@@ -12,12 +18,44 @@ const BUNDLED_KEYS: &str = include_str!("../release-keys/keys.asc");
 /// Node.js releases carry one signature; more than this is not worth hashing for.
 const MAX_SIGNATURES: usize = 8;
 
+/// Where keys are refreshed from: GitHub, never the Node.js mirror.
+pub const RELEASE_KEYS_URL: &str =
+    "https://codeload.github.com/nodejs/release-keys/tar.gz/refs/heads/main";
+
+/// Limits for the release keys tarball, which is about 200 KiB, and for what
+/// a refresh may add.
+const MAX_TARBALL_SIZE: usize = 4 * 1024 * 1024;
+const MAX_UNPACKED_SIZE: u64 = 16 * 1024 * 1024;
+const MAX_KEY_FILE_SIZE: u64 = 256 * 1024;
+const MAX_REFRESHED_SUBKEYS: usize = 64;
+
+const CACHE_FILE: &str = "keys.asc";
+
+/// Fetches a URL: [`fetch_from_github`], or a stand-in in tests.
+pub type Fetch<'a> = &'a dyn Fn(&Url) -> Result<Vec<u8>, String>;
+
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("it is signed by key {issuer}, which is not a known Node.js release key")]
     UnknownIssuer { issuer: String },
     #[error("its signature is not valid: {reason}")]
     InvalidSignature { reason: String },
+    #[error("it is signed by {}, which names itself \"{name}\" (unverified) and is newer than this fnm's key bundle; upgrade fnm, or verify the key yourself and use --download-verification=checksum", signed_by(.fingerprint, .signing_key))]
+    NewReleaseKey {
+        name: String,
+        fingerprint: String,
+        signing_key: String,
+    },
+    #[error("it is signed by key {issuer}, which is not a known Node.js release key, and the keys can't be refreshed from {url}: {reason}", url = RELEASE_KEYS_URL)]
+    RefreshFailed { issuer: String, reason: String },
+}
+
+fn signed_by(fingerprint: &str, signing_key: &str) -> String {
+    if fingerprint == signing_key {
+        format!("key {fingerprint}")
+    } else {
+        format!("subkey {signing_key} of key {fingerprint}")
+    }
 }
 
 /// A release whose signature checked out.
@@ -48,28 +86,77 @@ impl Key<'_> {
 struct TrustedKey {
     key: SignedPublicKey,
     name: String,
+    /// New signing subkeys a refresh found for `key`, which is never changed.
+    refreshed: Vec<SignedPublicSubKey>,
 }
 
-pub struct Keyring {
+struct Keyring {
     keys: Vec<TrustedKey>,
 }
 
 impl Keyring {
-    pub fn bundled() -> Self {
+    fn bundled() -> Self {
+        Self::from_keys(parse_keys(BUNDLED_KEYS))
+    }
+
+    fn from_keys(keys: Vec<SignedPublicKey>) -> Self {
         Self {
-            keys: parse_keys(BUNDLED_KEYS)
+            keys: keys
                 .into_iter()
                 .map(|key| TrustedKey {
                     name: user_name(&key),
                     key,
+                    refreshed: vec![],
                 })
                 .collect(),
         }
     }
 
+    fn contains(&self, fingerprint: &Fingerprint) -> bool {
+        self.keys
+            .iter()
+            .any(|k| k.key.fingerprint() == *fingerprint)
+    }
+
+    fn refreshed(&self) -> impl Iterator<Item = &SignedPublicSubKey> {
+        self.keys.iter().flat_map(|k| &k.refreshed)
+    }
+
+    /// Adds the subkeys of `keys` that are new signing subkeys of a trusted
+    /// key: bound by the trusted primary key with the sign flag and the
+    /// subkey's cross-signature, and not revoked. Only that binding is kept.
+    fn add_refreshed(&mut self, keys: &[SignedPublicKey]) {
+        for key in keys {
+            for subkey in &key.public_subkeys {
+                let fingerprint = subkey.fingerprint();
+                let mut trusted_subkeys = self.keys.iter().flat_map(|k| &k.key.public_subkeys);
+                if trusted_subkeys.any(|s| s.fingerprint() == fingerprint)
+                    || self.refreshed().any(|s| s.fingerprint() == fingerprint)
+                    || self.refreshed().count() >= MAX_REFRESHED_SUBKEYS
+                {
+                    continue;
+                }
+                let Some(trusted) = self
+                    .keys
+                    .iter_mut()
+                    .find(|k| k.key.fingerprint() == key.fingerprint())
+                else {
+                    continue;
+                };
+                if let Some(binding) = signing_binding(&trusted.key, subkey, false) {
+                    let signatures = vec![binding.clone()];
+                    let key = subkey.key.clone();
+                    trusted
+                        .refreshed
+                        .push(SignedPublicSubKey { key, signatures });
+                }
+            }
+        }
+    }
+
     /// Checks the clearsigned `asc` and returns its signed text. Text outside
     /// the signed block fails the check rather than being ignored.
-    pub fn verify(&self, asc: &str) -> Result<Verified, Error> {
+    fn verify(&self, asc: &str) -> Result<Verified, Error> {
         let (message, _) =
             CleartextSignedMessage::from_string(asc).map_err(|e| Error::InvalidSignature {
                 reason: e.to_string(),
@@ -87,7 +174,7 @@ impl Keyring {
         let mut attempts_left: usize = self
             .keys
             .iter()
-            .map(|k| 1 + k.key.public_subkeys.len())
+            .map(|k| 1 + k.key.public_subkeys.len() + k.refreshed.len())
             .sum();
         let mut unknown_issuer = None;
         let mut failure = None;
@@ -168,9 +255,11 @@ impl Keyring {
                     unusable.get_or_insert_with(|| format!("{:X}", key.fingerprint()));
                 }
             }
-            for subkey in &key.public_subkeys {
+            let subkeys = key.public_subkeys.iter().map(|subkey| (subkey, true));
+            let refreshed = trusted.refreshed.iter().map(|subkey| (subkey, false));
+            for (subkey, allow_flagless) in subkeys.chain(refreshed) {
                 if matches(subkey) {
-                    if signing_binding(key, subkey, true).is_some()
+                    if signing_binding(key, subkey, allow_flagless).is_some()
                         && !self.revoked(&key.fingerprint())
                         && !self.revoked(&subkey.fingerprint())
                     {
@@ -324,6 +413,184 @@ fn user_name(key: &SignedPublicKey) -> String {
         .unwrap_or_default()
 }
 
+/// Checks the clearsigned `asc` against the bundled keys and the subkeys
+/// refreshed for them before. A signature by an unknown key refreshes the
+/// keys from [`RELEASE_KEYS_URL`] with `fetch` once, then checks again.
+pub fn verify(asc: &str, cache_dir: &Path, fetch: Fetch<'_>) -> Result<Verified, Error> {
+    verify_with(Keyring::bundled(), asc, cache_dir, fetch)
+}
+
+fn verify_with(
+    mut keyring: Keyring,
+    asc: &str,
+    cache_dir: &Path,
+    fetch: Fetch<'_>,
+) -> Result<Verified, Error> {
+    let mut cached = String::new();
+    if let Ok(file) = std::fs::File::open(cache_dir.join(CACHE_FILE)) {
+        let limit = MAX_KEY_FILE_SIZE * MAX_REFRESHED_SUBKEYS as u64;
+        let _ = file.take(limit).read_to_string(&mut cached);
+    }
+    keyring.add_refreshed(&parse_keys(&cached));
+    let issuer = match keyring.verify(asc) {
+        Err(Error::UnknownIssuer { issuer }) => issuer,
+        result => return result,
+    };
+
+    debug!("Key {issuer} is not a known release key, refreshing the keys");
+    let refreshed = refresh(fetch).map_err(|reason| Error::RefreshFailed {
+        issuer: issuer.clone(),
+        reason,
+    })?;
+    // The latest release keys decide: a subkey they revoked or dropped goes.
+    for trusted in &mut keyring.keys {
+        trusted.refreshed.clear();
+    }
+    keyring.add_refreshed(&refreshed.keys);
+    if let Err(e) = write_cache(cache_dir, &refreshed.source, &keyring) {
+        debug!("Can't cache the refreshed release keys: {e}");
+    }
+
+    match keyring.verify(asc) {
+        Err(Error::UnknownIssuer { issuer }) => {
+            // A releaser's key that isn't in the bundle is named, not trusted,
+            // and only by subkeys it bound like a refreshed one.
+            let new: Vec<_> = refreshed
+                .keys
+                .into_iter()
+                .filter(|key| !keyring.contains(&key.fingerprint()))
+                .collect();
+            let primaries = new.iter().map(|key| SignedPublicKey {
+                public_subkeys: vec![],
+                ..key.clone()
+            });
+            let mut new_keys = Keyring::from_keys(primaries.collect());
+            new_keys.add_refreshed(&new);
+            match new_keys.verify(asc) {
+                Ok(signed) => Err(Error::NewReleaseKey {
+                    name: signed.signer,
+                    fingerprint: signed.fingerprint,
+                    signing_key: signed.signing_key,
+                }),
+                Err(_) => Err(Error::UnknownIssuer { issuer }),
+            }
+        }
+        result => result,
+    }
+}
+
+/// Fetches [`RELEASE_KEYS_URL`], at most once per process when it succeeds.
+pub fn fetch_from_github(url: &Url) -> Result<Vec<u8>, String> {
+    static FETCHED: OnceLock<Vec<u8>> = OnceLock::new();
+    if let Some(body) = FETCHED.get() {
+        return Ok(body.clone());
+    }
+    let response = crate::http::get(url.as_str()).map_err(|e| e.to_string())?;
+    if !response.status().is_success() {
+        return Err(format!("HTTP {}", response.status().as_u16()));
+    }
+    let mut body = vec![];
+    response
+        .take(MAX_TARBALL_SIZE as u64 + 1)
+        .read_to_end(&mut body)
+        .map_err(|e| e.to_string())?;
+    Ok(FETCHED.get_or_init(|| body).clone())
+}
+
+struct Refreshed {
+    /// The nodejs/release-keys commit, as recorded in the tarball.
+    source: String,
+    keys: Vec<SignedPublicKey>,
+}
+
+/// The keys in a nodejs/release-keys tarball. It comes from the network, so
+/// only `keys/*.asc` files are read, each and all within size limits.
+fn refresh(fetch: Fetch<'_>) -> Result<Refreshed, String> {
+    let tarball = fetch(&Url::parse(RELEASE_KEYS_URL).expect("valid URL"))?;
+    if tarball.len() > MAX_TARBALL_SIZE {
+        return Err(format!(
+            "the download is larger than {MAX_TARBALL_SIZE} bytes"
+        ));
+    }
+    let unpacked = flate2::read::GzDecoder::new(tarball.as_slice()).take(MAX_UNPACKED_SIZE);
+    let mut archive = tar::Archive::new(unpacked);
+    let mut source = None;
+    let mut keys = vec![];
+
+    for entry in archive.entries().map_err(|e| e.to_string())? {
+        let mut entry = entry.map_err(|e| e.to_string())?;
+        let entry_type = entry.header().entry_type();
+        if entry_type.is_pax_global_extensions() {
+            // `git archive` records the commit as a global `comment`.
+            let extensions = entry.pax_extensions().map_err(|e| e.to_string())?;
+            for extension in extensions.into_iter().flatten().flatten() {
+                if extension.key() == Ok("comment") {
+                    source = extension.value().ok().map(str::to_string);
+                }
+            }
+            continue;
+        }
+        let path = entry.path().map_err(|e| e.to_string())?.into_owned();
+        if !entry_type.is_file() || !is_key_file(&path) {
+            continue;
+        }
+        if entry.size() > MAX_KEY_FILE_SIZE {
+            debug!("Ignoring {}: it is too large", path.display());
+            continue;
+        }
+        let mut armored = String::new();
+        if let Err(e) = entry.read_to_string(&mut armored) {
+            debug!("Ignoring {}: {e}", path.display());
+            continue;
+        }
+        keys.extend(parse_keys(&armored));
+    }
+
+    let source = source
+        .filter(|sha| sha.len() == 40 && sha.chars().all(|c| c.is_ascii_hexdigit()))
+        .unwrap_or_else(|| "unknown".to_string());
+    Ok(Refreshed { source, keys })
+}
+
+/// `release-keys-<ref>/keys/<name>.asc`, and nothing else.
+fn is_key_file(path: &Path) -> bool {
+    let components: Vec<_> = path.components().collect();
+    let [Component::Normal(root), Component::Normal(dir), Component::Normal(file)] =
+        components.as_slice()
+    else {
+        return false;
+    };
+    root.to_string_lossy().starts_with("release-keys-")
+        && *dir == "keys"
+        && Path::new(file).extension().is_some_and(|ext| ext == "asc")
+}
+
+/// Writes the refreshed subkeys, each under its trusted primary key, and
+/// replaces the cache in one rename, so a reader never sees half of it.
+fn write_cache(cache_dir: &Path, source: &str, keyring: &Keyring) -> std::io::Result<()> {
+    std::fs::create_dir_all(cache_dir)?;
+    let mut file = tempfile::NamedTempFile::new_in(cache_dir)?;
+    writeln!(
+        file,
+        "# Signing subkeys of bundled Node.js release keys, from https://github.com/nodejs/release-keys"
+    )?;
+    writeln!(file, "# Source commit: {source}")?;
+    for trusted in keyring.keys.iter().filter(|k| !k.refreshed.is_empty()) {
+        let key = SignedPublicKey {
+            primary_key: trusted.key.primary_key.clone(),
+            details: SignedKeyDetails::new(vec![], vec![], vec![], vec![]),
+            public_subkeys: trusted.refreshed.clone(),
+        };
+        let armored = key
+            .to_armored_string(None.into())
+            .map_err(std::io::Error::other)?;
+        writeln!(file, "\n{armored}")?;
+    }
+    file.persist(cache_dir.join(CACHE_FILE))
+        .map_err(|e| e.error)?;
+    Ok(())
+}
+
 /// Parses each armored key block on its own: one key that can't be parsed
 /// is skipped instead of failing the keyring.
 fn parse_keys(armored: &str) -> Vec<SignedPublicKey> {
@@ -475,7 +742,7 @@ mod tests {
                     "{issuer}"
                 );
             }
-            other @ Error::InvalidSignature { .. } => panic!("{other}"),
+            other => panic!("{other}"),
         }
     }
 
@@ -526,6 +793,26 @@ mod tests {
     const TEXT: &str = "3f4b5c0a2b1e7d9c8a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b  node-v99.0.0-linux-x64.tar.xz\r\n";
     const AT: u32 = 1_800_000_000;
 
+    fn key_pair(seed: u8) -> (PubKeyInner, SecretParams) {
+        let secret =
+            ed25519::SecretKey::try_from_bytes([seed; 32], ed25519::Mode::EdDSALegacy).unwrap();
+        let public = PubKeyInner::new(
+            KeyVersion::V4,
+            PublicKeyAlgorithm::EdDSALegacy,
+            Timestamp::from_secs(AT - 1_000_000),
+            None,
+            PublicParams::EdDSALegacy((&secret).into()),
+        )
+        .unwrap();
+        let secret = PlainSecretParams::EdDSALegacy(eddsa_legacy::SecretKey::Ed25519(secret));
+        (public, SecretParams::Plain(secret))
+    }
+
+    fn test_subkey(seed: u8) -> SecretSubkey {
+        let (public, secret) = key_pair(seed);
+        SecretSubkey::new(PublicSubkey::from_inner(public).unwrap(), secret).unwrap()
+    }
+
     /// The secret keys of a test signer, so tests can make signatures of any kind.
     struct TestSigner {
         primary: SecretKey,
@@ -534,27 +821,11 @@ mod tests {
 
     /// A key with a signing subkey, made from fixed seeds.
     fn test_signer() -> (TestSigner, SignedPublicKey) {
-        let created = Timestamp::from_secs(AT - 1_000_000);
-        let pair = |seed: u8| {
-            let secret =
-                ed25519::SecretKey::try_from_bytes([seed; 32], ed25519::Mode::EdDSALegacy).unwrap();
-            let public = PubKeyInner::new(
-                KeyVersion::V4,
-                PublicKeyAlgorithm::EdDSALegacy,
-                created,
-                None,
-                PublicParams::EdDSALegacy((&secret).into()),
-            )
-            .unwrap();
-            let secret = PlainSecretParams::EdDSALegacy(eddsa_legacy::SecretKey::Ed25519(secret));
-            (public, SecretParams::Plain(secret))
-        };
-        let (public, secret) = pair(1);
+        let (public, secret) = key_pair(1);
         let primary_public = PublicKey::from_inner(public).unwrap();
         let primary = SecretKey::new(primary_public.clone(), secret).unwrap();
-        let (public, secret) = pair(2);
-        let subkey_public = PublicSubkey::from_inner(public).unwrap();
-        let subkey = SecretSubkey::new(subkey_public.clone(), secret).unwrap();
+        let subkey = test_subkey(2);
+        let subkey_public = subkey.public_key().clone();
         let pw = Password::empty();
 
         let user = UserId::from_str(
@@ -587,7 +858,7 @@ mod tests {
                 signatures: vec![],
             }],
         };
-        rebind_subkey(&signer, &mut public, AT - 1000, sign_only(), true);
+        rebind_subkey(&signer, &mut public, AT - 1000, Some(sign_only()), true);
         (signer, public)
     }
 
@@ -602,13 +873,7 @@ mod tests {
     }
 
     fn keyring_of_all(keys: Vec<SignedPublicKey>) -> Keyring {
-        let keys = keys.into_iter().map(|key| TrustedKey {
-            name: user_name(&key),
-            key,
-        });
-        Keyring {
-            keys: keys.collect(),
-        }
+        Keyring::from_keys(keys)
     }
 
     fn config(typ: SignatureType, at: u32, issuer: &impl KeyDetails) -> SignatureConfig {
@@ -669,14 +934,16 @@ mod tests {
         signer: &TestSigner,
         public: &mut SignedPublicKey,
         at: u32,
-        flags: KeyFlags,
+        flags: Option<KeyFlags>,
         backsig: bool,
     ) {
         let subkey = &public.public_subkeys[0].key;
         let mut config = config(SignatureType::SubkeyBinding, at, &signer.primary);
-        config
-            .hashed_subpackets
-            .push(Subpacket::regular(SubpacketData::KeyFlags(flags)).unwrap());
+        if let Some(flags) = flags {
+            config
+                .hashed_subpackets
+                .push(Subpacket::regular(SubpacketData::KeyFlags(flags)).unwrap());
+        }
         if backsig {
             let backsig = self::config(SignatureType::KeyBinding, at, &signer.subkey)
                 .sign_primary_key_binding(
@@ -799,12 +1066,12 @@ mod tests {
         let (secret, mut public) = test_signer();
         let mut encrypt_only = KeyFlags::default();
         encrypt_only.set_encrypt_comms(true);
-        rebind_subkey(&secret, &mut public, AT, encrypt_only, true);
+        rebind_subkey(&secret, &mut public, AT, Some(encrypt_only), true);
         rejection(&keyring_of(public), by_subkey(&secret, AT));
 
         // A signing subkey needs the subkey's own signature in its binding.
         let (secret, mut public) = test_signer();
-        rebind_subkey(&secret, &mut public, AT, sign_only(), false);
+        rebind_subkey(&secret, &mut public, AT, Some(sign_only()), false);
         rejection(&keyring_of(public), by_subkey(&secret, AT));
     }
 
@@ -836,5 +1103,384 @@ mod tests {
     #[test]
     fn test_names_are_printed_without_control_characters() {
         assert_eq!(printable("Evil\x1b[2J\r\nName\x07"), "Evil[2JName");
+    }
+    // Made with gpg: ed25519 keys A and B, each given a signing subkey after
+    // `bundle.asc` was exported. The `signed-by-*` files are clearsigned by those subkeys.
+
+    /// Test Releaser A, in the test bundle without a subkey.
+    const KNOWN_KEY: &str = "0B129F5056530532A02FDC3BA626C7F3E0572A62";
+    /// Test Releaser B, not in the test bundle, and its signing subkey.
+    const NEW_KEY: &str = "9B27DA36EE70011AB545B225110C812E19844D84";
+    const NEW_SUBKEY: &str = "65738DBBFF995F482F731DF28A54FB5BD7767DCE";
+
+    fn refresh_fixture(name: &str) -> String {
+        let path = format!(
+            "{}/tests/fixtures/release-keys-refresh/{name}",
+            env!("CARGO_MANIFEST_DIR")
+        );
+        std::fs::read_to_string(path).unwrap()
+    }
+
+    fn test_bundle() -> Keyring {
+        Keyring::from_keys(parse_keys(&refresh_fixture("bundle.asc")))
+    }
+
+    /// A gzipped tarball like the one GitHub serves for nodejs/release-keys.
+    fn tarball(entries: &[(&str, &[u8])]) -> Vec<u8> {
+        let gz = flate2::write::GzEncoder::new(vec![], flate2::Compression::fast());
+        let mut builder = tar::Builder::new(gz);
+        let comment = b"52 comment=481637f813e912c4aa3622d7964ab426c97b8e8d\n";
+        let mut header = tar::Header::new_ustar();
+        header.set_entry_type(tar::EntryType::XGlobalHeader);
+        header.set_size(comment.len() as u64);
+        builder
+            .append_data(&mut header, "pax_global_header", &comment[..])
+            .unwrap();
+        for (path, data) in entries {
+            let mut header = tar::Header::new_gnu();
+            header.set_size(data.len() as u64);
+            header.set_mode(0o644);
+            builder.append_data(&mut header, path, *data).unwrap();
+        }
+        builder.into_inner().unwrap().finish().unwrap()
+    }
+
+    fn verify_refreshing(
+        bundle: Keyring,
+        asc: &str,
+        cache_dir: &Path,
+        tarball: &[u8],
+    ) -> (Result<Verified, Error>, usize) {
+        let calls = std::cell::Cell::new(0);
+        let fetch = |url: &Url| {
+            assert_eq!(url.as_str(), RELEASE_KEYS_URL);
+            calls.set(calls.get() + 1);
+            Ok(tarball.to_vec())
+        };
+        let result = verify_with(bundle, asc, cache_dir, &fetch);
+        (result, calls.get())
+    }
+
+    fn no_fetch(_: &Url) -> Result<Vec<u8>, String> {
+        panic!("the keys are not refreshed when the signer is known")
+    }
+
+    #[test]
+    fn test_refresh_adds_a_new_subkey_of_a_bundled_key() {
+        let asc = refresh_fixture("signed-by-A-subkey.asc");
+        let cache = tempfile::tempdir().unwrap();
+        assert!(matches!(
+            test_bundle().verify(&asc),
+            Err(Error::UnknownIssuer { .. })
+        ));
+
+        let with_subkey = refresh_fixture("A-with-subkey.asc");
+        let tarball = tarball(&[(
+            &format!("release-keys-main/keys/{KNOWN_KEY}.asc"),
+            with_subkey.as_bytes(),
+        )]);
+        let (result, calls) = verify_refreshing(test_bundle(), &asc, cache.path(), &tarball);
+        let verified = result.unwrap();
+        assert_eq!(calls, 1);
+        assert_eq!(verified.signer, "Test Releaser A <a@example.com>");
+        assert_eq!(verified.fingerprint, KNOWN_KEY);
+
+        let cached = std::fs::read_to_string(cache.path().join(CACHE_FILE)).unwrap();
+        assert!(cached.contains("# Source commit: 481637f813e912c4aa3622d7964ab426c97b8e8d"));
+        // The next check uses the cache, without fetching.
+        verify_with(test_bundle(), &asc, cache.path(), &no_fetch).unwrap();
+    }
+
+    #[test]
+    fn test_refresh_names_but_does_not_trust_a_new_release_key() {
+        let asc = refresh_fixture("signed-by-B-subkey.asc");
+        let cache = tempfile::tempdir().unwrap();
+        let cached_before = refresh_fixture("A-with-subkey.asc");
+        std::fs::write(cache.path().join(CACHE_FILE), &cached_before).unwrap();
+        let new_key = refresh_fixture("B.asc");
+        let tarball = tarball(&[(
+            &format!("release-keys-main/keys/{NEW_KEY}.asc"),
+            new_key.as_bytes(),
+        )]);
+        let (result, calls) = verify_refreshing(test_bundle(), &asc, cache.path(), &tarball);
+        assert_eq!(calls, 1);
+        let error = result.unwrap_err();
+        let Error::NewReleaseKey {
+            name,
+            fingerprint,
+            signing_key,
+        } = &error
+        else {
+            panic!("{error}");
+        };
+        assert_eq!(
+            (name.as_str(), fingerprint.as_str(), signing_key.as_str()),
+            ("Test Releaser B <b@example.com>", NEW_KEY, NEW_SUBKEY)
+        );
+        assert!(error.to_string().contains("(unverified)"), "{error}");
+
+        // The cache follows the latest keys, which don't have A's subkey, and not B's.
+        let cached = std::fs::read_to_string(cache.path().join(CACHE_FILE)).unwrap();
+        assert!(parse_keys(&cached).is_empty(), "{cached}");
+    }
+
+    #[test]
+    fn test_refresh_drops_a_subkey_the_primary_key_did_not_bind() {
+        let asc = refresh_fixture("signed-by-B-subkey.asc");
+        let (mut forged, _) = SignedPublicKey::from_string(&refresh_fixture("bundle.asc")).unwrap();
+        let (new_key, _) = SignedPublicKey::from_string(&refresh_fixture("B.asc")).unwrap();
+        forged
+            .public_subkeys
+            .push(new_key.public_subkeys[0].clone());
+        // Without the binding check, B's subkey would verify as A's.
+        let (message, _) = CleartextSignedMessage::from_string(&asc).unwrap();
+        assert!(message
+            .verify(forged.public_subkeys.last().unwrap())
+            .is_ok());
+
+        let armored = forged.to_armored_string(None.into()).unwrap();
+        let tarball = tarball(&[(
+            &format!("release-keys-main/keys/{KNOWN_KEY}.asc"),
+            armored.as_bytes(),
+        )]);
+        let cache = tempfile::tempdir().unwrap();
+        let (result, _) = verify_refreshing(test_bundle(), &asc, cache.path(), &tarball);
+        let error = result.unwrap_err();
+        assert!(matches!(error, Error::UnknownIssuer { .. }), "{error}");
+    }
+
+    #[test]
+    fn test_refresh_reads_only_key_files_within_limits() {
+        let asc = refresh_fixture("signed-by-A-subkey.asc");
+        let with_subkey = refresh_fixture("A-with-subkey.asc");
+        let oversized = format!(
+            "{with_subkey}{}",
+            " ".repeat(usize::try_from(MAX_KEY_FILE_SIZE).unwrap())
+        );
+        let tarball = tarball(&[
+            ("release-keys-main/README.md", with_subkey.as_bytes()),
+            ("release-keys-main/gpg/key.asc", with_subkey.as_bytes()),
+            ("release-keys-main/keys/old/key.asc", with_subkey.as_bytes()),
+            ("release-keys-main/keys/key.txt", with_subkey.as_bytes()),
+            ("other-repo/keys/key.asc", with_subkey.as_bytes()),
+            ("release-keys-main/keys/oversized.asc", oversized.as_bytes()),
+        ]);
+        let cache = tempfile::tempdir().unwrap();
+        let (result, calls) = verify_refreshing(test_bundle(), &asc, cache.path(), &tarball);
+        assert_eq!(calls, 1);
+        let error = result.unwrap_err();
+        assert!(matches!(error, Error::UnknownIssuer { .. }), "{error}");
+    }
+
+    #[test]
+    fn test_refresh_failures_are_reported() {
+        let asc = refresh_fixture("signed-by-A-subkey.asc");
+        let cache = tempfile::tempdir().unwrap();
+        let unpacks_too_large = tarball(&[(
+            "release-keys-main/README.md",
+            &vec![0; usize::try_from(MAX_UNPACKED_SIZE).unwrap() + 1],
+        )]);
+        // Random bytes don't compress, so this is a valid tarball over the limit.
+        let random: Vec<u8> = std::iter::repeat_with(|| fastrand::u8(..))
+            .take(MAX_TARBALL_SIZE)
+            .collect();
+        let too_large = tarball(&[("release-keys-main/README.md", &random)]);
+        assert!(too_large.len() > MAX_TARBALL_SIZE);
+        for tarball in [too_large, b"not a tarball".to_vec(), unpacks_too_large] {
+            let (result, calls) = verify_refreshing(test_bundle(), &asc, cache.path(), &tarball);
+            assert_eq!(calls, 1);
+            let error = result.unwrap_err();
+            assert!(matches!(error, Error::RefreshFailed { .. }), "{error}");
+        }
+
+        let offline = |_: &Url| Err("offline".to_string());
+        let error = verify_with(test_bundle(), &asc, cache.path(), &offline).unwrap_err();
+        assert!(error.to_string().ends_with(": offline"), "{error}");
+    }
+
+    #[test]
+    fn test_a_cached_key_that_is_not_bundled_is_ignored() {
+        let asc = refresh_fixture("signed-by-B-subkey.asc");
+        let cache = tempfile::tempdir().unwrap();
+        std::fs::write(cache.path().join(CACHE_FILE), refresh_fixture("B.asc")).unwrap();
+        let (result, calls) = verify_refreshing(test_bundle(), &asc, cache.path(), &tarball(&[]));
+        assert_eq!(calls, 1);
+        let error = result.unwrap_err();
+        assert!(matches!(error, Error::UnknownIssuer { .. }), "{error}");
+    }
+
+    #[test]
+    fn test_refresh_cannot_name_a_new_key_by_a_subkey_it_did_not_bind() {
+        // A's subkey signed this; attached to B, it isn't B's.
+        let asc = refresh_fixture("signed-by-A-subkey.asc");
+        let (mut forged, _) = SignedPublicKey::from_string(&refresh_fixture("B.asc")).unwrap();
+        let (with_subkey, _) =
+            SignedPublicKey::from_string(&refresh_fixture("A-with-subkey.asc")).unwrap();
+        forged
+            .public_subkeys
+            .push(with_subkey.public_subkeys[0].clone());
+        let armored = forged.to_armored_string(None.into()).unwrap();
+        let tarball = tarball(&[(
+            &format!("release-keys-main/keys/{NEW_KEY}.asc"),
+            armored.as_bytes(),
+        )]);
+        let cache = tempfile::tempdir().unwrap();
+        let (result, _) = verify_refreshing(test_bundle(), &asc, cache.path(), &tarball);
+        let error = result.unwrap_err();
+        assert!(matches!(error, Error::UnknownIssuer { .. }), "{error}");
+    }
+
+    fn without_subkeys(key: &SignedPublicKey) -> SignedPublicKey {
+        SignedPublicKey {
+            public_subkeys: vec![],
+            ..key.clone()
+        }
+    }
+
+    fn armored(key: &SignedPublicKey) -> String {
+        key.to_armored_string(None.into()).unwrap()
+    }
+
+    fn clearsigned_by_subkey(signer: &TestSigner) -> String {
+        CleartextSignedMessage::new(
+            TEXT,
+            config(SignatureType::Text, AT, &signer.subkey),
+            &signer.subkey,
+            &Password::empty(),
+        )
+        .unwrap()
+        .to_armored_string(None.into())
+        .unwrap()
+    }
+
+    /// Refreshes the keys with `refreshed`, through a release by an unknown key.
+    fn refresh_with(bundle: Keyring, cache_dir: &Path, refreshed: &SignedPublicKey) {
+        let tarball = tarball(&[(
+            "release-keys-main/keys/key.asc",
+            armored(refreshed).as_bytes(),
+        )]);
+        let unknown = refresh_fixture("signed-by-B-subkey.asc");
+        let (result, calls) = verify_refreshing(bundle, &unknown, cache_dir, &tarball);
+        assert_eq!(calls, 1);
+        assert!(matches!(result, Err(Error::UnknownIssuer { .. })));
+    }
+
+    #[test]
+    fn test_a_refresh_never_changes_a_bundled_subkey() {
+        let (signer, public) = test_signer();
+        let asc = clearsigned_by_subkey(&signer);
+        // The same binding without the subkey's cross-signature, which isn't signed.
+        let mut stripped = public.clone();
+        while stripped.public_subkeys[0].signatures[0]
+            .unhashed_subpacket_remove(0)
+            .is_ok()
+        {}
+        let mut revoked = public.clone();
+        revoke_subkey(&signer, &mut revoked, RevocationCode::KeyCompromised);
+        for refreshed in [stripped, revoked] {
+            let cache = tempfile::tempdir().unwrap();
+            refresh_with(keyring_of(public.clone()), cache.path(), &refreshed);
+            let cached = std::fs::read_to_string(cache.path().join(CACHE_FILE)).unwrap();
+            assert!(parse_keys(&cached).is_empty(), "{cached}");
+            verify_with(keyring_of(public.clone()), &asc, cache.path(), &no_fetch).unwrap();
+        }
+    }
+
+    #[test]
+    fn test_a_refresh_adds_only_new_subkeys_that_may_sign() {
+        let (signer, public) = test_signer();
+        let asc = clearsigned_by_subkey(&signer);
+        let bundle = || keyring_of(without_subkeys(&public));
+
+        let mut stripped = public.clone();
+        while stripped.public_subkeys[0].signatures[0]
+            .unhashed_subpacket_remove(0)
+            .is_ok()
+        {}
+        let mut revoked = public.clone();
+        revoke_subkey(&signer, &mut revoked, RevocationCode::KeySuperseded);
+        let mut flagless = without_subkeys(&public);
+        flagless.public_subkeys = vec![SignedPublicSubKey {
+            key: public.public_subkeys[0].key.clone(),
+            signatures: vec![],
+        }];
+        rebind_subkey(&signer, &mut flagless, AT, None, true);
+        for refreshed in [stripped, revoked, flagless] {
+            let cache = tempfile::tempdir().unwrap();
+            refresh_with(bundle(), cache.path(), &refreshed);
+            let (result, _) = verify_refreshing(bundle(), &asc, cache.path(), &tarball(&[]));
+            assert!(matches!(result, Err(Error::UnknownIssuer { .. })));
+        }
+
+        let cache = tempfile::tempdir().unwrap();
+        refresh_with(bundle(), cache.path(), &public);
+        verify_with(bundle(), &asc, cache.path(), &no_fetch).unwrap();
+    }
+
+    #[test]
+    fn test_a_later_refresh_drops_a_revoked_subkey() {
+        let (signer, public) = test_signer();
+        let asc = clearsigned_by_subkey(&signer);
+        let bundle = || keyring_of(without_subkeys(&public));
+        let cache = tempfile::tempdir().unwrap();
+        refresh_with(bundle(), cache.path(), &public);
+        verify_with(bundle(), &asc, cache.path(), &no_fetch).unwrap();
+
+        let mut revoked = public.clone();
+        revoke_subkey(&signer, &mut revoked, RevocationCode::KeyRetired);
+        refresh_with(bundle(), cache.path(), &revoked);
+        let (result, _) = verify_refreshing(bundle(), &asc, cache.path(), &tarball(&[]));
+        assert!(matches!(result, Err(Error::UnknownIssuer { .. })));
+    }
+
+    #[test]
+    fn test_a_cached_subkey_the_trusted_key_did_not_bind_is_dropped() {
+        let asc = refresh_fixture("signed-by-B-subkey.asc");
+        let (mut forged, _) = SignedPublicKey::from_string(&refresh_fixture("bundle.asc")).unwrap();
+        let (new_key, _) = SignedPublicKey::from_string(&refresh_fixture("B.asc")).unwrap();
+        forged
+            .public_subkeys
+            .push(new_key.public_subkeys[0].clone());
+        let cache = tempfile::tempdir().unwrap();
+        std::fs::write(cache.path().join(CACHE_FILE), armored(&forged)).unwrap();
+        let (result, calls) = verify_refreshing(test_bundle(), &asc, cache.path(), &tarball(&[]));
+        assert_eq!(calls, 1);
+        assert!(matches!(result, Err(Error::UnknownIssuer { .. })));
+    }
+
+    #[test]
+    fn test_refreshed_subkeys_are_capped() {
+        let (signer, public) = test_signer();
+        let mut many = without_subkeys(&public);
+        for seed in 0..=MAX_REFRESHED_SUBKEYS {
+            let subkey = test_subkey(u8::try_from(seed).unwrap() + 100);
+            let mut key = without_subkeys(&public);
+            key.public_subkeys = vec![SignedPublicSubKey {
+                key: subkey.public_key().clone(),
+                signatures: vec![],
+            }];
+            let signer = TestSigner {
+                primary: signer.primary.clone(),
+                subkey,
+            };
+            rebind_subkey(&signer, &mut key, AT, Some(sign_only()), true);
+            many.public_subkeys.extend(key.public_subkeys);
+        }
+        let mut keyring = keyring_of(without_subkeys(&public));
+        keyring.add_refreshed(&[many]);
+        assert_eq!(keyring.refreshed().count(), MAX_REFRESHED_SUBKEYS);
+
+        // The cache holds them all, and reads back the same.
+        let cache = tempfile::tempdir().unwrap();
+        write_cache(cache.path(), "unknown", &keyring).unwrap();
+        let cached = std::fs::read_to_string(cache.path().join(CACHE_FILE)).unwrap();
+        let mut reloaded = keyring_of(without_subkeys(&public));
+        reloaded.add_refreshed(&parse_keys(&cached));
+        let fingerprints = |k: &Keyring| {
+            k.refreshed()
+                .map(KeyDetails::fingerprint)
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(fingerprints(&reloaded), fingerprints(&keyring));
     }
 }

@@ -5,7 +5,7 @@ use crate::download_verification::{self, Check, DownloadVerification, WhenMissin
 use crate::log_level::LogLevel;
 use crate::outln;
 use crate::progress::ResponseProgress;
-use crate::release_keys::{self, Keyring};
+use crate::release_keys;
 use crate::version::Version;
 use colored::Colorize;
 use indicatif::ProgressDrawTarget;
@@ -83,6 +83,8 @@ fn release_file_url(base_url: &Url, version: &Version, file_name: &str) -> Url {
 /// How `install_node_dist` checks what it downloads.
 pub struct Verification {
     pub mode: DownloadVerification,
+    /// Where release keys refreshed from GitHub are kept.
+    pub release_keys_dir: PathBuf,
     pub log_level: LogLevel,
 }
 
@@ -123,13 +125,15 @@ fn verified_checksums(
     signed: &str,
     verification: &Verification,
 ) -> Result<String, Error> {
-    let verified =
-        Keyring::bundled()
-            .verify(signed)
-            .map_err(|source| Error::SignatureNotVerified {
-                url: url.clone(),
-                source: Box::new(source),
-            })?;
+    let verified = release_keys::verify(
+        signed,
+        &verification.release_keys_dir,
+        &release_keys::fetch_from_github,
+    )
+    .map_err(|source| Error::SignatureNotVerified {
+        url: url.clone(),
+        source: Box::new(source),
+    })?;
     debug!("Signed with key {}", verified.signing_key);
     outln!(
         verification,
@@ -262,21 +266,18 @@ pub fn install_node_dist<P: AsRef<Path>>(
     }
 
     // One checksum list per release, fetched before any archive.
-    let (checksums_url, checksums) = match policy.check {
-        Check::None => (
-            release_file_url(node_dist_mirror, version, "SHASUMS256.txt"),
-            None,
-        ),
+    let checksums = match policy.check {
+        Check::None => None,
         Check::Checksum { .. } => {
             let url = release_file_url(node_dist_mirror, version, "SHASUMS256.txt");
             let checksums = fetch_checksums(&url, policy.when_missing)?;
-            (url, Some(checksums))
+            Some((url, checksums))
         }
         Check::Signature => {
             let url = release_file_url(node_dist_mirror, version, "SHASUMS256.txt.asc");
             let signed = fetch_checksums(&url, policy.when_missing)?;
             let checksums = verified_checksums(&url, &signed, verification)?;
-            (url, Some(checksums))
+            Some((url, checksums))
         }
     };
 
@@ -300,7 +301,7 @@ pub fn install_node_dist<P: AsRef<Path>>(
             Box::new(response)
         };
 
-        if let Some(checksums) = &checksums {
+        if let Some((checksums_url, checksums)) = &checksums {
             // A file without a published checksum isn't installed.
             let expected =
                 checksum_for(checksums, &file_name).ok_or_else(|| Error::ChecksumMissing {
@@ -438,8 +439,10 @@ cccc  node-v20.0.0-darwin-arm64.tar.gz
         assert!(checksum_for(&signed, "node-v20.0.0-forged.tar.xz").is_some());
 
         let url = Url::parse("https://nodejs.org/dist/v20.0.0/SHASUMS256.txt.asc").unwrap();
+        let cache = tempfile::tempdir().unwrap();
         let verification = Verification {
             mode: DownloadVerification::Signature,
+            release_keys_dir: cache.path().join("release-keys"),
             log_level: LogLevel::Quiet,
         };
         let checksums = verified_checksums(&url, &signed, &verification).unwrap();
@@ -463,6 +466,7 @@ cccc  node-v20.0.0-darwin-arm64.tar.gz
         let node_dist_mirror = Url::parse("https://nodejs.org/dist/").unwrap();
         let verification = Verification {
             mode: DownloadVerification::default(),
+            release_keys_dir: path.join("release-keys"),
             log_level: LogLevel::Info,
         };
         install_node_dist(

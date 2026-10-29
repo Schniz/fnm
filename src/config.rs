@@ -170,6 +170,11 @@ impl FnmConfig {
             .ensure_exists_silently()
     }
 
+    /// Node.js release keys refreshed from GitHub, created on first refresh.
+    pub fn release_keys_dir(&self) -> std::path::PathBuf {
+        self.base_dir_with_default().join("release-keys")
+    }
+
     pub fn default_version_dir(&self) -> std::path::PathBuf {
         self.aliases_dir().join("default")
     }
