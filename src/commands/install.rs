@@ -150,11 +150,7 @@ impl Command for Install {
             config.installations_dir(),
             safe_arch,
             show_progress,
-            &Verification {
-                mode: config.download_verification(),
-                release_keys_dir: config.release_keys_dir(),
-                log_level: config.log_level(),
-            },
+            &verification(config),
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
                 outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
@@ -182,6 +178,15 @@ impl Command for Install {
         }
 
         Ok(())
+    }
+}
+
+fn verification(config: &FnmConfig) -> Verification {
+    Verification {
+        mode: config.download_verification(),
+        release_keys_dir: config.release_keys_dir(),
+        user_keys: config.node_release_keys().map(Into::into),
+        log_level: config.log_level(),
     }
 }
 

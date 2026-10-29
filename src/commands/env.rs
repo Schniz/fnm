@@ -93,6 +93,10 @@ impl Command for Env {
 
         let multishell_path = make_symlink(config)?;
         let base_dir = config.base_dir_with_default();
+        let node_release_keys = config
+            .node_release_keys()
+            .map(|path| path.to_string_lossy().into_owned())
+            .unwrap_or_default();
 
         let env_vars = [
             ("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap()),
@@ -113,6 +117,7 @@ impl Command for Env {
                 "FNM_DOWNLOAD_VERIFICATION",
                 config.download_verification().as_str(),
             ),
+            ("FNM_NODE_RELEASE_KEYS", node_release_keys.as_str()),
         ];
 
         if self.json {

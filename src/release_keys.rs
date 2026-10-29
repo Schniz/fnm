@@ -8,7 +8,7 @@ use pgp::composed::{
 use pgp::packet::{KeyFlags, Signature, SignatureType, SubpacketData};
 use pgp::types::{Fingerprint, KeyDetails, Tag};
 use std::io::{Read, Write};
-use std::path::{Component, Path};
+use std::path::{Component, Path, PathBuf};
 use std::sync::OnceLock;
 use url::Url;
 
@@ -40,7 +40,7 @@ pub enum Error {
     UnknownIssuer { issuer: String },
     #[error("its signature is not valid: {reason}")]
     InvalidSignature { reason: String },
-    #[error("it is signed by {}, which names itself \"{name}\" (unverified) and is newer than this fnm's key bundle; upgrade fnm, or verify the key yourself and use --download-verification=checksum", signed_by(.fingerprint, .signing_key))]
+    #[error("SHASUMS256.txt.asc is signed by {}, which names itself \"{name}\" (unverified) and is newer than this fnm's key bundle. Upgrade fnm to get the key. If you can't wait: check the key's full fingerprint against https://github.com/nodejs/node#release-keys and https://github.com/nodejs/release-keys yourself, then add it with FNM_NODE_RELEASE_KEYS=<file>. Caution: whoever controls a key in that file can sign any Node.js download for you.", signed_by(.fingerprint, .signing_key))]
     NewReleaseKey {
         name: String,
         fingerprint: String,
@@ -48,6 +48,8 @@ pub enum Error {
     },
     #[error("it is signed by key {issuer}, which is not a known Node.js release key, and the keys can't be refreshed from {url}: {reason}", url = RELEASE_KEYS_URL)]
     RefreshFailed { issuer: String, reason: String },
+    #[error("the release keys in {} can't be used: {reason}", path.display())]
+    UserKeys { path: PathBuf, reason: String },
 }
 
 fn signed_by(fingerprint: &str, signing_key: &str) -> String {
@@ -65,6 +67,8 @@ pub struct Verified {
     pub fingerprint: String,
     /// The primary key or subkey that made the signature.
     pub signing_key: String,
+    /// The `--node-release-keys` file the key is from, if not the bundle.
+    pub user_keys: Option<PathBuf>,
     /// The signed text, the only place to take checksums from.
     pub signed_text: String,
 }
@@ -88,6 +92,7 @@ struct TrustedKey {
     name: String,
     /// New signing subkeys a refresh found for `key`, which is never changed.
     refreshed: Vec<SignedPublicSubKey>,
+    user_keys: Option<PathBuf>,
 }
 
 struct Keyring {
@@ -107,9 +112,40 @@ impl Keyring {
                     name: user_name(&key),
                     key,
                     refreshed: vec![],
+                    user_keys: None,
                 })
                 .collect(),
         }
+    }
+
+    /// Adds the keys in the `--node-release-keys` file at `path`, trusted like
+    /// bundled ones. A file without keys is an error, never ignored.
+    fn add_user_keys(&mut self, path: &Path) -> Result<(), Error> {
+        let error = |reason: String| Error::UserKeys {
+            path: path.to_path_buf(),
+            reason,
+        };
+        let armored = std::fs::read_to_string(path).map_err(|e| error(e.to_string()))?;
+        // Unlike the bundle, a key in it that can't be read is an error.
+        let blocks: Vec<_> = armor_blocks(&armored).collect();
+        if armored.matches(PUBLIC_KEY_BEGIN).count() != blocks.len() {
+            return Err(error("a key block in it doesn't end".to_string()));
+        }
+        let mut parsed = vec![];
+        for block in blocks {
+            parsed.extend(
+                parse_block(block).map_err(|e| error(format!("a key in it can't be read: {e}")))?,
+            );
+        }
+        let keys = Self::from_keys(parsed).keys;
+        if keys.is_empty() {
+            return Err(error("it has no OpenPGP public key".to_string()));
+        }
+        self.keys.extend(keys.into_iter().map(|key| TrustedKey {
+            user_keys: Some(path.to_path_buf()),
+            ..key
+        }));
+        Ok(())
     }
 
     fn contains(&self, fingerprint: &Fingerprint) -> bool {
@@ -211,6 +247,7 @@ impl Keyring {
                         signer: trusted.name.clone(),
                         fingerprint: format!("{:X}", trusted.key.fingerprint()),
                         signing_key: key.fingerprint(),
+                        user_keys: trusted.user_keys.clone(),
                         signed_text,
                     });
                 }
@@ -413,11 +450,38 @@ fn user_name(key: &SignedPublicKey) -> String {
         .unwrap_or_default()
 }
 
-/// Checks the clearsigned `asc` against the bundled keys and the subkeys
-/// refreshed for them before. A signature by an unknown key refreshes the
-/// keys from [`RELEASE_KEYS_URL`] with `fetch` once, then checks again.
-pub fn verify(asc: &str, cache_dir: &Path, fetch: Fetch<'_>) -> Result<Verified, Error> {
-    verify_with(Keyring::bundled(), asc, cache_dir, fetch)
+/// Checks the clearsigned `asc` against the bundled keys, the ones in
+/// `user_keys`, and the subkeys refreshed for them before. A signature by an
+/// unknown key refreshes the keys from [`RELEASE_KEYS_URL`] with `fetch`
+/// once, then checks again.
+pub fn verify(
+    asc: &str,
+    cache_dir: &Path,
+    user_keys: Option<&Path>,
+    fetch: Fetch<'_>,
+) -> Result<Verified, Error> {
+    let mut keyring = Keyring::bundled();
+    if let Some(path) = user_keys {
+        if same_file(path, &cache_dir.join(CACHE_FILE)) {
+            return Err(Error::UserKeys {
+                path: path.to_path_buf(),
+                reason: "it is fnm's cache of refreshed keys, which fnm rewrites; keep your keys in another file".to_string(),
+            });
+        }
+        keyring.add_user_keys(path)?;
+    }
+    verify_with(keyring, asc, cache_dir, fetch)
+}
+
+/// Whether `a` and `b` are one file, or would be once `b` exists.
+fn same_file(a: &Path, b: &Path) -> bool {
+    match (a.canonicalize(), b.canonicalize()) {
+        (Ok(a), Ok(b)) => a == b,
+        _ => matches!(
+            (std::path::absolute(a), std::path::absolute(b)),
+            (Ok(a), Ok(b)) if a == b
+        ),
+    }
 }
 
 fn verify_with(
@@ -610,13 +674,14 @@ fn parse_block(block: &str) -> Result<Vec<SignedPublicKey>, String> {
     keys.map(|key| key.map_err(|e| e.to_string())).collect()
 }
 
+const PUBLIC_KEY_BEGIN: &str = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
+const PUBLIC_KEY_END: &str = "-----END PGP PUBLIC KEY BLOCK-----";
+
 fn armor_blocks(armored: &str) -> impl Iterator<Item = &str> {
-    const BEGIN: &str = "-----BEGIN PGP PUBLIC KEY BLOCK-----";
-    const END: &str = "-----END PGP PUBLIC KEY BLOCK-----";
     let mut rest = armored;
     std::iter::from_fn(move || {
-        let start = rest.find(BEGIN)?;
-        let end = rest[start..].find(END)? + start + END.len();
+        let start = rest.find(PUBLIC_KEY_BEGIN)?;
+        let end = rest[start..].find(PUBLIC_KEY_END)? + start + PUBLIC_KEY_END.len();
         let block = &rest[start..end];
         rest = &rest[end..];
         Some(block)
@@ -1217,7 +1282,12 @@ mod tests {
             (name.as_str(), fingerprint.as_str(), signing_key.as_str()),
             ("Test Releaser B <b@example.com>", NEW_KEY, NEW_SUBKEY)
         );
-        assert!(error.to_string().contains("(unverified)"), "{error}");
+        assert_eq!(
+            error.to_string(),
+            format!(
+                "SHASUMS256.txt.asc is signed by subkey {NEW_SUBKEY} of key {NEW_KEY}, which names itself \"Test Releaser B <b@example.com>\" (unverified) and is newer than this fnm's key bundle. Upgrade fnm to get the key. If you can't wait: check the key's full fingerprint against https://github.com/nodejs/node#release-keys and https://github.com/nodejs/release-keys yourself, then add it with FNM_NODE_RELEASE_KEYS=<file>. Caution: whoever controls a key in that file can sign any Node.js download for you."
+            )
+        );
 
         // The cache follows the latest keys, which don't have A's subkey, and not B's.
         let cached = std::fs::read_to_string(cache.path().join(CACHE_FILE)).unwrap();
@@ -1482,5 +1552,143 @@ mod tests {
                 .collect::<Vec<_>>()
         };
         assert_eq!(fingerprints(&reloaded), fingerprints(&keyring));
+    }
+
+    #[test]
+    fn test_user_keys_are_trusted_like_bundled_ones() {
+        let (signer, public) = test_signer();
+        let asc = clearsigned_by_subkey(&signer);
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("user-keys.asc");
+        std::fs::write(&path, armored(&public)).unwrap();
+        let verified = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap();
+        assert_eq!(verified.user_keys.as_deref(), Some(path.as_path()));
+        assert_eq!(verified.signer, "Test Signer <signer@example.com>");
+        let bundled = verify(&fixture("v20.0.0"), dir.path(), Some(&path), &no_fetch).unwrap();
+        assert_eq!(bundled.user_keys, None);
+
+        let mut revoked = public.clone();
+        revoke_subkey(&signer, &mut revoked, RevocationCode::KeyCompromised);
+        std::fs::write(&path, armored(&revoked)).unwrap();
+        let error = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap_err();
+        assert!(error.to_string().contains("revoked"), "{error}");
+
+        // A refresh may add a new signing subkey to a user key too.
+        std::fs::write(&path, armored(&without_subkeys(&public))).unwrap();
+        let mut keyring = Keyring::bundled();
+        keyring.add_user_keys(&path).unwrap();
+        refresh_with(keyring, dir.path(), &public);
+        let verified = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap();
+        assert_eq!(verified.user_keys.as_deref(), Some(path.as_path()));
+    }
+
+    #[test]
+    fn test_user_keys_that_cant_be_used_are_an_error() {
+        let dir = tempfile::tempdir().unwrap();
+        let garbage = dir.path().join("garbage.asc");
+        std::fs::write(
+            &garbage,
+            "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nnot a key\n-----END PGP PUBLIC KEY BLOCK-----\n",
+        )
+        .unwrap();
+        for path in [dir.path().join("missing.asc"), garbage] {
+            let error =
+                verify(&fixture("v20.0.0"), dir.path(), Some(&path), &no_fetch).unwrap_err();
+            assert!(matches!(error, Error::UserKeys { .. }), "{error}");
+            assert!(
+                error.to_string().contains(&path.display().to_string()),
+                "{error}"
+            );
+        }
+    }
+
+    fn user_keys_file(dir: &Path, armored: &str) -> PathBuf {
+        let path = dir.join("user-keys.asc");
+        std::fs::write(&path, armored).unwrap();
+        path
+    }
+
+    #[test]
+    fn test_a_revocation_in_a_user_copy_of_a_trusted_key_applies() {
+        let (secret, public) = test_signer();
+        let asc = clearsigned_by_subkey(&secret);
+        let mut revoked_subkey = public.clone();
+        revoke_subkey(&secret, &mut revoked_subkey, RevocationCode::KeyCompromised);
+        let mut revoked_primary = public.clone();
+        let revocation = config(SignatureType::KeyRevocation, AT, &secret.primary)
+            .sign_key(&secret.primary, &Password::empty(), &public.primary_key)
+            .unwrap();
+        revoked_primary
+            .details
+            .revocation_signatures
+            .push(revocation);
+        let dir = tempfile::tempdir().unwrap();
+        for revoked in [revoked_subkey, revoked_primary] {
+            // An unrevoked copy in the bundle, a revoked one in the user file.
+            let path = user_keys_file(dir.path(), &armored(&revoked));
+            let mut keyring = keyring_of(public.clone());
+            keyring.add_user_keys(&path).unwrap();
+            let error = verify_with(keyring, &asc, dir.path(), &no_fetch).unwrap_err();
+            assert!(error.to_string().contains("revoked"), "{error}");
+
+            // The same key twice in the user file.
+            let both = format!("{}\n{}", armored(&public), armored(&revoked));
+            let path = user_keys_file(dir.path(), &both);
+            let error = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap_err();
+            assert!(error.to_string().contains("revoked"), "{error}");
+        }
+    }
+
+    #[test]
+    fn test_every_key_in_a_user_key_block_is_read() {
+        let (secret, public) = test_signer();
+        let (other, _) = SignedPublicKey::from_string(&refresh_fixture("B.asc")).unwrap();
+        let mut block = vec![];
+        pgp::armor::write(
+            &vec![other, public],
+            pgp::armor::BlockType::PublicKey,
+            &mut block,
+            None,
+            true,
+        )
+        .unwrap();
+        let block = String::from_utf8(block).unwrap();
+        assert_eq!(block.matches(PUBLIC_KEY_BEGIN).count(), 1);
+        let dir = tempfile::tempdir().unwrap();
+        let path = user_keys_file(dir.path(), &block);
+        let asc = clearsigned_by_subkey(&secret);
+        let verified = verify(&asc, dir.path(), Some(&path), &no_fetch).unwrap();
+        assert_eq!(verified.signer, "Test Signer <signer@example.com>");
+    }
+
+    #[test]
+    fn test_a_user_key_that_cant_be_read_is_an_error() {
+        let (_, public) = test_signer();
+        let valid = armored(&public);
+        let truncated = &valid[..valid.len() / 2];
+        let corrupted = valid.replacen('\n', "\n!", 3);
+        let dir = tempfile::tempdir().unwrap();
+        for second in [truncated, &corrupted] {
+            let path = user_keys_file(dir.path(), &format!("{valid}\n{second}"));
+            let error =
+                verify(&fixture("v20.0.0"), dir.path(), Some(&path), &no_fetch).unwrap_err();
+            assert!(matches!(error, Error::UserKeys { .. }), "{error}");
+        }
+    }
+
+    #[test]
+    fn test_the_user_keys_cant_be_the_cache() {
+        let (_, public) = test_signer();
+        let dir = tempfile::tempdir().unwrap();
+        let cache = dir.path().join("release-keys");
+        std::fs::create_dir_all(&cache).unwrap();
+        let path = cache.join(CACHE_FILE);
+        std::fs::write(&path, armored(&public)).unwrap();
+        // Also through another spelling of the same path.
+        let other = cache.join("..").join("release-keys").join(CACHE_FILE);
+        for path in [path, other] {
+            let error = verify(&fixture("v20.0.0"), &cache, Some(&path), &no_fetch).unwrap_err();
+            assert!(error.to_string().contains("fnm's cache"), "{error}");
+        }
     }
 }

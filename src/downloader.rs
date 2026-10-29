@@ -85,6 +85,8 @@ pub struct Verification {
     pub mode: DownloadVerification,
     /// Where release keys refreshed from GitHub are kept.
     pub release_keys_dir: PathBuf,
+    /// More release keys to trust, from `--node-release-keys`.
+    pub user_keys: Option<PathBuf>,
     pub log_level: LogLevel,
 }
 
@@ -128,6 +130,7 @@ fn verified_checksums(
     let verified = release_keys::verify(
         signed,
         &verification.release_keys_dir,
+        verification.user_keys.as_deref(),
         &release_keys::fetch_from_github,
     )
     .map_err(|source| Error::SignatureNotVerified {
@@ -135,10 +138,14 @@ fn verified_checksums(
         source: Box::new(source),
     })?;
     debug!("Signed with key {}", verified.signing_key);
+    let user_key = match &verified.user_keys {
+        Some(path) => format!(", user key from {}", path.display()),
+        None => String::new(),
+    };
     outln!(
         verification,
         Info,
-        "Verified signature by {} ({})",
+        "Verified signature by {} ({}{user_key})",
         verified.signer,
         verified.fingerprint
     );
@@ -443,6 +450,7 @@ cccc  node-v20.0.0-darwin-arm64.tar.gz
         let verification = Verification {
             mode: DownloadVerification::Signature,
             release_keys_dir: cache.path().join("release-keys"),
+            user_keys: None,
             log_level: LogLevel::Quiet,
         };
         let checksums = verified_checksums(&url, &signed, &verification).unwrap();
@@ -467,6 +475,7 @@ cccc  node-v20.0.0-darwin-arm64.tar.gz
         let verification = Verification {
             mode: DownloadVerification::default(),
             release_keys_dir: path.join("release-keys"),
+            user_keys: None,
             log_level: LogLevel::Info,
         };
         install_node_dist(

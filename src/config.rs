@@ -107,6 +107,17 @@ pub struct FnmConfig {
     )]
     download_verification: DownloadVerification,
 
+    /// An armored `.asc` file of more Node.js release signing keys to trust, like the
+    /// ones fnm bundles. Caution: whoever controls a key in it can sign any Node.js
+    /// download for you.
+    #[clap(
+        long,
+        env = "FNM_NODE_RELEASE_KEYS",
+        global = true,
+        hide_env_values = true
+    )]
+    node_release_keys: Option<std::ffi::OsString>,
+
     #[clap(skip)]
     directories: Directories,
 }
@@ -123,6 +134,7 @@ impl Default for FnmConfig {
             corepack_enabled: false,
             resolve_engines: None,
             download_verification: DownloadVerification::default(),
+            node_release_keys: None,
             directories: Directories::default(),
         }
     }
@@ -143,6 +155,12 @@ impl FnmConfig {
 
     pub fn download_verification(&self) -> DownloadVerification {
         self.download_verification
+    }
+
+    /// `fnm env` exports it empty when it isn't set.
+    pub fn node_release_keys(&self) -> Option<&std::path::Path> {
+        let path = self.node_release_keys.as_deref()?;
+        (!path.is_empty()).then(|| std::path::Path::new(path))
     }
 
     pub fn multishell_path(&self) -> Option<&std::path::Path> {

@@ -27,6 +27,7 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
           FNM_LOGLEVEL: "info",
           FNM_MULTISHELL_PATH: expect.any(String),
           FNM_NODE_DIST_MIRROR: expect.any(String),
+          FNM_NODE_RELEASE_KEYS: "",
           FNM_RESOLVE_ENGINES: "true",
           FNM_COREPACK_ENABLED: "false",
           FNM_VERSION_FILE_STRATEGY: "local",
