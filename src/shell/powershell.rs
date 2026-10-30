@@ -34,7 +34,7 @@ impl Shell for PowerShell {
         let autoload_hook = match config.version_file_strategy() {
             VersionFileStrategy::Local => formatdoc!(
                 r"
-                    If ({version_file_exists_condition}) {{ & fnm use --silent-if-unchanged }}
+                    If ({version_file_exists_condition}) {{ & fnm use --silent-if-unchanged }} Else {{ If (Test-Path (Join-Path (Join-Path $env:FNM_DIR 'aliases') 'default')) {{ & fnm use $(fnm default) --silent-if-unchanged }} }}
                 ",
                 version_file_exists_condition = version_file_exists_condition,
             ),
