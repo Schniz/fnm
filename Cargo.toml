@@ -8,30 +8,36 @@ license = "GPL-3.0"
 repository = "https://github.com/Schniz/fnm"
 description = "Fast and simple Node.js version manager"
 
+[[bin]]
+name = "fnm"
+path = "src/main.rs"
+required-features = ["cli"]
+
 [dependencies]
 serde = { version = "1.0.203", features = ["derive"] }
 clap = { version = "4.5.4", features = ["derive", "env"] }
 serde_json = "1.0.117"
 chrono = { version = "0.4.38", features = ["serde", "now"], default-features = false }
 tar = "0.4.40"
+sha2 = "0.10.8"
 xz2 = "0.1.7"
 node-semver = "2.1.0"
 etcetera = "0.8.0"
 colored = "2.1.0"
-zip = "2.1.0"
+zip = { version = "9", default-features = false, features = ["deflate"] }
 tempfile = "3.10.1"
 fastrand = "2.1.1"
 indoc = "2.0.5"
 log = "0.4.21"
-env_logger = "0.11.3"
+env_logger = { version = "0.11.3", optional = true }
 encoding_rs_io = "0.1.7"
 reqwest = { version = "0.12.4", features = ["blocking", "json", "rustls-tls", "rustls-tls-native-roots", "brotli"], default-features = false }
 url = "2.5.0"
-sysinfo = "0.30.12"
+sysinfo = { version = "0.30.12", optional = true }
 thiserror = "1.0.61"
-clap_complete = "4.5.2"
+clap_complete = { version = "4.5.2", optional = true }
 anyhow = "1.0.86"
-indicatif = { version = "0.17.8", features = ["improved_unicode"] }
+indicatif = { version = "0.17.8", features = ["improved_unicode"], optional = true }
 flate2 = "1.0.30"
 miette = { version = "7.2.0", features = ["fancy"] }
 
@@ -42,10 +48,21 @@ test-log = "0.2.16"
 http = "1.1.0"
 
 [build-dependencies]
-embed-resource = "2.4.2"
+embed-resource = { version = "2.4.2", optional = true }
 
 [target.'cfg(windows)'.dependencies]
 csv = "1.3.0"
 junction = "1.1.0"
 
 [features]
+default = ["cli"]
+# The `fnm` command-line program and everything only it needs: argument
+# handling for the commands, progress bars, shell detection and completions,
+# and the Windows manifest. A crate using fnm as a library turns this off.
+cli = [
+  "dep:clap_complete",
+  "dep:env_logger",
+  "dep:indicatif",
+  "dep:sysinfo",
+  "dep:embed-resource",
+]
