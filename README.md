@@ -4,6 +4,8 @@
   <a href="https://github.com/Schniz/fnm/actions"><img src="https://img.shields.io/github/actions/workflow/status/Schniz/fnm/rust.yml?branch=master&label=workflow" alt="GitHub Actions workflow status" /></a>
 </h1>
 
+[简体中文](./README.zh-CN.md)
+
 > 🚀 Fast and simple Node.js version manager, built in Rust
 
 <div align="center">
