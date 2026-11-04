@@ -55,6 +55,11 @@ Options:
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
 
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
+
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
@@ -139,6 +144,11 @@ Options:
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
 
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
+
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
@@ -201,6 +211,11 @@ Options:
 
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
+
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
 
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
@@ -284,6 +299,11 @@ Options:
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
 
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
+
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
@@ -356,6 +376,11 @@ Options:
 
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
+
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
 
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
@@ -435,6 +460,11 @@ Options:
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
 
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
+
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
@@ -502,6 +532,11 @@ Options:
 
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
+
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
 
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
@@ -573,6 +608,11 @@ Options:
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
 
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
+
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
@@ -639,6 +679,11 @@ Options:
 
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
+
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
 
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
@@ -709,6 +754,11 @@ Options:
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
 
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
+
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
@@ -771,6 +821,11 @@ Options:
 
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
+
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
 
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
@@ -847,6 +902,11 @@ Options:
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
 
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
+
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>
 
@@ -915,6 +975,11 @@ Options:
 
           [env: FNM_VERSION_FILE_STRATEGY]
           [default: local]
+
+      --fallback-to-latest-in-major
+          For `fnm use` with a version file, fall back from a missing exact stable version to the latest newer installed stable version of the same major. Explicit version arguments and `package.json` engines ranges are unchanged
+
+          [env: FNM_FALLBACK_TO_LATEST_IN_MAJOR]
 
       --corepack-enabled
           Enable corepack support for each new installation. This will make fnm call `corepack enable` on every Node.js installation. For more information about corepack see <https://nodejs.org/api/corepack.html>

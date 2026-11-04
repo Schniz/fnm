@@ -29,6 +29,7 @@ for (const shell of [Bash, Zsh, Fish, PowerShell, WinCmd]) {
           FNM_RESOLVE_ENGINES: "true",
           FNM_COREPACK_ENABLED: "false",
           FNM_VERSION_FILE_STRATEGY: "local",
+          FNM_FALLBACK_TO_LATEST_IN_MAJOR: "false",
         })
       }
     })

@@ -65,6 +65,17 @@ pub struct FnmConfig {
     )]
     version_file_strategy: VersionFileStrategy,
 
+    /// For `fnm use` with a version file, fall back from a missing exact stable version
+    /// to the latest newer installed stable version of the same major.
+    /// Explicit version arguments and `package.json` engines ranges are unchanged.
+    #[clap(
+        long,
+        env = "FNM_FALLBACK_TO_LATEST_IN_MAJOR",
+        global = true,
+        hide_env_values = true
+    )]
+    fallback_to_latest_in_major: bool,
+
     /// Enable corepack support for each new installation.
     /// This will make fnm call `corepack enable` on every Node.js installation.
     /// For more information about corepack see <https://nodejs.org/api/corepack.html>
@@ -109,6 +120,7 @@ impl Default for FnmConfig {
             log_level: LogLevel::Info,
             arch: Arch::default(),
             version_file_strategy: VersionFileStrategy::default(),
+            fallback_to_latest_in_major: false,
             corepack_enabled: false,
             resolve_engines: None,
             directories: Directories::default(),
@@ -117,6 +129,10 @@ impl Default for FnmConfig {
 }
 
 impl FnmConfig {
+    pub fn fallback_to_latest_in_major(&self) -> bool {
+        self.fallback_to_latest_in_major
+    }
+
     pub fn version_file_strategy(&self) -> VersionFileStrategy {
         self.version_file_strategy
     }

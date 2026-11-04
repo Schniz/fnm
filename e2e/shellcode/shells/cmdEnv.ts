@@ -1,30 +1,36 @@
 import { ScriptLine, define } from "./types.js"
 
 type EnvConfig = {
+  shell: string
   executableName: string
   useOnCd: boolean
   logLevel: string
   corepackEnabled: boolean
   resolveEngines: boolean
+  fallbackToLatestInMajor: boolean
   nodeDistMirror: string
 }
 export type HasEnv = { env(cfg: Partial<EnvConfig>): ScriptLine }
 
 function stringify(envConfig: Partial<EnvConfig> = {}) {
   const {
+    shell,
     useOnCd,
     logLevel,
     corepackEnabled,
     resolveEngines,
+    fallbackToLatestInMajor,
     executableName = "fnm",
     nodeDistMirror,
   } = envConfig
   return [
     `${executableName} env`,
+    shell && `--shell=${shell}`,
     useOnCd && "--use-on-cd",
     logLevel && `--log-level=${logLevel}`,
     corepackEnabled && "--corepack-enabled",
     resolveEngines && `--resolve-engines`,
+    fallbackToLatestInMajor && "--fallback-to-latest-in-major",
     nodeDistMirror && `--node-dist-mirror=${JSON.stringify(nodeDistMirror)}`,
   ]
     .filter(Boolean)
