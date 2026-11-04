@@ -10,12 +10,13 @@ import testNodeVersion from "./shellcode/test-node-version.js"
 for (const shell of [Bash, Zsh, Fish, PowerShell]) {
   describe(shell, () => {
     test(`installs aliases when corepack is enabled`, async () => {
-      await writeFile(path.join(testCwd(), ".node-version"), "lts/*")
+      // Use a named LTS that bundles Corepack, independent of the latest LTS.
+      await writeFile(path.join(testCwd(), ".node-version"), "lts/iron")
       await script(shell)
         .then(shell.env({ corepackEnabled: true }))
         .then(shell.call("fnm", ["use", "--install-if-missing"]))
         .then(
-          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "lts-latest"),
+          shell.scriptOutputContains(shell.call("fnm", ["ls"]), "lts-iron"),
         )
         .takeSnapshot(shell)
         .execute(shell)

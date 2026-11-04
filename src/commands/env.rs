@@ -108,6 +108,10 @@ impl Command for Env {
                 bool_as_str(config.corepack_enabled()),
             ),
             ("FNM_RESOLVE_ENGINES", bool_as_str(config.resolve_engines())),
+            (
+                "FNM_FALLBACK_TO_LATEST_IN_MAJOR",
+                bool_as_str(config.fallback_to_latest_in_major()),
+            ),
             ("FNM_ARCH", config.arch.as_str()),
         ];
 

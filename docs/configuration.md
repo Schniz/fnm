@@ -46,6 +46,22 @@ repo/packages/my-package$ fnm use
 error: Can't find version in dotfiles. Please provide a version manually to the command.
 ```
 
+### `--fallback-to-latest-in-major`
+
+When `fnm use` reads an exact stable version from a version file such as `.nvmrc` or `.node-version`, this option lets it use the latest newer installed stable version of the same major if the requested version is missing. For example, if `.nvmrc` requests `20.6.1` and you have `20.10.0`, `20.20.0` and `21.0.0` installed, fnm selects `20.20.0`. An installed exact match always takes precedence.
+
+Enable it in your shell setup alongside `--use-on-cd`:
+
+```sh
+eval "$(fnm env --use-on-cd --shell bash --fallback-to-latest-in-major)"
+```
+
+Use your shell's usual setup syntax for other shells. `fnm env` saves the setting in `FNM_FALLBACK_TO_LATEST_IN_MAJOR` for later commands and directory changes.
+
+The option is disabled by default. It applies only to file-based `fnm use`, including `fnm use .nvmrc` and automatic directory switching. Explicit version arguments such as `fnm use 20.6.1`, aliases, prerelease requests and `package.json` engines ranges keep their existing behavior. Other commands, including `fnm install` and `fnm exec`, are unchanged.
+
+Fallback does not download Node.js or select an earlier version, a prerelease or another major. If no fallback matches, fnm keeps its usual missing-version behavior, including an installation prompt or `--install-if-missing` when requested. Version-file precedence is unchanged: `.nvmrc`, then `.node-version`, then `package.json`.
+
 ### `--corepack-enabled`
 
 **🧪 Experimental**

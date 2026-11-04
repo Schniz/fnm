@@ -57,7 +57,7 @@ exports[`Bash installs aliases when corepack is enabled: Bash 1`] = `
 "set -e
 eval "$(fnm env --corepack-enabled)"
 fnm use --install-if-missing
-(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
+(fnm ls) | grep lts-iron || (echo "Expected output to contain lts-iron" && exit 1)"
 `;
 
 exports[`Bash unalias a version: Bash 1`] = `
@@ -132,7 +132,7 @@ begin; fnm use 2>&1; end | grep 'Requested version lts-latest is not'; or echo "
 exports[`Fish installs aliases when corepack is enabled: Fish 1`] = `
 "fnm env --corepack-enabled | source
 fnm use --install-if-missing
-begin; fnm ls; end | grep lts-latest; or echo "Expected output to contain lts-latest" && exit 1"
+begin; fnm ls; end | grep lts-iron; or echo "Expected output to contain lts-iron" && exit 1"
 `;
 
 exports[`Fish unalias a version: Fish 1`] = `
@@ -198,7 +198,7 @@ exports[`PowerShell installs aliases when corepack is enabled: PowerShell 1`] = 
 "$ErrorActionPreference = "Stop"
 fnm env --corepack-enabled | Out-String | Invoke-Expression
 fnm use --install-if-missing
-$($__out__ = $(fnm ls | Select-String lts-latest); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
+$($__out__ = $(fnm ls | Select-String lts-iron); if ($__out__ -eq $null) { exit 1 } else { $__out__ })"
 `;
 
 exports[`PowerShell unalias a version: PowerShell 1`] = `
@@ -275,7 +275,7 @@ exports[`Zsh installs aliases when corepack is enabled: Zsh 1`] = `
 "set -e
 eval "$(fnm env --corepack-enabled)"
 fnm use --install-if-missing
-(fnm ls) | grep lts-latest || (echo "Expected output to contain lts-latest" && exit 1)"
+(fnm ls) | grep lts-iron || (echo "Expected output to contain lts-iron" && exit 1)"
 `;
 
 exports[`Zsh unalias a version: Zsh 1`] = `

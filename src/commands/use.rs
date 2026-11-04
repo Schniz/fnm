@@ -40,6 +40,7 @@ impl Command for Use {
 
         let all_versions = installed_versions::list(config.installations_dir())
             .map_err(|source| Error::VersionListingError { source })?;
+        let from_version_file = !matches!(&self.version, Some(UserVersionReader::Direct(_)));
         let requested_version = self
             .version
             .unwrap_or_else(|| {
@@ -86,12 +87,28 @@ impl Command for Use {
             }
         } else {
             let current_version = requested_version.to_version(&all_versions, config);
-            if let Some(version) = current_version {
+            let fallback_version = if current_version.is_none()
+                && from_version_file
+                && config.fallback_to_latest_in_major()
+            {
+                latest_in_major(&requested_version, &all_versions)
+            } else {
+                None
+            };
+            if let Some(version) = current_version.or(fallback_version) {
                 let version_path = config
                     .installations_dir()
                     .join(version.to_string())
                     .join("installation");
-                let message = format!("Using Node {}", version.to_string().cyan());
+                let message = if fallback_version.is_some() {
+                    format!(
+                        "Using Node {} instead of requested {}",
+                        version.to_string().cyan(),
+                        requested_version.to_string().cyan()
+                    )
+                } else {
+                    format!("Using Node {}", version.to_string().cyan())
+                };
                 (message, version_path)
             } else {
                 install_new_version(requested_version, config, self.install_if_missing)?;
@@ -120,6 +137,25 @@ impl Command for Use {
 
         Ok(())
     }
+}
+
+fn latest_in_major<'a>(requested: &UserVersion, versions: &'a [Version]) -> Option<&'a Version> {
+    let UserVersion::Full(Version::Semver(requested)) = requested else {
+        return None;
+    };
+    if requested.is_prerelease() {
+        return None;
+    }
+
+    versions
+        .iter()
+        .filter(|version| {
+            matches!(version, Version::Semver(candidate)
+                if !candidate.is_prerelease()
+                    && candidate.major == requested.major
+                    && candidate > requested)
+        })
+        .max()
 }
 
 fn will_version_change(resolved_path: &Path, config: &FnmConfig) -> bool {
@@ -259,4 +295,48 @@ pub enum InferVersionError {
     Local,
     #[error("Could not find any version to use. Maybe you don't have a default version set?\nTry running `fnm default <VERSION>` to set one,\nor create a .node-version file inside your project to declare a Node.js version.")]
     Recursive,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn fallback_selects_latest_newer_stable_in_same_major() {
+        let versions = [
+            "20.10.0",
+            "21.0.0",
+            "20.5.0",
+            "20.20.0",
+            "20.21.0-rc.1",
+            "20.6.1",
+        ]
+        .map(|v| Version::parse(v).unwrap());
+        let requested = "20.6.1".parse().unwrap();
+        assert_eq!(latest_in_major(&requested, &versions), Some(&versions[3]));
+    }
+
+    #[test]
+    fn fallback_rejects_equal_earlier_other_major_and_prerelease_versions() {
+        let requested = "20.6.1".parse().unwrap();
+        for candidate in ["20.6.1", "20.6.0", "19.20.0", "21.0.0", "20.20.0-rc.1"] {
+            let versions = [Version::parse(candidate).unwrap()];
+            assert_eq!(latest_in_major(&requested, &versions), None, "{candidate}");
+        }
+        assert_eq!(latest_in_major(&requested, &[]), None);
+    }
+
+    #[test]
+    fn fallback_does_not_reinterpret_other_requests() {
+        let versions = [Version::parse("20.20.0").unwrap()];
+        for request in ["20", "20.6", "20.6.1-rc.1", "default", "lts/iron", "system"] {
+            assert_eq!(
+                latest_in_major(&request.parse().unwrap(), &versions),
+                None,
+                "{request}"
+            );
+        }
+        let range = UserVersion::SemverRange(">=20.6.1 <21".parse().unwrap());
+        assert_eq!(latest_in_major(&range, &versions), None);
+    }
 }
