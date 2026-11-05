@@ -26,6 +26,17 @@ impl Shell for Fish {
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
+        let executable = super::shell::hook_executable()?;
+        let executable = executable
+            .to_str()
+            .ok_or_else(|| anyhow::anyhow!("Can't convert executable path to string"))?;
+        let executable = super::windows_compat::maybe_fix_windows_path(executable)
+            .unwrap_or_else(|| executable.to_owned());
+        let executable = format!(
+            "'{}'",
+            executable.replace('\\', "\\\\").replace('\'', "\\'")
+        );
+        let use_command = format!("if type -q fnm; fnm use --silent-if-unchanged; else; {executable} use --silent-if-unchanged; end");
         let version_file_exists_condition = if config.resolve_engines() {
             "test -f .node-version -o -f .nvmrc -o -f package.json"
         } else {
@@ -35,12 +46,12 @@ impl Shell for Fish {
             VersionFileStrategy::Local => formatdoc!(
                 r"
                     if {version_file_exists_condition}
-                        fnm use --silent-if-unchanged
+                        {use_command}
                     end
                 ",
                 version_file_exists_condition = version_file_exists_condition,
             ),
-            VersionFileStrategy::Recursive => String::from(r"fnm use --silent-if-unchanged"),
+            VersionFileStrategy::Recursive => use_command.clone(),
         };
         Ok(formatdoc!(
             r"

@@ -13,6 +13,16 @@ pub trait Shell: Debug {
     fn to_clap_shell(&self) -> clap_complete::Shell;
 }
 
+// Preserve explicit invocation paths so package-manager symlinks can be updated.
+pub(super) fn hook_executable() -> anyhow::Result<std::path::PathBuf> {
+    match std::env::args_os().next().map(std::path::PathBuf::from) {
+        Some(path) if path.is_absolute() || path.components().count() > 1 => {
+            Ok(std::path::absolute(path)?)
+        }
+        _ => Ok(std::env::current_exe()?),
+    }
+}
+
 #[derive(Debug, Clone, ValueEnum)]
 pub enum Shells {
     Bash,
