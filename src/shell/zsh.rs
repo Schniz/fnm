@@ -1,6 +1,6 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
-use super::shell::Shell;
+use super::shell::{PathOrder, Shell};
 use indoc::formatdoc;
 use std::path::Path;
 
@@ -12,13 +12,27 @@ impl Shell for Zsh {
         clap_complete::Shell::Zsh
     }
 
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
+    fn path(
+        &self,
+        path: &Path,
+        order: PathOrder,
+        multishell_storage: &Path,
+    ) -> anyhow::Result<String> {
         let path = path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Path is not valid UTF-8"))?;
         let path =
             super::windows_compat::maybe_fix_windows_path(path).unwrap_or_else(|| path.to_string());
-        Ok(format!("export PATH={path:?}:$PATH"))
+        if order == PathOrder::Prepend {
+            Ok(format!("export PATH={path:?}:$PATH"))
+        } else {
+            let storage = multishell_storage.to_str().ok_or_else(|| {
+                anyhow::anyhow!("Can't convert multishell storage path to string")
+            })?;
+            let storage = super::windows_compat::maybe_fix_windows_path(storage)
+                .unwrap_or_else(|| storage.to_string());
+            Ok(super::bash::append_path_script(&path, &storage))
+        }
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {

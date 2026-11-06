@@ -1,6 +1,6 @@
 use crate::version_file_strategy::VersionFileStrategy;
 
-use super::Shell;
+use super::{shell::path_entries, shell::quote_powershell, PathOrder, Shell};
 use indoc::formatdoc;
 use std::path::Path;
 
@@ -8,21 +8,27 @@ use std::path::Path;
 pub struct PowerShell;
 
 impl Shell for PowerShell {
-    fn path(&self, path: &Path) -> anyhow::Result<String> {
-        let current_path =
-            std::env::var_os("PATH").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;
-        let mut split_paths: Vec<_> = std::env::split_paths(&current_path).collect();
-        split_paths.insert(0, path.to_path_buf());
-        let new_path = std::env::join_paths(split_paths)
+    fn path(
+        &self,
+        path: &Path,
+        order: PathOrder,
+        multishell_storage: &Path,
+    ) -> anyhow::Result<String> {
+        std::env::var_os("PATH").ok_or_else(|| anyhow::anyhow!("Can't read PATH env var"))?;
+        let new_path = std::env::join_paths(path_entries(path, order, multishell_storage))
             .map_err(|source| anyhow::anyhow!("Can't join paths: {source}"))?;
         let new_path = new_path
             .to_str()
             .ok_or_else(|| anyhow::anyhow!("Can't read PATH"))?;
-        Ok(self.set_env_var("PATH", new_path))
+        if order == PathOrder::Append {
+            Ok(format!("$env:PATH = {}", quote_powershell(new_path)))
+        } else {
+            Ok(self.set_env_var("PATH", new_path))
+        }
     }
 
     fn set_env_var(&self, name: &str, value: &str) -> String {
-        format!(r#"$env:{name} = "{value}""#)
+        format!("$env:{name} = {}", quote_powershell(value))
     }
 
     fn use_on_cd(&self, config: &crate::config::FnmConfig) -> anyhow::Result<String> {
