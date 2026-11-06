@@ -282,10 +282,14 @@ jobs:
             rust_target: aarch64-unknown-linux-musl
             docker_image: arm64v8/ubuntu
             docker_platform: aarch64
+            distro: alpine_latest
+            test_version: 26.0.0
           - arch: arm32
             rust_target: armv7-unknown-linux-gnueabihf
             docker_image: arm32v7/ubuntu
             docker_platform: armv7
+            distro: ubuntu18.04
+            test_version: 12.0.0
     runs-on: ubuntu-latest
     env:
       RUST_TARGET: ${{ matrix.rust_target }}
@@ -308,7 +312,7 @@ jobs:
         name: Sanity test
         with:
           arch: ${{matrix.docker_platform}}
-          distro: ubuntu18.04
+          distro: ${{matrix.distro}}
 
           # Not required, but speeds up builds by storing container images in
           # a GitHub package registry.
@@ -324,10 +328,10 @@ jobs:
           run: |
             echo "Hello from $(uname -a)"
             /artifacts/fnm --version
-            echo "fnm install 12.0.0"
-            /artifacts/fnm install 12.0.0
-            echo "fnm exec --using=12 -- node --version"
-            /artifacts/fnm exec --using=12 -- node --version
+            echo "fnm install ${{matrix.test_version}}"
+            /artifacts/fnm install ${{matrix.test_version}}
+            echo "fnm exec --using=${{matrix.test_version}} -- node --version"
+            /artifacts/fnm exec --using=${{matrix.test_version}} -- node --version
 
       - uses: actions/upload-artifact@v4
         with:

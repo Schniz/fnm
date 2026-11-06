@@ -85,7 +85,7 @@ impl Command for Install {
                 return Err(Error::UninstallableVersion { version: v });
             }
             UserVersion::Full(Version::Lts(lts_type)) => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
+                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror())
                     .map_err(|source| Error::CantListRemoteVersions { source })?;
                 let picked_version = lts_type
                     .pick_latest(&available_versions)
@@ -102,7 +102,7 @@ impl Command for Install {
                 picked_version
             }
             UserVersion::Full(Version::Latest) => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
+                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror())
                     .map_err(|source| Error::CantListRemoteVersions { source })?;
                 let picked_version = available_versions
                     .last()
@@ -117,7 +117,7 @@ impl Command for Install {
                 picked_version
             }
             current_version => {
-                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror)
+                let available_versions: Vec<_> = remote_node_index::list(&config.node_dist_mirror())
                     .map_err(|source| Error::CantListRemoteVersions { source })?
                     .drain(..)
                     .map(|x| x.version)
@@ -146,7 +146,7 @@ impl Command for Install {
 
         match install_node_dist(
             &version,
-            &config.node_dist_mirror,
+            &config.node_dist_mirror(),
             config.installations_dir(),
             safe_arch,
             show_progress,
@@ -308,7 +308,7 @@ mod tests {
         .expect("Can't install");
 
         let available_versions: Vec<_> =
-            remote_node_index::list(&config.node_dist_mirror).expect("Can't get node version list");
+            remote_node_index::list(&config.node_dist_mirror()).expect("Can't get node version list");
         let latest_version = available_versions.last().unwrap().version.clone();
 
         assert!(config.installations_dir().exists());

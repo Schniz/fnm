@@ -93,6 +93,7 @@ impl Command for Env {
 
         let multishell_path = make_symlink(config)?;
         let base_dir = config.base_dir_with_default();
+        let node_dist_mirror = config.node_dist_mirror();
 
         let env_vars = [
             ("FNM_MULTISHELL_PATH", multishell_path.to_str().unwrap()),
@@ -102,7 +103,7 @@ impl Command for Env {
             ),
             ("FNM_DIR", base_dir.to_str().unwrap()),
             ("FNM_LOGLEVEL", config.log_level().as_str()),
-            ("FNM_NODE_DIST_MIRROR", config.node_dist_mirror.as_str()),
+            ("FNM_NODE_DIST_MIRROR", node_dist_mirror.as_str()),
             (
                 "FNM_COREPACK_ENABLED",
                 bool_as_str(config.corepack_enabled()),
