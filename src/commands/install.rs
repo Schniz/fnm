@@ -133,7 +133,7 @@ impl Command for Install {
         };
 
         // Automatically swap Apple Silicon to x64 arch for appropriate versions.
-        let safe_arch = get_safe_arch(config.arch, &version);
+        let safe_arch = get_safe_arch(&config.arch, &version);
 
         let version_str = format!("Node {version}");
         outln!(
@@ -148,7 +148,7 @@ impl Command for Install {
             &version,
             &config.node_dist_mirror,
             config.installations_dir(),
-            safe_arch,
+            &safe_arch,
             show_progress,
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {

@@ -43,7 +43,10 @@ pub struct FnmConfig {
     log_level: LogLevel,
 
     /// Override the architecture of the installed Node binary.
-    /// Defaults to arch of fnm binary.
+    /// Defaults to arch of fnm binary. Any string is accepted (it is
+    /// substituted directly into the download URL); well-known values are
+    /// `x86`, `x64`, `x64-musl`, `x64-glibc-217`, `arm64`,
+    /// `armv7l`, `ppc64le`, `ppc64`, `s390x`.
     #[clap(
         long,
         env = "FNM_ARCH",
@@ -103,7 +106,7 @@ pub struct FnmConfig {
 impl Default for FnmConfig {
     fn default() -> Self {
         Self {
-            node_dist_mirror: Url::parse("https://nodejs.org/dist/").unwrap(),
+            node_dist_mirror: Url::parse("https://nodejs.org/dist").unwrap(),
             base_dir: None,
             multishell_path: None,
             log_level: LogLevel::Info,
