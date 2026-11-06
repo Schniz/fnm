@@ -152,7 +152,7 @@ impl Command for Install {
             show_progress,
         ) {
             Err(err @ DownloaderError::VersionAlreadyInstalled { .. }) => {
-                outln!(config, Error, "{} {}", "warning:".bold().yellow(), err);
+                outln!(config, Info, "{} {}", "warning:".bold().yellow(), err);
             }
             Err(source) => Err(Error::DownloadError { source })?,
             Ok(()) => {}
