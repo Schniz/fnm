@@ -107,7 +107,13 @@ impl Cmd for Exec {
             .wait()
             .expect("Failed to grab exit code");
 
-        let code = exit_status.code().ok_or(Error::CantReadProcessExitCode)?;
+        let code = exit_status.code();
+        #[cfg(unix)]
+        let code = {
+            use std::os::unix::process::ExitStatusExt;
+            code.or_else(|| exit_status.signal().map(|signal| 128 + signal))
+        };
+        let code = code.ok_or(Error::CantReadProcessExitCode)?;
         std::process::exit(code);
     }
 }
