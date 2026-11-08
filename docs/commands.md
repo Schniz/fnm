@@ -17,7 +17,7 @@ Commands:
   default      Set a version as the default version or get the current default version
   current      Print the current Node.js version
   exec         Run a command within fnm context
-  uninstall    Uninstall a Node.js version [alias: uni]
+  uninstall    Uninstall Node.js versions [alias: uni]
   help         Print this message or the help of the given subcommand(s)
 
 Options:
@@ -871,14 +871,16 @@ Options:
 # `fnm uninstall`
 
 ```
-Uninstall a Node.js version
+Uninstall Node.js versions
 
-> Warning: when providing an alias, it will remove the Node version the alias > is pointing to, along with the other aliases that point to the same version.
+Resolve and remove each version in argument order. Errors do not stop subsequent targets, but the command exits with status 1 if any target fails, including missing versions.
 
-Usage: fnm uninstall [OPTIONS] [VERSION]
+Warning: removing a version also removes all aliases pointing to it. Repeated versions or removed aliases will no longer match and count as failures.
+
+Usage: fnm uninstall [OPTIONS] [VERSION]...
 
 Arguments:
-  [VERSION]
+  [VERSION]...
 
 
 Options:

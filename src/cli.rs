@@ -63,10 +63,13 @@ pub enum SubCommand {
     #[clap(name = "exec", bin_name = "exec", verbatim_doc_comment)]
     Exec(commands::exec::Exec),
 
-    /// Uninstall a Node.js version
+    /// Uninstall Node.js versions
     ///
-    /// > Warning: when providing an alias, it will remove the Node version the alias
-    /// > is pointing to, along with the other aliases that point to the same version.
+    /// Resolve and remove each version in argument order. Errors do not stop subsequent
+    /// targets, but the command exits with status 1 if any target fails, including missing versions.
+    ///
+    /// Warning: removing a version also removes all aliases pointing to it.
+    /// Repeated versions or removed aliases will no longer match and count as failures.
     #[clap(name = "uninstall", bin_name = "uninstall", visible_aliases = &["uni"])]
     Uninstall(commands::uninstall::Uninstall),
 }
