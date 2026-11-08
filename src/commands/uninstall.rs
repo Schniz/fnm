@@ -12,17 +12,40 @@ use thiserror::Error;
 
 #[derive(clap::Parser, Debug)]
 pub struct Uninstall {
-    version: Option<UserVersion>,
+    #[clap(value_name = "VERSION")]
+    versions: Vec<UserVersion>,
 }
 
 impl Command for Uninstall {
     type Error = Error;
 
     fn apply(self, config: &FnmConfig) -> Result<(), Self::Error> {
+        let mut versions = self.versions.into_iter();
+        if versions.len() <= 1 {
+            return Self::uninstall(versions.next(), config);
+        }
+
+        let mut errors = Vec::new();
+        for version in versions {
+            let requested = version.to_string();
+            if let Err(error) = Self::uninstall(Some(version), config) {
+                errors.push(format!("{requested}: {error}"));
+            }
+        }
+
+        if errors.is_empty() {
+            Ok(())
+        } else {
+            Err(Error::MultipleVersionsFailed { errors })
+        }
+    }
+}
+
+impl Uninstall {
+    fn uninstall(version: Option<UserVersion>, config: &FnmConfig) -> Result<(), Error> {
         let all_versions = installed_versions::list(config.installations_dir())
             .map_err(|source| Error::VersionListingError { source })?;
-        let requested_version = self
-            .version
+        let requested_version = version
             .or_else(|| {
                 let current_dir = std::env::current_dir().unwrap();
                 get_user_version_for_directory(current_dir, config)
@@ -89,6 +112,8 @@ impl Command for Uninstall {
 
 #[derive(Debug, Error)]
 pub enum Error {
+    #[error("Failed to uninstall some versions:\n{}", errors.join("\n"))]
+    MultipleVersionsFailed { errors: Vec<String> },
     #[error("Can't get locally installed versions: {}", source)]
     VersionListingError { source: installed_versions::Error },
     #[error("Can't find version in dotfiles. Please provide a version manually to the command.")]
