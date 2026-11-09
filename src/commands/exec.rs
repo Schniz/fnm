@@ -93,22 +93,39 @@ impl Cmd for Exec {
             path_env = path_env.display()
         );
 
-        let exit_status = Command::new(binary)
+        let mut command = Command::new(binary);
+        command
             .args(arguments)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
-            .env("PATH", path_env)
-            .spawn()
-            .map_err(|source| Error::CantSpawnProgram {
+            .env("PATH", path_env);
+
+        #[cfg(unix)]
+        {
+            use std::os::unix::process::CommandExt;
+
+            let source = command.exec();
+            Err(Error::CantSpawnProgram {
                 source,
                 binary: binary.clone(),
-            })?
-            .wait()
-            .expect("Failed to grab exit code");
+            })
+        }
 
-        let code = exit_status.code().ok_or(Error::CantReadProcessExitCode)?;
-        std::process::exit(code);
+        #[cfg(windows)]
+        {
+            let exit_status = command
+                .spawn()
+                .map_err(|source| Error::CantSpawnProgram {
+                    source,
+                    binary: binary.clone(),
+                })?
+                .wait()
+                .expect("Failed to grab exit code");
+
+            let code = exit_status.code().ok_or(Error::CantReadProcessExitCode)?;
+            std::process::exit(code);
+        }
     }
 }
 
@@ -132,6 +149,7 @@ pub enum Error {
         #[from]
         source: UserInputError,
     },
+    #[cfg(windows)]
     #[error("Can't read exit code from process.\nMaybe the process was killed using a signal?")]
     CantReadProcessExitCode,
     #[error("command not provided. Please provide a command to run as an argument, like {} or {}.\n{} {}", "node".italic(), "bash".italic(), "example:".yellow().bold(), "fnm exec --using=12 node --version".italic().yellow())]
