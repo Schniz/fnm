@@ -52,6 +52,14 @@ error: Can't find version in dotfiles. Please provide a version manually to the 
 
 Runs [`corepack enable`](https://nodejs.org/api/corepack.html#enabling-the-feature) when a new version of Node.js is installed. Experimental due to the fact Corepack itself is experimental.
 
+### `default-packages` file
+
+When present at `$FNM_DIR/default-packages`, fnm will automatically install packages listed in this file globally after every `fnm install` by running `npm install -g`. You can run `fnm env` to see the value of `$FNM_DIR` on your system.
+
+The file format is one package spec per line (supports `@version`), and lines starting with `#` are ignored.
+
+This is compatible with nvm's `default-packages` format.
+
 ### `--resolve-engines`
 
 **🧪 Experimental**

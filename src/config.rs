@@ -164,6 +164,10 @@ impl FnmConfig {
             .ensure_exists_silently()
     }
 
+    pub fn default_packages_file(&self) -> std::path::PathBuf {
+        self.base_dir_with_default().join("default-packages")
+    }
+
     pub fn multishell_storage(&self) -> std::path::PathBuf {
         self.directories.multishell_storage()
     }
