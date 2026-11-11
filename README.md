@@ -158,7 +158,9 @@ Check out the following guides for the shell you use:
 Add the following to your `.bashrc` profile:
 
 ```bash
-eval "$(fnm env --use-on-cd --shell bash)"
+# only run for interactive shells; non-interactive logins (e.g. display managers
+# scraping env vars) would otherwise leave a stale multishell in the session PATH.
+[[ $- == *i* ]] && eval "$(fnm env --use-on-cd --shell bash)"
 ```
 
 #### Zsh
@@ -166,7 +168,9 @@ eval "$(fnm env --use-on-cd --shell bash)"
 Add the following to your `.zshrc` profile:
 
 ```zsh
-eval "$(fnm env --use-on-cd --shell zsh)"
+# only run for interactive shells; non-interactive logins (e.g. display managers
+# scraping env vars) would otherwise leave a stale multishell in the session PATH.
+[[ $- == *i* ]] && eval "$(fnm env --use-on-cd --shell zsh)"
 ```
 
 #### Fish shell
@@ -174,7 +178,9 @@ eval "$(fnm env --use-on-cd --shell zsh)"
 Create `~/.config/fish/conf.d/fnm.fish` and add this line to it:
 
 ```fish
-fnm env --use-on-cd --shell fish | source
+# only run for interactive shells; non-interactive logins (e.g. display managers
+# scraping env vars) would otherwise leave a stale multishell in the session PATH.
+status is-interactive; and fnm env --use-on-cd --shell fish | source
 ```
 
 #### PowerShell

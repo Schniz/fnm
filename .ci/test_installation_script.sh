@@ -15,12 +15,14 @@ echo "---"
 echo "PATH=$PATH"
 echo "---"
 
-$SHELL_TO_RUN -c "
+# Use an interactive shell (-i) so the appended fnm setup, which is now guarded
+# by an interactive-shell check, actually runs when the profile is sourced.
+$SHELL_TO_RUN -i -c "
   . $PROFILE_FILE
   fnm --version
 "
 
-$SHELL_TO_RUN -c "
+$SHELL_TO_RUN -i -c "
   . $PROFILE_FILE
   fnm install 12.5.0
   fnm ls | grep 12.5.0
@@ -28,7 +30,7 @@ $SHELL_TO_RUN -c "
   echo 'fnm ls worked.'
 "
 
-$SHELL_TO_RUN -c "
+$SHELL_TO_RUN -i -c "
   . $PROFILE_FILE
   fnm use 12.5.0
   node --version | grep 12.5.0

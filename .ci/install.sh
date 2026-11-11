@@ -177,7 +177,10 @@ setup_shell() {
       if [ "$USE_HOMEBREW" != "true" ]; then
         echo '  export PATH="$FNM_PATH:$PATH"'
       fi
-      echo '  eval "$(fnm env --shell zsh)"'
+      echo '  # only initialize for interactive shells; non-interactive logins'
+      echo '  # (e.g. display managers scraping env vars) would otherwise leak a'
+      echo '  # stale multishell into the session PATH.'
+      echo '  [[ $- == *i* ]] && eval "$(fnm env --shell zsh)"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
 
@@ -193,7 +196,10 @@ setup_shell() {
       if [ "$USE_HOMEBREW" != "true" ]; then
         echo '  set PATH "$FNM_PATH" $PATH'
       fi
-      echo '  fnm env --shell fish | source'
+      echo '  # only initialize for interactive shells; non-interactive logins'
+      echo '  # (e.g. display managers scraping env vars) would otherwise leak a'
+      echo '  # stale multishell into the session PATH.'
+      echo '  status is-interactive; and fnm env --shell fish | source'
       echo 'end'
     } | tee -a "$CONF_FILE"
 
@@ -213,7 +219,10 @@ setup_shell() {
       if [ "$USE_HOMEBREW" != "true" ]; then
         echo '  export PATH="$FNM_PATH:$PATH"'
       fi
-      echo '  eval "$(fnm env --shell bash)"'
+      echo '  # only initialize for interactive shells; non-interactive logins'
+      echo '  # (e.g. display managers scraping env vars) would otherwise leak a'
+      echo '  # stale multishell into the session PATH.'
+      echo '  [[ $- == *i* ]] && eval "$(fnm env --shell bash)"'
       echo 'fi'
     } | tee -a "$CONF_FILE"
 
