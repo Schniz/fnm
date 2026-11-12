@@ -57,7 +57,8 @@ impl Command for Use {
         let requested_version = match (self.silent_if_unchanged, requested_version) {
             (true, Err(_)) => return Ok(()),
             (_, v) => v?,
-        };
+        }
+        .resolve_alias(config);
 
         let (message, version_path) = if let UserVersion::Full(Version::Bypassed) =
             requested_version

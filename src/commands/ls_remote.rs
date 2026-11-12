@@ -64,7 +64,8 @@ impl super::command::Command for LsRemote {
             }
         }
 
-        if let Some(filter) = &self.filter {
+        if let Some(filter) = self.filter {
+            let filter = filter.resolve_alias(config);
             all_versions.retain(|v| filter.matches(&v.version, config));
         }
 
