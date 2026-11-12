@@ -27,7 +27,8 @@ impl Command for Uninstall {
                 let current_dir = std::env::current_dir().unwrap();
                 get_user_version_for_directory(current_dir, config)
             })
-            .ok_or(Error::CantInferVersion)?;
+            .ok_or(Error::CantInferVersion)?
+            .resolve_alias(config);
 
         if matches!(requested_version, UserVersion::Full(Version::Bypassed)) {
             return Err(Error::CantUninstallSystemVersion);

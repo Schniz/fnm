@@ -29,6 +29,7 @@ pub fn choose_version_for_user_input<'a>(
     requested_version: &'a UserVersion,
     config: &'a FnmConfig,
 ) -> Result<Option<ApplicableVersion>, Error> {
+    let requested_version = requested_version.clone().resolve_alias(config);
     let all_versions = installed_versions::list(config.installations_dir())
         .map_err(|source| Error::VersionListing { source })?;
 

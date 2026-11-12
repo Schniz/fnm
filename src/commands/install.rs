@@ -77,7 +77,8 @@ impl Command for Install {
         let current_version = self
             .version()?
             .or_else(|| get_user_version_for_directory(current_dir, config))
-            .ok_or(Error::CantInferVersion)?;
+            .ok_or(Error::CantInferVersion)?
+            .resolve_alias(config);
 
         let version = match current_version.clone() {
             UserVersion::Full(Version::Semver(actual_version)) => Version::Semver(actual_version),

@@ -54,6 +54,19 @@ mod tests {
     }
 
     #[test]
+    fn test_node_version_files() {
+        let directory = TempDir::new().unwrap();
+        for name in [".nvmrc", ".node-version"] {
+            let path = directory.path().join(name);
+            std::fs::write(&path, "node\n").unwrap();
+            assert_eq!(
+                UserVersionReader::Path(path).into_user_version(&FnmConfig::default()),
+                Some(UserVersion::Node)
+            );
+        }
+    }
+
+    #[test]
     fn test_directory_pathbuf_to_version() {
         let directory = TempDir::new().unwrap();
         let node_version_path = directory.path().join(".node-version");
