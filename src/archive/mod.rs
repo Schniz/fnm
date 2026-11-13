@@ -1,5 +1,7 @@
 pub mod extract;
+#[cfg(any(unix, debug_assertions))]
 pub mod tar;
+#[cfg(any(windows, debug_assertions))]
 pub mod zip;
 
 use std::io::Read;
@@ -23,16 +25,14 @@ pub enum Archive {
 
 impl Archive {
     pub fn extract_archive_into(&self, path: &Path, response: impl Read) -> Result<(), Error> {
-        let extractor: Box<dyn Extract> = match self {
+        match self {
             #[cfg(windows)]
-            Self::Zip => Box::new(Zip::new(response)),
+            Self::Zip => Zip::new(response).extract_into(path),
             #[cfg(unix)]
-            Self::TarXz => Box::new(Tar::Xz(response)),
+            Self::TarXz => Tar::Xz(response).extract_into(path),
             #[cfg(unix)]
-            Self::TarGz => Box::new(Tar::Gz(response)),
-        };
-        extractor.extract_into(path)?;
-        Ok(())
+            Self::TarGz => Tar::Gz(response).extract_into(path),
+        }
     }
 
     pub fn file_extension(&self) -> &'static str {
