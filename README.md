@@ -185,6 +185,10 @@ Add the following to the end of your profile file:
 fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 ```
 
+When PowerShell loads your profile, `Invoke-Expression` runs the commands printed by `fnm env`. This sets the generated environment variables for that session, including `FNM_MULTISHELL_PATH`, and adds the corresponding entry to the session's `PATH`.
+
+On Windows, let the profile manage these values. If PowerShell can't find `fnm.exe`, add the directory containing it to your user or system `PATH` so the profile can run `fnm`.
+
 - For macOS/Linux, the profile is located at `~/.config/powershell/Microsoft.PowerShell_profile.ps1`
 - For Windows location is either:
   - `%userprofile%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` Powershell 5
