@@ -5,7 +5,7 @@
   "repository": "git@github.com:Schniz/fnm.git",
   "author": "Gal Schlezinger <gal@spitfire.co.il>",
   "type": "module",
-  "packageManager": "pnpm@9.1.4",
+  "packageManager": "pnpm@9.15.9",
   "license": "GPLv3",
   "scripts": {
     "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest",
