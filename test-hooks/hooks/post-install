@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "🎉 Post-install hook executed!"
+echo "Node.js version $FNM_VERSION has been successfully installed!"
+echo "Installation completed in: $FNM_INSTALLATION_DIR"
