@@ -38,6 +38,9 @@ export const cmdEnv = {
   fish: define<HasEnv>({
     env: (envConfig) => `${stringify(envConfig)} | source`,
   }),
+  elvish: define<HasEnv>({
+    env: (envConfig) => `eval ${stringify(envConfig)}`
+  }),
   powershell: define<HasEnv>({
     env: (envConfig) =>
       `${stringify(envConfig)} | Out-String | Invoke-Expression`,

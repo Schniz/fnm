@@ -20,6 +20,16 @@ export const cmdExpectCommandOutput = {
       `
     },
   }),
+  elvish: define<HasExpectCommandOutput>({
+    hasCommandOutput(script, output, message) {
+      return dedent`
+      set ____test____ (${script})
+      	if (!= ____test____ "${output}") {
+	      	echo "Expected ${message} to be ${output}. Got $(${script})"
+      	}
+			`
+    },
+  }),
   fish: define<HasExpectCommandOutput>({
     hasCommandOutput(script, output, message) {
       return dedent`

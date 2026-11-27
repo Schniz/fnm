@@ -18,6 +18,7 @@ pub enum Shells {
     Bash,
     Zsh,
     Fish,
+    Elvish,
     #[clap(name = "powershell", alias = "power-shell")]
     PowerShell,
     #[cfg(windows)]
@@ -30,6 +31,7 @@ impl Display for Shells {
             Shells::Bash => f.write_str("bash"),
             Shells::Zsh => f.write_str("zsh"),
             Shells::Fish => f.write_str("fish"),
+            Shells::Elvish => f.write_str("elvish"),
             Shells::PowerShell => f.write_str("powershell"),
             #[cfg(windows)]
             Shells::Cmd => f.write_str("cmd"),
@@ -43,6 +45,7 @@ impl From<Shells> for Box<dyn Shell> {
             Shells::Zsh => Box::from(super::zsh::Zsh),
             Shells::Bash => Box::from(super::bash::Bash),
             Shells::Fish => Box::from(super::fish::Fish),
+            Shells::Elvish => Box::from(super::elvish::Elvish),
             Shells::PowerShell => Box::from(super::powershell::PowerShell),
             #[cfg(windows)]
             Shells::Cmd => Box::from(super::windows_cmd::WindowsCmd),
