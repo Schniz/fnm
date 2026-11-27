@@ -7,6 +7,9 @@ use thiserror::Error;
 
 #[derive(clap::Parser, Debug)]
 pub struct LsRemote {
+    /// A version string. Filter versions by a user-defined version or a semver range
+    version: Option<UserVersion>,
+
     /// Filter versions by a user-defined version or a semver range
     #[arg(long)]
     filter: Option<UserVersion>,
@@ -64,7 +67,7 @@ impl super::command::Command for LsRemote {
             }
         }
 
-        if let Some(filter) = &self.filter {
+        if let Some(filter) = &self.filter.as_ref().or(self.version.as_ref()) {
             all_versions.retain(|v| filter.matches(&v.version, config));
         }
 
